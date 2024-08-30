@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "110548863578",
+    "firebase_url": "https://austrom-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "austrom",
+    "storage_bucket": "austrom.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110548863578:android:a0d0341bbc7cff79146663",
+        "android_client_info": {
+          "package_name": "com.colleagues.austrom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt-Q-6B14FACWJP6PuNh_t0LcQU6wDGQs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
