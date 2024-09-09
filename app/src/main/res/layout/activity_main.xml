@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey"
-    tools:openDrawer="start"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    tools:openDrawer="start">
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/main_navigationView_nvw"
@@ -27,23 +27,13 @@
             android:id="@+id/main_toolbar_tbr"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/blue"
+            android:background="@color/grey"
             android:elevation="4dp"
-            app:layout_constraintBottom_toBottomOf="@+id/main_navigationControl_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/baseline_brightness_7_24"
-            app:titleTextColor="@color/blue" />
-
-        <Button
-            android:id="@+id/main_navigationControl_btn"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:background="@color/transparent"
-            app:icon="@drawable/baseline_brightness_7_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:titleTextColor="@color/grey" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/main_fragmentHolder_frg"
