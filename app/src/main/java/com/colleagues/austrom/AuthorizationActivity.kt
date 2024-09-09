@@ -40,6 +40,7 @@ class AuthorizationActivity : AppCompatActivity() {
                 Toast.makeText(this, "Username or password is incorrect", Toast.LENGTH_LONG).show()
             } else {
                 Toast.makeText(this, "Welcome, ${existingUser.username}", Toast.LENGTH_LONG).show()
+                (this.application as AustromApplication).appUser = existingUser
                 startActivity(Intent(this, MainActivity::class.java))
             }
         }

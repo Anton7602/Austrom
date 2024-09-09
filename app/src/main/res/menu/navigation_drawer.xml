@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/main_item"
+        android:title="Username">
+        <menu>
+            <item
+                android:id="@+id/inbox_item"
+                android:checkable="true"
+                android:icon="@android:drawable/btn_radio"
+                android:title="Test 1" />
+            <item
+                android:id="@+id/outbox_item"
+                android:checkable="true"
+                android:icon="@android:drawable/btn_radio"
+                android:title="Test 2" />
+            <item
+                android:id="@+id/favourites_item"
+                android:checkable="true"
+                android:icon="@android:drawable/btn_radio"
+                android:title="Test 3"/>
+        </menu>
+    </item>
+
+</menu>

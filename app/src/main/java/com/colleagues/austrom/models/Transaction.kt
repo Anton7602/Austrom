@@ -12,4 +12,5 @@ class Transaction(
     val transactionDate: Date? = null,
     val comment: String? = null)  {
 
+
 }
