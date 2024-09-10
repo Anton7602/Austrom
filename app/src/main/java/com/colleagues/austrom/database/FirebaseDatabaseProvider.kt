@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.User
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -61,6 +62,17 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
         }
     }
 
+    override fun writeNewBudget(budget: Budget) {
+        val reference = database.getReference("budgets")
+        val key = reference.push().key
+        if (key == null) {
+            Log.w("Debug", "Couldn't get push key for the budget")
+            return
+        }
+        reference.child(key).setValue(budget)
+        Log.w("Debug", "New budget added to DB with key: $key")
+    }
+
     override fun writeNewAsset(asset: Asset) {
         val reference = database.getReference("assets")
         val key = reference.push().key
@@ -79,6 +91,7 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
         }
         return assets
     }
+
 
     private fun getAssetsOfUserAsync(user: User) : MutableList<Asset>? {
         val reference = database.getReference("assets")

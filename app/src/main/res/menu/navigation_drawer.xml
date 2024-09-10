@@ -2,23 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/main_item"
-        android:title="Username">
+        android:title="Navigation">
         <menu>
             <item
-                android:id="@+id/inbox_item"
-                android:checkable="true"
+                android:id="@+id/nav_sharedBudget_mit"
+                android:checkable="false"
                 android:icon="@android:drawable/btn_radio"
-                android:title="Test 1" />
+                android:title="@string/shared_budget" />
             <item
-                android:id="@+id/outbox_item"
-                android:checkable="true"
+                android:id="@+id/nav_categories_mit"
+                android:checkable="false"
                 android:icon="@android:drawable/btn_radio"
-                android:title="Test 2" />
+                android:title="@string/categories" />
             <item
-                android:id="@+id/favourites_item"
-                android:checkable="true"
+                android:id="@+id/nav_settings_mit"
+                android:checkable="false"
                 android:icon="@android:drawable/btn_radio"
-                android:title="Test 3"/>
+                android:title="@string/settings"/>
         </menu>
     </item>
 

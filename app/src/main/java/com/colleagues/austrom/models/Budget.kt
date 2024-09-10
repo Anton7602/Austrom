@@ -4,4 +4,5 @@ class Budget(
     val budgetName: String? = null,
     val users: ArrayList<String>? = null) {
 
+
 }

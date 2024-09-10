@@ -19,4 +19,7 @@
     <string name="cash">Cash</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="shared_budget">Shared Budget</string>
+    <string name="categories">Categories</string>
+    <string name="settings">Settings</string>
 </resources>

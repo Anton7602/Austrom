@@ -17,9 +17,6 @@
             android:name=".NewAssetActivity"
             android:exported="false" />
         <activity
-            android:name=".BudgetControlActivity"
-            android:exported="false" />
-        <activity
             android:name=".PasswordRecoveryActivity"
             android:exported="false" />
         <activity
