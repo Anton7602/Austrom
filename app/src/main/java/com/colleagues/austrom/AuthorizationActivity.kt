@@ -22,8 +22,6 @@ class AuthorizationActivity : AppCompatActivity() {
     private lateinit var passwordTextBox : TextInputEditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_authorization)
