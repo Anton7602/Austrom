@@ -1,0 +1,79 @@
+package com.colleagues.austrom.dialogs
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.R
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.models.Asset
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
+import com.google.android.material.textfield.TextInputEditText
+
+class AssetCreationDialogFragment : BottomSheetDialogFragment() {
+    private lateinit var titleTextView: TextInputEditText
+    private lateinit var amountTextView: TextInputEditText
+    private lateinit var typeChipGroup: ChipGroup
+    private lateinit var currencyChipGroup: ChipGroup
+    private lateinit var createNewAssetButton: Button
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.dialog_fragment_asset_creation, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindViews(view)
+
+        createNewAssetButton.setOnClickListener {
+            val provider : IDatabaseProvider = FirebaseDatabaseProvider()
+            val assetType : Chip = view.findViewById(typeChipGroup.checkedChipId)
+            val currencyType : Chip = view.findViewById(currencyChipGroup.checkedChipId)
+            provider.writeNewAsset(
+                Asset(
+                assetType_id = getTypeID(assetType.text.toString()),
+                assetName = titleTextView.text.toString(),
+                user_id = (requireActivity().application as AustromApplication).appUser?.userID.toString(),
+                amount = amountTextView.text.toString().toDouble(),
+                currency_id = getCurrencyID(currencyType.text.toString()),
+                isPrivate = false
+            )
+            )
+            this.dismiss()
+        }
+    }
+
+    //REDO!!!!
+    private fun getCurrencyID(currencyName : String) : Int {
+        when(currencyName) {
+            "Euro" -> return 0
+            "Dollar" -> return 1
+            "Rouble" -> return 2
+        }
+        return 0
+    }
+
+    //REDO!!!!
+    private fun getTypeID(typeName : String) : Int {
+        when(typeName) {
+            "Card" -> return 0
+            "Cash" -> return 1
+            "Investment" -> return 2
+        }
+        return 0
+    }
+
+    private fun bindViews(view: View) {
+        titleTextView = view.findViewById(R.id.cadial_title_txt)
+        amountTextView = view.findViewById(R.id.cadial_amount_txt)
+        typeChipGroup = view.findViewById(R.id.cadial_assetType_chpgrp)
+        currencyChipGroup = view.findViewById(R.id.cadial_currency_chpgrp)
+        createNewAssetButton = view.findViewById(R.id.cadial_createAsset_btn)
+    }
+}

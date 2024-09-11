@@ -3,16 +3,19 @@
     <item
         android:id="@+id/navbar_balance_mit"
         android:enabled="true"
-        android:icon="@drawable/baseline_brightness_7_24"
+        android:checkable="false"
+        android:icon="@drawable/ic_navigation_balance_temp"
         android:title="@string/balance" />
     <item
         android:id="@+id/navbar_budget_mit"
         android:enabled="true"
-        android:icon="@drawable/baseline_brightness_7_24"
+        android:checkable="false"
+        android:icon="@drawable/ic_navigation_budget_temp"
         android:title="@string/budget" />
     <item
         android:id="@+id/navbar_ops_mit"
         android:enabled="true"
-        android:icon="@drawable/baseline_brightness_7_24"
+        android:checkable="false"
+        android:icon="@drawable/ic_navigation_ops_temp"
         android:title="@string/ops" />
 </menu>

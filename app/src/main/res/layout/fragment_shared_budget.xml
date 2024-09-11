@@ -23,6 +23,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:visibility="gone"
         app:cardBackgroundColor="@color/blue"
         app:cardCornerRadius="8dp"
         app:layout_constraintDimensionRatio="2:1"
@@ -58,13 +59,15 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shb_budgetInfo_crd">
 
         <Button
             android:id="@+id/shb_createNewBudget_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:backgroundTint="@color/blue"
             android:text="Create New Budget" />
 
         <Button
@@ -72,6 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:backgroundTint="@color/blue"
             android:text="Join Another Budget" />
 
         <Button
@@ -79,6 +83,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            android:backgroundTint="@color/decline_red"
+            android:enabled="false"
             android:text="Leave Budget" />
     </LinearLayout>
 

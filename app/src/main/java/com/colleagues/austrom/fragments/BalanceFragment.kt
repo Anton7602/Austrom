@@ -11,6 +11,7 @@ import com.colleagues.austrom.NewAssetActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.dialogs.AssetCreationDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
 
@@ -23,10 +24,10 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
 
         val provider : IDatabaseProvider = FirebaseDatabaseProvider()
         val activeAssets =
-            (activity?.application as AustromApplication).appUser?.let { provider.getAssetsOfUser(it, activity) }
+            (requireActivity().application as AustromApplication).appUser?.let { provider.getAssetsOfUser(it, activity) }
 
         addNewAssetButton.setOnClickListener {
-            startActivity(Intent(activity, NewAssetActivity::class.java))
+            AssetCreationDialogFragment().show(requireActivity().supportFragmentManager, "Asset Creation Dialog")
         }
     }
 
