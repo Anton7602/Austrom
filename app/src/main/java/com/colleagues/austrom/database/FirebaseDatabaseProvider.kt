@@ -17,6 +17,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class FirebaseDatabaseProvider : IDatabaseProvider{
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
@@ -125,5 +127,51 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
         }
         reference.child(key).setValue(transaction)
         Log.w("Debug", "New transaction added to DB with key: $key")
+    }
+
+    override fun getTransactionsOfUser(user: User, activity: FragmentActivity?): MutableList<Transaction>? {
+        var transactions : MutableList<Transaction>? = mutableListOf()
+        activity?.lifecycleScope?.launch {
+            transactions = getTransactionsOfUserAsync(user)
+        }
+        return transactions
+    }
+
+
+    private fun getTransactionsOfUserAsync(user: User) : MutableList<Transaction>? {
+        val reference = database.getReference("transactions")
+        val databaseQuery = reference.orderByChild("userID").equalTo(user.userID)
+        return runBlocking {
+            try {
+                val snapshot = databaseQuery.get().await()
+                val transactionsList = mutableListOf<Transaction>()
+                for (child in snapshot.children) {
+                    val transaction = child.getValue(Transaction::class.java)
+                    if (transaction!=null) {
+                        transaction.transactionId = child.key
+                        transaction.transactionDate = parseIntDateToDate(transaction.transactionDateInt)
+                        transactionsList.add(transaction)
+                    }
+                }
+                transactionsList.ifEmpty {
+                    null
+                }
+            }
+            catch (e: Exception) {
+                null
+            }
+        }
+    }
+
+    fun parseDateToIntDate(date: LocalDate) : Int {
+        return (date.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).toInt()
+    }
+
+    fun parseIntDateToDate(intDate: Int?) : LocalDate {
+        if (intDate==null || intDate.toString().length!=8) return LocalDate.now()
+        val year = intDate.toString().substring(0,4).toInt()
+        val month = intDate.toString().substring(4,6).toInt()
+        val day = intDate.toString().substring(6).toInt()
+        return LocalDate.of(year, month, day)
     }
 }

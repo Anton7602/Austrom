@@ -45,7 +45,7 @@ class AssetSelectionDialogFragment(
             emptyAssetsText.visibility = View.VISIBLE
         }
         assetsRecyclerView.layoutManager = LinearLayoutManager(activity)
-        assetsRecyclerView.adapter = AssetRecyclerAdapter((requireActivity().application as AustromApplication).activeAssets)
+        assetsRecyclerView.adapter = AssetRecyclerAdapter((requireActivity().application as AustromApplication).activeAssets, 0)
         val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity()).setView(view)
         val assetSelectionDialog = adb.create()
         if (assetSelectionDialog != null && assetSelectionDialog.window != null) {
@@ -54,7 +54,9 @@ class AssetSelectionDialogFragment(
 
         acceptButton.setOnClickListener {
             if (parentDialog!=null) {
-                parentDialog!!.receiveAssetSelection((requireActivity().application as AustromApplication).activeAssets[0])
+                parentDialog!!.receiveAssetSelection((requireActivity().application as AustromApplication)
+                    .activeAssets[(assetsRecyclerView.adapter as AssetRecyclerAdapter).selectedItemPosition])
+
             }
             dismiss()
         }

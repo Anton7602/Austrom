@@ -51,9 +51,10 @@ class TransactionCreationDialogFragment : BottomSheetDialogFragment() {
         }
 
         submitButton.setOnClickListener {
-            val provider : IDatabaseProvider = FirebaseDatabaseProvider()
+            val provider = FirebaseDatabaseProvider()
             val categoryChip : Chip = view.findViewById(categoryChips.checkedChipId)
             val dateChip : Chip = view.findViewById(dateChips.checkedChipId)
+            val dateInt = provider.parseDateToIntDate(dateChip.tag as LocalDate)
             provider.writeNewTransaction(Transaction(
                 userID = (requireActivity().application as AustromApplication).appUser?.userID,
                 sourceID = selectedAsset?.assetID,
@@ -61,8 +62,10 @@ class TransactionCreationDialogFragment : BottomSheetDialogFragment() {
                 targetID = null,
                 targetName = selectedTarget,
                 amount = sumText.text.toString().toDouble(),
+                currency = selectedAsset?.currency_id.toString(),
                 categoryID = categoryChip.text.toString(),
-                transactionDate = (dateChip.tag as LocalDate),
+                transactionDate = null,
+                transactionDateInt = dateInt,
                 comment = null
             ))
             dismiss()

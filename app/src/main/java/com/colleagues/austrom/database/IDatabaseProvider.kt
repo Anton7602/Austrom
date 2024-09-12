@@ -17,4 +17,5 @@ interface IDatabaseProvider {
     fun writeNewBudget(budget: Budget)
 
     fun writeNewTransaction(transaction: Transaction)
+    fun getTransactionsOfUser(user: User, activity: FragmentActivity? = null) : MutableList<Transaction>?
 }
