@@ -1,6 +1,7 @@
 package com.colleagues.austrom
 
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.SystemBarStyle
@@ -9,6 +10,7 @@ import androidx.annotation.InspectableProperty
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -31,6 +33,7 @@ import com.google.firebase.database.collection.LLRBNode.Color
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout : DrawerLayout
     private lateinit var toolbar : Toolbar
+    private lateinit var navigationHeaderLayout : ConstraintLayout
     private lateinit var navigationView : NavigationView
     private lateinit var navigationUserNameTextView : TextView
     private lateinit var bottomNavigationBar: NavigationBarView
@@ -38,18 +41,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
+        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        bindViews()
+        setSupportActionBar(toolbar)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_drawerLayout_dly)) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                leftMargin = insets.left; bottomMargin = insets.bottom; rightMargin = insets.right; topMargin = insets.top
-            }
+            //v.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = insets.bottom }
+            //toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
+            toolbar.setPadding(0, insets.top, 0,0)
+            navigationHeaderLayout.setPadding(0, insets.top, 0,0)
+            bottomNavigationBar.setPadding(0,0,0,insets.bottom)
+
 //          v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
             WindowInsetsCompat.CONSUMED
         }
-        bindViews()
-        setSupportActionBar(toolbar)
         navigationUserNameTextView.text = (application as AustromApplication).appUser?.username
 
 
@@ -95,5 +101,6 @@ class MainActivity : AppCompatActivity() {
         fragmentHolder = findViewById(R.id.main_fragmentHolder_frg)
         val navigationHeader = navigationView.getHeaderView(0)
         navigationUserNameTextView = navigationHeader.findViewById(R.id.nav_username_txt)
+        navigationHeaderLayout = navigationHeader.findViewById(R.id.nav_navHeader_cly)
     }
 }

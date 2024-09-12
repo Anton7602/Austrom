@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.MainActivity
-import com.colleagues.austrom.NewAssetActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
@@ -21,10 +20,6 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-
-        val provider : IDatabaseProvider = FirebaseDatabaseProvider()
-        val activeAssets =
-            (requireActivity().application as AustromApplication).appUser?.let { provider.getAssetsOfUser(it, activity) }
 
         addNewAssetButton.setOnClickListener {
             AssetCreationDialogFragment().show(requireActivity().supportFragmentManager, "Asset Creation Dialog")

@@ -23,7 +23,7 @@
             android:layout_height="match_parent">
 
             <EditText
-                android:id="@+id/editTextNumberDecimal"
+                android:id="@+id/ctdial_sum_txt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -31,6 +31,7 @@
                 android:layout_marginEnd="8dp"
                 android:autofillHints="Expense"
                 android:ems="10"
+                android:hint="0,00"
                 android:inputType="numberDecimal"
                 android:textAlignment="center"
                 android:textSize="36sp"
@@ -40,24 +41,28 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <HorizontalScrollView
-                android:id="@+id/horizontalScrollView"
+                android:id="@+id/ctdial_categoriesScroll_hsv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:scrollbarAlwaysDrawHorizontalTrack="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextNumberDecimal">
+                app:layout_constraintTop_toBottomOf="@+id/ctdial_sum_txt">
 
 
                 <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroup2"
+                    android:id="@+id/ctdial_categoriesChips_cgr"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
                     app:singleLine="true"
+                    app:selectionRequired="true"
                     app:singleSelection="true">
 
-                    <com.google.android.material.chip.Chip
+                    <!--<com.google.android.material.chip.Chip
                         android:id="@+id/chip2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -83,12 +88,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Entertainment"
-                        app:chipIcon="@drawable/ic_category_entertainment_temp" />
+                        app:chipIcon="@drawable/ic_category_entertainment_temp" />-->
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView6"
+                android:id="@+id/ctdial_cardFrom_crv"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -97,13 +102,21 @@
                 app:cardBackgroundColor="@color/grey"
                 app:cardCornerRadius="8dp"
                 app:layout_constraintDimensionRatio="h,2:1"
-                app:layout_constraintEnd_toStartOf="@+id/cardView7"
+                app:layout_constraintEnd_toStartOf="@+id/ctdial_cardTo_crv"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
+                app:layout_constraintTop_toBottomOf="@+id/ctdial_categoriesScroll_hsv" >
+
+                <TextView
+                    android:id="@+id/ctdial_fromName_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="TextView"
+                    android:textAlignment="center" />
+            </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView7"
+                android:id="@+id/ctdial_cardTo_crv"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="24dp"
@@ -113,34 +126,47 @@
                 app:layout_constraintDimensionRatio="w,1:2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/cardView6"
-                app:layout_constraintTop_toTopOf="@+id/cardView6" />
+                app:layout_constraintStart_toEndOf="@+id/ctdial_cardFrom_crv"
+                app:layout_constraintTop_toTopOf="@+id/ctdial_cardFrom_crv" >
+
+                <TextView
+                    android:id="@+id/ctdial_toName_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="TextView"
+                    android:textAlignment="center" />
+            </androidx.cardview.widget.CardView>
 
             <HorizontalScrollView
-                android:id="@+id/horizontalScrollViewDate"
+                android:id="@+id/ctdial_datesScroll_hsv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layoutDirection="ltr"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layoutDirection="rtl"
                 android:scrollbarAlwaysDrawHorizontalTrack="false"
-                app:layout_constraintEnd_toStartOf="@+id/imageButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView6">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ctdial_openCalendar_btn"
+                app:layout_constraintTop_toBottomOf="@+id/ctdial_cardFrom_crv">
 
                 <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroup"
+                    android:id="@+id/ctdial_datesChips_cgr"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
                     android:layoutDirection="rtl"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/imageButton"
-                    app:layout_constraintTop_toBottomOf="@+id/cardView6"
+                    app:layout_constraintStart_toEndOf="@+id/ctdial_openCalendar_btn"
+                    app:layout_constraintTop_toBottomOf="@+id/ctdial_cardFrom_crv"
+                    app:selectionRequired="true"
                     app:singleLine="true"
                     app:singleSelection="true">
 
-                    <com.google.android.material.chip.Chip
+                    <!--<com.google.android.material.chip.Chip
                         android:id="@+id/chip4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -156,24 +182,34 @@
                         android:id="@+id/chip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Wednesday 11.09" />
+                        android:text="Wednesday 11.09" />-->
 
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/ctdial_openCalendar_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:background="@color/transparent"
-                android:src="@drawable/ic_placeholder_icon"
-                app:layout_constraintBottom_toBottomOf="@+id/horizontalScrollViewDate"
+                android:src="@drawable/ic_navigation_calendar_temp"
+                app:layout_constraintBottom_toBottomOf="@+id/ctdial_datesScroll_hsv"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/horizontalScrollViewDate" />
+                app:layout_constraintTop_toTopOf="@+id/ctdial_datesScroll_hsv" />
+
+            <ImageView
+                android:id="@+id/ctdial_transferIcon_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_navigation_transferdirection_temp"
+                app:layout_constraintBottom_toBottomOf="@+id/ctdial_cardTo_crv"
+                app:layout_constraintEnd_toStartOf="@+id/ctdial_cardTo_crv"
+                app:layout_constraintStart_toEndOf="@+id/ctdial_cardFrom_crv"
+                app:layout_constraintTop_toTopOf="@+id/ctdial_cardTo_crv" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/ctdial_submit_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -181,22 +217,12 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="24dp"
                 android:backgroundTint="@color/blue"
-                android:text="Submit"
+                android:text="@string/submit"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollViewDate" />
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_navigation_ops_temp"
-                app:layout_constraintBottom_toBottomOf="@+id/cardView7"
-                app:layout_constraintEnd_toStartOf="@+id/cardView7"
-                app:layout_constraintStart_toEndOf="@+id/cardView6"
-                app:layout_constraintTop_toTopOf="@+id/cardView7" />
+                app:layout_constraintTop_toBottomOf="@+id/ctdial_datesScroll_hsv" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

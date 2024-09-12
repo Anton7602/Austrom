@@ -38,6 +38,10 @@ class AuthorizationActivity : AppCompatActivity() {
                 Toast.makeText(this, "Username or password is incorrect", Toast.LENGTH_LONG).show()
             } else {
                 (this.application as AustromApplication).appUser = existingUser
+                val userAssets = dbProvider.getAssetsOfUser(existingUser, this)
+                if (userAssets!=null && userAssets.size>0) {
+                    (this.application as AustromApplication).activeAssets = userAssets
+                }
                 startActivity(Intent(this, MainActivity::class.java))
             }
         }

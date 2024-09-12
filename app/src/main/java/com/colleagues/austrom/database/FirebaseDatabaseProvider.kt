@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
+import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.User
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -85,7 +86,7 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
     }
 
     override fun getAssetsOfUser(user: User, activity: FragmentActivity?): MutableList<Asset>? {
-        var assets : MutableList<Asset>? = ArrayList()
+        var assets : MutableList<Asset>? = mutableListOf()
         activity?.lifecycleScope?.launch {
             assets = getAssetsOfUserAsync(user)
         }
@@ -102,6 +103,7 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
                 val assetsList = mutableListOf<Asset>()
                 for (child in snapshot.children) {
                     val asset = child.getValue(Asset::class.java)
+                    asset?.assetID = child.key
                     asset?.let { assetsList.add(it) }
                 }
                 assetsList.ifEmpty {
@@ -112,5 +114,16 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
                 null
             }
         }
+    }
+
+    override fun writeNewTransaction(transaction: Transaction) {
+        val reference = database.getReference("transactions")
+        val key = reference.push().key
+        if (key == null) {
+            Log.w("Debug", "Couldn't get push key for the transaction")
+            return
+        }
+        reference.child(key).setValue(transaction)
+        Log.w("Debug", "New transaction added to DB with key: $key")
     }
 }

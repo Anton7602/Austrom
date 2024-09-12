@@ -13,7 +13,6 @@ import com.colleagues.austrom.models.Budget
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 
-
 class BudgetCreationDialogFragment : BottomSheetDialogFragment() {
     private lateinit var submitNewBudget: Button
     private lateinit var budgetNameTextView: TextInputEditText
@@ -21,6 +20,7 @@ class BudgetCreationDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        budgetNameTextView.requestFocus()
 
         submitNewBudget.setOnClickListener {
             val provider : IDatabaseProvider = FirebaseDatabaseProvider()

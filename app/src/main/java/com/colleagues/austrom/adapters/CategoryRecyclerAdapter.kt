@@ -31,6 +31,4 @@ class CategoryRecyclerAdapter(private val categories: List<Category>) : Recycler
         holder.categoryName.text = categories[position].name
         holder.categoryImage.setImageResource(categories[position].imgReference ?: R.drawable.ic_placeholder_icon)
     }
-
-
 }

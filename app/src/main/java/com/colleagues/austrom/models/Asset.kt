@@ -3,6 +3,7 @@ package com.colleagues.austrom.models
 import android.icu.util.Currency
 
 class Asset(
+    var assetID: String? = null,
     val assetType_id: Int = 0,
     val user_id: String = "",
     val assetName: String = "",

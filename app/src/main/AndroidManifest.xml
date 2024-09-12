@@ -12,10 +12,7 @@
         android:roundIcon="@mipmap/placeholder_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Austrom"
-        tools:targetApi="31">
-        <activity
-            android:name=".NewAssetActivity"
-            android:exported="false" />
+        tools:targetApi="34">
         <activity
             android:name=".PasswordRecoveryActivity"
             android:exported="false" />
