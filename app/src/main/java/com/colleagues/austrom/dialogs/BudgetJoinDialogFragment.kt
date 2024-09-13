@@ -5,39 +5,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
-import com.colleagues.austrom.models.Budget
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 
-class BudgetCreationDialogFragment : BottomSheetDialogFragment() {
-    private lateinit var submitNewBudget: Button
-    private lateinit var budgetNameTextView: TextInputEditText
+class BudgetJoinDialogFragment : BottomSheetDialogFragment() {
+    private lateinit var joinNewBudget: Button
+    private lateinit var inviteCodeTextView: TextInputEditText
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        budgetNameTextView.requestFocus()
+        inviteCodeTextView.requestFocus()
 
-        submitNewBudget.setOnClickListener {
+        joinNewBudget.setOnClickListener {
             val provider : IDatabaseProvider = FirebaseDatabaseProvider()
-            provider.writeNewBudget(Budget(
-                budgetName =  budgetNameTextView.text.toString(),
-                users =  arrayListOf((requireActivity().application as AustromApplication).appUser?.userId.toString())
-            ))
             this.dismiss()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_fragment_budget_creation, container, false)
+        return inflater.inflate(R.layout.dialog_fragment_budget_join, container, false)
     }
 
     private fun bindViews(view: View) {
-        submitNewBudget = view.findViewById(R.id.bcdial_submit_btn)
-        budgetNameTextView = view.findViewById(R.id.bcdial_budgetName_txt)
+        joinNewBudget = view.findViewById(R.id.bjdial_submit_btn)
+        inviteCodeTextView = view.findViewById(R.id.bjdial_InvitationCode_txt)
     }
 }

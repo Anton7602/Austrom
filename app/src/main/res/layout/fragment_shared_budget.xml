@@ -23,9 +23,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:visibility="gone"
-        app:cardBackgroundColor="@color/blue"
-        app:cardCornerRadius="8dp"
+        app:cardBackgroundColor="@color/navigationBarColor"
+        app:cardCornerRadius="20dp"
         app:layout_constraintDimensionRatio="2:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,16 +36,36 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/shb_budgetNameHint_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Your budget is:"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
                 android:id="@+id/shb_budgetName_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textSize="20sp"
+                android:layout_marginTop="8dp"
+                android:text="budgetName"
+                android:textSize="34sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shb_budgetNameHint_txt" />
+
+            <TextView
+                android:id="@+id/shb_invitationCode_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="invitationCode"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.71"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -59,24 +78,7 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shb_budgetInfo_crd">
-
-        <Button
-            android:id="@+id/shb_createNewBudget_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:backgroundTint="@color/blue"
-            android:text="Create New Budget" />
-
-        <Button
-            android:id="@+id/shb_JoinBudget_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:backgroundTint="@color/blue"
-            android:text="Join Another Budget" />
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/shb_leaveBudget_btn"
@@ -85,7 +87,7 @@
             android:layout_margin="4dp"
             android:backgroundTint="@color/decline_red"
             android:enabled="false"
-            android:text="Leave Budget" />
+            android:text="Leave" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

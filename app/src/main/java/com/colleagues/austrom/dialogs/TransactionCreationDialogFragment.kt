@@ -12,8 +12,8 @@ import androidx.core.content.ContextCompat
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
@@ -56,13 +56,13 @@ class TransactionCreationDialogFragment : BottomSheetDialogFragment() {
             val dateChip : Chip = view.findViewById(dateChips.checkedChipId)
             val dateInt = provider.parseDateToIntDate(dateChip.tag as LocalDate)
             provider.writeNewTransaction(Transaction(
-                userID = (requireActivity().application as AustromApplication).appUser?.userID,
-                sourceID = selectedAsset?.assetID,
+                userID = (requireActivity().application as AustromApplication).appUser?.userId,
+                sourceID = selectedAsset?.assetId,
                 sourceName = selectedAsset?.assetName,
                 targetID = null,
                 targetName = selectedTarget,
                 amount = sumText.text.toString().toDouble(),
-                currency = selectedAsset?.currency_id.toString(),
+                currency = selectedAsset?.currencyId.toString(),
                 categoryID = categoryChip.text.toString(),
                 transactionDate = null,
                 transactionDateInt = dateInt,
@@ -88,7 +88,7 @@ class TransactionCreationDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun setUpCategoriesInChips() {
-        val categories = (requireActivity().application as AustromApplication).defaultCategories
+        val categories = Category.defaultCategories
         for (category in categories) {
             val chip = Chip(requireActivity())
             chip.text = category.name

@@ -31,7 +31,7 @@ class AssetRecyclerAdapter(private val assets: List<Asset>, var selectedItemPosi
 
     override fun onBindViewHolder(holder: AssetViewHolder, position: Int) {
         holder.assetName.text = assets[position].assetName
-        holder.assetType.text = assets[position].assetType_id.toString()
+        holder.assetType.text = assets[position].assetTypeId.toString()
         holder.assetAmount.text = assets[position].amount.toString()
         if (position == selectedItemPosition) {
             selectedHolder = holder

@@ -1,14 +1,18 @@
 package com.colleagues.austrom.models
 
-import android.icu.util.Currency
-
 class Asset(
-    var assetID: String? = null,
-    val assetType_id: Int = 0,
-    val user_id: String = "",
+    var assetId: String? = null,
+    val assetTypeId: Int = 0,
+    val userId: String? = null,
     val assetName: String = "",
     val amount: Double = 0.0,
-    val currency_id: Int = 0,
+    val currencyId: String? = null,
     val isPrivate: Boolean = false) {
+
+    companion object {
+        val defaultAssetTypes = listOf<String>(
+            "Card", "Cash", "Investment"
+        )
+    }
 
 }

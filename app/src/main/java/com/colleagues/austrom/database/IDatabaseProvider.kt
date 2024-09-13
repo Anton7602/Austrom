@@ -1,6 +1,5 @@
 package com.colleagues.austrom.database
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
@@ -15,6 +14,7 @@ interface IDatabaseProvider {
     fun getAssetsOfUser(user: User, activity: FragmentActivity? = null) : MutableList<Asset>?
 
     fun writeNewBudget(budget: Budget)
+    fun getBudgetById(budgetId: String, activity: FragmentActivity? = null) : Budget?
 
     fun writeNewTransaction(transaction: Transaction)
     fun getTransactionsOfUser(user: User, activity: FragmentActivity? = null) : MutableList<Transaction>?

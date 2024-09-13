@@ -12,8 +12,8 @@ import com.colleagues.austrom.models.Category
 class CategoryRecyclerAdapter(private val categories: List<Category>) : RecyclerView.Adapter<CategoryRecyclerAdapter.CategoryViewHolder>() {
 
     class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val categoryName = itemView.findViewById<TextView>(R.id.itcat_categoryName_txt)
-        val categoryImage = itemView.findViewById<ImageView>(R.id.itcat_categoruIcon_img)
+        val categoryName: TextView = itemView.findViewById(R.id.itcat_categoryName_txt)
+        val categoryImage: ImageView = itemView.findViewById(R.id.itcat_categoruIcon_img)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {

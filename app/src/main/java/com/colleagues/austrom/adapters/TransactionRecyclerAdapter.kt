@@ -13,12 +13,12 @@ import java.time.format.DateTimeFormatter
 
 class TransactionRecyclerAdapter(private val transactions: List<Transaction>) : RecyclerView.Adapter<TransactionRecyclerAdapter.TransactionViewHolder>() {
     class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val categoryName = itemView.findViewById<TextView>(R.id.tritem_categoryName_txt)
-        val categoryImage = itemView.findViewById<ImageView>(R.id.tritem_categoryIcon_img)
-        val transactionDate = itemView.findViewById<TextView>(R.id.tritem_date_txt)
-        val amount = itemView.findViewById<TextView>(R.id.tritem_amount_txt)
-        val sourceName = itemView.findViewById<TextView>(R.id.tritem_sourceName_txt)
-        val targetName = itemView.findViewById<TextView>(R.id.tritem_targetName_txt)
+        val categoryName: TextView = itemView.findViewById(R.id.tritem_categoryName_txt)
+        val categoryImage: ImageView = itemView.findViewById(R.id.tritem_categoryIcon_img)
+        val transactionDate: TextView = itemView.findViewById(R.id.tritem_date_txt)
+        val amount: TextView = itemView.findViewById(R.id.tritem_amount_txt)
+        val sourceName: TextView = itemView.findViewById(R.id.tritem_sourceName_txt)
+        val targetName: TextView = itemView.findViewById(R.id.tritem_targetName_txt)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {

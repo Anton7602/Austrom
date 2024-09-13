@@ -1,7 +1,6 @@
 package com.colleagues.austrom.dialogs
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,11 +36,11 @@ class AssetCreationDialogFragment : BottomSheetDialogFragment() {
             val currencyType : Chip = view.findViewById(currencyChipGroup.checkedChipId)
             provider.writeNewAsset(
                 Asset(
-                assetType_id = getTypeID(assetType.text.toString()),
+                assetTypeId = getTypeID(assetType.text.toString()),
                 assetName = titleTextView.text.toString(),
-                user_id = (requireActivity().application as AustromApplication).appUser?.userID.toString(),
+                userId = (requireActivity().application as AustromApplication).appUser?.userId.toString(),
                 amount = amountTextView.text.toString().toDouble(),
-                currency_id = getCurrencyID(currencyType.text.toString()),
+                currencyId = currencyType.text.toString(),
                 isPrivate = false
             )
             )
@@ -49,15 +48,6 @@ class AssetCreationDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    //REDO!!!!
-    private fun getCurrencyID(currencyName : String) : Int {
-        when(currencyName) {
-            "Euro" -> return 0
-            "Dollar" -> return 1
-            "Rouble" -> return 2
-        }
-        return 0
-    }
 
     //REDO!!!!
     private fun getTypeID(typeName : String) : Int {

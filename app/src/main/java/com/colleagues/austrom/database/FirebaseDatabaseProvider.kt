@@ -1,7 +1,6 @@
 package com.colleagues.austrom.database
 
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.colleagues.austrom.models.Asset
@@ -9,11 +8,6 @@ import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.User
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
@@ -48,14 +42,8 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()
-                val userList = mutableListOf<User>()
-                for (child in snapshot.children) {
-                    val user = child.getValue(User::class.java)
-                    user?.userID = child.key
-                    user?.let { userList.add(it) }
-                }
-                if (userList.isNotEmpty()) {
-                    userList[0]
+                if (snapshot.childrenCount>0) {
+                    snapshot.children.elementAt(0).getValue(User::class.java)
                 } else {
                     null
                 }
@@ -74,6 +62,31 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
         }
         reference.child(key).setValue(budget)
         Log.w("Debug", "New budget added to DB with key: $key")
+    }
+
+    override fun getBudgetById(budgetId: String, activity: FragmentActivity?) : Budget? {
+        var budget : Budget? = null
+        activity?.lifecycleScope?.launch {
+            budget = getBudgetByIdAsync(budgetId)
+        }
+        return budget
+    }
+
+    private fun getBudgetByIdAsync(budgetId: String) : Budget? {
+        val reference = database.getReference("budgets")
+        val databaseQuery = reference.child(budgetId)
+        return runBlocking {
+            try {
+                val snapshot = databaseQuery.get().await()
+                if (snapshot.childrenCount>0) {
+                    snapshot.children.elementAt(0).getValue(Budget::class.java)
+                } else {
+                    null
+                }
+            } catch (e: Exception) {
+                null
+            }
+        }
     }
 
     override fun writeNewAsset(asset: Asset) {
@@ -98,14 +111,14 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
 
     private fun getAssetsOfUserAsync(user: User) : MutableList<Asset>? {
         val reference = database.getReference("assets")
-        val databaseQuery = reference.orderByChild("user_id").equalTo(user.userID)
+        val databaseQuery = reference.orderByChild("user_id").equalTo(user.userId)
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()
                 val assetsList = mutableListOf<Asset>()
                 for (child in snapshot.children) {
                     val asset = child.getValue(Asset::class.java)
-                    asset?.assetID = child.key
+                    asset?.assetId = child.key
                     asset?.let { assetsList.add(it) }
                 }
                 assetsList.ifEmpty {
@@ -140,7 +153,7 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
 
     private fun getTransactionsOfUserAsync(user: User) : MutableList<Transaction>? {
         val reference = database.getReference("transactions")
-        val databaseQuery = reference.orderByChild("userID").equalTo(user.userID)
+        val databaseQuery = reference.orderByChild("userID").equalTo(user.userId)
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()

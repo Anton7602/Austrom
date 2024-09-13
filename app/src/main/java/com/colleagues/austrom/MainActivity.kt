@@ -20,11 +20,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentTransaction
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.fragments.BudgetFragment
 import com.colleagues.austrom.fragments.CategoriesFragment
 import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.fragments.SettingsFragment
+import com.colleagues.austrom.fragments.SharedBudgetEmptyFragment
 import com.colleagues.austrom.fragments.SharedBudgetFragment
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
@@ -66,7 +69,15 @@ class MainActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { item ->
             var status = true
             when(item.itemId) {
-                R.id.nav_sharedBudget_mit ->  switchFragment(SharedBudgetFragment())
+                R.id.nav_sharedBudget_mit -> {
+                    val activeBudgetId = (application as AustromApplication).appUser?.activeBudgetId
+                    if (activeBudgetId!=null) {
+                        val provider: IDatabaseProvider = FirebaseDatabaseProvider()
+                        switchFragment(SharedBudgetFragment(provider.getBudgetById(activeBudgetId)!!))
+                    } else {
+                        switchFragment(SharedBudgetEmptyFragment())
+                    }
+                }
                 R.id.nav_categories_mit ->  switchFragment(CategoriesFragment())
                 R.id.nav_settings_mit ->  switchFragment(SettingsFragment())
                 else -> status = false
