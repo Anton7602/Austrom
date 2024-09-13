@@ -32,13 +32,13 @@ class AuthorizationActivity : AppCompatActivity() {
         }
         bindViews()
         logInButton.setOnClickListener{
-            val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider()
-            val existingUser = dbProvider.getUserByUsername(loginTextBox.text.toString(), this)
+            val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
+            val existingUser = dbProvider.getUserByUsername(loginTextBox.text.toString())
             if (existingUser == null || existingUser.password!=passwordTextBox.text.toString()) {
                 Toast.makeText(this, "Username or password is incorrect", Toast.LENGTH_LONG).show()
             } else {
                 (this.application as AustromApplication).appUser = existingUser
-                val userAssets = dbProvider.getAssetsOfUser(existingUser, this)
+                val userAssets = dbProvider.getAssetsOfUser(existingUser)
                 if (userAssets!=null && userAssets.size>0) {
                     (this.application as AustromApplication).activeAssets = userAssets
                 }

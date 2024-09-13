@@ -1,8 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Austrom" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:navigationBarColor">@color/navigationBarColor</item>
-        <item name="android:statusBarColor">@color/grey</item>
+    <style name="Base.Theme.Austrom" parent="Theme.Material3.Light.NoActionBar">
+
     </style>
 
 

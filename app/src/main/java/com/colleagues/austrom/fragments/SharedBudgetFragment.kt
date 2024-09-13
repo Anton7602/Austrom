@@ -5,7 +5,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.dialogs.BudgetCreationDialogFragment
 import com.colleagues.austrom.models.Budget
 
@@ -22,7 +25,11 @@ class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout
         budgetInviteCode.text = activeBudget.budgetId
 
         leaveButton.setOnClickListener {
-
+            val provider: IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+            val user = (requireActivity().application as AustromApplication).appUser
+            if (user != null) {
+                provider.removeUserFromBudget(activeBudget, user)
+            }
         }
     }
 

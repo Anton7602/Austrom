@@ -23,11 +23,15 @@ class BudgetCreationDialogFragment : BottomSheetDialogFragment() {
         budgetNameTextView.requestFocus()
 
         submitNewBudget.setOnClickListener {
-            val provider : IDatabaseProvider = FirebaseDatabaseProvider()
-            provider.writeNewBudget(Budget(
-                budgetName =  budgetNameTextView.text.toString(),
-                users =  arrayListOf((requireActivity().application as AustromApplication).appUser?.userId.toString())
-            ))
+            val budgetCreator = (requireActivity().application as AustromApplication).appUser
+            if (budgetCreator!=null) {
+                val provider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+                val newBudget = Budget(
+                    budgetName =  budgetNameTextView.text.toString(),
+                    users =  arrayListOf(budgetCreator.userId.toString())
+                )
+                provider.createNewBudget(newBudget, budgetCreator)
+            }
             this.dismiss()
         }
     }

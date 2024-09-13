@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
@@ -21,7 +22,12 @@ class BudgetJoinDialogFragment : BottomSheetDialogFragment() {
         inviteCodeTextView.requestFocus()
 
         joinNewBudget.setOnClickListener {
-            val provider : IDatabaseProvider = FirebaseDatabaseProvider()
+            val provider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+            val budget = provider.getBudgetById(inviteCodeTextView.text.toString())
+            val user = (requireActivity().application as AustromApplication).appUser
+            if (budget!=null && user!=null) {
+                provider.addUserToBudget(budget, user)
+            }
             this.dismiss()
         }
     }

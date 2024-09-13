@@ -31,10 +31,10 @@ class AssetCreationDialogFragment : BottomSheetDialogFragment() {
         bindViews(view)
 
         createNewAssetButton.setOnClickListener {
-            val provider : IDatabaseProvider = FirebaseDatabaseProvider()
+            val provider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
             val assetType : Chip = view.findViewById(typeChipGroup.checkedChipId)
             val currencyType : Chip = view.findViewById(currencyChipGroup.checkedChipId)
-            provider.writeNewAsset(
+            provider.createNewAsset(
                 Asset(
                 assetTypeId = getTypeID(assetType.text.toString()),
                 assetName = titleTextView.text.toString(),

@@ -31,7 +31,7 @@ class SignUpActivity : AppCompatActivity() {
         bindViews()
 
         signUpButton.setOnClickListener{
-            if (passwordTextBox.text.toString().length<1 || loginTextBox.text.toString().length<1) {
+            if (passwordTextBox.text.toString().isEmpty() || loginTextBox.text.toString().isEmpty()) {
                 Toast.makeText(this, "Login and Password cannot be empty", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
@@ -39,10 +39,10 @@ class SignUpActivity : AppCompatActivity() {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            val provider : IDatabaseProvider = FirebaseDatabaseProvider()
-            val existingUser = provider.getUserByUsername(loginTextBox.text.toString(), this)
+            val provider : IDatabaseProvider = FirebaseDatabaseProvider(this)
+            val existingUser = provider.getUserByUsername(loginTextBox.text.toString())
             if (existingUser == null) {
-                provider.writeNewUser(User(loginTextBox.text.toString(), emailTextBox.text.toString(), passwordTextBox.text.toString()))
+                provider.createNewUser(User(loginTextBox.text.toString(), emailTextBox.text.toString(), passwordTextBox.text.toString()))
                 Toast.makeText(this, "User successfully added", Toast.LENGTH_LONG).show()
                 this.finish()
             } else {

@@ -1,11 +1,9 @@
 package com.colleagues.austrom.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.Fragment
 import com.colleagues.austrom.R
 import com.colleagues.austrom.dialogs.BudgetCreationDialogFragment
 import com.colleagues.austrom.dialogs.BudgetJoinDialogFragment
@@ -31,5 +29,4 @@ class SharedBudgetEmptyFragment : Fragment(R.layout.fragment_shared_budget_empty
         createNewBudgetButton = view.findViewById(R.id.shbe_createBudget_btn)
         joinNewBudgetButton = view.findViewById(R.id.shbe_joinBudget_btn)
     }
-
 }

@@ -23,8 +23,8 @@ class OpsFragment : Fragment(R.layout.fragment_ops) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
 
-        val provider : IDatabaseProvider = FirebaseDatabaseProvider()
-        val transactionList = (requireActivity().application as AustromApplication).appUser?.let { provider.getTransactionsOfUser(it, requireActivity()) }
+        val provider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+        val transactionList = (requireActivity().application as AustromApplication).appUser?.let { provider.getTransactionsOfUser(it) }
         if (transactionList!=null) {
             transactionHolder.layoutManager = LinearLayoutManager(activity)
             transactionHolder.adapter = TransactionRecyclerAdapter(transactionList.toList())

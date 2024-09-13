@@ -14,10 +14,10 @@ import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class FirebaseDatabaseProvider : IDatabaseProvider{
+class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDatabaseProvider{
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
-    override fun writeNewUser(user: User) {
+    override fun createNewUser(user: User) {
         val reference = database.getReference("users")
         val key = reference.push().key
         if (key == null) {
@@ -28,9 +28,34 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
         Log.w("Debug", "New user added to DB with key: $key")
     }
 
-    override fun getUserByUsername(username: String, activity: FragmentActivity?) : User? {
+    override fun getUserByUserId(userId: String) : User? {
         var user : User? = null
-        activity?.lifecycleScope?.launch {
+        activity.lifecycleScope.launch {
+            user = getUserByUserIdAsync(userId)
+        }
+        return user
+    }
+
+    private suspend fun getUserByUserIdAsync(userId: String) : User? {
+        val reference = database.getReference("users")
+        val databaseQuery = reference.child(userId)
+        return runBlocking {
+            try {
+                val snapshot = databaseQuery.get().await()
+                val user = snapshot.getValue(User::class.java)
+                if (user !=null) {
+                    user.userId = snapshot.key
+                }
+                user
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
+    override fun getUserByUsername(username: String) : User? {
+        var user : User? = null
+        activity.lifecycleScope.launch {
             user = getUserByUsernameAsync(username)
         }
         return user
@@ -43,7 +68,11 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
             try {
                 val snapshot = databaseQuery.get().await()
                 if (snapshot.childrenCount>0) {
-                    snapshot.children.elementAt(0).getValue(User::class.java)
+                    val user = snapshot.children.elementAt(0).getValue(User::class.java)
+                    if (user != null) {
+                        user.userId = snapshot.children.elementAt(0).key
+                    }
+                    user
                 } else {
                     null
                 }
@@ -53,8 +82,9 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
         }
     }
 
-    override fun writeNewBudget(budget: Budget) {
-        val reference = database.getReference("budgets")
+    override fun createNewBudget(budget: Budget, budgetCreator: User) {
+        if (budgetCreator.userId==null) return
+        var reference = database.getReference("budgets")
         val key = reference.push().key
         if (key == null) {
             Log.w("Debug", "Couldn't get push key for the budget")
@@ -62,11 +92,13 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
         }
         reference.child(key).setValue(budget)
         Log.w("Debug", "New budget added to DB with key: $key")
+        reference = database.getReference("users")
+        reference.child(budgetCreator.userId!!).child("activeBudgetId").setValue(key)
     }
 
-    override fun getBudgetById(budgetId: String, activity: FragmentActivity?) : Budget? {
+    override fun getBudgetById(budgetId: String) : Budget? {
         var budget : Budget? = null
-        activity?.lifecycleScope?.launch {
+        activity.lifecycleScope.launch {
             budget = getBudgetByIdAsync(budgetId)
         }
         return budget
@@ -79,7 +111,11 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
             try {
                 val snapshot = databaseQuery.get().await()
                 if (snapshot.childrenCount>0) {
-                    snapshot.children.elementAt(0).getValue(Budget::class.java)
+                    val budget = snapshot.getValue(Budget::class.java)
+                    if (budget!=null) {
+                        budget.budgetId = snapshot.key
+                    }
+                    budget
                 } else {
                     null
                 }
@@ -89,7 +125,19 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
         }
     }
 
-    override fun writeNewAsset(asset: Asset) {
+    override fun addUserToBudget(budget: Budget, user: User) {
+        if (budget.budgetId == null || user.userId==null) return
+        database.getReference("budgets").child(budget.budgetId!!).child("users").child(user.userId!!).setValue(user.userId!!)
+        database.getReference("users").child(user.userId!!).child("activeBudgetId").setValue(budget.budgetId)
+    }
+
+    override fun removeUserFromBudget(budget: Budget, user: User) {
+        if (budget.budgetId == null || user.userId==null) return
+        database.getReference("budgets").child(budget.budgetId!!).child("users").child(user.userId!!).setValue(null)
+        database.getReference("users").child(user.userId!!).child("activeBudgetId").setValue(null)
+    }
+
+    override fun createNewAsset(asset: Asset) {
         val reference = database.getReference("assets")
         val key = reference.push().key
         if (key == null) {
@@ -100,9 +148,9 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
         Log.w("Debug", "New asset added to DB with key: $key")
     }
 
-    override fun getAssetsOfUser(user: User, activity: FragmentActivity?): MutableList<Asset>? {
+    override fun getAssetsOfUser(user: User): MutableList<Asset>? {
         var assets : MutableList<Asset>? = mutableListOf()
-        activity?.lifecycleScope?.launch {
+        activity.lifecycleScope.launch {
             assets = getAssetsOfUserAsync(user)
         }
         return assets
@@ -142,9 +190,9 @@ class FirebaseDatabaseProvider : IDatabaseProvider{
         Log.w("Debug", "New transaction added to DB with key: $key")
     }
 
-    override fun getTransactionsOfUser(user: User, activity: FragmentActivity?): MutableList<Transaction>? {
+    override fun getTransactionsOfUser(user: User): MutableList<Transaction>? {
         var transactions : MutableList<Transaction>? = mutableListOf()
-        activity?.lifecycleScope?.launch {
+        activity.lifecycleScope.launch {
             transactions = getTransactionsOfUserAsync(user)
         }
         return transactions

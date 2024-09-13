@@ -51,7 +51,7 @@ class TransactionCreationDialogFragment : BottomSheetDialogFragment() {
         }
 
         submitButton.setOnClickListener {
-            val provider = FirebaseDatabaseProvider()
+            val provider = FirebaseDatabaseProvider(requireActivity())
             val categoryChip : Chip = view.findViewById(categoryChips.checkedChipId)
             val dateChip : Chip = view.findViewById(dateChips.checkedChipId)
             val dateInt = provider.parseDateToIntDate(dateChip.tag as LocalDate)
