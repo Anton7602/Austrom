@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.fragments.SharedBudgetFragment
 import com.colleagues.austrom.models.Budget
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
@@ -30,7 +32,12 @@ class BudgetCreationDialogFragment : BottomSheetDialogFragment() {
                     budgetName =  budgetNameTextView.text.toString(),
                     users =  arrayListOf(budgetCreator.userId.toString())
                 )
-                provider.createNewBudget(newBudget, budgetCreator)
+                newBudget.budgetId = provider.createNewBudget(newBudget)
+                budgetCreator.activeBudgetId = newBudget.budgetId
+                if (budgetCreator.activeBudgetId!=null) {
+                    provider.updateUser(budgetCreator)
+                    (requireActivity() as MainActivity).switchFragment(SharedBudgetFragment(newBudget))
+                }
             }
             this.dismiss()
         }

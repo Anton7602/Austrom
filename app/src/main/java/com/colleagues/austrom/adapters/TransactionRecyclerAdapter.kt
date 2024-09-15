@@ -31,7 +31,7 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>) : 
     }
 
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
-        holder.categoryName.text = transactions[position].categoryID
+        holder.categoryName.text = transactions[position].categoryId
         holder.amount.text = transactions[position].amount.toString()
         holder.sourceName.text = transactions[position].sourceName
         holder.targetName.text = transactions[position].targetName

@@ -12,9 +12,11 @@ import androidx.core.content.ContextCompat
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -22,7 +24,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
-class TransactionCreationDialogFragment : BottomSheetDialogFragment() {
+class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
+                                        private val transactionType: TransactionType) : BottomSheetDialogFragment() {
     private lateinit var sumText: EditText
     private lateinit var fromCard: CardView
     private lateinit var fromName: TextView
@@ -55,19 +58,24 @@ class TransactionCreationDialogFragment : BottomSheetDialogFragment() {
             val categoryChip : Chip = view.findViewById(categoryChips.checkedChipId)
             val dateChip : Chip = view.findViewById(dateChips.checkedChipId)
             val dateInt = provider.parseDateToIntDate(dateChip.tag as LocalDate)
-            provider.writeNewTransaction(Transaction(
-                userID = (requireActivity().application as AustromApplication).appUser?.userId,
-                sourceID = selectedAsset?.assetId,
-                sourceName = selectedAsset?.assetName,
-                targetID = null,
-                targetName = selectedTarget,
-                amount = sumText.text.toString().toDouble(),
-                currency = selectedAsset?.currencyId.toString(),
-                categoryID = categoryChip.text.toString(),
-                transactionDate = null,
-                transactionDateInt = dateInt,
-                comment = null
-            ))
+            if (selectedAsset!=null && selectedTarget!=null) {
+                provider.writeNewTransaction(Transaction(
+                    userId = (requireActivity().application as AustromApplication).appUser?.userId,
+                    sourceId = selectedAsset?.assetId,
+                    sourceName = selectedAsset?.assetName,
+                    targetId = null,
+                    targetName = selectedTarget,
+                    amount = sumText.text.toString().toDouble(),
+                    currency = selectedAsset?.currencyId.toString(),
+                    categoryId = categoryChip.text.toString(),
+                    transactionDate = null,
+                    transactionDateInt = dateInt,
+                    comment = null
+                ))
+                selectedAsset!!.amount -= sumText.text.toString().toDouble()
+                provider.updateAsset(selectedAsset!!)
+                parentDialog.updateTransactionsList()
+            }
             dismiss()
             //Toast.makeText(requireActivity(), "Category: ${category.text}; Date: ${date.tag}", Toast.LENGTH_LONG).show()
         }

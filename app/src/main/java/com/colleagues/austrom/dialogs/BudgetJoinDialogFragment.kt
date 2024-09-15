@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.fragments.SharedBudgetFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 
@@ -26,7 +28,11 @@ class BudgetJoinDialogFragment : BottomSheetDialogFragment() {
             val budget = provider.getBudgetById(inviteCodeTextView.text.toString())
             val user = (requireActivity().application as AustromApplication).appUser
             if (budget!=null && user!=null) {
-                provider.addUserToBudget(budget, user)
+                budget.users!!.add(user.userId!!)
+                user.activeBudgetId = budget.budgetId
+                provider.updateUser(user)
+                provider.updateBudget(budget)
+                (requireActivity() as MainActivity).switchFragment(SharedBudgetFragment(budget))
             }
             this.dismiss()
         }

@@ -17,15 +17,37 @@ import java.time.format.DateTimeFormatter
 class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDatabaseProvider{
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
-    override fun createNewUser(user: User) {
+    override fun createNewUser(user: User): String? {
         val reference = database.getReference("users")
         val key = reference.push().key
         if (key == null) {
             Log.w("Debug", "Couldn't get push key for the user")
-            return
+            return null
         }
         reference.child(key).setValue(user)
         Log.w("Debug", "New user added to DB with key: $key")
+        return  key
+    }
+
+    override fun updateUser(user: User) {
+        val userKey = user.userId
+        if (!userKey.isNullOrEmpty()) {
+            user.userId=null
+            database.getReference("users").child(userKey).setValue(user)
+            user.userId=userKey
+            Log.w("Debug", "User entry with key ${user.userId} updated")
+        } else {
+            Log.w("Debug", "Provided user without id. Update canceled")
+        }
+    }
+
+    override fun deleteUser(user: User) {
+        if (user.userId!=null) {
+            database.getReference("users").child(user.userId!!).setValue(null)
+            Log.w("Debug", "User entry with key ${user.userId} deleted")
+        } else {
+            Log.w("Debug", "Provided user without id. Delete canceled")
+        }
     }
 
     override fun getUserByUserId(userId: String) : User? {
@@ -82,19 +104,39 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
         }
     }
 
-    override fun createNewBudget(budget: Budget, budgetCreator: User) {
-        if (budgetCreator.userId==null) return
-        var reference = database.getReference("budgets")
+    override fun createNewBudget(budget: Budget) : String? {
+        val reference = database.getReference("budgets")
         val key = reference.push().key
         if (key == null) {
             Log.w("Debug", "Couldn't get push key for the budget")
-            return
+            return null
         }
         reference.child(key).setValue(budget)
         Log.w("Debug", "New budget added to DB with key: $key")
-        reference = database.getReference("users")
-        reference.child(budgetCreator.userId!!).child("activeBudgetId").setValue(key)
+        return  key
     }
+
+    override fun updateBudget(budget: Budget) {
+        val budgetKey = budget.budgetId
+        if (!budgetKey.isNullOrEmpty()) {
+            budget.budgetId = null
+            database.getReference("budgets").child(budgetKey).setValue(budget)
+            budget.budgetId = budgetKey
+            Log.w("Debug", "Budget entry with key ${budget.budgetId} updated")
+        } else {
+            Log.w("Debug", "Provided budget without id. Update canceled")
+        }
+    }
+
+    override fun deleteBudget(budget: Budget) {
+        if (budget.budgetId!=null) {
+            database.getReference("budgets").child(budget.budgetId!!).setValue(null)
+            Log.w("Debug", "Budget entry with key ${budget.budgetId} deleted")
+        } else {
+            Log.w("Debug", "Provided budget without id. Delete canceled")
+        }
+    }
+
 
     override fun getBudgetById(budgetId: String) : Budget? {
         var budget : Budget? = null
@@ -125,31 +167,41 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
         }
     }
 
-    override fun addUserToBudget(budget: Budget, user: User) {
-        if (budget.budgetId == null || user.userId==null) return
-        database.getReference("budgets").child(budget.budgetId!!).child("users").child(user.userId!!).setValue(user.userId!!)
-        database.getReference("users").child(user.userId!!).child("activeBudgetId").setValue(budget.budgetId)
-    }
-
-    override fun removeUserFromBudget(budget: Budget, user: User) {
-        if (budget.budgetId == null || user.userId==null) return
-        database.getReference("budgets").child(budget.budgetId!!).child("users").child(user.userId!!).setValue(null)
-        database.getReference("users").child(user.userId!!).child("activeBudgetId").setValue(null)
-    }
-
-    override fun createNewAsset(asset: Asset) {
+    override fun createNewAsset(asset: Asset): String? {
         val reference = database.getReference("assets")
         val key = reference.push().key
         if (key == null) {
             Log.w("Debug", "Couldn't get push key for the asset")
-            return
+            return null
         }
         reference.child(key).setValue(asset)
         Log.w("Debug", "New asset added to DB with key: $key")
+        return key
     }
 
-    override fun getAssetsOfUser(user: User): MutableList<Asset>? {
-        var assets : MutableList<Asset>? = mutableListOf()
+    override fun updateAsset(asset: Asset) {
+        val assetKey = asset.assetId
+        if (!assetKey.isNullOrEmpty()) {
+            asset.assetId = null
+            database.getReference("assets").child(assetKey).setValue(asset)
+            asset.assetId = assetKey
+            Log.w("Debug", "Asset entry with key ${asset.assetId} updated")
+        } else {
+            Log.w("Debug", "Provided asset without id. Update canceled")
+        }
+    }
+
+    override fun deleteAsset(asset: Asset) {
+        if (!asset.assetId.isNullOrEmpty()) {
+            database.getReference("assets").child(asset.assetId!!).setValue(null)
+            Log.w("Debug", "Asset entry with key ${asset.assetId} deleted")
+        } else {
+            Log.w("Debug", "Provided asset without id. Delete canceled")
+        }
+    }
+
+    override fun getAssetsOfUser(user: User): MutableList<Asset> {
+        var assets : MutableList<Asset> = mutableListOf()
         activity.lifecycleScope.launch {
             assets = getAssetsOfUserAsync(user)
         }
@@ -157,9 +209,9 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
     }
 
 
-    private fun getAssetsOfUserAsync(user: User) : MutableList<Asset>? {
+    private fun getAssetsOfUserAsync(user: User) : MutableList<Asset> {
         val reference = database.getReference("assets")
-        val databaseQuery = reference.orderByChild("user_id").equalTo(user.userId)
+        val databaseQuery = reference.orderByChild("userId").equalTo(user.userId)
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()
@@ -169,29 +221,58 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
                     asset?.assetId = child.key
                     asset?.let { assetsList.add(it) }
                 }
-                assetsList.ifEmpty {
-                    null
-                }
+                assetsList
             }
             catch (e: Exception) {
-                null
+                mutableListOf()
             }
         }
     }
 
-    override fun writeNewTransaction(transaction: Transaction) {
+    override fun getAssetsOfBudget(budget: Budget): MutableList<Asset> {
+        var assets : MutableList<Asset> = mutableListOf()
+        activity.lifecycleScope.launch {
+            assets = getAssetsOfBudgetAsync(budget)
+        }
+        return assets
+    }
+
+    private fun getAssetsOfBudgetAsync(budget: Budget): MutableList<Asset> {
+        val assetsList = mutableListOf<Asset>()
+        val reference = database.getReference("assets")
+        return  runBlocking {
+            for (userId in budget.users!!) {
+                val databaseQuery = reference.orderByChild("userId").equalTo(userId)
+                try {
+                    val snapshot = databaseQuery.get().await()
+                    for (child in snapshot.children) {
+                        val asset = child.getValue(Asset::class.java)
+                        asset?.assetId = child.key
+                        asset?.let { assetsList.add(it) }
+                    }
+                }
+                catch (e: Exception) {
+                    continue
+                }
+            }
+            assetsList
+        }
+    }
+
+    override fun writeNewTransaction(transaction: Transaction): String? {
         val reference = database.getReference("transactions")
         val key = reference.push().key
         if (key == null) {
             Log.w("Debug", "Couldn't get push key for the transaction")
-            return
+            return null
         }
         reference.child(key).setValue(transaction)
         Log.w("Debug", "New transaction added to DB with key: $key")
+        return key
     }
 
-    override fun getTransactionsOfUser(user: User): MutableList<Transaction>? {
-        var transactions : MutableList<Transaction>? = mutableListOf()
+    override fun getTransactionsOfUser(user: User): MutableList<Transaction> {
+        var transactions : MutableList<Transaction> = mutableListOf()
         activity.lifecycleScope.launch {
             transactions = getTransactionsOfUserAsync(user)
         }
@@ -199,9 +280,9 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
     }
 
 
-    private fun getTransactionsOfUserAsync(user: User) : MutableList<Transaction>? {
+    private fun getTransactionsOfUserAsync(user: User) : MutableList<Transaction> {
         val reference = database.getReference("transactions")
-        val databaseQuery = reference.orderByChild("userID").equalTo(user.userId)
+        val databaseQuery = reference.orderByChild("userId").equalTo(user.userId)
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()
@@ -214,12 +295,10 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
                         transactionsList.add(transaction)
                     }
                 }
-                transactionsList.ifEmpty {
-                    null
-                }
+                transactionsList
             }
             catch (e: Exception) {
-                null
+                mutableListOf()
             }
         }
     }

@@ -13,6 +13,8 @@ import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetCreationDialogFragment
 import com.colleagues.austrom.dialogs.TransactionCreationDialogFragment
+import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class OpsFragment : Fragment(R.layout.fragment_ops) {
@@ -22,17 +24,24 @@ class OpsFragment : Fragment(R.layout.fragment_ops) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        updateTransactionsList()
 
+        addNewAssetButton.setOnClickListener {
+            TransactionCreationDialogFragment(this, TransactionType.EXPENSE).show(requireActivity().supportFragmentManager, "Asset Creation Dialog")
+        }
+    }
+
+    fun updateTransactionsList() {
         val provider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
         val transactionList = (requireActivity().application as AustromApplication).appUser?.let { provider.getTransactionsOfUser(it) }
         if (transactionList!=null) {
-            transactionHolder.layoutManager = LinearLayoutManager(activity)
-            transactionHolder.adapter = TransactionRecyclerAdapter(transactionList.toList())
+            setUpRecyclerView(transactionList)
         }
+    }
 
-        addNewAssetButton.setOnClickListener {
-            TransactionCreationDialogFragment().show(requireActivity().supportFragmentManager, "Asset Creation Dialog")
-        }
+    private fun setUpRecyclerView(transactionList: MutableList<Transaction>) {
+        transactionHolder.layoutManager = LinearLayoutManager(activity)
+        transactionHolder.adapter = TransactionRecyclerAdapter(transactionList.toList())
     }
 
     private fun bindViews(view: View) {

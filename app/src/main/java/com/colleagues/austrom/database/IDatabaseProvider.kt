@@ -6,19 +6,23 @@ import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.User
 
 interface IDatabaseProvider {
-    fun createNewUser(user: User)
+    fun createNewUser(user: User): String?
+    fun updateUser(user: User)
+    fun deleteUser(user: User)
     fun getUserByUserId(userId: String): User?
     fun getUserByUsername(username: String) : User?
 
+    fun createNewAsset(asset: Asset): String?
+    fun updateAsset(asset: Asset)
+    fun deleteAsset(asset: Asset)
+    fun getAssetsOfUser(user: User) : MutableList<Asset>
+    fun getAssetsOfBudget(budget: Budget) : MutableList<Asset>
 
-    fun createNewAsset(asset: Asset)
-    fun getAssetsOfUser(user: User) : MutableList<Asset>?
-
-    fun createNewBudget(budget: Budget, budgetCreator: User)
+    fun createNewBudget(budget: Budget): String?
+    fun updateBudget(budget: Budget)
+    fun deleteBudget(budget: Budget)
     fun getBudgetById(budgetId: String) : Budget?
-    fun addUserToBudget(budget: Budget, user: User)
-    fun removeUserFromBudget(budget: Budget, user: User)
 
-    fun writeNewTransaction(transaction: Transaction)
-    fun getTransactionsOfUser(user: User) : MutableList<Transaction>?
+    fun writeNewTransaction(transaction: Transaction): String?
+    fun getTransactionsOfUser(user: User) : MutableList<Transaction>
 }

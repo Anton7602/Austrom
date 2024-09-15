@@ -52,7 +52,11 @@ class MainActivity : AppCompatActivity() {
 //          v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
             WindowInsetsCompat.CONSUMED
         }
-        navigationUserNameTextView.text = (application as AustromApplication).appUser?.username
+        val username = (application as AustromApplication).appUser?.username
+        if (username!=null) {
+            navigationUserNameTextView.text = username.first().uppercaseChar()+username.substring(1)
+        }
+
 
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
@@ -97,7 +101,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun switchFragment(fragment: Fragment) {
+    fun switchFragment(fragment: Fragment) {
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.main_fragmentHolder_frg, fragment)
         transaction.commit()

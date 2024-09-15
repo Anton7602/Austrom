@@ -40,9 +40,9 @@ class SignUpActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             val provider : IDatabaseProvider = FirebaseDatabaseProvider(this)
-            val existingUser = provider.getUserByUsername(loginTextBox.text.toString())
+            val existingUser = provider.getUserByUsername(loginTextBox.text.toString().lowercase())
             if (existingUser == null) {
-                provider.createNewUser(User(loginTextBox.text.toString(), emailTextBox.text.toString(), passwordTextBox.text.toString()))
+                provider.createNewUser(User(loginTextBox.text.toString().lowercase(), emailTextBox.text.toString(), passwordTextBox.text.toString()))
                 Toast.makeText(this, "User successfully added", Toast.LENGTH_LONG).show()
                 this.finish()
             } else {

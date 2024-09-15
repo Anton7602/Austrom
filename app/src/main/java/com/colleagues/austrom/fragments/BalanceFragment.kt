@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.AssetRecyclerAdapter
-import com.colleagues.austrom.adapters.CategoryRecyclerAdapter
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetCreationDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -19,13 +20,37 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-
-        assetHolderRecyclerView.layoutManager = LinearLayoutManager(activity)
-        assetHolderRecyclerView.adapter = AssetRecyclerAdapter((requireActivity().application as AustromApplication).activeAssets)
+        updateAssetsList()
 
         addNewAssetButton.setOnClickListener {
-            AssetCreationDialogFragment().show(requireActivity().supportFragmentManager, "Asset Creation Dialog")
+            AssetCreationDialogFragment(this).show(requireActivity().supportFragmentManager, "Asset Creation Dialog")
         }
+    }
+
+    fun updateAssetsList() {
+        val dbProvider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+        val user = (requireActivity().application as AustromApplication).appUser
+        if (user!=null) {
+            val activeAssets = if (user.activeBudgetId!=null) {
+                val budget = dbProvider.getBudgetById(user.activeBudgetId!!)
+                if (budget!=null) {
+                    dbProvider.getAssetsOfBudget(budget)
+                } else {
+                    dbProvider.getAssetsOfUser(user)
+                }
+            } else {
+                dbProvider.getAssetsOfUser(user)
+            }
+            if (activeAssets.size>0) {
+                (requireActivity().application as AustromApplication).activeAssets = activeAssets
+            }
+        }
+        setUpRecyclerView()
+    }
+
+    private fun setUpRecyclerView() {
+        assetHolderRecyclerView.layoutManager = LinearLayoutManager(activity)
+        assetHolderRecyclerView.adapter = AssetRecyclerAdapter((requireActivity().application as AustromApplication).activeAssets)
     }
 
     private fun bindViews(view: View) {

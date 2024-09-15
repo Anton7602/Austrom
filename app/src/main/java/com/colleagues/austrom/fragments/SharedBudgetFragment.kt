@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
@@ -27,8 +28,16 @@ class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout
         leaveButton.setOnClickListener {
             val provider: IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
             val user = (requireActivity().application as AustromApplication).appUser
-            if (user != null) {
-                provider.removeUserFromBudget(activeBudget, user)
+            if (user?.userId != null) {
+                user.activeBudgetId = null
+                activeBudget.users!!.remove(user.userId)
+                provider.updateUser(user)
+                if (activeBudget.users.isEmpty()) {
+                    provider.deleteBudget(activeBudget)
+                } else {
+                    provider.updateBudget(activeBudget)
+                }
+                (requireActivity() as MainActivity).switchFragment(SharedBudgetEmptyFragment())
             }
         }
     }
