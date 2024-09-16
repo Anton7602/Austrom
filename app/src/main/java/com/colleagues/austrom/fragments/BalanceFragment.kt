@@ -2,6 +2,7 @@ package com.colleagues.austrom.fragments
 
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,15 +17,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class BalanceFragment : Fragment(R.layout.fragment_balance) {
     private lateinit var assetHolderRecyclerView: RecyclerView
     private lateinit var addNewAssetButton: FloatingActionButton
+    private lateinit var totalAmountText: TextView
+    private lateinit var baseCurrencySymbolText: TextView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         if (AustromApplication.activeAssets.isEmpty()) {
             updateAssetsList()
+        } else {
+            setUpRecyclerView()
         }
-        setUpRecyclerView()
-
+        calculateTotalAmount()
         addNewAssetButton.setOnClickListener {
             AssetCreationDialogFragment(this).show(requireActivity().supportFragmentManager, "Asset Creation Dialog")
         }
@@ -48,6 +52,20 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
                 AustromApplication.activeAssets = activeAssets
             }
         }
+        setUpRecyclerView()
+    }
+
+    private fun calculateTotalAmount() {
+        baseCurrencySymbolText.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
+        var totalAmount = 0.0
+        for (asset in AustromApplication.activeAssets) {
+            if (asset.value.currencyCode==AustromApplication.appUser?.baseCurrencyCode) {
+                totalAmount+=asset.value.amount
+            } else {
+                totalAmount+=asset.value.amount*(AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.exchangeRate ?: 0.0)
+            }
+        }
+        totalAmountText.text = String.format("%.2f", totalAmount)
     }
 
     private fun setUpRecyclerView() {
@@ -58,5 +76,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     private fun bindViews(view: View) {
         assetHolderRecyclerView = view.findViewById(R.id.bal_assetHolder_rcv)
         addNewAssetButton = view.findViewById(R.id.bal_addNew_fab)
+        totalAmountText = view.findViewById(R.id.bal_totalAmount_txt)
+        baseCurrencySymbolText = view.findViewById(R.id.bal_baseCurrencySymbol_txt)
     }
 }

@@ -37,20 +37,23 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView3"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio=""
                 app:layout_constraintEnd_toStartOf="@+id/cardView2"
+                app:layout_constraintHorizontal_weight="2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@color/blue">
 
                     <TextView
                         android:id="@+id/asitem_assetType_txt"
@@ -59,23 +62,31 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="16dp"
                         android:text="assetType"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/asitem_assetType_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_assettype_cash_temp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView2"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:cardBackgroundColor="@color/grey"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/cardView4"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="10"
                 app:layout_constraintStart_toEndOf="@+id/cardView3"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -88,54 +99,80 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="24dp"
                         android:text="assetName"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/asitem_amount_txt"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView4"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:textAlignment="textEnd"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/cardView2"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
 
                     <TextView
                         android:id="@+id/asitem_amount_txt"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:layout_marginEnd="4dp"
                         android:text="1000"
                         android:textAlignment="viewEnd"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@+id/asitem_currencySymbol_txt"
                         app:layout_constraintEnd_toStartOf="@+id/asitem_currencySymbol_txt"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@+id/asitem_currencySymbol_txt" />
 
                     <TextView
                         android:id="@+id/asitem_currencySymbol_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
                         android:text="$"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/asitem_owner_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Owner"
+                        android:textSize="10sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/asitem_assetName_txt"
+                        app:layout_constraintStart_toEndOf="@+id/imageView5"
+                        app:layout_constraintTop_toBottomOf="@+id/asitem_assetName_txt" />
+
+                    <ImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@+id/asitem_owner_txt"
+                        app:layout_constraintStart_toStartOf="@+id/asitem_assetName_txt"
+                        app:layout_constraintTop_toTopOf="@+id/asitem_owner_txt"
+                        app:srcCompat="@drawable/ic_assettype_owner_temp" />
+
+                    <TextView
+                        android:id="@+id/asitem_baseCurrencySymbol_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="RUB"
+                        android:textSize="10sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/asitem_owner_txt"
+                        app:layout_constraintEnd_toEndOf="@+id/asitem_currencySymbol_txt"
+                        app:layout_constraintTop_toTopOf="@+id/asitem_owner_txt" />
+
+                    <TextView
+                        android:id="@+id/asitem_baseCurrencyAmount_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="4dp"
+                        android:text="100000"
+                        android:textSize="10sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/asitem_baseCurrencySymbol_txt"
+                        app:layout_constraintEnd_toStartOf="@+id/asitem_baseCurrencySymbol_txt"
+                        app:layout_constraintTop_toTopOf="@+id/asitem_baseCurrencySymbol_txt" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
