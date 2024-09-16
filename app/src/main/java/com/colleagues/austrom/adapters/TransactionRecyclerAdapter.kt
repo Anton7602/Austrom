@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import java.time.format.DateTimeFormatter
 
@@ -17,6 +17,7 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>) : 
         val categoryImage: ImageView = itemView.findViewById(R.id.tritem_categoryIcon_img)
         val transactionDate: TextView = itemView.findViewById(R.id.tritem_date_txt)
         val amount: TextView = itemView.findViewById(R.id.tritem_amount_txt)
+        val currencySymbol: TextView = itemView.findViewById(R.id.tritem_currencySymbol_txt)
         val sourceName: TextView = itemView.findViewById(R.id.tritem_sourceName_txt)
         val targetName: TextView = itemView.findViewById(R.id.tritem_targetName_txt)
     }
@@ -32,8 +33,12 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>) : 
 
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
         holder.categoryName.text = transactions[position].categoryId
-        holder.amount.text = transactions[position].amount.toString()
+        holder.amount.text = String.format("%.2f", transactions[position].amount)
         holder.sourceName.text = transactions[position].sourceName
+        val source = AustromApplication.activeAssets[transactions[position].sourceId]
+        if (source!=null) {
+            holder.currencySymbol.text = AustromApplication.activeCurrencies[source.currencyCode]?.symbol
+        }
         holder.targetName.text = transactions[position].targetName
         holder.transactionDate.text =
             "${transactions[position].transactionDate?.dayOfWeek} ${transactions[position].transactionDate?.format(DateTimeFormatter.ofPattern("dd.MM"))}"

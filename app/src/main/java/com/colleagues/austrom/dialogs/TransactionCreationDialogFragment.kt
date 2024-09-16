@@ -45,7 +45,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         sumText.requestFocus()
 
         fromCard.setOnClickListener {
-            AssetSelectionDialogFragment((requireActivity().application as AustromApplication).activeAssets, this)
+            AssetSelectionDialogFragment(AustromApplication.activeAssets, this)
                 .show(requireActivity().supportFragmentManager, "Asset Selection Dialog")
         }
 
@@ -60,13 +60,13 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
             val dateInt = provider.parseDateToIntDate(dateChip.tag as LocalDate)
             if (selectedAsset!=null && selectedTarget!=null) {
                 provider.writeNewTransaction(Transaction(
-                    userId = (requireActivity().application as AustromApplication).appUser?.userId,
+                    userId = AustromApplication.appUser?.userId,
                     sourceId = selectedAsset?.assetId,
                     sourceName = selectedAsset?.assetName,
                     targetId = null,
                     targetName = selectedTarget,
                     amount = sumText.text.toString().toDouble(),
-                    currency = selectedAsset?.currencyId.toString(),
+                    currency = selectedAsset?.currencyCode.toString(),
                     categoryId = categoryChip.text.toString(),
                     transactionDate = null,
                     transactionDateInt = dateInt,

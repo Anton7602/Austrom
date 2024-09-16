@@ -20,7 +20,10 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        updateAssetsList()
+        if (AustromApplication.activeAssets.isEmpty()) {
+            updateAssetsList()
+        }
+        setUpRecyclerView()
 
         addNewAssetButton.setOnClickListener {
             AssetCreationDialogFragment(this).show(requireActivity().supportFragmentManager, "Asset Creation Dialog")
@@ -29,7 +32,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
 
     fun updateAssetsList() {
         val dbProvider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
-        val user = (requireActivity().application as AustromApplication).appUser
+        val user = AustromApplication.appUser
         if (user!=null) {
             val activeAssets = if (user.activeBudgetId!=null) {
                 val budget = dbProvider.getBudgetById(user.activeBudgetId!!)
@@ -41,16 +44,15 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
             } else {
                 dbProvider.getAssetsOfUser(user)
             }
-            if (activeAssets.size>0) {
-                (requireActivity().application as AustromApplication).activeAssets = activeAssets
+            if (activeAssets.isNotEmpty()) {
+                AustromApplication.activeAssets = activeAssets
             }
         }
-        setUpRecyclerView()
     }
 
     private fun setUpRecyclerView() {
         assetHolderRecyclerView.layoutManager = LinearLayoutManager(activity)
-        assetHolderRecyclerView.adapter = AssetRecyclerAdapter((requireActivity().application as AustromApplication).activeAssets)
+        assetHolderRecyclerView.adapter = AssetRecyclerAdapter(AustromApplication.activeAssets)
     }
 
     private fun bindViews(view: View) {

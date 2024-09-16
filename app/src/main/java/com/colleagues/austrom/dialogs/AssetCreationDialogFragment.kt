@@ -40,9 +40,9 @@ class AssetCreationDialogFragment(private val parentDialog: BalanceFragment?) : 
                 Asset(
                     assetTypeId = getTypeID(assetType.text.toString()),
                     assetName = titleTextView.text.toString(),
-                    userId = (requireActivity().application as AustromApplication).appUser?.userId.toString(),
+                    userId = AustromApplication.appUser?.userId.toString(),
                     amount = amountTextView.text.toString().toDouble(),
-                    currencyId = currencyType.text.toString(),
+                    currencyCode = currencyType.text.toString(),
                     isPrivate = false
                 )
             )

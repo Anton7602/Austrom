@@ -6,10 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.models.Asset
 
-class AssetRecyclerAdapter(private val assets: List<Asset>, var selectedItemPosition  : Int = -1) : RecyclerView.Adapter<AssetRecyclerAdapter.AssetViewHolder>()  {
+class AssetRecyclerAdapter(private val assets: MutableMap<String, Asset>, var selectedItemPosition  : Int = -1) : RecyclerView.Adapter<AssetRecyclerAdapter.AssetViewHolder>()  {
     private var selectedHolder : AssetViewHolder? = null
 
     class AssetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -18,6 +19,7 @@ class AssetRecyclerAdapter(private val assets: List<Asset>, var selectedItemPosi
         val assetName: TextView = itemView.findViewById(R.id.asitem_assetName_txt)
         val assetType: TextView = itemView.findViewById(R.id.asitem_assetType_txt)
         val assetAmount: TextView = itemView.findViewById(R.id.asitem_amount_txt)
+        val currencySymbol: TextView = itemView.findViewById(R.id.asitem_currencySymbol_txt)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AssetViewHolder {
@@ -30,9 +32,11 @@ class AssetRecyclerAdapter(private val assets: List<Asset>, var selectedItemPosi
     }
 
     override fun onBindViewHolder(holder: AssetViewHolder, position: Int) {
-        holder.assetName.text = assets[position].assetName
-        holder.assetType.text = assets[position].assetTypeId.toString()
-        holder.assetAmount.text = assets[position].amount.toString()
+        val asset = assets.entries.elementAt(position).value
+        holder.assetName.text = asset.assetName
+        holder.assetType.text = asset.assetTypeId.toString()
+        holder.assetAmount.text = String.format("%.2f", asset.amount)
+        holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
         if (position == selectedItemPosition) {
             selectedHolder = holder
             holder.selectionMarker.visibility = View.VISIBLE

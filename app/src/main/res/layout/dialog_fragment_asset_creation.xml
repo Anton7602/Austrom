@@ -139,21 +139,21 @@
                             style="@style/Widget.Material3.Chip.Suggestion"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/euro" />
+                            android:text="EUR" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/cadial_dollar_chp"
                             style="@style/Widget.Material3.Chip.Suggestion"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/dollar" />
+                            android:text="USD" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/cadial_rouble_chp"
                             style="@style/Widget.Material3.Chip.Suggestion"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/rouble" />
+                            android:text="RUB" />
                     </com.google.android.material.chip.ChipGroup>
 
 

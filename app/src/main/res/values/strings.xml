@@ -12,9 +12,6 @@
     <string name="budget">Budget</string>
     <string name="ops">Ops</string>
     <string name="add_new_asset">Add New Asset</string>
-    <string name="euro">Euro</string>
-    <string name="dollar">Dollar</string>
-    <string name="rouble">Rouble</string>
     <string name="card">Card</string>
     <string name="cash">Cash</string>
     <string name="open">Open</string>

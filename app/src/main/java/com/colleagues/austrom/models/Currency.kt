@@ -1,13 +1,22 @@
 package com.colleagues.austrom.models
 
-class Currency(val currencyId: String, val fullName : String, val symbol : String) {
+import java.math.BigDecimal
+
+class Currency(val code: String = "",
+               val name : String = "",
+               val symbol : String ="",
+               var exchangeRate : Double = 0.0) {
 
     companion object{
-        val defaultCurrencies = listOf<Currency>(
-            Currency("USD", "Dollar", "$"),
-            Currency("EUR", "Euro", "€"),
-            Currency("RUB", "Ruble", "₽")
-        )
+        fun switchRatesToNewBaseCurrency(currenciesList: MutableMap<String, Currency>, newBaseCurrencyCode: String) : MutableMap<String, Currency> {
+            val newBaseCurrency = currenciesList[newBaseCurrencyCode]
+            if (newBaseCurrency!=null) {
+                val denominator = newBaseCurrency.exchangeRate
+                for (currency in currenciesList) {
+                    currency.value.exchangeRate /= denominator
+                }
+            }
+            return currenciesList
+        }
     }
-
 }

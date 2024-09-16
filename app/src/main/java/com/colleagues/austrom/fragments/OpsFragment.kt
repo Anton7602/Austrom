@@ -33,7 +33,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops) {
 
     fun updateTransactionsList() {
         val provider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
-        val transactionList = (requireActivity().application as AustromApplication).appUser?.let { provider.getTransactionsOfUser(it) }
+        val transactionList = AustromApplication.appUser?.let { provider.getTransactionsOfUser(it) }
         if (transactionList!=null) {
             setUpRecyclerView(transactionList)
         }

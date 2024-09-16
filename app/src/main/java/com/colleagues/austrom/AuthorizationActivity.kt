@@ -37,7 +37,7 @@ class AuthorizationActivity : AppCompatActivity() {
             if (existingUser == null || existingUser.password!=passwordTextBox.text.toString()) {
                 Toast.makeText(this, "Username or password is incorrect", Toast.LENGTH_LONG).show()
             } else {
-                (this.application as AustromApplication).appUser = existingUser
+                AustromApplication.appUser = existingUser
                 startActivity(Intent(this, MainActivity::class.java))
             }
         }

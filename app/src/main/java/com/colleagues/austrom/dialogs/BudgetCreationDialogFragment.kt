@@ -25,7 +25,7 @@ class BudgetCreationDialogFragment : BottomSheetDialogFragment() {
         budgetNameTextView.requestFocus()
 
         submitNewBudget.setOnClickListener {
-            val budgetCreator = (requireActivity().application as AustromApplication).appUser
+            val budgetCreator = AustromApplication.appUser
             if (budgetCreator!=null) {
                 val provider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
                 val newBudget = Budget(

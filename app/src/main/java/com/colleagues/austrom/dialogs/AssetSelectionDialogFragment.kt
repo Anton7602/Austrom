@@ -20,7 +20,7 @@ import com.colleagues.austrom.models.Asset
 
 
 class AssetSelectionDialogFragment(
-    private var listOfAsset: MutableList<Asset> = mutableListOf(),
+    private var listOfAsset: MutableMap<String, Asset> = mutableMapOf(),
     private var parentDialog: TransactionCreationDialogFragment? = null ) : DialogFragment() {
         private lateinit var searchView: EditText
         private lateinit var assetsRecyclerView: RecyclerView
@@ -32,7 +32,7 @@ class AssetSelectionDialogFragment(
         val i: LayoutInflater = requireActivity().layoutInflater
         val view = i.inflate(R.layout.dialog_fragment_asset_selection, null)
         bindViews(view)
-        if (listOfAsset.size>0) {
+        if (listOfAsset.isNotEmpty()) {
             searchView.visibility = View.VISIBLE
             assetsRecyclerView.visibility = View.VISIBLE
             acceptButton.visibility = View.VISIBLE
@@ -45,7 +45,7 @@ class AssetSelectionDialogFragment(
             emptyAssetsText.visibility = View.VISIBLE
         }
         assetsRecyclerView.layoutManager = LinearLayoutManager(activity)
-        assetsRecyclerView.adapter = AssetRecyclerAdapter((requireActivity().application as AustromApplication).activeAssets, 0)
+        assetsRecyclerView.adapter = AssetRecyclerAdapter(AustromApplication.activeAssets, 0)
         val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity()).setView(view)
         val assetSelectionDialog = adb.create()
         if (assetSelectionDialog != null && assetSelectionDialog.window != null) {
@@ -54,9 +54,7 @@ class AssetSelectionDialogFragment(
 
         acceptButton.setOnClickListener {
             if (parentDialog!=null) {
-                parentDialog!!.receiveAssetSelection((requireActivity().application as AustromApplication)
-                    .activeAssets[(assetsRecyclerView.adapter as AssetRecyclerAdapter).selectedItemPosition])
-
+                parentDialog!!.receiveAssetSelection(AustromApplication.activeAssets.entries.elementAt((assetsRecyclerView.adapter as AssetRecyclerAdapter).selectedItemPosition).value)
             }
             dismiss()
         }

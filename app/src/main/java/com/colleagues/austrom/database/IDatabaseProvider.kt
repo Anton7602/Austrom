@@ -2,6 +2,7 @@ package com.colleagues.austrom.database
 
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
+import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.User
 
@@ -15,8 +16,8 @@ interface IDatabaseProvider {
     fun createNewAsset(asset: Asset): String?
     fun updateAsset(asset: Asset)
     fun deleteAsset(asset: Asset)
-    fun getAssetsOfUser(user: User) : MutableList<Asset>
-    fun getAssetsOfBudget(budget: Budget) : MutableList<Asset>
+    fun getAssetsOfUser(user: User) : MutableMap<String, Asset>
+    fun getAssetsOfBudget(budget: Budget) : MutableMap<String, Asset>
 
     fun createNewBudget(budget: Budget): String?
     fun updateBudget(budget: Budget)
@@ -25,4 +26,6 @@ interface IDatabaseProvider {
 
     fun writeNewTransaction(transaction: Transaction): String?
     fun getTransactionsOfUser(user: User) : MutableList<Transaction>
+
+    fun getCurrencies(): MutableMap<String, Currency>
 }

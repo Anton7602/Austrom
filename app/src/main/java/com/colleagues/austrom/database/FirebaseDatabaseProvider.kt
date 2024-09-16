@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
+import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.User
 import com.google.firebase.database.FirebaseDatabase
@@ -200,8 +201,8 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
         }
     }
 
-    override fun getAssetsOfUser(user: User): MutableList<Asset> {
-        var assets : MutableList<Asset> = mutableListOf()
+    override fun getAssetsOfUser(user: User): MutableMap<String, Asset> {
+        var assets : MutableMap<String, Asset> = mutableMapOf()
         activity.lifecycleScope.launch {
             assets = getAssetsOfUserAsync(user)
         }
@@ -209,36 +210,38 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
     }
 
 
-    private fun getAssetsOfUserAsync(user: User) : MutableList<Asset> {
+    private fun getAssetsOfUserAsync(user: User) : MutableMap<String, Asset> {
         val reference = database.getReference("assets")
         val databaseQuery = reference.orderByChild("userId").equalTo(user.userId)
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()
-                val assetsList = mutableListOf<Asset>()
+                val assetsList = mutableMapOf<String, Asset>()
                 for (child in snapshot.children) {
                     val asset = child.getValue(Asset::class.java)
-                    asset?.assetId = child.key
-                    asset?.let { assetsList.add(it) }
+                    if (asset!=null) {
+                        asset.assetId = child.key
+                        assetsList[child.key.toString()] = asset
+                    }
                 }
                 assetsList
             }
             catch (e: Exception) {
-                mutableListOf()
+                mutableMapOf()
             }
         }
     }
 
-    override fun getAssetsOfBudget(budget: Budget): MutableList<Asset> {
-        var assets : MutableList<Asset> = mutableListOf()
+    override fun getAssetsOfBudget(budget: Budget): MutableMap<String, Asset> {
+        var assets : MutableMap<String, Asset> = mutableMapOf()
         activity.lifecycleScope.launch {
             assets = getAssetsOfBudgetAsync(budget)
         }
         return assets
     }
 
-    private fun getAssetsOfBudgetAsync(budget: Budget): MutableList<Asset> {
-        val assetsList = mutableListOf<Asset>()
+    private fun getAssetsOfBudgetAsync(budget: Budget): MutableMap<String, Asset> {
+        val assetsList = mutableMapOf<String, Asset>()
         val reference = database.getReference("assets")
         return  runBlocking {
             for (userId in budget.users!!) {
@@ -247,8 +250,10 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
                     val snapshot = databaseQuery.get().await()
                     for (child in snapshot.children) {
                         val asset = child.getValue(Asset::class.java)
-                        asset?.assetId = child.key
-                        asset?.let { assetsList.add(it) }
+                        if (asset!=null) {
+                            asset.assetId = child.key.toString()
+                            assetsList[child.key.toString()] = asset
+                        }
                     }
                 }
                 catch (e: Exception) {
@@ -299,6 +304,34 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
             }
             catch (e: Exception) {
                 mutableListOf()
+            }
+        }
+    }
+
+    override fun getCurrencies(): MutableMap<String, Currency> {
+        var currencies : MutableMap<String, Currency> = mutableMapOf()
+        activity.lifecycleScope.launch {
+            currencies = getCurrenciesAsync()
+        }
+        return currencies
+    }
+
+    private fun getCurrenciesAsync(): MutableMap<String, Currency> {
+        val databaseQuery = database.getReference("currencies")
+        val currenciesList = mutableMapOf<String, Currency>()
+        return runBlocking {
+            try {
+                val snapshot = databaseQuery.get().await()
+                for (child in snapshot.children) {
+                    val currency = child.getValue(Currency::class.java)
+                    if (currency!=null) {
+                        currenciesList[child.key.toString()] = currency
+                    }
+                }
+                currenciesList
+            }
+            catch (e: Exception) {
+                mutableMapOf()
             }
         }
     }

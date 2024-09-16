@@ -26,7 +26,7 @@ class BudgetJoinDialogFragment : BottomSheetDialogFragment() {
         joinNewBudget.setOnClickListener {
             val provider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
             val budget = provider.getBudgetById(inviteCodeTextView.text.toString())
-            val user = (requireActivity().application as AustromApplication).appUser
+            val user = AustromApplication.appUser
             if (budget!=null && user!=null) {
                 budget.users!!.add(user.userId!!)
                 user.activeBudgetId = budget.budgetId

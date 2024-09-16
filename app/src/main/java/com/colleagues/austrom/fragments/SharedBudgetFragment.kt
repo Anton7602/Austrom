@@ -27,7 +27,7 @@ class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout
 
         leaveButton.setOnClickListener {
             val provider: IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
-            val user = (requireActivity().application as AustromApplication).appUser
+            val user = AustromApplication.appUser
             if (user?.userId != null) {
                 user.activeBudgetId = null
                 activeBudget.users!!.remove(user.userId)

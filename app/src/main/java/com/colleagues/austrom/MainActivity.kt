@@ -23,6 +23,7 @@ import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.fragments.SettingsFragment
 import com.colleagues.austrom.fragments.SharedBudgetEmptyFragment
 import com.colleagues.austrom.fragments.SharedBudgetFragment
+import com.colleagues.austrom.models.Currency
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 
@@ -52,12 +53,13 @@ class MainActivity : AppCompatActivity() {
 //          v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
             WindowInsetsCompat.CONSUMED
         }
-        val username = (application as AustromApplication).appUser?.username
+        val username = AustromApplication.appUser?.username
         if (username!=null) {
             navigationUserNameTextView.text = username.first().uppercaseChar()+username.substring(1)
         }
-
-
+        val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
+        AustromApplication.activeCurrencies =
+            Currency.switchRatesToNewBaseCurrency(dbProvider.getCurrencies(), "EUR")
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             when(item.itemId) {
                 R.id.nav_sharedBudget_mit -> {
                     val provider: IDatabaseProvider = FirebaseDatabaseProvider(this)
-                    val activeBudgetId = (application as AustromApplication).appUser?.activeBudgetId
+                    val activeBudgetId = AustromApplication.appUser?.activeBudgetId
                     if (activeBudgetId!=null) {
                         val activeBudget = provider.getBudgetById(activeBudgetId)
                         if (activeBudget!=null) {
