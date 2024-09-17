@@ -308,6 +308,39 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
         }
     }
 
+    override fun getTransactionsOfBudget(budget: Budget): MutableList<Transaction> {
+        var transactions : MutableList<Transaction> = mutableListOf()
+        activity.lifecycleScope.launch {
+            transactions = getTransactionOfBudgetAsync(budget)
+        }
+        return transactions
+    }
+
+    private fun getTransactionOfBudgetAsync(budget: Budget): MutableList<Transaction> {
+        val transactionsList = mutableListOf<Transaction>()
+        val reference = database.getReference("transactions")
+        return runBlocking {
+            for (userId in budget.users!!) {
+                val databaseQuery = reference.orderByChild("userId").equalTo(userId)
+                try {
+                    val snapshot = databaseQuery.get().await()
+                    for (child in snapshot.children) {
+                        val transaction = child.getValue(Transaction::class.java)
+                        if (transaction!=null) {
+                            transaction.transactionId = child.key
+                            transaction.transactionDate = parseIntDateToDate(transaction.transactionDateInt)
+                            transactionsList.add(transaction)
+                        }
+                    }
+                }
+                catch (e: Exception) {
+                    continue
+                }
+            }
+            transactionsList
+        }
+    }
+
     override fun getCurrencies(): MutableMap<String, Currency> {
         var currencies : MutableMap<String, Currency> = mutableMapOf()
         activity.lifecycleScope.launch {

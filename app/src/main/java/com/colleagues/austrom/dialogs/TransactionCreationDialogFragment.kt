@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -20,6 +21,7 @@ import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.datepicker.MaterialDatePicker
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -34,23 +36,37 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
     private lateinit var categoryChips: ChipGroup
     private lateinit var dateChips: ChipGroup
     private lateinit var submitButton : Button
-    private var selectedAsset : Asset? = null
-    private var selectedTarget : String? = null
+    private lateinit var calendarButton: ImageButton
+    private lateinit var currencySymbol: TextView
+    private var selectedSource : Asset? = null
+    private var sourceName: String? = null
+    private var selectedTarget : Asset? = null
+    private var targetName: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        currencySymbol.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         setUpCategoriesInChips()
         setUpDateChips()
         sumText.requestFocus()
 
         fromCard.setOnClickListener {
-            AssetSelectionDialogFragment(AustromApplication.activeAssets, this)
-                .show(requireActivity().supportFragmentManager, "Asset Selection Dialog")
+            if (transactionType==TransactionType.EXPENSE || transactionType==TransactionType.TRANSFER) {
+                AssetSelectionDialogFragment(true, AustromApplication.activeAssets, this)
+                    .show(requireActivity().supportFragmentManager, "Asset Selection Dialog")
+            } else {
+                TargetSelectionDialogFragment(true, this).show(requireActivity().supportFragmentManager, "Target Selection Dialog")
+            }
         }
 
         toCard.setOnClickListener {
-            TargetSelectionDialogFragment(this).show(requireActivity().supportFragmentManager, "Target Selection Dialog")
+            if (transactionType==TransactionType.INCOME || transactionType==TransactionType.TRANSFER) {
+                AssetSelectionDialogFragment(false, AustromApplication.activeAssets, this)
+                    .show(requireActivity().supportFragmentManager, "Asset Selection Dialog")
+            } else {
+                TargetSelectionDialogFragment(false , this).show(requireActivity().supportFragmentManager, "Target Selection Dialog")
+            }
         }
 
         submitButton.setOnClickListener {
@@ -58,26 +74,41 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
             val categoryChip : Chip = view.findViewById(categoryChips.checkedChipId)
             val dateChip : Chip = view.findViewById(dateChips.checkedChipId)
             val dateInt = provider.parseDateToIntDate(dateChip.tag as LocalDate)
-            if (selectedAsset!=null && selectedTarget!=null) {
+            if (sourceName!=null && targetName!=null) {
+                val currencyCode = if (transactionType == TransactionType.INCOME) {
+                    selectedTarget?.currencyCode
+                } else {
+                    selectedSource?.currencyCode
+                }
                 provider.writeNewTransaction(Transaction(
                     userId = AustromApplication.appUser?.userId,
-                    sourceId = selectedAsset?.assetId,
-                    sourceName = selectedAsset?.assetName,
-                    targetId = null,
-                    targetName = selectedTarget,
+                    sourceId = selectedSource?.assetId,
+                    sourceName = sourceName,
+                    targetId = selectedTarget?.assetId,
+                    targetName = targetName,
                     amount = sumText.text.toString().toDouble(),
-                    currency = selectedAsset?.currencyCode.toString(),
+                    currency = currencyCode.toString(),
                     categoryId = categoryChip.text.toString(),
                     transactionDate = null,
                     transactionDateInt = dateInt,
                     comment = null
                 ))
-                selectedAsset!!.amount -= sumText.text.toString().toDouble()
-                provider.updateAsset(selectedAsset!!)
+                if (selectedSource!=null) {
+                    selectedSource!!.amount -= sumText.text.toString().toDouble()
+                    provider.updateAsset(selectedSource!!)
+                }
+                if (selectedTarget!=null) {
+                    selectedTarget!!.amount += sumText.text.toString().toDouble()
+                    provider.updateAsset(selectedTarget!!)
+                }
                 parentDialog.updateTransactionsList()
             }
             dismiss()
             //Toast.makeText(requireActivity(), "Category: ${category.text}; Date: ${date.tag}", Toast.LENGTH_LONG).show()
+        }
+
+        calendarButton.setOnClickListener {
+            MaterialDatePicker.Builder.datePicker().setTitleText("Choose Transaction Date").build().show(requireActivity().supportFragmentManager, "DatePicker Dialog")
         }
     }
 
@@ -85,14 +116,36 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         return inflater.inflate(R.layout.dialog_fragment_transaction_creation, container, false)
     }
 
-    fun receiveTargetSelection(target: String) {
-        selectedTarget = target
-        toName.text = target
+    fun receiveTargetSelection(asset: Asset?, name: String?) {
+        if (asset!=null) {
+            selectedTarget = asset
+            targetName = asset.assetName
+            toName.text = asset.assetName
+            if (transactionType==TransactionType.INCOME) {
+                currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
+            }
+        } else {
+            selectedTarget = null
+            targetName = name
+            toName.text = name
+        }
+
     }
 
-    fun receiveAssetSelection(asset: Asset) {
-        selectedAsset = asset
-        fromName.text = asset.assetName
+    fun receiveSourceSelection(asset: Asset?, name: String?) {
+        if (asset!=null) {
+            selectedSource = asset
+            sourceName = asset.assetName
+            fromName.text = asset.assetName
+            if (transactionType==TransactionType.EXPENSE) {
+                currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
+            }
+        } else {
+            selectedSource = null
+            sourceName = name
+            fromName.text = name
+        }
+
     }
 
     private fun setUpCategoriesInChips() {
@@ -145,5 +198,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         categoryChips = view.findViewById(R.id.ctdial_categoriesChips_cgr)
         dateChips = view.findViewById(R.id.ctdial_datesChips_cgr)
         submitButton = view.findViewById(R.id.ctdial_submit_btn)
+        calendarButton = view.findViewById(R.id.ctdial_openCalendar_btn)
+        currencySymbol = view.findViewById(R.id.ctdial_currencySymbol_txt)
     }
 }

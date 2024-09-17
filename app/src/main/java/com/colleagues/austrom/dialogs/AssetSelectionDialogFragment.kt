@@ -19,7 +19,7 @@ import com.colleagues.austrom.adapters.AssetRecyclerAdapter
 import com.colleagues.austrom.models.Asset
 
 
-class AssetSelectionDialogFragment(
+class AssetSelectionDialogFragment(private val isReturnToSource: Boolean = true,
     private var listOfAsset: MutableMap<String, Asset> = mutableMapOf(),
     private var parentDialog: TransactionCreationDialogFragment? = null ) : DialogFragment() {
         private lateinit var searchView: EditText
@@ -54,7 +54,12 @@ class AssetSelectionDialogFragment(
 
         acceptButton.setOnClickListener {
             if (parentDialog!=null) {
-                parentDialog!!.receiveAssetSelection(AustromApplication.activeAssets.entries.elementAt((assetsRecyclerView.adapter as AssetRecyclerAdapter).selectedItemPosition).value)
+                val selectedAsset = AustromApplication.activeAssets.entries.elementAt((assetsRecyclerView.adapter as AssetRecyclerAdapter).selectedItemPosition).value
+                if (isReturnToSource) {
+                    parentDialog!!.receiveSourceSelection(selectedAsset, selectedAsset.assetName)
+                } else {
+                    parentDialog!!.receiveTargetSelection(selectedAsset, selectedAsset.assetName)
+                }
             }
             dismiss()
         }

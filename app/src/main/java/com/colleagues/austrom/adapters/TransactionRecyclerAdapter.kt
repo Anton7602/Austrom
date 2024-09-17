@@ -1,5 +1,6 @@
 package com.colleagues.austrom.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,11 +34,17 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>) : 
 
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
         holder.categoryName.text = transactions[position].categoryId
-        holder.amount.text = String.format("%.2f", transactions[position].amount)
         holder.sourceName.text = transactions[position].sourceName
         val source = AustromApplication.activeAssets[transactions[position].sourceId]
         if (source!=null) {
             holder.currencySymbol.text = AustromApplication.activeCurrencies[source.currencyCode]?.symbol
+        }
+        if (transactions[position].sourceId!=null) {
+            holder.amount.text ="-" + String.format("%.2f", transactions[position].amount)
+            holder.amount.setTextColor(Color.RED)
+        } else {
+            holder.amount.text = "+" + String.format("%.2f", transactions[position].amount)
+            holder.amount.setTextColor(Color.GREEN)
         }
         holder.targetName.text = transactions[position].targetName
         holder.transactionDate.text =

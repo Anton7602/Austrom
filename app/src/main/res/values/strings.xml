@@ -10,7 +10,7 @@
     <string name="email">Email</string>
     <string name="balance">Balance</string>
     <string name="budget">Budget</string>
-    <string name="ops">Ops</string>
+    <string name="ops">Operations</string>
     <string name="add_new_asset">Add New Asset</string>
     <string name="card">Card</string>
     <string name="cash">Cash</string>

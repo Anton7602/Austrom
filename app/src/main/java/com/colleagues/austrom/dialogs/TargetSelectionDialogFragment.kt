@@ -12,7 +12,8 @@ import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import com.colleagues.austrom.R
 
-class TargetSelectionDialogFragment(private var parentDialog : TransactionCreationDialogFragment? = null) : DialogFragment() {
+class TargetSelectionDialogFragment(private val isReturnToSource: Boolean = false,
+    private var parentDialog : TransactionCreationDialogFragment? = null) : DialogFragment() {
     private lateinit var searchView: EditText
     private lateinit var acceptButton: Button
     private lateinit var cancelButton: Button
@@ -29,7 +30,11 @@ class TargetSelectionDialogFragment(private var parentDialog : TransactionCreati
 
         acceptButton.setOnClickListener {
             if(parentDialog!=null) {
-                parentDialog!!.receiveTargetSelection(searchView.text.toString())
+                if (isReturnToSource) {
+                    parentDialog!!.receiveSourceSelection(null, searchView.text.toString())
+                } else {
+                    parentDialog!!.receiveTargetSelection(null, searchView.text.toString())
+                }
             }
             dismiss()
         }

@@ -5,17 +5,15 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
+import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.User
 
 class AustromApplication : Application() {
-//    var appUser : User? = null
-//    var activeAssets : MutableMap<String, Asset> = mutableMapOf()
-//    var activeCurrencies : MutableMap<String, Currency> = mutableMapOf()
-
     companion object{
         var appUser : User? = null
         var activeAssets : MutableMap<String, Asset> = mutableMapOf()
         var activeCurrencies : MutableMap<String, Currency> = mutableMapOf()
+        var activeTransactions: MutableList<Transaction> = mutableListOf()
     }
 
     override fun onCreate() {

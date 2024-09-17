@@ -9,6 +9,8 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 
@@ -26,6 +28,7 @@ class AssetRecyclerAdapter(private val assets: MutableMap<String, Asset>, var se
         val assetBaseSymbol: TextView = itemView.findViewById(R.id.asitem_baseCurrencySymbol_txt)
         val assetTypeImg: ImageView = itemView.findViewById(R.id.asitem_assetType_img)
         val assetOwner: TextView = itemView.findViewById(R.id.asitem_owner_txt)
+        val assetOwnerIcon: ImageView = itemView.findViewById(R.id.asitem_ownerIcon_img)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AssetViewHolder {
@@ -45,10 +48,20 @@ class AssetRecyclerAdapter(private val assets: MutableMap<String, Asset>, var se
         holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
         if (asset.currencyCode!=AustromApplication.appUser?.baseCurrencyCode) {
             holder.assetBaseSymbol.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
-            holder.assetBaseAmount.text = String.format("%.2f",asset.amount*(AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.exchangeRate ?: 0.0))
+            holder.assetBaseAmount.text = String.format("%.2f",asset.amount/(AustromApplication.activeCurrencies[asset.currencyCode]?.exchangeRate ?: 0.0))
         } else {
             holder.assetBaseSymbol.visibility = View.GONE
             holder.assetBaseAmount.visibility = View.GONE
+        }
+        if (AustromApplication.appUser?.activeBudgetId==null) {
+            holder.assetOwnerIcon.visibility = View.GONE
+            holder.assetOwner.visibility = View.GONE
+        } else {
+            if (asset.userId== AustromApplication.appUser!!.userId) {
+                holder.assetOwner.text = AustromApplication.appUser!!.username
+            } else {
+                holder.assetOwner.text = asset.userId
+            }
         }
         holder.assetTypeImg.setImageResource(
             when(asset.assetTypeId) {
@@ -62,7 +75,6 @@ class AssetRecyclerAdapter(private val assets: MutableMap<String, Asset>, var se
             selectedHolder = holder
             holder.selectionMarker.visibility = View.VISIBLE
         }
-
 
         holder.assetHolder.setOnClickListener {
             switchItemSelection(holder, selectedItemPosition, position)

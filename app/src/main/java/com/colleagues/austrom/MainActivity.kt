@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         }
         val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
         AustromApplication.activeCurrencies =
-            Currency.switchRatesToNewBaseCurrency(dbProvider.getCurrencies(), "EUR")
+            Currency.switchRatesToNewBaseCurrency(dbProvider.getCurrencies(), AustromApplication.appUser?.baseCurrencyCode)
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)

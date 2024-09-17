@@ -11,9 +11,11 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_transaction"/>
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/item_transaction" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/ops_addNew_fab"
@@ -26,5 +28,45 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        app:srcCompat="@drawable/ic_navigation_add_temp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/ops_income_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:contentDescription="Income"
+        android:visibility="gone"
+        app:backgroundTint="@color/accept_green"
+        app:layout_constraintBottom_toBottomOf="@+id/ops_addNew_fab"
+        app:layout_constraintEnd_toStartOf="@+id/ops_addNew_fab"
+        app:layout_constraintTop_toTopOf="@+id/ops_addNew_fab"
+        app:srcCompat="@drawable/ic_transactiontype_income_temp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/ops_transfer_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:contentDescription="Transfer"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/ops_income_fab"
+        app:layout_constraintEnd_toStartOf="@+id/ops_addNew_fab"
+        app:srcCompat="@drawable/ic_transactiontype_transfer_temp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/ops_expense_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:contentDescription="Expence"
+        android:visibility="gone"
+        app:backgroundTint="@color/decline_red"
+        app:layout_constraintBottom_toTopOf="@+id/ops_addNew_fab"
+        app:layout_constraintEnd_toEndOf="@+id/ops_addNew_fab"
+        app:srcCompat="@drawable/ic_transactiontype_expense_temp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

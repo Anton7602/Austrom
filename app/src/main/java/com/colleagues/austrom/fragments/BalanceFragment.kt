@@ -59,10 +59,10 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         baseCurrencySymbolText.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         var totalAmount = 0.0
         for (asset in AustromApplication.activeAssets) {
-            if (asset.value.currencyCode==AustromApplication.appUser?.baseCurrencyCode) {
-                totalAmount+=asset.value.amount
+            totalAmount += if (asset.value.currencyCode==AustromApplication.appUser?.baseCurrencyCode) {
+                asset.value.amount
             } else {
-                totalAmount+=asset.value.amount*(AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.exchangeRate ?: 0.0)
+                asset.value.amount/(AustromApplication.activeCurrencies[asset.value.currencyCode]?.exchangeRate ?: 1.0)
             }
         }
         totalAmountText.text = String.format("%.2f", totalAmount)

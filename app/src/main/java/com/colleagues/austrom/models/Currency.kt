@@ -8,7 +8,7 @@ class Currency(val code: String = "",
                var exchangeRate : Double = 0.0) {
 
     companion object{
-        fun switchRatesToNewBaseCurrency(currenciesList: MutableMap<String, Currency>, newBaseCurrencyCode: String) : MutableMap<String, Currency> {
+        fun switchRatesToNewBaseCurrency(currenciesList: MutableMap<String, Currency>, newBaseCurrencyCode: String?) : MutableMap<String, Currency> {
             val newBaseCurrency = currenciesList[newBaseCurrencyCode]
             if (newBaseCurrency!=null) {
                 val denominator = newBaseCurrency.exchangeRate

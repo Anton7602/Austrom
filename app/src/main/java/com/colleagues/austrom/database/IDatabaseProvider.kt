@@ -26,6 +26,7 @@ interface IDatabaseProvider {
 
     fun writeNewTransaction(transaction: Transaction): String?
     fun getTransactionsOfUser(user: User) : MutableList<Transaction>
+    fun getTransactionsOfBudget(budget: Budget) : MutableList<Transaction>
 
     fun getCurrencies(): MutableMap<String, Currency>
 }
