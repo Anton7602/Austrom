@@ -51,6 +51,34 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/ctdial_sum_txt" />
 
+            <EditText
+                android:id="@+id/ctdial_sumReceived_txt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:hint="0,00"
+                android:inputType="numberDecimal"
+                android:textAlignment="viewEnd"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/ctdial_currencyReceived_txt"
+                app:layout_constraintStart_toStartOf="@+id/ctdial_sum_txt"
+                app:layout_constraintTop_toBottomOf="@+id/ctdial_sum_txt" />
+
+            <TextView
+                android:id="@+id/ctdial_currencyReceived_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="RUB"
+                android:textSize="34sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/ctdial_sumReceived_txt"
+                app:layout_constraintEnd_toEndOf="@+id/ctdial_currencySymbol_txt"
+                app:layout_constraintTop_toTopOf="@+id/ctdial_sumReceived_txt" />
+
             <HorizontalScrollView
                 android:id="@+id/ctdial_categoriesScroll_hsv"
                 android:layout_width="0dp"
@@ -58,7 +86,7 @@
                 android:scrollbarAlwaysDrawHorizontalTrack="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ctdial_sum_txt">
+                app:layout_constraintTop_toBottomOf="@+id/ctdial_sumReceived_txt">
 
 
                 <com.google.android.material.chip.ChipGroup
@@ -69,8 +97,8 @@
                     android:layout_marginBottom="4dp"
                     android:paddingStart="4dp"
                     android:paddingEnd="4dp"
-                    app:singleLine="true"
                     app:selectionRequired="true"
+                    app:singleLine="true"
                     app:singleSelection="true">
 
                     <!--<com.google.android.material.chip.Chip

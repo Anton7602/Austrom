@@ -39,7 +39,10 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>) : 
         if (source!=null) {
             holder.currencySymbol.text = AustromApplication.activeCurrencies[source.currencyCode]?.symbol
         }
-        if (transactions[position].sourceId!=null) {
+        if (transactions[position].sourceId!=null && transactions[position].targetId!=null) {
+            holder.amount.text =String.format("%.2f", transactions[position].amount)
+            holder.amount.setTextColor(Color.BLACK)
+        } else if (transactions[position].sourceId!=null) {
             holder.amount.text ="-" + String.format("%.2f", transactions[position].amount)
             holder.amount.setTextColor(Color.RED)
         } else {

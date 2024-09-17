@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter
 class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
                                         private val transactionType: TransactionType) : BottomSheetDialogFragment() {
     private lateinit var sumText: EditText
+    private lateinit var sumReceivedText: EditText
     private lateinit var fromCard: CardView
     private lateinit var fromName: TextView
     private lateinit var toCard: CardView
@@ -38,6 +39,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
     private lateinit var submitButton : Button
     private lateinit var calendarButton: ImageButton
     private lateinit var currencySymbol: TextView
+    private lateinit var currencySymbolReceived: TextView
     private var selectedSource : Asset? = null
     private var sourceName: String? = null
     private var selectedTarget : Asset? = null
@@ -80,6 +82,11 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
                 } else {
                     selectedSource?.currencyCode
                 }
+                val secondaryAmount = if (sumReceivedText.visibility == View.VISIBLE) {
+                    sumReceivedText.text.toString().toDouble()
+                } else {
+                    null
+                }
                 provider.writeNewTransaction(Transaction(
                     userId = AustromApplication.appUser?.userId,
                     sourceId = selectedSource?.assetId,
@@ -87,7 +94,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
                     targetId = selectedTarget?.assetId,
                     targetName = targetName,
                     amount = sumText.text.toString().toDouble(),
-                    currency = currencyCode.toString(),
+                    secondaryAmount = secondaryAmount,
                     categoryId = categoryChip.text.toString(),
                     transactionDate = null,
                     transactionDateInt = dateInt,
@@ -98,13 +105,16 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
                     provider.updateAsset(selectedSource!!)
                 }
                 if (selectedTarget!=null) {
-                    selectedTarget!!.amount += sumText.text.toString().toDouble()
+                    if (sumReceivedText.visibility == View.VISIBLE) {
+                        selectedTarget!!.amount += sumReceivedText.text.toString().toDouble()
+                    } else {
+                        selectedTarget!!.amount += sumText.text.toString().toDouble()
+                    }
                     provider.updateAsset(selectedTarget!!)
                 }
                 parentDialog.updateTransactionsList()
             }
             dismiss()
-            //Toast.makeText(requireActivity(), "Category: ${category.text}; Date: ${date.tag}", Toast.LENGTH_LONG).show()
         }
 
         calendarButton.setOnClickListener {
@@ -129,7 +139,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
             targetName = name
             toName.text = name
         }
-
+        switchSecondaryCurrencyVisibility()
     }
 
     fun receiveSourceSelection(asset: Asset?, name: String?) {
@@ -145,7 +155,19 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
             sourceName = name
             fromName.text = name
         }
+        switchSecondaryCurrencyVisibility()
+    }
 
+    private fun switchSecondaryCurrencyVisibility() {
+        if(selectedSource!=null && selectedTarget!=null && selectedTarget!!.currencyCode!=selectedSource!!.currencyCode) {
+            sumReceivedText.visibility = View.VISIBLE
+            currencySymbolReceived.visibility = View.VISIBLE
+            currencySymbolReceived.text = AustromApplication.activeCurrencies[selectedTarget?.currencyCode]?.symbol
+            currencySymbol.text = AustromApplication.activeCurrencies[selectedSource?.currencyCode]?.symbol
+        } else {
+            sumReceivedText.visibility = View.GONE
+            currencySymbolReceived.visibility = View.GONE
+        }
     }
 
     private fun setUpCategoriesInChips() {
@@ -191,6 +213,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
 
     private fun bindViews(view: View) {
         sumText = view.findViewById(R.id.ctdial_sum_txt)
+        sumReceivedText = view.findViewById(R.id.ctdial_sumReceived_txt)
         fromCard = view.findViewById(R.id.ctdial_cardFrom_crv)
         fromName = view.findViewById(R.id.ctdial_fromName_txt)
         toCard = view.findViewById(R.id.ctdial_cardTo_crv)
@@ -200,5 +223,6 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         submitButton = view.findViewById(R.id.ctdial_submit_btn)
         calendarButton = view.findViewById(R.id.ctdial_openCalendar_btn)
         currencySymbol = view.findViewById(R.id.ctdial_currencySymbol_txt)
+        currencySymbolReceived = view.findViewById(R.id.ctdial_currencyReceived_txt)
     }
 }
