@@ -24,8 +24,7 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>) : 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_transaction, parent, false)
-        return TransactionViewHolder(itemView)
+        return TransactionViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_transaction, parent, false))
     }
 
     override fun getItemCount(): Int {

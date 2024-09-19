@@ -37,21 +37,22 @@ class AssetCreationDialogFragment(private val parentDialog: BalanceFragment?) : 
             val provider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
             val assetType : Chip = view.findViewById(typeChipGroup.checkedChipId)
             val currencyType : Chip = view.findViewById(currencyChipGroup.checkedChipId)
-            if (amountTextView.text.toString().isNotEmpty()) {
+            if (titleTextView.text.toString().isNotEmpty()) {
                 provider.createNewAsset(
                     Asset(
                         assetTypeId = getTypeID(assetType.text.toString()),
                         assetName = titleTextView.text.toString(),
                         userId = AustromApplication.appUser?.userId.toString(),
                         amount = if (amountTextView.text.toString().isNotEmpty())
-                        {amountTextView.text.toString().toDouble()}
-                        else {0.0}  ,
+                        {amountTextView.text.toString().toDouble()} else {0.0},
                         currencyCode = currencyType.text.toString(),
                         isPrivate = false
                     )
                 )
                 parentDialog?.updateAssetsList()
                 this.dismiss()
+            } else {
+                Toast.makeText(requireActivity(), "Asset's title cannot be empty", Toast.LENGTH_LONG).show()
             }
         }
     }

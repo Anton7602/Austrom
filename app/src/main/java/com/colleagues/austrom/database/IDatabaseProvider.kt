@@ -12,6 +12,7 @@ interface IDatabaseProvider {
     fun deleteUser(user: User)
     fun getUserByUserId(userId: String): User?
     fun getUserByUsername(username: String) : User?
+    fun getUserByEmail(email: String) : User?
 
     fun createNewAsset(asset: Asset): String?
     fun updateAsset(asset: Asset)

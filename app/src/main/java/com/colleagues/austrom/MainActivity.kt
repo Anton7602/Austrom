@@ -1,7 +1,11 @@
 package com.colleagues.austrom
 
+import android.content.Context
 import android.os.Bundle
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navigationHeaderLayout : ConstraintLayout
     private lateinit var navigationView : NavigationView
     private lateinit var navigationUserNameTextView : TextView
+    private lateinit var navigationLogOutButton: ImageButton
     private lateinit var bottomNavigationBar: NavigationBarView
     private lateinit var fragmentHolder: FragmentContainerView
 
@@ -101,6 +106,17 @@ class MainActivity : AppCompatActivity() {
             }
             status
         }
+
+        navigationLogOutButton.setOnClickListener {
+            val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.remove("appUserId")
+            editor.apply()
+            this.finish()
+        }
+
+        onBackPressedDispatcher.addCallback(this) {
+        }
     }
 
     fun switchFragment(fragment: Fragment) {
@@ -117,6 +133,7 @@ class MainActivity : AppCompatActivity() {
         fragmentHolder = findViewById(R.id.main_fragmentHolder_frg)
         val navigationHeader = navigationView.getHeaderView(0)
         navigationUserNameTextView = navigationHeader.findViewById(R.id.nav_username_txt)
+        navigationLogOutButton = navigationHeader.findViewById(R.id.nav_logout_btn)
         navigationHeaderLayout = navigationHeader.findViewById(R.id.nav_navHeader_cly)
     }
 }

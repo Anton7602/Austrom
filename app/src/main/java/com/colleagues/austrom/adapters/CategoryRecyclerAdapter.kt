@@ -10,17 +10,13 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.models.Category
 
 class CategoryRecyclerAdapter(private val categories: List<Category>) : RecyclerView.Adapter<CategoryRecyclerAdapter.CategoryViewHolder>() {
-
     class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val categoryName: TextView = itemView.findViewById(R.id.itcat_categoryName_txt)
         val categoryImage: ImageView = itemView.findViewById(R.id.itcat_categoruIcon_img)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val itemView =
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_category, parent, false)
-        return CategoryViewHolder(itemView)
+        return CategoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_category, parent, false))
     }
 
     override fun getItemCount(): Int {

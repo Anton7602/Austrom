@@ -1,5 +1,6 @@
 package com.colleagues.austrom
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
@@ -42,13 +43,15 @@ class SignUpActivity : AppCompatActivity() {
             val provider : IDatabaseProvider = FirebaseDatabaseProvider(this)
             val existingUser = provider.getUserByUsername(loginTextBox.text.toString().lowercase())
             if (existingUser == null) {
-                provider.createNewUser(
-                    User(
-                        null,
-                        loginTextBox.text.toString().lowercase(),
-                        emailTextBox.text.toString(),
-                        passwordTextBox.text.toString()))
+                val newUser = User(
+                    null,
+                    loginTextBox.text.toString().lowercase(),
+                    emailTextBox.text.toString(),
+                    passwordTextBox.text.toString())
+                provider.createNewUser(newUser)
                 Toast.makeText(this, "User successfully added", Toast.LENGTH_LONG).show()
+                AustromApplication.appUser = newUser
+                startActivity(Intent(this, MainActivity::class.java))
                 this.finish()
             } else {
                 Toast.makeText(this, "User with provided username already exist in the system", Toast.LENGTH_LONG).show()

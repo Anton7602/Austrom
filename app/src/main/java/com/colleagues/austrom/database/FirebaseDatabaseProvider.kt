@@ -25,6 +25,8 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
             Log.w("Debug", "Couldn't get push key for the user")
             return null
         }
+        user.username = user.username?.lowercase()
+        user.email = user.email?.lowercase()
         reference.child(key).setValue(user)
         Log.w("Debug", "New user added to DB with key: $key")
         return  key
@@ -34,6 +36,8 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
         val userKey = user.userId
         if (!userKey.isNullOrEmpty()) {
             user.userId=null
+            user.username = user.username?.lowercase()
+            user.email = user.email?.lowercase()
             database.getReference("users").child(userKey).setValue(user)
             user.userId=userKey
             Log.w("Debug", "User entry with key ${user.userId} updated")
@@ -87,6 +91,35 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
     private suspend fun getUserByUsernameAsync(username: String) : User? {
         val reference = database.getReference("users")
         val databaseQuery = reference.orderByChild("username").equalTo(username).limitToFirst(1)
+        return runBlocking {
+            try {
+                val snapshot = databaseQuery.get().await()
+                if (snapshot.childrenCount>0) {
+                    val user = snapshot.children.elementAt(0).getValue(User::class.java)
+                    if (user != null) {
+                        user.userId = snapshot.children.elementAt(0).key
+                    }
+                    user
+                } else {
+                    null
+                }
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
+    override fun getUserByEmail(email: String) : User? {
+        var user : User? = null
+        activity.lifecycleScope.launch {
+            user = getUserByEmailAsync(email)
+        }
+        return user
+    }
+
+    private suspend fun getUserByEmailAsync(email: String) : User? {
+        val reference = database.getReference("users")
+        val databaseQuery = reference.orderByChild("email").equalTo(email).limitToFirst(1)
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()
