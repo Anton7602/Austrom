@@ -61,7 +61,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops) {
                     provider.getTransactionsOfUser(user)
                 }
             } else {
-                mutableListOf()
+                provider.getTransactionsOfUser(user)
             }
             if (transactionList.isNotEmpty()) {
                 setUpRecyclerView(transactionList)
