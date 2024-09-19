@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
@@ -36,18 +37,22 @@ class AssetCreationDialogFragment(private val parentDialog: BalanceFragment?) : 
             val provider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
             val assetType : Chip = view.findViewById(typeChipGroup.checkedChipId)
             val currencyType : Chip = view.findViewById(currencyChipGroup.checkedChipId)
-            provider.createNewAsset(
-                Asset(
-                    assetTypeId = getTypeID(assetType.text.toString()),
-                    assetName = titleTextView.text.toString(),
-                    userId = AustromApplication.appUser?.userId.toString(),
-                    amount = amountTextView.text.toString().toDouble(),
-                    currencyCode = currencyType.text.toString(),
-                    isPrivate = false
+            if (amountTextView.text.toString().isNotEmpty()) {
+                provider.createNewAsset(
+                    Asset(
+                        assetTypeId = getTypeID(assetType.text.toString()),
+                        assetName = titleTextView.text.toString(),
+                        userId = AustromApplication.appUser?.userId.toString(),
+                        amount = if (amountTextView.text.toString().isNotEmpty())
+                        {amountTextView.text.toString().toDouble()}
+                        else {0.0}  ,
+                        currencyCode = currencyType.text.toString(),
+                        isPrivate = false
+                    )
                 )
-            )
-            parentDialog?.updateAssetsList()
-            this.dismiss()
+                parentDialog?.updateAssetsList()
+                this.dismiss()
+            }
         }
     }
 

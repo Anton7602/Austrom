@@ -24,7 +24,7 @@ class AssetRecyclerAdapter(private val assets: MutableMap<String, Asset>, var se
         val assetType: TextView = itemView.findViewById(R.id.asitem_assetType_txt)
         val assetAmount: TextView = itemView.findViewById(R.id.asitem_amount_txt)
         val currencySymbol: TextView = itemView.findViewById(R.id.asitem_currencySymbol_txt)
-        val assetBaseAmount: TextView = itemView.findViewById(R.id.asitem_baseCurrencyAmount_txt)
+    val assetBaseAmount: TextView = itemView.findViewById(R.id.asitem_baseCurrencyAmount_txt)
         val assetBaseSymbol: TextView = itemView.findViewById(R.id.asitem_baseCurrencySymbol_txt)
         val assetTypeImg: ImageView = itemView.findViewById(R.id.asitem_assetType_img)
         val assetOwner: TextView = itemView.findViewById(R.id.asitem_owner_txt)
