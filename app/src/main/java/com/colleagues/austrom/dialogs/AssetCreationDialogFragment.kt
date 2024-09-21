@@ -49,6 +49,7 @@ class AssetCreationDialogFragment(private val parentDialog: BalanceFragment?) : 
                         isPrivate = false
                     )
                 )
+                //TestChanges
                 parentDialog?.updateAssetsList()
                 this.dismiss()
             } else {
