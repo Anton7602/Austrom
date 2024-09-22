@@ -47,7 +47,6 @@ class AuthorizationActivity : AppCompatActivity() {
         }
         bindViews()
         tryAuthorizeExistingUserOnDevice()
-        //initializeBiometricAuthentication()
 
         logInButton.setOnClickListener{
             val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
@@ -74,6 +73,7 @@ class AuthorizationActivity : AppCompatActivity() {
 
         signUpButton.setOnClickListener{
             startActivity(Intent(this, SignUpActivity::class.java))
+
         }
 
         forgotPasswordButton.setOnClickListener{

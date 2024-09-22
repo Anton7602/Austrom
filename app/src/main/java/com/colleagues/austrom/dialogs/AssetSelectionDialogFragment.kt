@@ -45,7 +45,7 @@ class AssetSelectionDialogFragment(private val isReturnToSource: Boolean = true,
             emptyAssetsText.visibility = View.VISIBLE
         }
         assetsRecyclerView.layoutManager = LinearLayoutManager(activity)
-        assetsRecyclerView.adapter = AssetRecyclerAdapter(AustromApplication.activeAssets, 0)
+        assetsRecyclerView.adapter = AssetRecyclerAdapter(Asset.toList(AustromApplication.activeAssets), 0)
         val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity()).setView(view)
         val assetSelectionDialog = adb.create()
         if (assetSelectionDialog != null && assetSelectionDialog.window != null) {

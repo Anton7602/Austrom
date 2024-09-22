@@ -14,7 +14,7 @@ import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 
-class AssetRecyclerAdapter(private val assets: MutableMap<String, Asset>, var selectedItemPosition  : Int = -1) : RecyclerView.Adapter<AssetRecyclerAdapter.AssetViewHolder>()  {
+class AssetRecyclerAdapter(private val assets: MutableList<Asset>, var selectedItemPosition  : Int = -1) : RecyclerView.Adapter<AssetRecyclerAdapter.AssetViewHolder>()  {
     private var selectedHolder : AssetViewHolder? = null
 
     class AssetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -40,7 +40,7 @@ class AssetRecyclerAdapter(private val assets: MutableMap<String, Asset>, var se
     }
 
     override fun onBindViewHolder(holder: AssetViewHolder, position: Int) {
-        val asset = assets.entries.elementAt(position).value
+        val asset = assets.elementAt(position)
         holder.assetName.text = asset.assetName
         holder.assetType.text = asset.assetTypeId.toString()
         holder.assetAmount.text = String.format("%.2f", asset.amount)
