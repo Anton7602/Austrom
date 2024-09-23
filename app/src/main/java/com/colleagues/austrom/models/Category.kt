@@ -7,10 +7,11 @@ class Category(val name: String? = null,
                val imgReference: Int? = null) {
 
     companion object{
-        var defaultCategories : List<Category> = listOf(
+        var defaultExpenseCategories : List<Category> = listOf(
             Category("Food", "Mandatory", R.drawable.ic_category_food_temp),
             Category("Clothes", "Mandatory", R.drawable.ic_category_clothes_temp),
             Category("Health", "Mandatory", R.drawable.ic_category_health_temp),
+            Category("Beauty", "Optional", R.drawable.ic_category_beauty_temp),
             Category("Rent", "Mandatory", R.drawable.ic_category_rent_temp),
             Category("Transport", "Mandatory", R.drawable.ic_category_transport_temp),
             Category("Entertainment", "Optional", R.drawable.ic_category_entertainment_temp),

@@ -16,6 +16,20 @@ class Transaction(
     var transactionDate: LocalDate? = null,
     val transactionDateInt: Int? = null,
     val comment: String? = null)  {
+
+    companion object{
+        fun groupTransactionsByDate(transactions: MutableList<Transaction>) : MutableMap<LocalDate, MutableList<Transaction>> {
+            transactions.sortByDescending { it.transactionDate }
+            val groupedTransactions = mutableMapOf<LocalDate, MutableList<Transaction>>()
+            for (transaction in transactions){
+                if (!groupedTransactions.containsKey(transaction.transactionDate)) {
+                    groupedTransactions[transaction.transactionDate!!] = mutableListOf()
+                }
+                groupedTransactions[transaction.transactionDate]!!.add(transaction)
+            }
+            return  groupedTransactions
+        }
+    }
 }
 
 enum class TransactionType {

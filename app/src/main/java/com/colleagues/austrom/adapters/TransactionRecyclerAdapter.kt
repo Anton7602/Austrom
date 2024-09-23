@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import java.time.format.DateTimeFormatter
 
@@ -51,6 +52,10 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>) : 
         holder.targetName.text = transactions[position].targetName
         holder.transactionDate.text =
             "${transactions[position].transactionDate?.dayOfWeek} ${transactions[position].transactionDate?.format(DateTimeFormatter.ofPattern("dd.MM"))}"
+        val category = Category.defaultExpenseCategories.find { it.name == transactions[position].categoryId }
+        if (category!=null) {
+            holder.categoryImage.setImageResource(category.imgReference!!)
+        }
     }
 }
 

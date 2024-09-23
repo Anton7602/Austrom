@@ -9,9 +9,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -21,7 +21,10 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp">
 
             <TextView
                 android:id="@+id/tritem_date_txt"
@@ -31,6 +34,7 @@
                 android:layout_marginTop="8dp"
                 android:text="August 11, Saturday"
                 android:textColor="#929191"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,18 +43,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                app:layout_constraintStart_toStartOf="@+id/tritem_date_txt"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tritem_date_txt"
                 app:srcCompat="@drawable/ic_placeholder_icon" />
 
             <TextView
-                android:id="@+id/tritem_categoryName_txt"
+                android:id="@+id/tritem_targetName_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Category"
+                android:layout_marginStart="8dp"
+                android:text="Target"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/tritem_categoryIcon_img"
                 app:layout_constraintStart_toEndOf="@+id/tritem_categoryIcon_img"
                 app:layout_constraintTop_toTopOf="@+id/tritem_categoryIcon_img" />
 
@@ -63,9 +68,9 @@
                 android:textAlignment="viewEnd"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/tritem_categoryName_txt"
+                app:layout_constraintBottom_toBottomOf="@+id/tritem_targetName_txt"
                 app:layout_constraintEnd_toStartOf="@+id/tritem_currencySymbol_txt"
-                app:layout_constraintTop_toTopOf="@+id/tritem_categoryName_txt" />
+                app:layout_constraintTop_toTopOf="@+id/tritem_targetName_txt" />
 
             <TextView
                 android:id="@+id/tritem_currencySymbol_txt"
@@ -84,18 +89,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:background="@color/transparent"
-                app:layout_constraintStart_toStartOf="@+id/tritem_categoryName_txt"
-                app:layout_constraintTop_toBottomOf="@+id/tritem_categoryName_txt"
+                app:layout_constraintStart_toStartOf="@+id/tritem_targetName_txt"
+                app:layout_constraintTop_toBottomOf="@+id/tritem_targetName_txt"
                 app:srcCompat="@drawable/ic_transaction_source_temp" />
 
             <TextView
-                android:id="@+id/tritem_sourceName_txt"
+                android:id="@+id/tritem_categoryName_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Source"
+                android:text="Category"
                 android:textColor="#929191"
                 android:textSize="12sp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView2"
                 app:layout_constraintStart_toEndOf="@+id/imageView2"
                 app:layout_constraintTop_toTopOf="@+id/imageView2" />
@@ -105,29 +111,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/imageView2"
                 app:layout_constraintTop_toBottomOf="@+id/imageView2"
                 app:srcCompat="@drawable/ic_transaction_target_temp" />
 
             <TextView
-                android:id="@+id/tritem_targetName_txt"
+                android:id="@+id/tritem_sourceName_txt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="2dp"
-                android:text="Target"
+                android:layout_height="16dp"
+                android:layout_marginStart="4dp"
+                android:text="Source"
                 android:textColor="#929191"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-                app:layout_constraintStart_toEndOf="@+id/imageView3"
-                app:layout_constraintTop_toTopOf="@+id/imageView3" />
+                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
             <ImageView
                 android:id="@+id/imageView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="8dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/imageView3"
                 app:layout_constraintTop_toBottomOf="@+id/imageView3"
@@ -141,6 +147,7 @@
                 android:text="Comment (Not Yet Supported)"
                 android:textColor="#929191"
                 android:textSize="12sp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView4"
                 app:layout_constraintStart_toEndOf="@+id/imageView4"
                 app:layout_constraintTop_toTopOf="@+id/imageView4" />
