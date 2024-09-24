@@ -4,13 +4,10 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.R
-import com.colleagues.austrom.adapters.CategoryRecyclerAdapter.CategoryViewHolder
-import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

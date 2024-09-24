@@ -7,12 +7,46 @@
     tools:context=".fragments.SettingsFragment">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/set_myCurrencies_txt"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/settings"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="My Currencies"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/set_addCurrencies_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/set_addCurrencies_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="@color/transparent"
+        android:src="@drawable/ic_navigation_add_temp"
+        app:layout_constraintBottom_toBottomOf="@+id/set_myCurrencies_txt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/set_myCurrencies_txt" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/set_selectedCurrecies_chgr"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/set_myCurrencies_txt"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="USD"
+            android:visibility="gone" />
+    </com.google.android.material.chip.ChipGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

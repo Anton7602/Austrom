@@ -171,7 +171,12 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
     }
 
     private fun setUpCategoriesInChips() {
-        val categories = Category.defaultExpenseCategories
+
+        val categories = when (transactionType) {
+            TransactionType.TRANSFER -> Category.defaultTransferCategories
+            TransactionType.INCOME -> Category.defaultIncomeCategories
+            TransactionType.EXPENSE -> Category.defaultExpenseCategories
+        }
         for (category in categories) {
             val chip = Chip(requireActivity())
             chip.text = category.name

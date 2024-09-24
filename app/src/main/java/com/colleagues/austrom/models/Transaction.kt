@@ -1,7 +1,6 @@
 package com.colleagues.austrom.models
 
 import java.time.LocalDate
-import java.util.Date
 
 class Transaction(
     var transactionId: String? = null,

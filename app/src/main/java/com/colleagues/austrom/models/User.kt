@@ -1,6 +1,5 @@
 package com.colleagues.austrom.models
 
-import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
 
 @IgnoreExtraProperties

@@ -23,7 +23,14 @@ class Category(val name: String? = null,
             Category("Equipment", "Optional", R.drawable.ic_category_equipment_temp),
             Category("Other", "Optional", R.drawable.ic_category_other_temp),
         )
+
+        var defaultIncomeCategories : List<Category> = listOf(
+            Category("Wages", "Optional", R.drawable.ic_category_wages_temp),
+            Category("Cashback", "Optional", R.drawable.ic_category_cashback_temp),
+        )
+
+        var defaultTransferCategories : List<Category> = listOf(
+            Category("Transfer", "Optional", R.drawable.ic_category_transfer_temp),
+        )
     }
-
-
 }
