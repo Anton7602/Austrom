@@ -1,11 +1,10 @@
 package com.colleagues.austrom.dialogs
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
@@ -17,7 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class CurrencySelectionDialogFragment(private val currencyReceiver: SettingsFragment) : BottomSheetDialogFragment() {
     private lateinit var currencyHolder: RecyclerView
-    private lateinit var acceptButton: Button
+    private lateinit var declineButton: ImageButton
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_fragment_currency_selection, container, false)
@@ -28,16 +27,16 @@ class CurrencySelectionDialogFragment(private val currencyReceiver: SettingsFrag
         bindViews(view)
 
         currencyHolder.layoutManager = LinearLayoutManager(activity)
-        currencyHolder.adapter = CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, currencyReceiver)
+        currencyHolder.adapter = CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, this, currencyReceiver)
 
-        acceptButton.setOnClickListener {
+        declineButton.setOnClickListener {
             this.dismiss()
         }
     }
 
     private fun bindViews(view: View) {
         currencyHolder = view.findViewById(R.id.csdial_currencyholder_rcv)
-        acceptButton = view.findViewById(R.id.csdial_accept_btn)
+        declineButton = view.findViewById(R.id.csdial_decline_btn)
     }
 
 }

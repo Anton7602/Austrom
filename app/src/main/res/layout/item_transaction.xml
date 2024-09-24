@@ -122,7 +122,7 @@
                 android:layout_height="16dp"
                 android:layout_marginStart="4dp"
                 android:text="Source"
-                android:textColor="#929191"
+                android:textColor="@color/dark_grey"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView2"
                 app:layout_constraintStart_toEndOf="@+id/imageView2"

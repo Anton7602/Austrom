@@ -17,31 +17,37 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/curit_currencyCode_txt"
-                android:layout_width="0dp"
+            <RadioButton
+                android:id="@+id/curit_selectionMarker_rbn"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="RUB"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="w,3:1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.384" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/curit_currencyName_txt"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:text="Russian Ruble"
-                app:layout_constraintBottom_toBottomOf="@+id/curit_currencyCode_txt"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
-                app:layout_constraintStart_toEndOf="@+id/curit_currencyCode_txt"
-                app:layout_constraintTop_toTopOf="@+id/curit_currencyCode_txt"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintStart_toEndOf="@+id/curit_selectionMarker_rbn"
+                app:layout_constraintTop_toTopOf="@+id/curit_selectionMarker_rbn">
+
+                <TextView
+                    android:id="@+id/curit_currencyCode_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:text="RUB" />
+
+                <TextView
+                    android:id="@+id/curit_currencyName_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Russian Ruble" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearLayout2"
@@ -49,9 +55,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@+id/curit_currencyName_txt"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/curit_currencyName_txt">
+                app:layout_constraintTop_toTopOf="@+id/curit_selectionMarker_rbn">
 
                 <TextView
                     android:id="@+id/curit_currencyExchangeRate_txt"
@@ -66,6 +72,15 @@
                     android:layout_height="wrap_content"
                     android:text="$" />
             </LinearLayout>
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
