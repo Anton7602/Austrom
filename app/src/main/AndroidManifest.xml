@@ -14,6 +14,15 @@
         android:theme="@style/Theme.Austrom"
         tools:targetApi="34">
         <activity
+            android:name=".AssetProperiesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TransactionPropertiesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AuthorizationQuickActivity"
+            android:exported="false" />
+        <activity
             android:name=".PasswordRecoveryActivity"
             android:exported="false" />
         <activity
@@ -24,6 +33,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
