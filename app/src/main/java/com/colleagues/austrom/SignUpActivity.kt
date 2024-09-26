@@ -170,9 +170,8 @@ class SignUpActivity : AppCompatActivity() {
 
         checkTextFields["login"] = true
         loginTextLayout.isErrorEnabled = false
-        if (checkTextFields.values.all { it }) {
+        if (checkTextFields.values.all { it })
             signUpButton.isEnabled = true
-        }
     }
     private fun checkEmail() {
         if (emailTextBox.text.toString().isEmpty()) {
@@ -188,9 +187,8 @@ class SignUpActivity : AppCompatActivity() {
 
         checkTextFields["email"] = true
         emailTextLayout.isErrorEnabled = false
-        if (checkTextFields.values.all { it }) {
+        if (checkTextFields.values.all { it })
             signUpButton.isEnabled = true
-        }
     }
 
     private fun checkPassword() {
@@ -210,9 +208,8 @@ class SignUpActivity : AppCompatActivity() {
 
         checkTextFields["password"] = true
         passwordTextLayout.isErrorEnabled = false
-        if (checkTextFields.values.all { it }) {
+        if (checkTextFields.values.all { it })
             signUpButton.isEnabled = true
-        }
     }
 
     private fun checkRepeatPassword() {
@@ -229,9 +226,8 @@ class SignUpActivity : AppCompatActivity() {
 
         checkTextFields["repeatPassword"] = true
         repeatPasswordTextLayout.isErrorEnabled = false
-        if (checkTextFields.values.all { it }) {
+        if (checkTextFields.values.all { it })
             signUpButton.isEnabled = true
-        }
     }
     // 25.09.24 MC <-
 }
