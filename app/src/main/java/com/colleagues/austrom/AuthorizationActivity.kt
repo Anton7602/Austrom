@@ -34,9 +34,7 @@ class AuthorizationActivity : AppCompatActivity() {
             insets
         }
         bindViews()
-        val editor = sharedPreferences.edit()
-        editor.putString("appQuickPin","7602")
-        editor.apply()
+
         runQuickAuthorization()
 
         logInButton.setOnClickListener{
