@@ -185,6 +185,7 @@ class SignUpActivity : AppCompatActivity() {
             checkTextFields["email"] = false
             return
         }
+
         checkTextFields["email"] = true
         emailTextLayout.isErrorEnabled = false
         if (checkTextFields.values.all { it }) {
@@ -206,6 +207,7 @@ class SignUpActivity : AppCompatActivity() {
             checkTextFields["password"] = false
             return
         }
+
         checkTextFields["password"] = true
         passwordTextLayout.isErrorEnabled = false
         if (checkTextFields.values.all { it }) {
@@ -224,6 +226,7 @@ class SignUpActivity : AppCompatActivity() {
             checkTextFields["repeatPassword"] = false
             return
         }
+
         checkTextFields["repeatPassword"] = true
         repeatPasswordTextLayout.isErrorEnabled = false
         if (checkTextFields.values.all { it }) {
