@@ -15,7 +15,7 @@ import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDatabaseProvider{
+class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatabaseProvider{
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
     override fun createNewUser(user: User): String? {
@@ -57,7 +57,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
 
     override fun getUserByUserId(userId: String) : User? {
         var user : User? = null
-        activity.lifecycleScope.launch {
+        activity?.lifecycleScope?.launch {
             user = getUserByUserIdAsync(userId)
         }
         return user
@@ -82,7 +82,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
 
     override fun getUserByUsername(username: String) : User? {
         var user : User? = null
-        activity.lifecycleScope.launch {
+        activity?.lifecycleScope?.launch {
             user = getUserByUsernameAsync(username)
         }
         return user
@@ -111,7 +111,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
 
     override fun getUserByEmail(email: String) : User? {
         var user : User? = null
-        activity.lifecycleScope.launch {
+        activity?.lifecycleScope?.launch {
             user = getUserByEmailAsync(email)
         }
         return user
@@ -174,7 +174,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
 
     override fun getBudgetById(budgetId: String) : Budget? {
         var budget : Budget? = null
-        activity.lifecycleScope.launch {
+        activity?.lifecycleScope?.launch {
             budget = getBudgetByIdAsync(budgetId)
         }
         return budget
@@ -236,7 +236,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
 
     override fun getAssetsOfUser(user: User): MutableMap<String, Asset> {
         var assets : MutableMap<String, Asset> = mutableMapOf()
-        activity.lifecycleScope.launch {
+        activity?.lifecycleScope?.launch {
             assets = getAssetsOfUserAsync(user)
         }
         return assets
@@ -267,7 +267,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
 
     override fun getAssetsOfBudget(budget: Budget): MutableMap<String, Asset> {
         var assets : MutableMap<String, Asset> = mutableMapOf()
-        activity.lifecycleScope.launch {
+        activity?.lifecycleScope?.launch {
             assets = getAssetsOfBudgetAsync(budget)
         }
         return assets
@@ -311,7 +311,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
 
     override fun getTransactionsOfUser(user: User): MutableList<Transaction> {
         var transactions : MutableList<Transaction> = mutableListOf()
-        activity.lifecycleScope.launch {
+        activity?.lifecycleScope?.launch {
             transactions = getTransactionsOfUserAsync(user)
         }
         return transactions
@@ -343,7 +343,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
 
     override fun getTransactionsOfBudget(budget: Budget): MutableList<Transaction> {
         var transactions : MutableList<Transaction> = mutableListOf()
-        activity.lifecycleScope.launch {
+        activity?.lifecycleScope?.launch {
             transactions = getTransactionOfBudgetAsync(budget)
         }
         return transactions
@@ -376,7 +376,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity) : IDataba
 
     override fun getCurrencies(): MutableMap<String, Currency> {
         var currencies : MutableMap<String, Currency> = mutableMapOf()
-        activity.lifecycleScope.launch {
+        activity?.lifecycleScope?.launch {
             currencies = getCurrenciesAsync()
         }
         return currencies

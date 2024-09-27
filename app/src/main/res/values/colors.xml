@@ -8,6 +8,7 @@
     <color name="dark_grey">#929191</color>
     <color name="navigationBarColor">#FFF2ECf4</color>
     <color name="accept_green">#FF00FF00</color>
+    <color name="dark_green">#FF006400</color>
     <color name="decline_red">#FFFF0000</color>
 
 </resources>

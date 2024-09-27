@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CurrencyRecyclerAdapter
-import com.colleagues.austrom.fragments.SettingsFragment
+import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 
-class CurrencySelectionDialogFragment(private val currencyReceiver: SettingsFragment) : BottomSheetDialogFragment() {
+class CurrencySelectionDialogFragment(private val receiver: IDialogInitiator?) : BottomSheetDialogFragment(), IDialogInitiator {
     private lateinit var currencyHolder: RecyclerView
     private lateinit var declineButton: ImageButton
 
@@ -27,16 +27,21 @@ class CurrencySelectionDialogFragment(private val currencyReceiver: SettingsFrag
         bindViews(view)
 
         currencyHolder.layoutManager = LinearLayoutManager(activity)
-        currencyHolder.adapter = CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, this, currencyReceiver)
+        currencyHolder.adapter = CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, this, receiver)
 
         declineButton.setOnClickListener {
             this.dismiss()
         }
     }
 
+    override fun receiveValue(value: String, valueType: String) {
+        (requireActivity().application as AustromApplication)
+            .setNewBaseCurrency(AustromApplication.activeCurrencies[value]!!)
+        dismiss()
+    }
+
     private fun bindViews(view: View) {
         currencyHolder = view.findViewById(R.id.csdial_currencyholder_rcv)
         declineButton = view.findViewById(R.id.csdial_decline_btn)
     }
-
 }

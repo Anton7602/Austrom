@@ -1,68 +1,158 @@
 package com.colleagues.austrom.dialogs
 
-import android.app.AlertDialog
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.fragment.app.DialogFragment
+import androidx.core.content.ContextCompat
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.fragments.SettingsFragment
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
+import com.colleagues.austrom.interfaces.IDialogInitiator
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class QuickAccessPinDialogFragment(private val oldPin : String?,
-                                   private val parent: SettingsFragment) : DialogFragment() {
+class QuickAccessPinDialogFragment(private val receiver: IDialogInitiator?=null) : BottomSheetDialogFragment() {
+    private lateinit var button1: Button
+    private lateinit var button2: Button
+    private lateinit var button3: Button
+    private lateinit var button4: Button
+    private lateinit var button5: Button
+    private lateinit var button6: Button
+    private lateinit var button7: Button
+    private lateinit var button8: Button
+    private lateinit var button9: Button
+    private lateinit var button0: Button
+    private lateinit var buttonRemove: ImageButton
+    private lateinit var pinDot1: ImageView
+    private lateinit var pinDot2: ImageView
+    private lateinit var pinDot3: ImageView
+    private lateinit var pinDot4: ImageView
+    private lateinit var callToAction: TextView
     private lateinit var acceptButton: Button
     private lateinit var cancelButton: Button
-    private lateinit var oldPinText: TextInputEditText
-    private lateinit var oldPinTextLayout: TextInputLayout
-    private lateinit var newPinText: TextInputEditText
-    private lateinit var newPinTextLayout: TextInputLayout
+    private var input = ""
+    private var currentCode = ""
+    private var mode = QuickAccessDialogMode.VALIDATE
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val i: LayoutInflater = requireActivity().layoutInflater
-        val view = i.inflate(R.layout.dialog_fragment_quick_access_pin, null)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.dialog_fragment_quick_access_pin, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        currentCode = (requireActivity().application as AustromApplication).getRememberedPin() ?: ""
         bindViews(view)
-        val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity()).setView(view)
-        val targetSelectionDialog = adb.create()
-        if (targetSelectionDialog != null && targetSelectionDialog.window != null) {
-            targetSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-        }
-        if (oldPin == null) {
-            oldPinTextLayout.visibility = View.GONE
-        }
+        applyMode()
 
-        acceptButton.setOnClickListener {
-            if (oldPin!=null && oldPinText.text.toString()==oldPin) {
-                parent.setNewQuickAccessPin(newPinText.text.toString())
-                dismiss()
-            } else {
-                Toast.makeText(requireActivity(), "Provided wrong old pin", Toast.LENGTH_LONG).show()
+        val keyboardButtonClickListener = View.OnClickListener { buttonPressed ->
+            if (input.length == 4) {
+                input = ""
             }
+            if (input.length < 4) {
+                input += when (buttonPressed.id) {
+                    R.id.qapdial_button1_btn -> "1"
+                    R.id.qapdial_button2_btn -> "2"
+                    R.id.qapdial_button3_btn -> "3"
+                    R.id.qapdial_button4_btn -> "4"
+                    R.id.qapdial_button5_btn -> "5"
+                    R.id.qapdial_button6_btn -> "6"
+                    R.id.qapdial_button7_btn -> "7"
+                    R.id.qapdial_button8_btn -> "8"
+                    R.id.qapdial_button9_btn -> "9"
+                    R.id.qapdial_button0_btn -> "0"
+                    else -> ""
+                }
+            }
+            if (buttonPressed.id == R.id.qapdial_buttonRemove_btn && input.isNotEmpty()) {
+                input = input.substring(0, input.length - 1)
+            }
+            if (input.length == 4) {
+                when (mode) {
+                    QuickAccessDialogMode.VALIDATE -> {
+                        if (input==currentCode) {
+                            currentCode = ""
+                            mode = QuickAccessDialogMode.SETUP
+                            input = ""
+                            applyMode()
+                        } else {
+                            callToAction.text = "Wrong Quick Access Code. Please try again"
+                            input = ""
+                        }
+                    }
+                    QuickAccessDialogMode.SETUP -> {
+                        currentCode = input
+                        mode = QuickAccessDialogMode.REPEAT
+                        input = ""
+                        applyMode()
+                    }
+                    QuickAccessDialogMode.REPEAT -> {
+                        if (input == currentCode) {
+                            (requireActivity().application as AustromApplication).setRememberedPin(input)
+                            receiver?.receiveValue("****", "QuickAccessCode")
+                            dismiss()
+                        } else {
+                            callToAction.text = "Quick Access Code doesn't match. Try again"
+                            input = ""
+                        }
+                    }
+                }
+            }
+            pinDot1.setColorFilter(ContextCompat.getColor(requireActivity(), if (input.isNotEmpty()) {R.color.blue} else {R.color.dark_grey}))
+            pinDot2.setColorFilter(ContextCompat.getColor(requireActivity(), if (input.length>1) {R.color.blue} else {R.color.dark_grey}))
+            pinDot3.setColorFilter(ContextCompat.getColor(requireActivity(), if (input.length>2) {R.color.blue} else {R.color.dark_grey}))
+            pinDot4.setColorFilter(ContextCompat.getColor(requireActivity(), if (input.length>3) {R.color.blue} else {R.color.dark_grey}))
         }
 
-        cancelButton.setOnClickListener {
-            dismiss()
-        }
-
-        return targetSelectionDialog
+        button1.setOnClickListener(keyboardButtonClickListener)
+        button2.setOnClickListener(keyboardButtonClickListener)
+        button3.setOnClickListener(keyboardButtonClickListener)
+        button4.setOnClickListener(keyboardButtonClickListener)
+        button5.setOnClickListener(keyboardButtonClickListener)
+        button6.setOnClickListener(keyboardButtonClickListener)
+        button7.setOnClickListener(keyboardButtonClickListener)
+        button8.setOnClickListener(keyboardButtonClickListener)
+        button9.setOnClickListener(keyboardButtonClickListener)
+        button0.setOnClickListener(keyboardButtonClickListener)
+        buttonRemove.setOnClickListener(keyboardButtonClickListener)
     }
 
     private fun bindViews(view: View) {
         acceptButton = view.findViewById(R.id.qapdial_accept_btn)
         cancelButton = view.findViewById(R.id.qapdial_cancel_btn)
-        oldPinText = view.findViewById(R.id.qapdial_oldPin_txt)
-        oldPinTextLayout = view.findViewById(R.id.qapdial_oldPin_til)
-        newPinText = view.findViewById(R.id.qapdial_newPin_txt)
-        newPinTextLayout = view.findViewById(R.id.qapdial_newPin_til)
+        button1 = view.findViewById(R.id.qapdial_button1_btn)
+        button2 = view.findViewById(R.id.qapdial_button2_btn)
+        button3 = view.findViewById(R.id.qapdial_button3_btn)
+        button4 = view.findViewById(R.id.qapdial_button4_btn)
+        button5 = view.findViewById(R.id.qapdial_button5_btn)
+        button6 = view.findViewById(R.id.qapdial_button6_btn)
+        button7 = view.findViewById(R.id.qapdial_button7_btn)
+        button8 = view.findViewById(R.id.qapdial_button8_btn)
+        button9 = view.findViewById(R.id.qapdial_button9_btn)
+        button0 = view.findViewById(R.id.qapdial_button0_btn)
+        buttonRemove = view.findViewById(R.id.qapdial_buttonRemove_btn)
+        pinDot1 = view.findViewById(R.id.qapdial_pinFirst_img)
+        pinDot2 = view.findViewById(R.id.qapdial_pinSecond_img)
+        pinDot3 = view.findViewById(R.id.qapdial_pinThird_img)
+        pinDot4 = view.findViewById(R.id.qapdial_pinForth_img)
+        callToAction = view.findViewById(R.id.qapdial_ctaText_cta)
     }
+
+    private fun applyMode() {
+
+        if (currentCode.isEmpty()) {
+            mode = QuickAccessDialogMode.SETUP
+        }
+        callToAction.text = when (mode) {
+            QuickAccessDialogMode.VALIDATE -> "Enter Current Quick Access Code"
+            QuickAccessDialogMode.SETUP ->  "Enter New Quick Access Code"
+            QuickAccessDialogMode.REPEAT -> "Repeat New Quick Access Code"
+        }
+    }
+}
+
+enum class QuickAccessDialogMode {
+    VALIDATE, SETUP, REPEAT
 }

@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".dialogs.QuickAccessPinDialogFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_height="20dp"
         app:cardBackgroundColor="@color/navigationBarColor"
-        app:cardCornerRadius="20dp">
+        app:layout_constraintBottom_toBottomOf="@+id/cardView7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/navigationBarColor"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,46 +31,199 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/qapdial_oldPin_til"
+            <TextView
+                android:id="@+id/qapdial_ctaText_cta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true">
+                android:layout_margin="16dp"
+                android:text="Enter Old Quick Access Code"
+                android:textAlignment="center"
+                android:textSize="16sp" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/qapdial_oldPin_txt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Old Pin"
-                    android:inputType="number"
-                    android:textAlignment="center" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/qapdial_newPin_til"
+            <View
+                android:id="@+id/divider7"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true">
+                android:layout_height="1dp"
+                android:background="@color/grey" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/qapdial_newPin_txt"
-                    android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="48dp"
+                android:layout_marginVertical="48dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/qapdial_pinFirst_img"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="New Pin"
-                    android:textAlignment="center" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_pin_placeholder"
+                    android:tint="@color/dark_grey" />
+
+                <ImageView
+                    android:id="@+id/qapdial_pinSecond_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_pin_placeholder"
+                    android:tint="@color/dark_grey" />
+
+                <ImageView
+                    android:id="@+id/qapdial_pinThird_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_pin_placeholder"
+                    android:tint="@color/dark_grey" />
+
+                <ImageView
+                    android:id="@+id/qapdial_pinForth_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_pin_placeholder"
+                    android:tint="@color/dark_grey" />
+            </LinearLayout>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="36dp">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/qapdial_button1_btn"
+                        style="@style/QuickAuthorizationKeyboardButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="1"
+                        app:cornerRadius="16dp" />
+
+                    <Button
+                        android:id="@+id/qapdial_button2_btn"
+                        style="@style/QuickAuthorizationKeyboardButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="2"
+                        app:cornerRadius="16dp" />
+
+                    <Button
+                        android:id="@+id/qapdial_button3_btn"
+                        style="@style/QuickAuthorizationKeyboardButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="3"
+                        app:cornerRadius="16dp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/qapdial_button4_btn"
+                        style="@style/QuickAuthorizationKeyboardButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="4"
+                        app:cornerRadius="16dp" />
+
+                    <Button
+                        android:id="@+id/qapdial_button5_btn"
+                        style="@style/QuickAuthorizationKeyboardButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="5"
+                        app:cornerRadius="16dp" />
+
+                    <Button
+                        android:id="@+id/qapdial_button6_btn"
+                        style="@style/QuickAuthorizationKeyboardButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="6"
+                        app:cornerRadius="16dp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/qapdial_button7_btn"
+                        style="@style/QuickAuthorizationKeyboardButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="7"
+                        app:cornerRadius="16dp" />
+
+                    <Button
+                        android:id="@+id/qapdial_button8_btn"
+                        style="@style/QuickAuthorizationKeyboardButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="8"
+                        app:cornerRadius="16dp" />
+
+                    <Button
+                        android:id="@+id/qapdial_button9_btn"
+                        style="@style/QuickAuthorizationKeyboardButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="9"
+                        app:cornerRadius="16dp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/qapdial_buttonRemove_btn"
+                        style="@style/QuickAuthorizationKeyboardButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:src="@android:drawable/ic_input_delete"
+                        app:cornerRadius="16dp"
+                        app:tint="@color/black" />
+
+                    <Button
+                        android:id="@+id/qapdial_button0_btn"
+                        style="@style/QuickAuthorizationKeyboardButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="0"
+                        app:cornerRadius="16dp" />
+
+                    <Button
+                        android:id="@+id/button11"
+                        style="@style/QuickAuthorizationKeyboardButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text=""
+                        app:cornerRadius="16dp" />
+
+                </TableRow>
+            </TableLayout>
 
             <View
                 android:id="@+id/divider4"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginVertical="8dp"
-                android:background="@color/dark_grey" />
+                android:background="@color/grey"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/qapdial_cancel_btn"
@@ -66,7 +231,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/transparent"
-                    android:text="CANCEL"
+                    android:text="DISABLE PIN"
                     android:textColor="@color/blue" />
 
                 <Button
@@ -75,11 +240,11 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/transparent"
-                    android:text="ACCEPT"
+                    android:text="ACCEPT PIN"
                     android:textColor="@color/blue" />
 
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

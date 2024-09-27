@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -49,12 +50,11 @@ class AuthorizationQuickActivity() : AppCompatActivity() {
     private lateinit var pinDot4: ImageView
     private lateinit var username: TextView
     private lateinit var timeOfDay: TextView
-    private lateinit var progressbar: ProgressBar
+    private lateinit var callToAction: TextView
     private var promptResults: BiometricPromptManager.BiometricResult? = null
     private val promptManager by lazy{
         BiometricPromptManager(this)
     }
-    private lateinit var sharedPreferences : SharedPreferences
     private lateinit var authorizingUser: User
     private lateinit var pin: String
     private var input = ""
@@ -76,11 +76,16 @@ class AuthorizationQuickActivity() : AppCompatActivity() {
             "Good evening, "
         } else if (time.hour>12) {
             "Good afternoon,"
-        } else {
+        } else if (time.hour>6) {
             "Good morning,"
+        } else {
+            "Good night,"
         }
 
         val keyboardButtonClickListener = OnClickListener { view ->
+            if (input.length==4) {
+                input = ""
+            }
             if (input.length<4) {
                 input += when (view.id) {
                     R.id.qauth_keyboard_1_btn -> "1"
@@ -96,32 +101,35 @@ class AuthorizationQuickActivity() : AppCompatActivity() {
                     else -> ""
                 }
             }
-            if (view.id == R.id.qauth_keyboard_remove_btn && input.length>0) {
+            if (view.id == R.id.qauth_keyboard_remove_btn && input.isNotEmpty()) {
                 input = input.substring(0, input.length-1)
             }
             if (view.id == R.id.qauth_keyboard_bio_btn) {
                 initializeBiometricAuthentication()
             }
-
-            pinDot1.visibility = if (input.isNotEmpty()) {View.VISIBLE} else {View.GONE}
-            pinDot2.visibility = if (input.length>1) {View.VISIBLE} else {View.GONE}
-            pinDot3.visibility = if (input.length>2) {View.VISIBLE} else {View.GONE}
-            pinDot4.visibility = if (input.length>3) {View.VISIBLE} else {View.GONE}
-
-
-            if (input == pin) {
-
-                val storedUserID = sharedPreferences.getString("appUserId", "")
-                if (!storedUserID.isNullOrEmpty()) {
-                    val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
-                    val existingUser = dbProvider.getUserByUserId(storedUserID)
-                    if (existingUser!= null) {
-                        AustromApplication.appUser = existingUser
-                        progressbar.visibility = View.VISIBLE
-                        startActivity(Intent(applicationContext, MainActivity::class.java))
-                        this.finish()
-                    }
+            if (input.length==4) {
+                if (input == pin) {
+                    pinDot1.setColorFilter(ContextCompat.getColor(this, R.color.dark_green))
+                    pinDot2.setColorFilter(ContextCompat.getColor(this, R.color.dark_green))
+                    pinDot3.setColorFilter(ContextCompat.getColor(this, R.color.dark_green))
+                    pinDot4.setColorFilter(ContextCompat.getColor(this, R.color.dark_green))
+                    launchMainActivity()
+                    this.finish()
+                } else {
+                    pinDot1.setColorFilter(ContextCompat.getColor(this, R.color.decline_red))
+                    pinDot2.setColorFilter(ContextCompat.getColor(this, R.color.decline_red))
+                    pinDot3.setColorFilter(ContextCompat.getColor(this, R.color.decline_red))
+                    pinDot4.setColorFilter(ContextCompat.getColor(this, R.color.decline_red))
                 }
+            } else {
+                pinDot1.setColorFilter(
+                    ContextCompat.getColor(this, if (input.isNotEmpty()) {R.color.blue} else {R.color.dark_grey}))
+                pinDot2.setColorFilter(
+                    ContextCompat.getColor(this, if (input.length>1) {R.color.blue} else {R.color.dark_grey}))
+                pinDot3.setColorFilter(
+                    ContextCompat.getColor(this, if (input.length>2) {R.color.blue} else {R.color.dark_grey}))
+                pinDot4.setColorFilter(
+                    ContextCompat.getColor(this, if (input.length>3) {R.color.blue} else {R.color.dark_grey}))
             }
         }
 
@@ -139,6 +147,11 @@ class AuthorizationQuickActivity() : AppCompatActivity() {
         buttonBio.setOnClickListener(keyboardButtonClickListener)
     }
 
+    private fun launchMainActivity() {
+        AustromApplication.appUser = authorizingUser
+        startActivity(Intent(applicationContext, MainActivity::class.java))
+    }
+
     private fun initializeBiometricAuthentication() {
         lifecycleScope.launch {
             promptManager.promptResults.collect { results ->
@@ -148,9 +161,8 @@ class AuthorizationQuickActivity() : AppCompatActivity() {
                     BiometricPromptManager.BiometricResult.AuthenticationFailed -> Toast.makeText(applicationContext, "Authentication Failed", Toast.LENGTH_LONG).show()
                     BiometricPromptManager.BiometricResult.AuthenticationNotSet -> Toast.makeText(applicationContext, "Authentication Not Set", Toast.LENGTH_LONG).show()
                     BiometricPromptManager.BiometricResult.AuthenticationSuccess -> {
-                        AustromApplication.appUser = authorizingUser
-                        progressbar.visibility = View.VISIBLE
-                        startActivity(Intent(applicationContext, MainActivity::class.java))
+                        launchMainActivity()
+                        finish()
                     }
                     BiometricPromptManager.BiometricResult.FeatureUnavailable -> Toast.makeText(applicationContext, "Authentication Feature Unavailable", Toast.LENGTH_LONG).show()
                     BiometricPromptManager.BiometricResult.HardwareUnavailable -> Toast.makeText(applicationContext, "Authentication Hardware Unavailable", Toast.LENGTH_LONG).show()
@@ -191,9 +203,8 @@ class AuthorizationQuickActivity() : AppCompatActivity() {
         pinDot4 = findViewById(R.id.qauth_symbolFourth_img)
         username = findViewById(R.id.qauth_username_txt)
         timeOfDay = findViewById(R.id.qauth_timeofday_txt)
-        progressbar = findViewById(R.id.qauth_authLoading_prb)
-        sharedPreferences =  getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-        val storedUserID = sharedPreferences.getString("appUserId", "")
+        callToAction = findViewById(R.id.qauth_ctatext_txt)
+        val storedUserID = (application as AustromApplication).getRememberedUser()
         if (!storedUserID.isNullOrEmpty()) {
             val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
             val existingUser = dbProvider.getUserByUserId(storedUserID)
@@ -203,7 +214,7 @@ class AuthorizationQuickActivity() : AppCompatActivity() {
                 this.finish()
             }
         }
-        val storedPin = sharedPreferences.getString("appQuickPin", "")
+        val storedPin = (application as AustromApplication).getRememberedPin()
         if (!storedPin.isNullOrEmpty()) {
             pin = storedPin
         } else {

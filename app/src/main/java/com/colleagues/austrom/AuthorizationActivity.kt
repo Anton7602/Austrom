@@ -1,8 +1,6 @@
 package com.colleagues.austrom
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -13,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.models.User
 import com.google.android.material.textfield.TextInputEditText
 
 class AuthorizationActivity : AppCompatActivity() {
@@ -21,7 +20,6 @@ class AuthorizationActivity : AppCompatActivity() {
     private lateinit var forgotPasswordButton: TextView
     private lateinit var loginTextBox : TextInputEditText
     private lateinit var passwordTextBox : TextInputEditText
-    private lateinit var sharedPreferences : SharedPreferences
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,18 +43,10 @@ class AuthorizationActivity : AppCompatActivity() {
                 if (existingUser== null || existingUser.password!=passwordTextBox.text.toString()) {
                     Toast.makeText(this, "Username/Email or password is incorrect", Toast.LENGTH_LONG).show()
                 } else {
-                    AustromApplication.appUser = existingUser
-                    val editor = sharedPreferences.edit()
-                    editor.putString("appUserId", existingUser.userId)
-                    editor.apply()
-                    startActivity(Intent(this, MainActivity::class.java))
+                    launchMainActivity(existingUser)
                 }
             } else {
-                AustromApplication.appUser = existingUser
-                val editor = sharedPreferences.edit()
-                editor.putString("appUserId", existingUser.userId)
-                editor.apply()
-                startActivity(Intent(this, MainActivity::class.java))
+                launchMainActivity(existingUser)
             }
         }
 
@@ -70,9 +60,20 @@ class AuthorizationActivity : AppCompatActivity() {
         }
     }
 
+    private fun launchMainActivity(user: User) {
+        AustromApplication.appUser = user
+        val intent = Intent(this, MainActivity::class.java)
+        val rememberedUser = (application as AustromApplication).getRememberedUser()
+        if (rememberedUser== null || rememberedUser!=user.userId) {
+            (application as AustromApplication).setRememberedUser(user.userId!!)
+            intent.putExtra("newUser", true)
+        }
+        startActivity(intent)
+    }
+
     private fun runQuickAuthorization() {
-        val storedUserID = sharedPreferences.getString("appUserId", "")
-        val storedPin = sharedPreferences.getString("appQuickPin", "")
+        val storedUserID = (application as AustromApplication).getRememberedUser()
+        val storedPin = (application as AustromApplication).getRememberedPin()
         if (!storedUserID.isNullOrEmpty() && !storedPin.isNullOrEmpty()) {
             val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
             val existingUser = dbProvider.getUserByUserId(storedUserID)
@@ -88,6 +89,5 @@ class AuthorizationActivity : AppCompatActivity() {
         forgotPasswordButton = findViewById(R.id.auth_forgotPassword_btn)
         loginTextBox = findViewById(R.id.auth_login_txt)
         passwordTextBox = findViewById(R.id.auth_password_txt)
-        sharedPreferences =  getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
     }
 }

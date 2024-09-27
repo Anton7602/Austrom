@@ -57,7 +57,6 @@ class SignUpActivity : AppCompatActivity() {
                 this.finish()
             } else {
                 Toast.makeText(this, "User with provided username already exist in the system", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
             }
         }
 
