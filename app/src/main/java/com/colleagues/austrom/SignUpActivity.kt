@@ -38,17 +38,17 @@ class SignUpActivity : AppCompatActivity() {
         bindViews()
 
         // booleans for all textBoxes checks are passed
-        checkTextFields = mutableMapOf("login" to false, "email" to false, "password" to false, "repeatPassword" to false) // 25.09.24 MC
+        checkTextFields = mutableMapOf("login" to false, "email" to false, "password" to false, "repeatPassword" to false)
         signUpButton.isEnabled = false
 
         signUpButton.setOnClickListener{
             val provider : IDatabaseProvider = FirebaseDatabaseProvider(this)
-            val existingUser = provider.getUserByUsername(loginTextBox.text.toString().lowercase())
+            val existingUser = provider.getUserByEmail(emailTextBox.text.toString().lowercase())
             if (existingUser == null) {
                 val newUser = User(
                     null,
                     loginTextBox.text.toString().lowercase(),
-                    emailTextBox.text.toString(),
+                    emailTextBox.text.toString().lowercase(),
                     passwordTextBox.text.toString())
                 provider.createNewUser(newUser)
                 Toast.makeText(this, "User successfully added", Toast.LENGTH_LONG).show()
@@ -56,7 +56,7 @@ class SignUpActivity : AppCompatActivity() {
                 startActivity(Intent(this, MainActivity::class.java))
                 this.finish()
             } else {
-                Toast.makeText(this, "User with provided username already exist in the system", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "User with provided email already exist in the system", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
         }
@@ -171,11 +171,8 @@ class SignUpActivity : AppCompatActivity() {
             checkTextFields["password"] = false
             return
         }
-        if (!passwordTextBox.text.toString().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$".toRegex())) {
-            if (!passwordTextBox.text.toString().matches("^.{8,}$".toRegex()))
-                passwordTextLayout.setError("Password must be at least 8 characters long")
-            else
-                passwordTextLayout.setError("Password must contain at least one upper case, one lower case latin letter, one number and one of the following character: #?!@$%^&*-")
+        if (!passwordTextBox.text.toString().matches("^.{4,}$".toRegex())) {
+            passwordTextLayout.setError("Password must be at least 4 characters long")
             checkTextFields["password"] = false
             return
         }
