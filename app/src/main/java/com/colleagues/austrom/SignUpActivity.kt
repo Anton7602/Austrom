@@ -199,6 +199,6 @@ class SignUpActivity : AppCompatActivity() {
     private fun acceptField(fieldName: String) {
         checkTextFields[fieldName] = true
         repeatPasswordTextLayout.isErrorEnabled = false
-        signUpButton.isEnabled = checkTextFields.values.all { true }
+        signUpButton.isEnabled = checkTextFields.values.all { it }
     }
 }

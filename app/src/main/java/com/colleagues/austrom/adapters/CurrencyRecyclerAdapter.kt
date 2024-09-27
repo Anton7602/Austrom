@@ -38,9 +38,7 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
         val baseCurrencyCode = AustromApplication.appUser?.baseCurrencyCode
         holder.currencyName.text = currency.name
         holder.currencyCode.text = currency.code
-        if (currency.code == baseCurrencyCode) {
-            holder.selectionMarker.isChecked = true
-        }
+        holder.selectionMarker.isChecked = (currency.code == baseCurrencyCode)
         holder.currencySymbol.text = baseCurrencyCode
         holder.currencyExchangeRate.text = String.format("%.3f", 1/currency.exchangeRate)
         holder.currencyHolder.setOnClickListener {
