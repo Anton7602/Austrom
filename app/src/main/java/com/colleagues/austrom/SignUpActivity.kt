@@ -14,20 +14,17 @@ import com.colleagues.austrom.models.User
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-
 class SignUpActivity : AppCompatActivity() {
     private lateinit var loginTextBox: TextInputEditText
     private lateinit var emailTextBox: TextInputEditText
     private lateinit var passwordTextBox: TextInputEditText
     private lateinit var repeatPasswordTextBox: TextInputEditText
     private lateinit var signUpButton: Button
-    // 25.09.24 MC ->
     private lateinit var checkTextFields: MutableMap<String, Boolean>
     private lateinit var loginTextLayout: TextInputLayout
     private lateinit var emailTextLayout: TextInputLayout
     private lateinit var passwordTextLayout: TextInputLayout
     private lateinit var repeatPasswordTextLayout: TextInputLayout
-    // 25.09.24 MC <-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,19 +39,9 @@ class SignUpActivity : AppCompatActivity() {
 
         // booleans for all textBoxes checks are passed
         checkTextFields = mutableMapOf("login" to false, "email" to false, "password" to false, "repeatPassword" to false) // 25.09.24 MC
-        signUpButton.isEnabled = false                               // 25.09.24 MC
+        signUpButton.isEnabled = false
 
         signUpButton.setOnClickListener{
-            // 25.09.24 MC ->
-            //if (passwordTextBox.text.toString().isEmpty() || loginTextBox.text.toString().isEmpty()) {
-            //    Toast.makeText(this, "Login and Password cannot be empty", Toast.LENGTH_LONG).show()
-            //    return@setOnClickListener
-            //}
-            //if (passwordTextBox.text.toString() != repeatPasswordTextBox.text.toString()) {
-            //    Toast.makeText(this, "Passwords do not match", Toast.LENGTH_LONG).show()
-            //    return@setOnClickListener
-            //}
-            // 25.09.24 MC <-
             val provider : IDatabaseProvider = FirebaseDatabaseProvider(this)
             val existingUser = provider.getUserByUsername(loginTextBox.text.toString().lowercase())
             if (existingUser == null) {
@@ -74,7 +61,6 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        // 25.09.24 MC ->
         loginTextBox.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus)
                 checkLogin()
@@ -134,7 +120,6 @@ class SignUpActivity : AppCompatActivity() {
                 else -> false
             }
         }
-        // 25.09.24 MC <-
     }
 
     private fun bindViews() {
@@ -143,22 +128,18 @@ class SignUpActivity : AppCompatActivity() {
         emailTextBox = findViewById(R.id.signUp_email_txt)
         passwordTextBox = findViewById(R.id.signUp_password_txt)
         repeatPasswordTextBox = findViewById(R.id.signUp_repeatPassword_txt)
-        // 25.09.24 MC ->
         loginTextLayout = findViewById(R.id.signUp_login_til)
         emailTextLayout = findViewById(R.id.signUp_email_til)
         passwordTextLayout = findViewById(R.id.signUp_password_til)
         repeatPasswordTextLayout = findViewById(R.id.signUp_repeatPassword_til)
-        // 25.09.24 MC <-
     }
 
-    // 25.09.24 MC ->
     private fun checkLogin() {
         if (loginTextBox.text.toString().isEmpty()) {
             loginTextLayout.setError("Login cannot be empty")
             checkTextFields["login"] = false
             return
         }
-
         if (!loginTextBox.text.toString().matches("^[a-zA-Z0-9_-]{3,15}$".toRegex())) {
             if (!loginTextBox.text.toString().matches("^.{3,15}$".toRegex()))
                 loginTextLayout.setError("The length of login must be of 3 to 16 characters")
@@ -167,12 +148,9 @@ class SignUpActivity : AppCompatActivity() {
             checkTextFields["login"] = false
             return
         }
-
-        checkTextFields["login"] = true
-        loginTextLayout.isErrorEnabled = false
-        if (checkTextFields.values.all { it })
-            signUpButton.isEnabled = true
+        acceptField("login")
     }
+
     private fun checkEmail() {
         if (emailTextBox.text.toString().isEmpty()) {
             emailTextLayout.setError("Email cannot be empty")
@@ -184,11 +162,7 @@ class SignUpActivity : AppCompatActivity() {
             checkTextFields["email"] = false
             return
         }
-
-        checkTextFields["email"] = true
-        emailTextLayout.isErrorEnabled = false
-        if (checkTextFields.values.all { it })
-            signUpButton.isEnabled = true
+        acceptField("email")
     }
 
     private fun checkPassword() {
@@ -205,11 +179,7 @@ class SignUpActivity : AppCompatActivity() {
             checkTextFields["password"] = false
             return
         }
-
-        checkTextFields["password"] = true
-        passwordTextLayout.isErrorEnabled = false
-        if (checkTextFields.values.all { it })
-            signUpButton.isEnabled = true
+        acceptField("password")
     }
 
     private fun checkRepeatPassword() {
@@ -223,11 +193,12 @@ class SignUpActivity : AppCompatActivity() {
             checkTextFields["repeatPassword"] = false
             return
         }
-
-        checkTextFields["repeatPassword"] = true
-        repeatPasswordTextLayout.isErrorEnabled = false
-        if (checkTextFields.values.all { it })
-            signUpButton.isEnabled = true
+        acceptField("repeatPassword")
     }
-    // 25.09.24 MC <-
+
+    private fun acceptField(fieldName: String) {
+        checkTextFields[fieldName] = true
+        repeatPasswordTextLayout.isErrorEnabled = false
+        signUpButton.isEnabled = checkTextFields.values.all { true }
+    }
 }
