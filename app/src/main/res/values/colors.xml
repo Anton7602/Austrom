@@ -5,6 +5,7 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="blue">#FF0D99FF</color>
     <color name="grey">#FFE6E6E6</color>
+    <color name="dark_grey">#929191</color>
     <color name="navigationBarColor">#FFF2ECf4</color>
     <color name="accept_green">#FF00FF00</color>
     <color name="decline_red">#FFFF0000</color>

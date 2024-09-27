@@ -7,10 +7,11 @@ class Category(val name: String? = null,
                val imgReference: Int? = null) {
 
     companion object{
-        var defaultCategories : List<Category> = listOf(
+        var defaultExpenseCategories : List<Category> = listOf(
             Category("Food", "Mandatory", R.drawable.ic_category_food_temp),
             Category("Clothes", "Mandatory", R.drawable.ic_category_clothes_temp),
             Category("Health", "Mandatory", R.drawable.ic_category_health_temp),
+            Category("Beauty", "Optional", R.drawable.ic_category_beauty_temp),
             Category("Rent", "Mandatory", R.drawable.ic_category_rent_temp),
             Category("Transport", "Mandatory", R.drawable.ic_category_transport_temp),
             Category("Entertainment", "Optional", R.drawable.ic_category_entertainment_temp),
@@ -22,7 +23,14 @@ class Category(val name: String? = null,
             Category("Equipment", "Optional", R.drawable.ic_category_equipment_temp),
             Category("Other", "Optional", R.drawable.ic_category_other_temp),
         )
+
+        var defaultIncomeCategories : List<Category> = listOf(
+            Category("Wages", "Optional", R.drawable.ic_category_wages_temp),
+            Category("Cashback", "Optional", R.drawable.ic_category_cashback_temp),
+        )
+
+        var defaultTransferCategories : List<Category> = listOf(
+            Category("Transfer", "Optional", R.drawable.ic_category_transfer_temp),
+        )
     }
-
-
 }

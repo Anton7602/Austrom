@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.adapters.AssetRecyclerAdapter
+import com.colleagues.austrom.adapters.AssetGroupRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetCreationDialogFragment
+import com.colleagues.austrom.models.Asset
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class BalanceFragment : Fragment(R.layout.fragment_balance) {
@@ -70,7 +71,9 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
 
     private fun setUpRecyclerView() {
         assetHolderRecyclerView.layoutManager = LinearLayoutManager(activity)
-        assetHolderRecyclerView.adapter = AssetRecyclerAdapter(AustromApplication.activeAssets)
+//        assetHolderRecyclerView.adapter = AssetRecyclerAdapter(AustromApplication.activeAssets)
+        val groupedAssets = Asset.groupAssetsByType(AustromApplication.activeAssets)
+        assetHolderRecyclerView.adapter = AssetGroupRecyclerAdapter(groupedAssets, requireActivity())
     }
 
     private fun bindViews(view: View) {

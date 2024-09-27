@@ -2,13 +2,9 @@ package com.colleagues.austrom.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryRecyclerAdapter
 import com.colleagues.austrom.models.Category
@@ -22,7 +18,7 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories) {
         bindViews(view)
 
         categoriesRecyclerView.layoutManager = LinearLayoutManager(activity)
-        categoriesRecyclerView.adapter = CategoryRecyclerAdapter(Category.defaultCategories)
+        categoriesRecyclerView.adapter = CategoryRecyclerAdapter(Category.defaultExpenseCategories)
     }
 
     private fun bindViews(view: View) {

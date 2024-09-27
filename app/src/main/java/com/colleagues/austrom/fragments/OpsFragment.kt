@@ -1,6 +1,5 @@
 package com.colleagues.austrom.fragments
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -9,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.adapters.TransactionRecyclerAdapter
+import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.dialogs.TransactionCreationDialogFragment
@@ -82,7 +81,9 @@ class OpsFragment : Fragment(R.layout.fragment_ops) {
 
     private fun setUpRecyclerView(transactionList: MutableList<Transaction>) {
         transactionHolder.layoutManager = LinearLayoutManager(activity)
-        transactionHolder.adapter = TransactionRecyclerAdapter(transactionList.toList())
+        //transactionHolder.adapter = TransactionRecyclerAdapter(transactionList.toList())
+        val groupedTransactions = Transaction.groupTransactionsByDate(transactionList)
+        transactionHolder.adapter = TransactionGroupRecyclerAdapter(groupedTransactions, requireActivity())
     }
 
     private fun bindViews(view: View) {

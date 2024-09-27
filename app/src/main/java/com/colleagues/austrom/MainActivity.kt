@@ -2,7 +2,7 @@ package com.colleagues.austrom
 
 import android.content.Context
 import android.os.Bundle
-import android.widget.Button
+import android.view.Gravity
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.addCallback
@@ -31,9 +31,11 @@ import com.colleagues.austrom.models.Currency
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 
+
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout : DrawerLayout
     private lateinit var toolbar : Toolbar
+    private lateinit var filterButton: ImageButton
     private lateinit var navigationHeaderLayout : ConstraintLayout
     private lateinit var navigationView : NavigationView
     private lateinit var navigationUserNameTextView : TextView
@@ -69,6 +71,10 @@ class MainActivity : AppCompatActivity() {
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+
+        filterButton.setOnClickListener {
+
+        }
 
         navigationView.setNavigationItemSelectedListener { item ->
             var status = true
@@ -128,6 +134,7 @@ class MainActivity : AppCompatActivity() {
     private fun bindViews() {
         drawerLayout = findViewById(R.id.main_drawerLayout_dly)
         toolbar = findViewById(R.id.main_toolbar_tbr)
+        filterButton = findViewById(R.id.main_filter_btn)
         navigationView = findViewById(R.id.main_navigationView_nvw)
         bottomNavigationBar = findViewById(R.id.main_bottomNav_bnv)
         fragmentHolder = findViewById(R.id.main_fragmentHolder_frg)

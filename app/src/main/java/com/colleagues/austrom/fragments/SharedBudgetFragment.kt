@@ -10,7 +10,6 @@ import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
-import com.colleagues.austrom.dialogs.BudgetCreationDialogFragment
 import com.colleagues.austrom.models.Budget
 
 class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout.fragment_shared_budget) {

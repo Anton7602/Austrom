@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView4"
-        tools:listitem="@layout/item_asset" />
+        tools:listitem="@layout/item_asset_group" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/bal_addNew_fab"
