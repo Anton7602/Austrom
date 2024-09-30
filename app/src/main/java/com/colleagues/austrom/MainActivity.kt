@@ -1,8 +1,6 @@
 package com.colleagues.austrom
 
-import android.content.Context
 import android.os.Bundle
-import android.view.Gravity
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.addCallback
@@ -20,6 +18,8 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentTransaction
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.dialogs.QuickAccessPinDialogFragment
+import com.colleagues.austrom.dialogs.SuggestQuickAccessDialogFragment
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.fragments.BudgetFragment
 import com.colleagues.austrom.fragments.CategoriesFragment
@@ -68,6 +68,10 @@ class MainActivity : AppCompatActivity() {
         AustromApplication.activeCurrencies =
             Currency.switchRatesToNewBaseCurrency(dbProvider.getCurrencies(), AustromApplication.appUser?.baseCurrencyCode)
 
+        if (intent.getBooleanExtra("newUser",false)) {
+            SuggestQuickAccessDialogFragment().show(supportFragmentManager, "Suggest Quick Access Code Dialog")
+        }
+
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
@@ -114,10 +118,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         navigationLogOutButton.setOnClickListener {
-            val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-            val editor = sharedPreferences.edit()
-            editor.remove("appUserId")
-            editor.apply()
+            (application as AustromApplication).forgetRememberedUser()
             this.finish()
         }
 

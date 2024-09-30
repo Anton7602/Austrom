@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.R
@@ -13,7 +14,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMap<LocalDate, MutableList<Transaction>>,
-                                      private val activity: Activity) : RecyclerView.Adapter<TransactionGroupRecyclerAdapter.TransactionGroupViewHolder>(){
+                                      private val activity: AppCompatActivity) : RecyclerView.Adapter<TransactionGroupRecyclerAdapter.TransactionGroupViewHolder>(){
     class TransactionGroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val transactionGroupName: TextView = itemView.findViewById(R.id.trgritem_date_txt)
         val transactionHolderRecyclerView: RecyclerView= itemView.findViewById(R.id.trgritem_transactionholder_rcv)
@@ -31,7 +32,7 @@ class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMa
         val transactionDate = groupedTransactions.keys.elementAt(position)
         holder.transactionGroupName.text = "${transactionDate.dayOfWeek} ${transactionDate.format(DateTimeFormatter.ofPattern("dd.MM"))}"
         holder.transactionHolderRecyclerView.layoutManager = LinearLayoutManager(activity)
-        holder.transactionHolderRecyclerView.adapter = TransactionRecyclerAdapter(groupedTransactions.values.elementAt(position))
+        holder.transactionHolderRecyclerView.adapter = TransactionRecyclerAdapter(groupedTransactions.values.elementAt(position), activity)
     }
 
 }

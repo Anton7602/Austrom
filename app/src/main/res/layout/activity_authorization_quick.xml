@@ -9,16 +9,26 @@
     tools:context=".AuthorizationQuickActivity">
 
 
+    <Space
+        android:id="@+id/space"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tableLayout"
+        app:layout_constraintEnd_toStartOf="@+id/tableLayout"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
     <TableLayout
         android:id="@+id/tableLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/space5"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="8"
+        app:layout_constraintStart_toEndOf="@+id/space"
         app:layout_constraintTop_toBottomOf="@+id/divider3">
 
         <TableRow
@@ -31,7 +41,6 @@
                 style="@style/QuickAuthorizationKeyboardButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:backgroundTint="@color/blue"
                 android:text="1"
                 app:cornerRadius="16dp" />
 
@@ -129,6 +138,7 @@
                 android:id="@+id/qauth_keyboard_remove_cdv"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
                 app:cardBackgroundColor="@color/transparent"
                 app:cardCornerRadius="16dp"
@@ -141,7 +151,7 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@color/transparent"
-                    android:scaleType="fitCenter"
+                    android:scaleType="centerInside"
                     android:tint="@color/black"
                     app:srcCompat="@android:drawable/ic_input_delete" />
             </androidx.cardview.widget.CardView>
@@ -175,13 +185,24 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@color/transparent"
-                    android:scaleType="fitCenter"
+                    android:scaleType="centerInside"
                     android:tint="@color/black"
                     app:srcCompat="@drawable/fingerprint_dialog_fp_icon" />
             </androidx.cardview.widget.CardView>
 
         </TableRow>
     </TableLayout>
+
+    <Space
+        android:id="@+id/space5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tableLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@+id/tableLayout"
+        app:layout_constraintTop_toTopOf="@+id/tableLayout" />
 
     <View
         android:id="@+id/divider3"
@@ -193,7 +214,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -207,125 +228,44 @@
             android:id="@+id/qauth_symbolFirst_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
+            android:layout_margin="12dp"
+            android:tint="@color/dark_grey"
             app:layout_constraintDimensionRatio=""
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayout"
-            app:layout_constraintTop_toTopOf="@+id/textInputLayout"
-            app:srcCompat="@drawable/ic_pin_placeholder" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:hintEnabled="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/qauth_pin_first_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:singleLine="true"
-                android:textAlignment="center"
-                android:textSize="20sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+            app:srcCompat="@drawable/ic_pin_placeholder"
+            tools:layout_editor_absoluteX="24dp"
+            tools:layout_editor_absoluteY="27dp" />
 
         <ImageView
             android:id="@+id/qauth_symbolSecond_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/textInputLayout3"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayout3"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayout3"
-            app:layout_constraintTop_toTopOf="@+id/textInputLayout3"
-            app:srcCompat="@drawable/ic_pin_placeholder" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:hintEnabled="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textInputLayout"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/qauth_pin_second_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:textAlignment="center"
-                android:textSize="20sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_margin="12dp"
+            android:tint="@color/dark_grey"
+            app:srcCompat="@drawable/ic_pin_placeholder"
+            tools:layout_editor_absoluteX="88dp"
+            tools:layout_editor_absoluteY="27dp" />
 
         <ImageView
             android:id="@+id/qauth_symbolThird_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/textInputLayout2"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
-            app:layout_constraintTop_toTopOf="@+id/textInputLayout2"
-            app:srcCompat="@drawable/ic_pin_placeholder" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:hintEnabled="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textInputLayout3"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/qauth_pin_third_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:textAlignment="center"
-                android:textSize="20sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_margin="12dp"
+            android:tint="@color/dark_grey"
+            app:srcCompat="@drawable/ic_pin_placeholder"
+            tools:layout_editor_absoluteX="152dp"
+            tools:layout_editor_absoluteY="27dp" />
 
         <ImageView
             android:id="@+id/qauth_symbolFourth_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/textInputLayout4"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayout4"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayout4"
-            app:layout_constraintTop_toTopOf="@+id/textInputLayout4"
-            app:srcCompat="@drawable/ic_pin_placeholder" />
+            android:layout_margin="12dp"
+            android:tint="@color/dark_grey"
+            app:srcCompat="@drawable/ic_pin_placeholder"
+            tools:layout_editor_absoluteX="128dp"
+            tools:layout_editor_absoluteY="27dp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:hintEnabled="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textInputLayout2"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/qauth_pin_fourth_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:textAlignment="center"
-                android:textSize="20sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/qauth_timeofday_txt"
@@ -345,20 +285,17 @@
         android:layout_marginTop="8dp"
         android:text="Username"
         android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+        app:layout_constraintStart_toStartOf="@+id/qauth_timeofday_txt"
         app:layout_constraintTop_toBottomOf="@+id/qauth_timeofday_txt" />
 
-    <ProgressBar
-        android:id="@+id/qauth_authLoading_prb"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/grey"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/qauth_ctatext_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Enter Quick Access Code"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

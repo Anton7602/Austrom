@@ -56,8 +56,7 @@ class SignUpActivity : AppCompatActivity() {
                 startActivity(Intent(this, MainActivity::class.java))
                 this.finish()
             } else {
-                Toast.makeText(this, "User with provided email already exist in the system", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
+                Toast.makeText(this, "User with provided username already exist in the system", Toast.LENGTH_LONG).show()
             }
         }
 

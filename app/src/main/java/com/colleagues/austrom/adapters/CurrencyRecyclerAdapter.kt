@@ -11,11 +11,12 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
 import com.colleagues.austrom.fragments.SettingsFragment
+import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Currency
 
 class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
-                              private var currencySelector: CurrencySelectionDialogFragment,
-                              private var currencyReceiver: SettingsFragment): RecyclerView.Adapter<CurrencyRecyclerAdapter.CurrencyViewHolder>() {
+                              private var currencySelector: IDialogInitiator,
+                              private var currencyReceiver: IDialogInitiator?): RecyclerView.Adapter<CurrencyRecyclerAdapter.CurrencyViewHolder>() {
     class CurrencyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val currencyHolder: CardView = itemView.findViewById(R.id.curit_currencyHolder_crv)
         val currencySymbol: TextView = itemView.findViewById(R.id.curit_currencySymbol_txt)
@@ -41,10 +42,13 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
         holder.selectionMarker.isChecked = (currency.code == baseCurrencyCode)
         holder.currencySymbol.text = baseCurrencyCode
         holder.currencyExchangeRate.text = String.format("%.3f", 1/currency.exchangeRate)
-        holder.currencyHolder.setOnClickListener {
-            currencyReceiver.setNewBaseCurrency(currency)
+
+        val currencyTapOnClickListener = View.OnClickListener { _ ->
+            currencyReceiver?.receiveValue(currency.name, "BaseCurrency")
+            currencySelector.receiveValue(currency.code, "CurrencyCode")
             holder.selectionMarker.isChecked = true
-            currencySelector.dismiss()
         }
+        holder.currencyHolder.setOnClickListener (currencyTapOnClickListener)
+        holder.selectionMarker.setOnClickListener (currencyTapOnClickListener)
     }
 }
