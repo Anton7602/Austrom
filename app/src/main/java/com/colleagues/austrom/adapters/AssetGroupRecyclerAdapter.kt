@@ -6,13 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.models.Asset
 
-class AssetGroupRecyclerAdapter(private var assetTypes: Map<String, MutableList<Asset>>, private var activity: Activity) : RecyclerView.Adapter<AssetGroupRecyclerAdapter.AssetGroupViewHolder>() {
+class AssetGroupRecyclerAdapter(private var assetTypes: Map<String, MutableList<Asset>>,
+                                private var activity: AppCompatActivity) : RecyclerView.Adapter<AssetGroupRecyclerAdapter.AssetGroupViewHolder>() {
     class AssetGroupViewHolder(private val itemView: View) : RecyclerView.ViewHolder(itemView) {
         val assetTypeName: TextView = itemView.findViewById(R.id.assgritem_assettype_txt)
         val assetTypeSum: TextView= itemView.findViewById(R.id.assgritem_sumamount_txt)
@@ -42,7 +44,7 @@ class AssetGroupRecyclerAdapter(private var assetTypes: Map<String, MutableList<
         }
         holder.assetTypeSum.text = String.format("%.2f",sum ?: 0.0)
         holder.assetsListHolder.layoutManager = LinearLayoutManager(activity)
-        holder.assetsListHolder.adapter = AssetRecyclerAdapter(assetTypes.values.elementAt(position))
+        holder.assetsListHolder.adapter = AssetRecyclerAdapter(assetTypes.values.elementAt(position), activity, null, true)
         holder.dropdownButton.setOnClickListener {
             if (holder.assetsListHolder.visibility == View.VISIBLE) {
                 holder.assetsListHolder.visibility = View.GONE

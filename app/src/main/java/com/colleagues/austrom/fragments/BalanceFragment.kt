@@ -3,6 +3,7 @@ package com.colleagues.austrom.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -73,7 +74,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         assetHolderRecyclerView.layoutManager = LinearLayoutManager(activity)
 //        assetHolderRecyclerView.adapter = AssetRecyclerAdapter(AustromApplication.activeAssets)
         val groupedAssets = Asset.groupAssetsByType(AustromApplication.activeAssets)
-        assetHolderRecyclerView.adapter = AssetGroupRecyclerAdapter(groupedAssets, requireActivity())
+        assetHolderRecyclerView.adapter = AssetGroupRecyclerAdapter(groupedAssets, (requireActivity() as AppCompatActivity))
     }
 
     private fun bindViews(view: View) {

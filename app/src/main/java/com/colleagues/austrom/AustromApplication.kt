@@ -1,5 +1,6 @@
 package com.colleagues.austrom
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
@@ -18,8 +19,7 @@ class AustromApplication : Application() {
         var appUser : User? = null
         var activeAssets : MutableMap<String, Asset> = mutableMapOf()
         var activeCurrencies : MutableMap<String, Currency> = mutableMapOf()
-        var selectedCurrencies: MutableList<String> = mutableListOf()
-        var activeTransactions: MutableList<Transaction> = mutableListOf()
+
     }
 
     override fun onCreate() {
@@ -61,6 +61,21 @@ class AustromApplication : Application() {
             dbProvider.updateUser(appUser!!)
             Currency.switchRatesToNewBaseCurrency(activeCurrencies, currency.code)
         }
+    }
+
+    @SuppressLint("MutatingSharedPrefs")
+    fun setRememberedTarget(newTarget: String) {
+        val existingTargets = sharedPreferences.getStringSet("targetList", null) ?: mutableSetOf()
+        if (!existingTargets.contains(newTarget)) {
+            val editor = sharedPreferences.edit()
+            existingTargets.add(newTarget)
+            editor.putStringSet("targetList",existingTargets)
+            editor.apply()
+        }
+    }
+
+    fun getRememberedTargets(): List<String> {
+        return sharedPreferences.getStringSet("targetList", null)?.toList() ?: listOf()
     }
 }
 
