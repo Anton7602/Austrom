@@ -37,14 +37,9 @@ class AuthorizationActivity : AppCompatActivity() {
 
         logInButton.setOnClickListener{
             val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
-            var existingUser = dbProvider.getUserByUsername(loginTextBox.text.toString().lowercase())
-            if (existingUser == null || existingUser.password!=passwordTextBox.text.toString()) {
-                existingUser = dbProvider.getUserByEmail(loginTextBox.text.toString().lowercase())
-                if (existingUser== null || existingUser.password!=passwordTextBox.text.toString()) {
-                    Toast.makeText(this, "Username/Email or password is incorrect", Toast.LENGTH_LONG).show()
-                } else {
-                    launchMainActivity(existingUser)
-                }
+            val existingUser = dbProvider.getUserByEmail(loginTextBox.text.toString().lowercase())
+            if (existingUser== null || existingUser.password!=passwordTextBox.text.toString()) {
+                Toast.makeText(this, "Email or password is incorrect", Toast.LENGTH_LONG).show()
             } else {
                 launchMainActivity(existingUser)
             }

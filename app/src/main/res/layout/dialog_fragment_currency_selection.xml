@@ -37,6 +37,7 @@
                 android:layout_marginBottom="2dp"
                 android:text="Currency Selection"
                 android:textSize="16sp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/csdial_decline_btn"
                 app:layout_constraintStart_toEndOf="@+id/csdial_decline_btn"
                 app:layout_constraintTop_toTopOf="@+id/csdial_decline_btn" />
@@ -45,21 +46,21 @@
                 android:id="@+id/csdial_decline_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="5dp"
                 android:background="@color/transparent"
                 android:src="@drawable/ic_navigation_close_temp"
+                app:layout_constraintBottom_toBottomOf="@+id/csdial_search_txt"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/csdial_search_txt" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/csdial_currencyholder_rcv"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                app:layout_constraintTop_toBottomOf="@+id/csdial_search_txt"
                 tools:listitem="@layout/item_currency" />
 
             <View
@@ -67,10 +68,24 @@
                 android:layout_width="409dp"
                 android:layout_height="1dp"
                 android:layout_marginBottom="2dp"
-                android:background="@color/black"
+                android:background="@color/dark_grey"
                 app:layout_constraintBottom_toTopOf="@+id/csdial_currencyholder_rcv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/csdial_search_txt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:ems="10"
+                android:hint="Currency Selection"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/csdial_decline_btn"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

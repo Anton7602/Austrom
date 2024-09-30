@@ -1,22 +1,28 @@
 package com.colleagues.austrom.adapters
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.colleagues.austrom.AssetProperiesActivity
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.TransactionPropertiesActivity
+import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 
-class AssetRecyclerAdapter(private val assets: MutableList<Asset>, var selectedItemPosition  : Int = -1) : RecyclerView.Adapter<AssetRecyclerAdapter.AssetViewHolder>()  {
-    private var selectedHolder : AssetViewHolder? = null
+class AssetRecyclerAdapter(private val assets: MutableList<Asset>,
+                           private val activity: AppCompatActivity,
+                           private val receiver: IDialogInitiator? = null,
+                           private val isAllowOpenProperties: Boolean = false) : RecyclerView.Adapter<AssetRecyclerAdapter.AssetViewHolder>()  {
 
     class AssetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val selectionMarker: CardView = itemView.findViewById(R.id.asitem_selectionMarker_crv)
         val assetHolder: CardView = itemView.findViewById(R.id.asitem_assetHolder_crv)
         val assetName: TextView = itemView.findViewById(R.id.asitem_assetName_txt)
         val assetType: TextView = itemView.findViewById(R.id.asitem_assetType_txt)
@@ -68,24 +74,12 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>, var selectedI
                 else -> R.drawable.ic_placeholder_icon
             }
         )
-        if (position == selectedItemPosition) {
-            selectedHolder = holder
-            holder.selectionMarker.visibility = View.VISIBLE
-        }
 
         holder.assetHolder.setOnClickListener {
-            switchItemSelection(holder, selectedItemPosition, position)
+            receiver?.receiveValue(asset.assetId!!, "assetID")
+            if (isAllowOpenProperties) {
+                activity.startActivity(Intent(activity, AssetProperiesActivity::class.java))
+            }
         }
-    }
-
-    private fun switchItemSelection(holder: AssetViewHolder, oldPosition: Int, newPosition: Int) {
-        if (oldPosition>=0 && oldPosition<assets.size) {
-            selectedHolder?.selectionMarker?.visibility = View.GONE
-        }
-        if (newPosition>=0 && newPosition<assets.size) {
-            holder.selectionMarker.visibility = View.VISIBLE
-        }
-        selectedHolder = holder
-        selectedItemPosition = newPosition
     }
 }

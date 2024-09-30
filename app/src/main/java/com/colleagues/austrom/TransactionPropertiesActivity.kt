@@ -2,6 +2,7 @@ package com.colleagues.austrom
 
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class TransactionPropertiesActivity : AppCompatActivity() {
-    private lateinit var backButton: Button
+    private lateinit var backButton: ImageButton
     private lateinit var sourceText: TextView
     private lateinit var targetText: TextView
     private lateinit var amount: TextView

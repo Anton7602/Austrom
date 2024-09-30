@@ -49,6 +49,7 @@
                 android:text="CANCEL"
                 android:textColor="@color/blue"
                 android:textStyle="bold"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/asdial_acceptButton_btn" />
 
@@ -60,6 +61,7 @@
                 android:text="ACCEPT"
                 android:textColor="@color/blue"
                 android:textStyle="bold"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 

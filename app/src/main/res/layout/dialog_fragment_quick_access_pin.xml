@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/ic_pin_placeholder"
-                    android:tint="@color/dark_grey" />
+                    app:tint="@color/dark_grey" />
 
                 <ImageView
                     android:id="@+id/qapdial_pinSecond_img"
@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/ic_pin_placeholder"
-                    android:tint="@color/dark_grey" />
+                    app:tint="@color/dark_grey" />
 
                 <ImageView
                     android:id="@+id/qapdial_pinThird_img"
@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/ic_pin_placeholder"
-                    android:tint="@color/dark_grey" />
+                    app:tint="@color/dark_grey" />
 
                 <ImageView
                     android:id="@+id/qapdial_pinForth_img"
@@ -83,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/ic_pin_placeholder"
-                    android:tint="@color/dark_grey" />
+                    app:tint="@color/dark_grey" />
             </LinearLayout>
 
             <TableLayout

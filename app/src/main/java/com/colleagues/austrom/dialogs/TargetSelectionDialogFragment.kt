@@ -7,14 +7,17 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
-import android.widget.EditText
 import androidx.fragment.app.DialogFragment
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+
 
 class TargetSelectionDialogFragment(private val isReturnToSource: Boolean = false,
     private var parentDialog : TransactionCreationDialogFragment? = null) : DialogFragment() {
-    private lateinit var searchView: EditText
+    private lateinit var searchView: AutoCompleteTextView
     private lateinit var acceptButton: Button
     private lateinit var cancelButton: Button
 
@@ -27,6 +30,8 @@ class TargetSelectionDialogFragment(private val isReturnToSource: Boolean = fals
         if (targetSelectionDialog != null && targetSelectionDialog.window != null) {
             targetSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
         }
+        searchView.setAdapter(ArrayAdapter<Any?>(requireActivity(), android.R.layout.simple_dropdown_item_1line,
+            (requireActivity().application as AustromApplication).getRememberedTargets()))
 
         acceptButton.setOnClickListener {
             if(parentDialog!=null) {
@@ -35,6 +40,7 @@ class TargetSelectionDialogFragment(private val isReturnToSource: Boolean = fals
                 } else {
                     parentDialog!!.receiveTargetSelection(null, searchView.text.toString())
                 }
+                (requireActivity().application as AustromApplication).setRememberedTarget(searchView.text.toString())
             }
             dismiss()
         }
