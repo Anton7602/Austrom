@@ -9,10 +9,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.colleagues.austrom.AssetProperiesActivity
+import com.colleagues.austrom.AssetPropertiesActivity
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.TransactionPropertiesActivity
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
@@ -78,7 +77,7 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>,
         holder.assetHolder.setOnClickListener {
             receiver?.receiveValue(asset.assetId!!, "assetID")
             if (isAllowOpenProperties) {
-                activity.startActivity(Intent(activity, AssetProperiesActivity::class.java))
+                activity.startActivity(Intent(activity, AssetPropertiesActivity::class.java))
             }
         }
     }

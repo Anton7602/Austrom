@@ -201,12 +201,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layoutDirection="rtl"
                 android:scrollbarAlwaysDrawHorizontalTrack="false"
+                app:layout_constraintBottom_toBottomOf="@+id/ctdial_openCalendar_btn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ctdial_openCalendar_btn"
-                app:layout_constraintTop_toBottomOf="@+id/ctdial_cardFrom_crv">
+                app:layout_constraintTop_toTopOf="@+id/ctdial_openCalendar_btn">
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/ctdial_datesChips_cgr"
@@ -250,12 +250,12 @@
                 android:id="@+id/ctdial_openCalendar_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
                 android:background="@color/transparent"
+                android:contentDescription="Open Calendar"
+                android:padding="12dp"
                 android:src="@drawable/ic_navigation_calendar_temp"
-                app:layout_constraintBottom_toBottomOf="@+id/ctdial_datesScroll_hsv"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/ctdial_datesScroll_hsv" />
+                app:layout_constraintTop_toBottomOf="@+id/ctdial_cardTo_crv" />
 
             <ImageView
                 android:id="@+id/ctdial_transferIcon_img"
@@ -272,7 +272,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="24dp"
                 android:backgroundTint="@color/blue"
@@ -281,7 +280,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ctdial_datesScroll_hsv" />
+                app:layout_constraintTop_toBottomOf="@+id/ctdial_openCalendar_btn" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
