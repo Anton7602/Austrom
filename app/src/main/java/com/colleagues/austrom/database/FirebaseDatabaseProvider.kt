@@ -138,6 +138,36 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         }
     }
 
+    override fun getUsersByBudget(budgetId: String) : MutableMap<String, User> {
+        var users : MutableMap<String, User> = mutableMapOf()
+        activity?.lifecycleScope?.launch {
+            users = getUsersByBudgetAsync(budgetId)
+        }
+        return users
+    }
+
+    private suspend fun getUsersByBudgetAsync(budgetId: String) : MutableMap<String, User> {
+        val reference = database.getReference("users")
+        val databaseQuery = reference.orderByChild("activeBudgetId").equalTo(budgetId)
+        return runBlocking {
+            try {
+                val snapshot = databaseQuery.get().await()
+                val usersList = mutableMapOf<String, User>()
+                for (child in snapshot.children) {
+                    val user = child.getValue(User::class.java)
+                    if (user!=null) {
+                        user.userId = child.key
+                        usersList[child.key.toString()] = user
+                    }
+                }
+                usersList
+            }
+            catch (e: Exception) {
+                mutableMapOf()
+            }
+        }
+    }
+
     override fun createNewBudget(budget: Budget) : String? {
         val reference = database.getReference("budgets")
         val key = reference.push().key
@@ -371,6 +401,48 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
                 }
             }
             transactionsList
+        }
+    }
+
+    override fun getTransactionsOfAsset(asset: Asset): MutableList<Transaction> {
+        var transactions : MutableList<Transaction> = mutableListOf()
+        activity?.lifecycleScope?.launch {
+            transactions = getTransactionOfAssetAsync(asset)
+        }
+        return transactions
+    }
+
+    private fun getTransactionOfAssetAsync(asset: Asset): MutableList<Transaction> {
+        val transactionsList = mutableListOf<Transaction>()
+        val reference = database.getReference("transactions")
+        val databaseQuerySource = reference.orderByChild("sourceId").equalTo(asset.assetId)
+        val databaseQueryTarget = reference.orderByChild("targetId").equalTo(asset.assetId)
+        return runBlocking {
+            try {
+                val snapshotSource = databaseQuerySource.get().await()
+                for (child in snapshotSource.children) {
+                    val transaction = child.getValue(Transaction::class.java)
+                    if (transaction != null) {
+                        transaction.transactionId = child.key
+                        transaction.transactionDate =
+                            parseIntDateToDate(transaction.transactionDateInt)
+                        transactionsList.add(transaction)
+                    }
+                }
+                val snapshotTarget = databaseQueryTarget.get().await()
+                for (child in snapshotTarget.children) {
+                    val transaction = child.getValue(Transaction::class.java)
+                    if (transaction != null) {
+                        transaction.transactionId = child.key
+                        transaction.transactionDate =
+                            parseIntDateToDate(transaction.transactionDateInt)
+                        transactionsList.add(transaction)
+                    }
+                }
+                transactionsList
+            } catch (e: Exception) {
+                mutableListOf()
+            }
         }
     }
 

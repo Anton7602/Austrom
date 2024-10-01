@@ -68,6 +68,11 @@ class MainActivity : AppCompatActivity() {
         AustromApplication.activeCurrencies =
             Currency.switchRatesToNewBaseCurrency(dbProvider.getCurrencies(), AustromApplication.appUser?.baseCurrencyCode)
 
+        if (AustromApplication.appUser?.activeBudgetId!=null) {
+            AustromApplication.knownUsers = dbProvider.getUsersByBudget(AustromApplication.appUser?.activeBudgetId!!)
+        }
+
+
         if (intent.getBooleanExtra("newUser",false)) {
             SuggestQuickAccessDialogFragment().show(supportFragmentManager, "Suggest Quick Access Code Dialog")
         }

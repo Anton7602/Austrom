@@ -32,4 +32,6 @@
     <string name="button_bio">Keyboard Bio</string>
     <string name="filter">Filter</string>
     <string name="currency_selection">Currency Selection</string>
+    <string name="delete">Delete</string>
+    <string name="payment_technology">Payment Technology</string>
 </resources>

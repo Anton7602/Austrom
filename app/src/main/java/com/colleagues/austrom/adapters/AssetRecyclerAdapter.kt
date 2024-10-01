@@ -59,10 +59,9 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>,
             holder.assetOwnerIcon.visibility = View.GONE
             holder.assetOwner.visibility = View.GONE
         } else {
-            if (asset.userId== AustromApplication.appUser!!.userId) {
-                holder.assetOwner.text = AustromApplication.appUser!!.username
-            } else {
-                holder.assetOwner.text = asset.userId
+            val username = AustromApplication.knownUsers[asset.userId]?.username
+            if (username!=null) {
+                holder.assetOwner.text = username.first().uppercaseChar()+username.substring(1)
             }
         }
         holder.assetTypeImg.setImageResource(
@@ -77,7 +76,7 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>,
         holder.assetHolder.setOnClickListener {
             receiver?.receiveValue(asset.assetId!!, "assetID")
             if (isAllowOpenProperties) {
-                activity.startActivity(Intent(activity, AssetPropertiesActivity::class.java))
+                activity.startActivity(Intent(activity, AssetPropertiesActivity::class.java).putExtra("Asset", asset.toString()))
             }
         }
     }

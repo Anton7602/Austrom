@@ -51,6 +51,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         currencySymbol.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         setUpCategoriesInChips()
         setUpDateChips()
+        setUpPrimaryAsset()
         sumText.requestFocus()
 
         fromCard.setOnClickListener {
@@ -213,6 +214,18 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
             }
             chipDate = chipDate.minusDays(1)
             dateChips.addView(chip)
+        }
+    }
+
+    private fun setUpPrimaryAsset() {
+        val primaryAssets = AustromApplication.activeAssets.filter { entry -> entry.value.isPrimary }
+        if (primaryAssets.isNotEmpty()) {
+            val primaryAsset = primaryAssets.values.elementAt(0)
+            if (transactionType==TransactionType.INCOME) {
+                receiveTargetSelection(primaryAsset, null)
+            } else {
+                receiveSourceSelection(primaryAsset, null)
+            }
         }
     }
 
