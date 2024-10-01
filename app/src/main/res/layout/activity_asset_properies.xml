@@ -9,7 +9,7 @@
     tools:context=".AssetProperiesActivity">
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/asdet_back_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -33,7 +33,7 @@
         app:layout_constraintDimensionRatio="8:5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton2">
+        app:layout_constraintTop_toBottomOf="@+id/asdet_back_btn">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

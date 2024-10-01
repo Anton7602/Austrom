@@ -119,6 +119,7 @@ class MainActivity : AppCompatActivity() {
 
         navigationLogOutButton.setOnClickListener {
             (application as AustromApplication).forgetRememberedUser()
+            (application as AustromApplication).forgetRememberedPin()
             this.finish()
         }
 

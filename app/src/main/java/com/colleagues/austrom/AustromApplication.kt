@@ -29,9 +29,7 @@ class AustromApplication : Application() {
     }
 
     fun setRememberedUser(newUserId: String) {
-        val editor = sharedPreferences.edit()
-        editor.putString("appUserId",newUserId)
-        editor.apply()
+        sharedPreferences.edit().putString("appUserId",newUserId).apply()
     }
 
     fun getRememberedUser() : String? {
@@ -39,19 +37,19 @@ class AustromApplication : Application() {
     }
 
     fun forgetRememberedUser() {
-        val editor = sharedPreferences.edit()
-        editor.remove("appUserId")
-        editor.apply()
+        sharedPreferences.edit().remove("appUserId").apply()
     }
 
     fun setRememberedPin(newPin: String) {
-        val editor = sharedPreferences.edit()
-        editor.putString("appQuickPin",newPin)
-        editor.apply()
+        sharedPreferences.edit().putString("appQuickPin",newPin).apply()
     }
 
     fun getRememberedPin() : String? {
         return sharedPreferences.getString("appQuickPin", null)
+    }
+
+    fun forgetRememberedPin() {
+        sharedPreferences.edit().remove("appQuickPin").apply()
     }
 
     fun setNewBaseCurrency(currency: Currency) {
