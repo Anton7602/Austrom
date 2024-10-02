@@ -50,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:contentDescription="@string/close"
+                android:elevation="8dp"
                 android:padding="12dp"
                 android:src="@drawable/ic_navigation_close_temp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -70,6 +71,7 @@
                 android:layout_height="1dp"
                 android:layout_marginBottom="2dp"
                 android:background="@color/dark_grey"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/csdial_currencyholder_rcv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -81,10 +83,11 @@
                 android:ems="10"
                 android:hint="@string/currency_selection"
                 android:inputType="text"
+                android:paddingStart="50dp"
                 android:paddingTop="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/csdial_decline_btn"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/csdial_decline_btn"
+                app:layout_constraintStart_toStartOf="@+id/csdial_decline_btn"
                 app:layout_constraintTop_toTopOf="@+id/csdial_decline_btn" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

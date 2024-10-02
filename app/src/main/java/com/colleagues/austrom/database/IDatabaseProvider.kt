@@ -27,6 +27,7 @@ interface IDatabaseProvider {
     fun getBudgetById(budgetId: String) : Budget?
 
     fun writeNewTransaction(transaction: Transaction): String?
+    fun deleteTransaction(transaction: Transaction)
     fun getTransactionsOfUser(user: User) : MutableList<Transaction>
     fun getTransactionsOfBudget(budget: Budget) : MutableList<Transaction>
     fun getTransactionsOfAsset(asset: Asset): MutableList<Transaction>

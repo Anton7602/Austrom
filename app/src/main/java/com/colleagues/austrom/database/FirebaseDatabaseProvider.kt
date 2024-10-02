@@ -3,6 +3,7 @@ package com.colleagues.austrom.database
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Currency
@@ -259,6 +260,13 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         if (!asset.assetId.isNullOrEmpty()) {
             database.getReference("assets").child(asset.assetId!!).setValue(null)
             Log.w("Debug", "Asset entry with key ${asset.assetId} deleted")
+            val transactionsOfAsset = getTransactionsOfAsset(asset)
+            if (transactionsOfAsset.isNotEmpty()) {
+                val reference = database.getReference("transactions")
+                for (transaction in transactionsOfAsset) {
+                    reference.child(transaction.transactionId!!).setValue(null)
+                }
+            }
         } else {
             Log.w("Debug", "Provided asset without id. Delete canceled")
         }
@@ -337,6 +345,15 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         reference.child(key).setValue(transaction)
         Log.w("Debug", "New transaction added to DB with key: $key")
         return key
+    }
+
+    override fun deleteTransaction(transaction: Transaction) {
+        if (!transaction.transactionId.isNullOrEmpty()) {
+            database.getReference("transactions").child(transaction.transactionId!!).setValue(null)
+            Log.w("Debug", "Transaction entry with key ${transaction.transactionId} deleted")
+        } else {
+            Log.w("Debug", "Provided transaction without id. Delete canceled")
+        }
     }
 
     override fun getTransactionsOfUser(user: User): MutableList<Transaction> {

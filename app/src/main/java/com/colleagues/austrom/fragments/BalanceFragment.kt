@@ -13,6 +13,7 @@ import com.colleagues.austrom.adapters.AssetGroupRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetCreationDialogFragment
+import com.colleagues.austrom.dialogs.AssetFilter
 import com.colleagues.austrom.models.Asset
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -25,12 +26,10 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        if (AustromApplication.activeAssets.isEmpty()) {
-            updateAssetsList()
-        } else {
-            setUpRecyclerView()
-        }
-        calculateTotalAmount()
+        if (AustromApplication.activeAssets.isEmpty()) { updateAssetsList() }
+        setUpRecyclerView(AustromApplication.activeAssets)
+        calculateTotalAmount(AustromApplication.activeAssets)
+
         addNewAssetButton.setOnClickListener {
             AssetCreationDialogFragment(this).show(requireActivity().supportFragmentManager, "Asset Creation Dialog")
         }
@@ -51,16 +50,26 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
                 dbProvider.getAssetsOfUser(user)
             }
             if (activeAssets.isNotEmpty()) {
-                AustromApplication.activeAssets = activeAssets
+                val filteredAssets = (activeAssets.filter { entry ->
+                    !entry.value.isPrivate || entry.value.userId==AustromApplication.appUser?.userId }).toMutableMap()
+                AustromApplication.activeAssets = filteredAssets
             }
         }
-        setUpRecyclerView()
     }
 
-    private fun calculateTotalAmount() {
+    fun filterAssets(filter: AssetFilter) {
+        var filteredAssets = AustromApplication.activeAssets.toMap()
+        if (!filter.showShared) {
+            filteredAssets = filteredAssets.filter { entry -> entry.value.userId==AustromApplication.appUser?.userId }
+        }
+        setUpRecyclerView(filteredAssets.toMutableMap())
+        calculateTotalAmount(filteredAssets.toMutableMap())
+    }
+
+    private fun calculateTotalAmount(assetList: MutableMap<String, Asset>) {
         baseCurrencySymbolText.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         var totalAmount = 0.0
-        for (asset in AustromApplication.activeAssets) {
+        for (asset in assetList) {
             totalAmount += if (asset.value.currencyCode==AustromApplication.appUser?.baseCurrencyCode) {
                 asset.value.amount
             } else {
@@ -70,10 +79,9 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         totalAmountText.text = String.format("%.2f", totalAmount)
     }
 
-    private fun setUpRecyclerView() {
+    private fun setUpRecyclerView(assetList: MutableMap<String, Asset>) {
         assetHolderRecyclerView.layoutManager = LinearLayoutManager(activity)
-//        assetHolderRecyclerView.adapter = AssetRecyclerAdapter(AustromApplication.activeAssets)
-        val groupedAssets = Asset.groupAssetsByType(AustromApplication.activeAssets)
+        val groupedAssets = Asset.groupAssetsByType(assetList)
         assetHolderRecyclerView.adapter = AssetGroupRecyclerAdapter(groupedAssets, (requireActivity() as AppCompatActivity))
     }
 

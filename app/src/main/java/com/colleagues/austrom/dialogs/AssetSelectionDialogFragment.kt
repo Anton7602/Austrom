@@ -20,7 +20,6 @@ import com.colleagues.austrom.adapters.AssetRecyclerAdapter
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Asset
 
-
 class AssetSelectionDialogFragment(private val isReturnToSource: Boolean = true,
     private var listOfAsset: MutableMap<String, Asset> = mutableMapOf(),
     private var parentDialog: TransactionCreationDialogFragment? = null ) : DialogFragment(), IDialogInitiator {

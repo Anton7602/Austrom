@@ -25,7 +25,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-
 class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
                                         private val transactionType: TransactionType) : BottomSheetDialogFragment() {
     private lateinit var sumText: EditText
@@ -48,10 +47,10 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        currencySymbol.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         setUpCategoriesInChips()
         setUpDateChips()
         setUpPrimaryAsset()
+        currencySymbol.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         sumText.requestFocus()
 
         fromCard.setOnClickListener {
@@ -184,14 +183,6 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
             chip.chipIcon = ContextCompat.getDrawable(requireActivity(), category.imgReference ?: R.drawable.ic_placeholder_icon)
             chip.setEnsureMinTouchTargetSize(false)
             chip.isCheckable = true
-//            chip.setChipDrawable(
-//                ChipDrawable.createFromAttributes(
-//                    requireActivity(),
-//                    null,
-//                    0,
-//                    R.style.Widget_MaterialComponents_Chip_Choice
-//                )
-//            )
             if (category == categories[0]) {
                 chip.isChecked = true
             }
@@ -218,9 +209,9 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
     }
 
     private fun setUpPrimaryAsset() {
-        val primaryAssets = AustromApplication.activeAssets.filter { entry -> entry.value.isPrimary }
-        if (primaryAssets.isNotEmpty()) {
-            val primaryAsset = primaryAssets.values.elementAt(0)
+        val primaryAssetId = AustromApplication.appUser?.primaryPaymentMethod
+        if (primaryAssetId!=null && AustromApplication.activeAssets[primaryAssetId]!=null) {
+            val primaryAsset = AustromApplication.activeAssets[primaryAssetId]
             if (transactionType==TransactionType.INCOME) {
                 receiveTargetSelection(primaryAsset, null)
             } else {

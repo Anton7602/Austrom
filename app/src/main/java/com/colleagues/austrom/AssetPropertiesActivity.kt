@@ -1,9 +1,11 @@
 package com.colleagues.austrom
 
 import android.os.Bundle
+import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -25,7 +27,11 @@ class AssetPropertiesActivity : AppCompatActivity() {
     private lateinit var assetBalance: TextView
     private lateinit var assetCurrency: TextView
     private lateinit var assetPrimary: CheckBox
+    private lateinit var assetPrivate: CheckBox
     private lateinit var transactionHolder: RecyclerView
+    private lateinit var noTransactionsText: TextView
+    private lateinit var dbProvider: IDatabaseProvider
+    private var transactionsOfAsset: MutableList<Transaction> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,39 +43,27 @@ class AssetPropertiesActivity : AppCompatActivity() {
             insets
         }
         bindViews()
-
-        if (intent.getStringExtra("Asset")!=null) {
-            asset = Asset.parseFromString(intent.getStringExtra("Asset")!!)
-        } else {
-            finish()
-        }
-
-        assetName.text = asset.assetName
-        val username = AustromApplication.knownUsers[asset.userId]?.username
-        if (username!=null) {
-            assetOwner.text = username.first().uppercaseChar()+username.substring(1)
-        }
-        assetBalance.text = String.format("%.2f", asset.amount)
-        assetCurrency.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
-        assetPrimary.isChecked = asset.isPrimary
-
+        retrieveAssetFromIntent()
+        setUpAssetProperties()
         setUpRecyclerView()
 
         assetPrimary.setOnClickListener {
-            val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
-            if (assetPrimary.isChecked) {
-                val oldPrimaryAsset = AustromApplication.activeAssets.filter { entry -> entry.value.isPrimary }
-                for (oldAsset in oldPrimaryAsset) {
-                    oldAsset.value.isPrimary = false
-                    dbProvider.updateAsset(oldAsset.value)
-                }
-                asset.isPrimary = true
-                AustromApplication.activeAssets[asset.assetId]?.isPrimary = true
-                dbProvider.updateAsset(asset)
+            AustromApplication.appUser?.primaryPaymentMethod = if (assetPrimary.isChecked) {asset.assetId} else {null}
+            dbProvider.updateUser(AustromApplication.appUser!!)
+        }
+
+        assetPrivate.setOnClickListener {
+            asset.isPrivate = assetPrivate.isChecked
+            AustromApplication.activeAssets[asset.assetId]?.isPrivate = asset.isPrivate
+            dbProvider.updateAsset(asset)
+        }
+
+        deleteButton.setOnClickListener {
+            if (transactionsOfAsset.isEmpty()) {
+                dbProvider.deleteAsset(asset)
+                this.finish()
             } else {
-                asset.isPrimary = false
-                AustromApplication.activeAssets[asset.assetId]?.isPrimary = false
-                dbProvider.updateAsset(asset)
+                Toast.makeText(this, "This Asset Contains Transactions. Need to make dialog to remove them", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -78,10 +72,31 @@ class AssetPropertiesActivity : AppCompatActivity() {
         }
     }
 
+    private fun retrieveAssetFromIntent() {
+        if (intent.getStringExtra("Asset")!=null) {
+            asset = Asset.parseFromString(intent.getStringExtra("Asset")!!)
+        } else {
+            finish()
+        }
+    }
+
+    private fun setUpAssetProperties() {
+        assetName.text = asset.assetName
+        assetOwner.text = AustromApplication.knownUsers[asset.userId]?.username!!.replaceFirstChar { it.uppercase() }
+        assetBalance.text = String.format("%.2f", asset.amount)
+        assetCurrency.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
+        assetPrimary.isChecked = (asset.assetId == AustromApplication.appUser?.primaryPaymentMethod)
+        assetPrivate.isChecked = asset.isPrivate
+        assetPrivate.isEnabled = AustromApplication.appUser?.userId == asset.userId
+        deleteButton.isEnabled = AustromApplication.appUser?.userId == asset.userId
+        if (!deleteButton.isEnabled) deleteButton.setColorFilter(R.color.dark_grey)
+    }
+
     private fun setUpRecyclerView() {
-        val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
+        transactionsOfAsset = dbProvider.getTransactionsOfAsset(asset)
+        noTransactionsText.visibility = if (transactionsOfAsset.isEmpty()) {View.VISIBLE} else {View.GONE}
         transactionHolder.layoutManager = LinearLayoutManager(this)
-        val groupedTransactions = Transaction.groupTransactionsByDate(dbProvider.getTransactionsOfAsset(asset))
+        val groupedTransactions = Transaction.groupTransactionsByDate(transactionsOfAsset)
         transactionHolder.adapter = TransactionGroupRecyclerAdapter(groupedTransactions, this)
     }
 
@@ -93,6 +108,9 @@ class AssetPropertiesActivity : AppCompatActivity() {
         assetBalance = findViewById(R.id.asdet_balance_txt)
         assetCurrency = findViewById(R.id.asdet_currency_txt)
         assetPrimary = findViewById(R.id.asdet_isPrimary_chb)
+        assetPrivate = findViewById(R.id.asdet_isPrivate_chb)
         transactionHolder = findViewById(R.id.asdet_transactionHolder_rcv)
+        noTransactionsText = findViewById(R.id.asdet_noTransactions_txt)
+        dbProvider = FirebaseDatabaseProvider(this)
     }
 }

@@ -111,11 +111,20 @@
 
     <CheckBox
         android:id="@+id/asdet_isPrimary_chb"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/is_primary_payment_method"
+        app:layout_constraintEnd_toStartOf="@+id/asdet_isPrivate_chb"
         app:layout_constraintStart_toStartOf="@+id/cardView9"
         app:layout_constraintTop_toBottomOf="@+id/cardView9" />
+
+    <CheckBox
+        android:id="@+id/asdet_isPrivate_chb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Private"
+        app:layout_constraintEnd_toEndOf="@+id/cardView9"
+        app:layout_constraintTop_toTopOf="@+id/asdet_isPrimary_chb" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/asdet_transactionHolder_rcv"
@@ -124,12 +133,44 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:elevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/asdet_isPrimary_chb"
+        app:layout_constraintTop_toBottomOf="@+id/asdet_isPrivate_chb"
         tools:listitem="@layout/item_transaction_group">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView10"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:cardBackgroundColor="@color/navigationBarColor"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/asdet_transactionHolder_rcv">
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/asdet_noTransactions_txt"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:autoSizeTextType="uniform"
+        android:elevation="8dp"
+        android:text="Transactions Not Found"
+        android:textAlignment="center"
+        android:visibility="gone"
+        app:layout_constraintDimensionRatio="w,1:8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cardView10" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

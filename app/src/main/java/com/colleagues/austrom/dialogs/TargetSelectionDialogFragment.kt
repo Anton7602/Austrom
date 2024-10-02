@@ -14,7 +14,6 @@ import androidx.fragment.app.DialogFragment
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 
-
 class TargetSelectionDialogFragment(private val isReturnToSource: Boolean = false,
     private var parentDialog : TransactionCreationDialogFragment? = null) : DialogFragment() {
     private lateinit var searchView: AutoCompleteTextView

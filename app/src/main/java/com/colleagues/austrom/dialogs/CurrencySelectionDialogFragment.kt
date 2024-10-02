@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,9 +13,7 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CurrencyRecyclerAdapter
 import com.colleagues.austrom.interfaces.IDialogInitiator
-import com.colleagues.austrom.models.Currency
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-
 
 class CurrencySelectionDialogFragment(private val receiver: IDialogInitiator?) : BottomSheetDialogFragment(), IDialogInitiator {
     private lateinit var currencyHolder: RecyclerView

@@ -7,11 +7,10 @@ class Asset(
     val assetName: String = "",
     var amount: Double = 0.0,
     val currencyCode: String? = null,
-    var isPrimary: Boolean = false,
     var isPrivate: Boolean = false) {
 
     override fun toString(): String {
-        return "$assetId~$assetTypeId~$userId~$assetName~$amount~$currencyCode~$isPrimary~$isPrivate"
+        return "$assetId~$assetTypeId~$userId~$assetName~$amount~$currencyCode~$isPrivate"
     }
 
     companion object{
@@ -38,8 +37,7 @@ class Asset(
                 assetName = array[3],
                 amount = array[4].toDouble(),
                 currencyCode = array[5],
-                isPrimary = (array[6]=="true"),
-                isPrivate = (array[7]=="true"),
+                isPrivate = (array[6]=="true"),
             )
         }
 

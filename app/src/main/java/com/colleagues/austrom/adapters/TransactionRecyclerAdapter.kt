@@ -1,7 +1,5 @@
 package com.colleagues.austrom.adapters
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -11,11 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
-import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionPropertiesActivity
 import com.colleagues.austrom.models.Category

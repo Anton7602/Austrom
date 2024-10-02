@@ -9,8 +9,6 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
-import com.colleagues.austrom.fragments.SettingsFragment
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Currency
 

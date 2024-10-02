@@ -18,8 +18,9 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentTransaction
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
-import com.colleagues.austrom.dialogs.QuickAccessPinDialogFragment
+import com.colleagues.austrom.dialogs.AssetFilterDialogFragment
 import com.colleagues.austrom.dialogs.SuggestQuickAccessDialogFragment
+import com.colleagues.austrom.dialogs.TransactionFilterDialogFragment
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.fragments.BudgetFragment
 import com.colleagues.austrom.fragments.CategoriesFragment
@@ -49,39 +50,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         bindViews()
         setSupportActionBar(toolbar)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_drawerLayout_dly)) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            //v.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = insets.bottom }
-            //toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
-            toolbar.setPadding(0, insets.top, 0,0)
-            navigationHeaderLayout.setPadding(0, insets.top, 0,0)
-            bottomNavigationBar.setPadding(0,0,0,insets.bottom)
-
-//          v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
-            WindowInsetsCompat.CONSUMED
-        }
-        val username = AustromApplication.appUser?.username
-        if (username!=null) {
-            navigationUserNameTextView.text = username.first().uppercaseChar()+username.substring(1)
-        }
-        val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
-        AustromApplication.activeCurrencies =
-            Currency.switchRatesToNewBaseCurrency(dbProvider.getCurrencies(), AustromApplication.appUser?.baseCurrencyCode)
-
-        if (AustromApplication.appUser?.activeBudgetId!=null) {
-            AustromApplication.knownUsers = dbProvider.getUsersByBudget(AustromApplication.appUser?.activeBudgetId!!)
-        }
-
-
-        if (intent.getBooleanExtra("newUser",false)) {
-            SuggestQuickAccessDialogFragment().show(supportFragmentManager, "Suggest Quick Access Code Dialog")
-        }
-
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
+        adjustInsets()
+        downloadCashedValues()
+        navigationUserNameTextView.text = AustromApplication.appUser?.username!!.replaceFirstChar { it.uppercase() }
+        suggestSettingUpQuickAccessCode()
+        setUpNavigationDrawer()
 
         filterButton.setOnClickListener {
+            when (fragmentHolder.getFragment<Fragment>()) {
+                is BalanceFragment -> AssetFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
+                is OpsFragment -> TransactionFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
+            }
 
         }
 
@@ -125,6 +104,9 @@ class MainActivity : AppCompatActivity() {
         navigationLogOutButton.setOnClickListener {
             (application as AustromApplication).forgetRememberedUser()
             (application as AustromApplication).forgetRememberedPin()
+            AustromApplication.appUser = null
+            AustromApplication.activeAssets = mutableMapOf()
+            AustromApplication.knownUsers = mutableMapOf()
             this.finish()
         }
 
@@ -136,6 +118,41 @@ class MainActivity : AppCompatActivity() {
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.main_fragmentHolder_frg, fragment)
         transaction.commit()
+    }
+
+    private fun suggestSettingUpQuickAccessCode() {
+        if (intent.getBooleanExtra("newUser",false)) {
+            SuggestQuickAccessDialogFragment().show(supportFragmentManager, "Suggest Quick Access Code Dialog")
+        }
+    }
+
+    private fun downloadCashedValues() {
+        val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
+        if (AustromApplication.activeCurrencies.isEmpty()) {
+            AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(dbProvider.getCurrencies(), AustromApplication.appUser?.baseCurrencyCode)
+        }
+        if (AustromApplication.appUser?.activeBudgetId!=null) {
+            AustromApplication.knownUsers = dbProvider.getUsersByBudget(AustromApplication.appUser?.activeBudgetId!!)
+        }
+    }
+
+    private fun setUpNavigationDrawer() {
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+    }
+
+    private fun adjustInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_drawerLayout_dly)) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            //v.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = insets.bottom }
+            //toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
+            toolbar.setPadding(0, insets.top, 0,0)
+            navigationHeaderLayout.setPadding(0, insets.top, 0,0)
+            bottomNavigationBar.setPadding(0,0,0,insets.bottom)
+//          v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
     }
 
     private fun bindViews() {
