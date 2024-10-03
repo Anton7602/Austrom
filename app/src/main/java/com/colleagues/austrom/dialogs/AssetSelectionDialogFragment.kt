@@ -52,21 +52,6 @@ class AssetSelectionDialogFragment(private val isReturnToSource: Boolean = true,
             assetSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
         }
 
-//        acceptButton.setOnClickListener {
-//            if (parentDialog!=null) {
-//                val selectedAsset = AustromApplication.activeAssets.entries.elementAt((assetsRecyclerView.adapter as AssetRecyclerAdapter).selectedItemPosition).value
-//                if (isReturnToSource) {
-//                    parentDialog!!.receiveSourceSelection(selectedAsset, selectedAsset.assetName)
-//                } else {
-//                    parentDialog!!.receiveTargetSelection(selectedAsset, selectedAsset.assetName)
-//                }
-//            }
-//            dismiss()
-//        }
-
-//        cancelButton.setOnClickListener {
-//            dismiss()
-//        }
         return assetSelectionDialog
     }
 
