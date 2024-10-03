@@ -494,7 +494,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         return (date.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).toInt()
     }
 
-    fun parseIntDateToDate(intDate: Int?) : LocalDate {
+    private fun parseIntDateToDate(intDate: Int?) : LocalDate {
         if (intDate==null || intDate.toString().length!=8) return LocalDate.now()
         val year = intDate.toString().substring(0,4).toInt()
         val month = intDate.toString().substring(4,6).toInt()

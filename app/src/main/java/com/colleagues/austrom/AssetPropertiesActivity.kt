@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.extensions.startWithUppercase
+import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Transaction
 
@@ -78,8 +80,8 @@ class AssetPropertiesActivity : AppCompatActivity() {
 
     private fun setUpAssetProperties() {
         assetName.text = asset.assetName
-        assetOwner.text = AustromApplication.knownUsers[asset.userId]?.username!!.replaceFirstChar { it.uppercase() }
-        assetBalance.text = String.format("%.2f", asset.amount)
+        assetOwner.text = AustromApplication.knownUsers[asset.userId]?.username!!.startWithUppercase()
+        assetBalance.text = asset.amount.toMoneyFormat()
         assetCurrency.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
         assetPrimary.isChecked = (asset.assetId == AustromApplication.appUser?.primaryPaymentMethod)
         assetPrivate.isChecked = asset.isPrivate

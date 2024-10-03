@@ -9,11 +9,9 @@
         motion:duration="1000">
        <KeyFrameSet>
        </KeyFrameSet>
-        <OnSwipe motion:touchAnchorSide="bottom" />
         <OnSwipe
             motion:touchAnchorId="@+id/asdet_transactionHolder_rcv"
             motion:touchAnchorSide="bottom" />
-        <OnSwipe motion:touchAnchorId="@+id/asdet_transactionHolder_rcv" />
     </Transition>
 
     <ConstraintSet android:id="@+id/start">

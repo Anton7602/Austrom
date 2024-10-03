@@ -13,7 +13,6 @@ import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -32,8 +31,6 @@ class AssetCreationDialogFragment(private val parentDialog: BalanceFragment?) : 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        val behavior = BottomSheetBehavior.from(bottomSheet!!)
-//        behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bindViews(view)
 
         createNewAssetButton.setOnClickListener {

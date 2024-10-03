@@ -27,7 +27,7 @@ class TargetSelectionDialogFragment(private val isReturnToSource: Boolean = fals
         val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity()).setView(view)
         val targetSelectionDialog = adb.create()
         if (targetSelectionDialog != null && targetSelectionDialog.window != null) {
-            targetSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            targetSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
         searchView.setAdapter(ArrayAdapter<Any?>(requireActivity(), android.R.layout.simple_dropdown_item_1line,
             (requireActivity().application as AustromApplication).getRememberedTargets()))

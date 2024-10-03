@@ -11,6 +11,3 @@ data class User(
     var activeBudgetId: String? = null,
     var primaryPaymentMethod: String? = null,
     var baseCurrencyCode: String = "USD")
-{
-
-}

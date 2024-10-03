@@ -14,6 +14,7 @@ import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetCreationDialogFragment
 import com.colleagues.austrom.dialogs.AssetFilter
+import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -22,6 +23,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     private lateinit var addNewAssetButton: FloatingActionButton
     private lateinit var totalAmountText: TextView
     private lateinit var baseCurrencySymbolText: TextView
+    var activeFilter: AssetFilter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,6 +60,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     }
 
     fun filterAssets(filter: AssetFilter) {
+        activeFilter = filter
         var filteredAssets = AustromApplication.activeAssets.toMap()
         if (!filter.showShared) {
             filteredAssets = filteredAssets.filter { entry -> entry.value.userId==AustromApplication.appUser?.userId }
@@ -76,7 +79,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
                 asset.value.amount/(AustromApplication.activeCurrencies[asset.value.currencyCode]?.exchangeRate ?: 1.0)
             }
         }
-        totalAmountText.text = String.format("%.2f", totalAmount)
+        totalAmountText.text = totalAmount.toMoneyFormat()
     }
 
     private fun setUpRecyclerView(assetList: MutableMap<String, Asset>) {

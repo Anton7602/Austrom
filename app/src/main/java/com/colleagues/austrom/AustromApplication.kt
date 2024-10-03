@@ -9,7 +9,6 @@ import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Currency
-import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.User
 
 class AustromApplication : Application() {

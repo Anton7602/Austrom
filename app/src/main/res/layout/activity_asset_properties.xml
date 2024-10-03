@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:elevation="8dp"
-        android:text="100000"
+        android:text="100 000.00"
         android:textSize="34sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="@+id/asdet_currency_txt"
@@ -141,6 +141,16 @@
         tools:listitem="@layout/item_transaction_group">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView14"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        app:cardBackgroundColor="@color/navigationBarColor"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView10"

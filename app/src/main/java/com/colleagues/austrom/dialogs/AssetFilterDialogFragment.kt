@@ -21,6 +21,7 @@ class AssetFilterDialogFragment(private val filteredFragment: BalanceFragment) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        applyFilter()
 
         val filterChangedListener = OnClickListener{
             filteredFragment.filterAssets(generateFilter())
@@ -40,6 +41,13 @@ class AssetFilterDialogFragment(private val filteredFragment: BalanceFragment) :
         )
     }
 
+    private fun applyFilter() {
+        if (filteredFragment.activeFilter == null) return
+        if (!filteredFragment.activeFilter!!.showShared) {
+            sharingModeGroup.check(R.id.asfildial_personal_btn)
+        }
+    }
+
     private fun bindViews(view: View) {
         sharingModeGroup = view.findViewById(R.id.asfildial_sharingType_tgr)
         personalButton = view.findViewById(R.id.asfildial_personal_btn)
@@ -47,6 +55,4 @@ class AssetFilterDialogFragment(private val filteredFragment: BalanceFragment) :
     }
 }
 
-class AssetFilter(val showShared: Boolean) {
-
-}
+class AssetFilter(val showShared: Boolean)

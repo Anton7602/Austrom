@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
@@ -23,7 +24,6 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
                                         private val transactionType: TransactionType) : BottomSheetDialogFragment() {
@@ -77,11 +77,6 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
             val dateChip : Chip = view.findViewById(dateChips.checkedChipId)
             val dateInt = provider.parseDateToIntDate(dateChip.tag as LocalDate)
             if (sourceName!=null && targetName!=null) {
-                val currencyCode = if (transactionType == TransactionType.INCOME) {
-                    selectedTarget?.currencyCode
-                } else {
-                    selectedSource?.currencyCode
-                }
                 val secondaryAmount = if (sumReceivedText.visibility == View.VISIBLE) {
                     sumReceivedText.text.toString().toDouble()
                 } else {
@@ -194,17 +189,15 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         var chipDate = LocalDate.now()
         for (i in 0..9) {
             val chip = Chip(requireActivity())
-            var chipDayOfWeek = chipDate.dayOfWeek.toString()
-            chipDayOfWeek = chipDayOfWeek[0].titlecase() + chipDayOfWeek.lowercase().substring(1)
-            chip.text = "${chipDayOfWeek} ${chipDate.format(DateTimeFormatter.ofPattern("dd.MM"))}"
+            chip.text = chipDate.toDayOfWeekAndShortDateFormat()
+            chip.tag = chipDate
             chip.setEnsureMinTouchTargetSize(false)
             chip.isCheckable = true
-            chip.tag = chipDate
             if (i == 0) {
                 chip.isChecked = true
             }
-            chipDate = chipDate.minusDays(1)
             dateChips.addView(chip)
+            chipDate = chipDate.minusDays(1)
         }
     }
 

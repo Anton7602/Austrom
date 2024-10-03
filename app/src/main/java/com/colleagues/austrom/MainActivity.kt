@@ -21,6 +21,7 @@ import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetFilterDialogFragment
 import com.colleagues.austrom.dialogs.SuggestQuickAccessDialogFragment
 import com.colleagues.austrom.dialogs.TransactionFilterDialogFragment
+import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.fragments.BudgetFragment
 import com.colleagues.austrom.fragments.CategoriesFragment
@@ -52,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         adjustInsets()
         downloadCashedValues()
-        navigationUserNameTextView.text = AustromApplication.appUser?.username!!.replaceFirstChar { it.uppercase() }
+        navigationUserNameTextView.text = AustromApplication.appUser?.username!!.startWithUppercase()
         suggestSettingUpQuickAccessCode()
         setUpNavigationDrawer()
 
@@ -143,7 +144,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun adjustInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_drawerLayout_dly)) { v, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_drawerLayout_dly)) { _, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             //v.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = insets.bottom }
             //toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }

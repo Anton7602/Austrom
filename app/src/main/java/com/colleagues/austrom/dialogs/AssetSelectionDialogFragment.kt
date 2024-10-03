@@ -49,7 +49,7 @@ class AssetSelectionDialogFragment(private val isReturnToSource: Boolean = true,
         val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity()).setView(view)
         val assetSelectionDialog = adb.create()
         if (assetSelectionDialog != null && assetSelectionDialog.window != null) {
-            assetSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            assetSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
 
         return assetSelectionDialog

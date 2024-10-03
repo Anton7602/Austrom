@@ -25,6 +25,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops) {
     private lateinit var addExpenseButton: FloatingActionButton
     private lateinit var addTransferButton: FloatingActionButton
     private var transactionList: MutableList<Transaction> = mutableListOf()
+    var activeFilter: TransactionFilter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -72,13 +73,21 @@ class OpsFragment : Fragment(R.layout.fragment_ops) {
     }
 
     fun filterTransactions(filter: TransactionFilter) {
-        val filteredTransactions: MutableList<Transaction> = mutableListOf()
+        activeFilter = filter
+        var filteredTransactions: MutableList<Transaction> = mutableListOf()
         if (filter.transactionTypes.contains(TransactionType.INCOME))
             filteredTransactions.addAll(transactionList.filter { entry -> entry.sourceId==null })
         if (filter.transactionTypes.contains(TransactionType.TRANSFER))
             filteredTransactions.addAll(transactionList.filter  {entry -> entry.sourceId!=null && entry.targetId!=null })
         if (filter.transactionTypes.contains(TransactionType.EXPENSE))
             filteredTransactions.addAll(transactionList.filter { entry -> entry.targetId==null })
+        filteredTransactions = (filteredTransactions.filter { entry -> filter.categories.contains(entry.categoryId) }).toMutableList()
+        if (filter.dateFrom!=null) {
+            filteredTransactions = (filteredTransactions.filter { entry -> entry.transactionDate!! >= filter.dateFrom }).toMutableList()
+        }
+        if (filter.dateTo!=null) {
+            filteredTransactions = (filteredTransactions.filter { entry -> entry.transactionDate!! <= filter.dateTo }).toMutableList()
+        }
         setUpRecyclerView(filteredTransactions)
     }
 
