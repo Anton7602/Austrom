@@ -3,7 +3,6 @@ package com.colleagues.austrom.database
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Currency
