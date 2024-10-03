@@ -11,7 +11,8 @@
        </KeyFrameSet>
         <OnSwipe
             motion:touchAnchorId="@+id/asdet_transactionHolder_rcv"
-            motion:touchAnchorSide="bottom" />
+            motion:dragDirection="dragUp"
+            motion:touchAnchorSide="top" />
     </Transition>
 
     <ConstraintSet android:id="@+id/start">

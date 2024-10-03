@@ -190,6 +190,24 @@
         app:layout_constraintBottom_toBottomOf="@+id/trdet_category_img"
         app:layout_constraintStart_toEndOf="@+id/trdet_category_img" />
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:cardBackgroundColor="@color/navigationBarColor"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider5" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        app:cardBackgroundColor="@color/navigationBarColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/trdet_comments_til"
         android:layout_width="0dp"
@@ -197,7 +215,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/divider5"
         app:layout_constraintDimensionRatio="5:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -214,9 +232,12 @@
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:elevation="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider5" />
+        app:layout_constraintTop_toBottomOf="@+id/divider5"
+        tools:listitem="@layout/item_transaction_detail" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
