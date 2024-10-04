@@ -346,6 +346,18 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         return key
     }
 
+    override fun updateTransaction(transaction: Transaction) {
+        val transactionKey = transaction.transactionId
+        if (!transactionKey.isNullOrEmpty()) {
+            transaction.transactionId = null
+            database.getReference("transactions").child(transactionKey).setValue(transaction)
+            transaction.transactionId = transactionKey
+            Log.w("Debug", "Asset entry with key ${transaction.transactionId} updated")
+        } else {
+            Log.w("Debug", "Provided asset without id. Update canceled")
+        }
+    }
+
     override fun deleteTransaction(transaction: Transaction) {
         if (!transaction.transactionId.isNullOrEmpty()) {
             database.getReference("transactions").child(transaction.transactionId!!).setValue(null)
