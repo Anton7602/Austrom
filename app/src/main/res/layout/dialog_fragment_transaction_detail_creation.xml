@@ -56,8 +56,7 @@
                     android:hint="Item Name"
                     android:inputType="text"
                     android:paddingTop="14dp"
-                    android:paddingBottom="14dp"
-                    android:visibility="gone" />
+                    android:paddingBottom="14dp" />
 
                 <EditText
                     android:id="@+id/trdetcr_detailQuantity_txt"
@@ -77,12 +76,14 @@
                     android:paddingRight="0dp"
                     android:paddingBottom="14dp"
                     android:textAlignment="viewEnd"
-                    android:textColor="@color/dark_grey" />
+                    android:textColor="@color/dark_grey"
+                    android:visibility="gone" />
 
                 <Spinner
                     android:id="@+id/trdetcr_quantityType_spr"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/trdetcr_cost_txt"

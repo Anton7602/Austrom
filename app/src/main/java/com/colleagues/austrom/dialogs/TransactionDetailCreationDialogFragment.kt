@@ -1,7 +1,10 @@
 package com.colleagues.austrom.dialogs
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
@@ -69,9 +72,9 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
         costField.visibility = if (stageId==3) View.VISIBLE else View.GONE
         currencyLabel.visibility = if (stageId==3) View.VISIBLE else View.GONE
         when (stageId) {
-            1 -> detailNameField.requestFocus()
-            2 -> quantityField.requestFocus()
-            3 -> costField.requestFocus()
+            1 -> (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(detailNameField, InputMethodManager.SHOW_IMPLICIT)
+            2 -> (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(quantityField, InputMethodManager.SHOW_IMPLICIT)
+            3 -> (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(costField, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 

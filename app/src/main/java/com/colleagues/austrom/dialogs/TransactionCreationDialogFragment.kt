@@ -75,7 +75,6 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
             val provider = FirebaseDatabaseProvider(requireActivity())
             val categoryChip : Chip = view.findViewById(categoryChips.checkedChipId)
             val dateChip : Chip = view.findViewById(dateChips.checkedChipId)
-            val dateInt = provider.parseDateToIntDate(dateChip.tag as LocalDate)
             if (sourceName!=null && targetName!=null) {
                 val secondaryAmount = if (sumReceivedText.visibility == View.VISIBLE) {
                     sumReceivedText.text.toString().toDouble()
@@ -91,8 +90,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
                     amount = sumText.text.toString().toDouble(),
                     secondaryAmount = secondaryAmount,
                     categoryId = categoryChip.text.toString(),
-                    transactionDate = null,
-                    transactionDateInt = dateInt,
+                    transactionDate = (dateChip.tag as LocalDate),
                     comment = null
                 ))
                 if (selectedSource!=null) {

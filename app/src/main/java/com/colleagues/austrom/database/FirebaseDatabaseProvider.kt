@@ -341,7 +341,12 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
             Log.w("Debug", "Couldn't get push key for the transaction")
             return null
         }
+        transaction.transactionDateInt = parseDateToIntDate(transaction.transactionDate!!)
+        val tempDateHolder = transaction.transactionDate
+        transaction.transactionDate = null
         reference.child(key).setValue(transaction)
+        transaction.transactionDate = tempDateHolder
+        transaction.transactionDateInt = null
         Log.w("Debug", "New transaction added to DB with key: $key")
         return key
     }
@@ -349,9 +354,15 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
     override fun updateTransaction(transaction: Transaction) {
         val transactionKey = transaction.transactionId
         if (!transactionKey.isNullOrEmpty()) {
+            val tempDateHolder = transaction.transactionDate
+            transaction.transactionDateInt = parseDateToIntDate(transaction.transactionDate!!)
+            transaction.transactionDate = null
             transaction.transactionId = null
+            //transaction.comment = if (transaction.comment=="null") null else transaction.comment
             database.getReference("transactions").child(transactionKey).setValue(transaction)
             transaction.transactionId = transactionKey
+            transaction.transactionDate = tempDateHolder
+            transaction.transactionDateInt = null
             Log.w("Debug", "Asset entry with key ${transaction.transactionId} updated")
         } else {
             Log.w("Debug", "Provided asset without id. Update canceled")

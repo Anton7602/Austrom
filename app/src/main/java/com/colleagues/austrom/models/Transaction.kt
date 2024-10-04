@@ -13,7 +13,7 @@ class Transaction(
     val secondaryAmount: Double? = null,
     val categoryId: String? = null,
     var transactionDate: LocalDate? = null,
-    val transactionDateInt: Int? = null,
+    var transactionDateInt: Int? = null,
     val comment: String? = null,
     val details: MutableList<TransactionDetail> = mutableListOf())  {
 

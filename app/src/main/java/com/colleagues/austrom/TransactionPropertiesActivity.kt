@@ -29,6 +29,8 @@ import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.textfield.TextInputEditText
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.format.DateTimeFormatter
 
 class TransactionPropertiesActivity : AppCompatActivity() {
@@ -51,6 +53,7 @@ class TransactionPropertiesActivity : AppCompatActivity() {
     private lateinit var unallocatedSum: TextView
     private lateinit var unallocatedCurrency: TextView
     private lateinit var detailConstructorHolder: FragmentContainerView
+    private lateinit var detailsLabel: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,13 +77,21 @@ class TransactionPropertiesActivity : AppCompatActivity() {
         for (detail in transaction.details) {
             sum -= detail.cost
         }
-        detailConstructorHolder.visibility = if (sum==0.0) View.GONE else View.VISIBLE
-        unallocatedSum.text = sum.toMoneyFormat()
+        if (BigDecimal(sum).setScale(2, RoundingMode.HALF_DOWN)==BigDecimal(0).setScale(2, RoundingMode.HALF_DOWN)) {
+            detailConstructorHolder.visibility = View.GONE
+            detailsLabel.text = "Total:"
+            unallocatedSum.text = transaction.amount.toMoneyFormat()
+        } else {
+            detailConstructorHolder.visibility = View.VISIBLE
+            detailsLabel.text = "Unallocated balance:"
+            unallocatedSum.text = sum.toMoneyFormat()
+        }
     }
 
     fun addTransactionDetail(transactionDetail: TransactionDetail) {
-        //val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
-        transaction.details.add(transactionDetail)
+        val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
+        transaction.details.add(0, transactionDetail)
+        dbProvider.updateTransaction(transaction)
         updateUnallocatedSum(0.0)
         setUpRecyclerView()
     }
@@ -175,5 +186,6 @@ class TransactionPropertiesActivity : AppCompatActivity() {
         unallocatedSum = findViewById((R.id.trdet_unallocatedSum_txt))
         unallocatedCurrency = findViewById((R.id.trdet_unallocatedCurrency_txt))
         detailConstructorHolder = findViewById(R.id.trdet_transactionDetailHolder_frt)
+        detailsLabel = findViewById(R.id.trdet_detLabel_txt)
     }
 }
