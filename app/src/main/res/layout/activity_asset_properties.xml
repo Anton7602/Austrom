@@ -5,7 +5,7 @@
     android:id="@+id/asdet_mainHolder_cly"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
+    android:background="@color/grey"
     app:layoutDescription="@xml/activity_asset_properties_scene"
     tools:context=".AssetPropertiesActivity">
 

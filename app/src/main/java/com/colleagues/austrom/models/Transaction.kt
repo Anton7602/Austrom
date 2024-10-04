@@ -15,7 +15,7 @@ class Transaction(
     var transactionDate: LocalDate? = null,
     val transactionDateInt: Int? = null,
     val comment: String? = null,
-    val details: List<TransactionDetail> = listOf())  {
+    val details: MutableList<TransactionDetail> = mutableListOf())  {
 
     fun getTransactionType(): TransactionType {
         return if (this.sourceId!=null && this.targetId!=null) TransactionType.TRANSFER

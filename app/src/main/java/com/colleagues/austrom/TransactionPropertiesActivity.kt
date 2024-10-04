@@ -12,10 +12,21 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.colleagues.austrom.adapters.TransactionDetailRecyclerAdapter
+import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.dialogs.TransactionDetailCreationDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.textfield.TextInputEditText
 import java.time.format.DateTimeFormatter
@@ -36,6 +47,10 @@ class TransactionPropertiesActivity : AppCompatActivity() {
     private lateinit var categoryText: TextView
     private lateinit var categoryImage: ImageView
     private lateinit var comment: TextInputEditText
+    private lateinit var transactionDetails: RecyclerView
+    private lateinit var unallocatedSum: TextView
+    private lateinit var unallocatedCurrency: TextView
+    private lateinit var detailConstructorHolder: FragmentContainerView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,12 +61,40 @@ class TransactionPropertiesActivity : AppCompatActivity() {
         bindViews()
         retrieveTransactionFromIntent()
         setUpTransactionProperties()
+        setUpRecyclerView()
+        setUpFragment()
 
         backButton.setOnClickListener {
             this.finish()
         }
     }
 
+    fun updateUnallocatedSum(addedValue: Double) {
+        var sum = transaction.amount
+        for (detail in transaction.details) {
+            sum -= detail.cost
+        }
+        detailConstructorHolder.visibility = if (sum==0.0) View.GONE else View.VISIBLE
+        unallocatedSum.text = sum.toMoneyFormat()
+    }
+
+    fun addTransactionDetail(transactionDetail: TransactionDetail) {
+        //val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
+        transaction.details.add(transactionDetail)
+        updateUnallocatedSum(0.0)
+        setUpRecyclerView()
+    }
+
+    private fun setUpRecyclerView() {
+        transactionDetails.layoutManager = LinearLayoutManager(this)
+        transactionDetails.adapter = TransactionDetailRecyclerAdapter(transaction.details, sourceCurrency.text.toString())
+    }
+
+    private fun setUpFragment() {
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.trdet_transactionDetailHolder_frt, TransactionDetailCreationDialogFragment(this))
+        transaction.commit()
+    }
 
     @SuppressLint("SetTextI18n")
     private fun setUpTransactionProperties() {
@@ -92,6 +135,8 @@ class TransactionPropertiesActivity : AppCompatActivity() {
                     .find { it.name == transaction.categoryId })?.imgReference ?: R.drawable.placeholder_icon_background)
             }
         }
+        updateUnallocatedSum(0.0)
+        unallocatedCurrency.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
         //comment.text = transaction.comment.toString()
     }
 
@@ -126,5 +171,9 @@ class TransactionPropertiesActivity : AppCompatActivity() {
         categoryText = findViewById(R.id.trdet_category_txt)
         categoryImage = findViewById(R.id.trdet_category_img)
         comment = findViewById(R.id.trdet_comments_txt)
+        transactionDetails = findViewById(R.id.trdet_transactionDetails_rcv)
+        unallocatedSum = findViewById((R.id.trdet_unallocatedSum_txt))
+        unallocatedCurrency = findViewById((R.id.trdet_unallocatedCurrency_txt))
+        detailConstructorHolder = findViewById(R.id.trdet_transactionDetailHolder_frt)
     }
 }

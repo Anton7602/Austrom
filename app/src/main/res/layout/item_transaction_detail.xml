@@ -1,45 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingStart="8dp"
     android:paddingTop="4dp"
-    android:paddingEnd="8dp"
     android:paddingBottom="4dp">
 
-    <TextView
-        android:id="@+id/textView14"
+    <ImageView
+        android:id="@+id/trdetit_category_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_placeholder_icon" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_weight="1"
-        android:text="ItemName" />
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView15"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:text="0.15" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/textView16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="KG" />
+            <TextView
+                android:id="@+id/trdetit_itemName_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ItemName" />
 
-    <TextView
-        android:id="@+id/textView17"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_weight="1"
-        android:text="100 000.00"
-        android:textAlignment="viewEnd" />
+            <TextView
+                android:id="@+id/trdetitem_cost_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:text="100 000.00"
+                android:textAlignment="viewEnd" />
 
-    <TextView
-        android:id="@+id/textView18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="RUB" />
+            <TextView
+                android:id="@+id/trdetit_currency_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RUB" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/trdetit_quantityHolder_lly"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/trdetit_quantity_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="0.15"
+                android:textAlignment="viewEnd"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/trdetit_quantityType_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="KG"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
 </LinearLayout>
