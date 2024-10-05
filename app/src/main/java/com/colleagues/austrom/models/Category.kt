@@ -6,6 +6,10 @@ class Category(val name: String? = null,
                val type: String? = null,
                val imgReference: Int? = null) {
 
+    override fun toString(): String {
+        return this.name ?: ""
+    }
+
     companion object{
         var defaultExpenseCategories : List<Category> = listOf(
             Category("Food", "Mandatory", R.drawable.ic_category_food_temp),

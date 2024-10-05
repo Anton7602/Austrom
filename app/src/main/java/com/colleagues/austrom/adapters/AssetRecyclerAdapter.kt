@@ -78,7 +78,8 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>,
         holder.assetHolder.setOnClickListener {
             receiver?.receiveValue(asset.assetId!!, "assetID")
             if (isAllowOpenProperties) {
-                activity.startActivity(Intent(activity, AssetPropertiesActivity::class.java).putExtra("Asset", asset.toString()))
+                AustromApplication.selectedAsset = asset
+                activity.startActivity(Intent(activity, AssetPropertiesActivity::class.java))
             }
         }
     }

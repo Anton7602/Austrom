@@ -9,10 +9,6 @@ class Asset(
     val currencyCode: String? = null,
     var isPrivate: Boolean = false) {
 
-    override fun toString(): String {
-        return "$assetId~$assetTypeId~$userId~$assetName~$amount~$currencyCode~$isPrivate"
-    }
-
     companion object{
         fun groupAssetsByType(assets: MutableMap<String, Asset>) : MutableMap<String, MutableList<Asset>> {
             val groupedAssets = mutableMapOf<String, MutableList<Asset>>()
@@ -23,22 +19,6 @@ class Asset(
                 groupedAssets[asset.value.assetTypeId.toString()]!!.add(asset.value)
             }
             return  groupedAssets
-        }
-
-        fun parseFromString(string: String): Asset {
-            val array = string.split("~")
-            return Asset(
-                assetId = array[0],
-                assetTypeId = when (array[1]) {"CARD"->AssetType.CARD
-                                              "CASH"->AssetType.CASH
-                                              "INVESTMENT"->AssetType.INVESTMENT
-                                              else -> AssetType.CARD},
-                userId = array[2],
-                assetName = array[3],
-                amount = array[4].toDouble(),
-                currencyCode = array[5],
-                isPrivate = (array[6]=="true"),
-            )
         }
 
         fun toList(assets: MutableMap<String, Asset>): MutableList<Asset> {

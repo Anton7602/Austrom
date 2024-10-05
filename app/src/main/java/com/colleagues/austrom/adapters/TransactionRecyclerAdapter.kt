@@ -52,7 +52,7 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
         val source = AustromApplication.activeAssets[transaction.sourceId]
         val target = AustromApplication.activeAssets[transaction.targetId]
         var category : Category? = null
-        when (transaction.getTransactionType()) {
+        when (transaction.transactionType()) {
             TransactionType.TRANSFER -> {
                 holder.secondaryAmount.visibility = View.VISIBLE
                 holder.secondaryAmount.text ="-" + transaction.amount.toMoneyFormat()
@@ -83,7 +83,8 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
         }
 
         holder.transactionHolder.setOnClickListener {
-            activity.startActivity(Intent(activity, TransactionPropertiesActivity::class.java).putExtra("Transaction", transaction.toString()))
+            AustromApplication.selectedTransaction = transaction
+            activity.startActivity(Intent(activity, TransactionPropertiesActivity::class.java))
         }
     }
 }

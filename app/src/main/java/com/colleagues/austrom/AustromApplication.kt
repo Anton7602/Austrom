@@ -9,6 +9,7 @@ import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Currency
+import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.User
 
 class AustromApplication : Application() {
@@ -19,6 +20,8 @@ class AustromApplication : Application() {
         var activeAssets : MutableMap<String, Asset> = mutableMapOf()
         var activeCurrencies : MutableMap<String, Currency> = mutableMapOf()
         var knownUsers : MutableMap<String, User> = mutableMapOf()
+        var selectedTransaction: Transaction? = null
+        var selectedAsset: Asset? = null
 
     }
 

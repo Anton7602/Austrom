@@ -71,8 +71,8 @@ class AssetPropertiesActivity : AppCompatActivity() {
     }
 
     private fun retrieveAssetFromIntent() {
-        if (intent.getStringExtra("Asset")!=null) {
-            asset = Asset.parseFromString(intent.getStringExtra("Asset")!!)
+        if (AustromApplication.selectedAsset!=null) {
+            asset = AustromApplication.selectedAsset!!
         } else {
             finish()
         }

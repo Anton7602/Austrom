@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -12,18 +13,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.TransactionDetailRecyclerAdapter
-import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
 import com.colleagues.austrom.dialogs.TransactionDetailCreationDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
+import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
@@ -33,9 +33,10 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.format.DateTimeFormatter
 
-class TransactionPropertiesActivity : AppCompatActivity() {
+class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     private lateinit var transaction: Transaction
     private lateinit var backButton: ImageButton
+    private lateinit var deleteButton: Button
     private lateinit var fromLayout: LinearLayout
     private lateinit var toLayout: LinearLayout
     private lateinit var sourceText: TextView
@@ -70,12 +71,16 @@ class TransactionPropertiesActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             this.finish()
         }
+
+        deleteButton.setOnClickListener {
+            DeletionConfirmationDialogFragment(this).show(supportFragmentManager, "Delete Confirmation Dialog" )
+        }
     }
 
     fun updateUnallocatedSum(addedValue: Double) {
         var sum = transaction.amount
         for (detail in transaction.details) {
-            sum -= detail.cost
+            sum -= detail.cost!!
         }
         if (BigDecimal(sum).setScale(2, RoundingMode.HALF_DOWN)==BigDecimal(0).setScale(2, RoundingMode.HALF_DOWN)) {
             detailConstructorHolder.visibility = View.GONE
@@ -98,18 +103,18 @@ class TransactionPropertiesActivity : AppCompatActivity() {
 
     private fun setUpRecyclerView() {
         transactionDetails.layoutManager = LinearLayoutManager(this)
-        transactionDetails.adapter = TransactionDetailRecyclerAdapter(transaction.details, sourceCurrency.text.toString())
+        transactionDetails.adapter = TransactionDetailRecyclerAdapter(transaction)
     }
 
     private fun setUpFragment() {
-        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.trdet_transactionDetailHolder_frt, TransactionDetailCreationDialogFragment(this))
-        transaction.commit()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.trdet_transactionDetailHolder_frt, TransactionDetailCreationDialogFragment(this, transaction))
+        fragmentTransaction.commit()
     }
 
     @SuppressLint("SetTextI18n")
     private fun setUpTransactionProperties() {
-        if (transaction.getTransactionType()!=TransactionType.TRANSFER) {
+        if (transaction.transactionType()!=TransactionType.TRANSFER) {
             toLayout.visibility = View.GONE
         }
         val source = AustromApplication.activeAssets[transaction.sourceId]
@@ -121,7 +126,7 @@ class TransactionPropertiesActivity : AppCompatActivity() {
         ownerText.text = AustromApplication.knownUsers[transaction.userId]?.username.startWithUppercase()
         dateText.text = transaction.transactionDate?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
         categoryText.text = transaction.categoryId
-        when (transaction.getTransactionType()) {
+        when (transaction.transactionType()) {
             TransactionType.INCOME ->
             {
                 sourceAmount.setTextColor(Color.rgb(0,100,0))
@@ -152,8 +157,8 @@ class TransactionPropertiesActivity : AppCompatActivity() {
     }
 
     private fun retrieveTransactionFromIntent() {
-        if (intent.getStringExtra("Transaction")!=null) {
-            transaction = Transaction.parseFromString(intent.getStringExtra("Transaction")!!)
+        if (AustromApplication.selectedTransaction!=null) {
+            transaction = AustromApplication.selectedTransaction!!
         } else {
             finish()
         }
@@ -169,6 +174,7 @@ class TransactionPropertiesActivity : AppCompatActivity() {
 
     private fun bindViews() {
         backButton = findViewById(R.id.trdet_back_btn)
+        deleteButton = findViewById(R.id.trdet_delete_btn)
         fromLayout = findViewById(R.id.trdet_fromAmount_lly)
         toLayout = findViewById(R.id.trdet_toAmount_lly)
         sourceText = findViewById(R.id.trdet_source_txt)
@@ -187,5 +193,13 @@ class TransactionPropertiesActivity : AppCompatActivity() {
         unallocatedCurrency = findViewById((R.id.trdet_unallocatedCurrency_txt))
         detailConstructorHolder = findViewById(R.id.trdet_transactionDetailHolder_frt)
         detailsLabel = findViewById(R.id.trdet_detLabel_txt)
+    }
+
+    override fun receiveValue(value: String, valueType: String) {
+        if (valueType=="DialogResult" && value=="true") {
+            val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
+            dbProvider.deleteTransaction(transaction)
+            this.finish()
+        }
     }
 }
