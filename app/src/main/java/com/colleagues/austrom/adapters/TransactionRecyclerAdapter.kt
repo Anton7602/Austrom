@@ -1,6 +1,7 @@
 package com.colleagues.austrom.adapters
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +24,8 @@ import com.colleagues.austrom.models.TransactionType
 
 class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
                                  private val activity: AppCompatActivity) : RecyclerView.Adapter<TransactionRecyclerAdapter.TransactionViewHolder>() {
+
+
     class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val categoryName: TextView = itemView.findViewById(R.id.tritem_categoryName_txt)
         val categoryImage: ImageView = itemView.findViewById(R.id.tritem_categoryIcon_img)

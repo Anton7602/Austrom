@@ -29,12 +29,15 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         if (AustromApplication.activeAssets.isEmpty()) { updateAssetsList() }
-        setUpRecyclerView(AustromApplication.activeAssets)
-        calculateTotalAmount(AustromApplication.activeAssets)
 
         addNewAssetButton.setOnClickListener {
             AssetCreationDialogFragment(this).show(requireActivity().supportFragmentManager, "Asset Creation Dialog")
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateAssetsList()
     }
 
     fun updateAssetsList() {
@@ -57,6 +60,8 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
                 AustromApplication.activeAssets = filteredAssets
             }
         }
+        setUpRecyclerView(AustromApplication.activeAssets)
+        calculateTotalAmount(AustromApplication.activeAssets)
     }
 
     fun filterAssets(filter: AssetFilter) {

@@ -1,5 +1,7 @@
 package com.colleagues.austrom.models
 
+import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.database.IDatabaseProvider
 import java.time.LocalDate
 
 class Transaction(
@@ -20,6 +22,38 @@ class Transaction(
     fun transactionType(): TransactionType {
         return if (this.sourceId!=null && this.targetId!=null) TransactionType.TRANSFER
         else if (this.sourceId!=null) TransactionType.EXPENSE else TransactionType.INCOME
+    }
+
+    fun cancel(dbProvider: IDatabaseProvider) {
+        when (this.transactionType()) {
+            TransactionType.INCOME -> {
+                val target = AustromApplication.activeAssets[targetId]
+                if (target != null) {
+                    target.amount-=this.amount
+                    dbProvider.updateAsset(target)
+                    dbProvider.deleteTransaction(this)
+                }
+            }
+            TransactionType.TRANSFER -> {
+                val target = AustromApplication.activeAssets[targetId]
+                val source = AustromApplication.activeAssets[sourceId]
+                if (target != null && source!=null) {
+                    source.amount+=this.amount
+                    target.amount-= if (target.currencyCode == source.currencyCode) this.amount else this.secondaryAmount ?: 0.0
+                    dbProvider.updateAsset(target)
+                    dbProvider.updateAsset(source)
+                    dbProvider.deleteTransaction(this)
+                }
+            }
+            TransactionType.EXPENSE -> {
+                val source = AustromApplication.activeAssets[sourceId]
+                if (source!=null) {
+                    source.amount+=this.amount
+                    dbProvider.updateAsset(source)
+                    dbProvider.deleteTransaction(this)
+                }
+            }
+        }
     }
 
     companion object{

@@ -9,12 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
 
 class TransactionDetailRecyclerAdapter(private val transaction: Transaction): RecyclerView.Adapter<TransactionDetailRecyclerAdapter.TransactionDetailViewHolder>() {
+
     class TransactionDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val categoryImage: ImageView = itemView.findViewById(R.id.trdetit_category_img)
         val itemName: TextView = itemView.findViewById(R.id.trdetit_itemName_txt)
@@ -36,9 +38,9 @@ class TransactionDetailRecyclerAdapter(private val transaction: Transaction): Re
 
     override fun onBindViewHolder(holder: TransactionDetailViewHolder, position: Int) {
         val transactionDetail = transaction.details[position]
-        val categoryName = if (transactionDetail.categoryName==null) transaction.categoryId else transactionDetail.categoryName
+        val categoryName = transactionDetail.categoryName ?: transaction.categoryId
         holder.itemName.text = transactionDetail.name
-        holder.cost.text = transactionDetail.cost.toString()
+        holder.cost.text = transactionDetail.cost?.toMoneyFormat()
         holder.quantityHolder.visibility = if (transactionDetail.quantity==null) View.GONE else View.VISIBLE
         holder.quantity.text = transactionDetail.quantity.toString()
         holder.quantityType.text = transactionDetail.typeOfQuantity.toString()

@@ -15,12 +15,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
+import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Transaction
 
-class AssetPropertiesActivity : AppCompatActivity() {
+class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     private lateinit var asset: Asset
     private lateinit var backButton: ImageButton
     private lateinit var deleteButton: ImageButton
@@ -61,7 +63,7 @@ class AssetPropertiesActivity : AppCompatActivity() {
                 dbProvider.deleteAsset(asset)
                 this.finish()
             } else {
-                Toast.makeText(this, "This Asset Contains Transactions. Need to make dialog to remove them", Toast.LENGTH_LONG).show()
+                DeletionConfirmationDialogFragment(this).show(supportFragmentManager, "AssetDeletion Dialog")
             }
         }
 
@@ -118,5 +120,12 @@ class AssetPropertiesActivity : AppCompatActivity() {
         transactionHolder = findViewById(R.id.asdet_transactionHolder_rcv)
         noTransactionsText = findViewById(R.id.asdet_noTransactions_txt)
         dbProvider = FirebaseDatabaseProvider(this)
+    }
+
+    override fun receiveValue(value: String, valueType: String) {
+        if (valueType=="DialogResult" && value=="true") {
+            asset.delete(FirebaseDatabaseProvider(this))
+            this.finish()
+        }
     }
 }

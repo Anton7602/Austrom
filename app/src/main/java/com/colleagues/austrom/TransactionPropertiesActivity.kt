@@ -63,7 +63,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         setContentView(R.layout.activity_transaction_properties)
         adjustInsets()
         bindViews()
-        retrieveTransactionFromIntent()
+        retrieveSelectedTransaction()
         setUpTransactionProperties()
         setUpRecyclerView()
         setUpFragment()
@@ -156,7 +156,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         //comment.text = transaction.comment.toString()
     }
 
-    private fun retrieveTransactionFromIntent() {
+    private fun retrieveSelectedTransaction() {
         if (AustromApplication.selectedTransaction!=null) {
             transaction = AustromApplication.selectedTransaction!!
         } else {
@@ -197,8 +197,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
 
     override fun receiveValue(value: String, valueType: String) {
         if (valueType=="DialogResult" && value=="true") {
-            val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
-            dbProvider.deleteTransaction(transaction)
+            transaction.cancel(FirebaseDatabaseProvider(this))
             this.finish()
         }
     }
