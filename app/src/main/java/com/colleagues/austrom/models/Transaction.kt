@@ -16,7 +16,7 @@ class Transaction(
     val categoryId: String? = null,
     var transactionDate: LocalDate? = null,
     var transactionDateInt: Int? = null,
-    val comment: String? = null,
+    var comment: String? = null,
     val details: MutableList<TransactionDetail> = mutableListOf())  {
 
     fun transactionType(): TransactionType {

@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,7 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     private lateinit var assetPrivate: CheckBox
     private lateinit var transactionHolder: RecyclerView
     private lateinit var noTransactionsText: TextView
+    private lateinit var assetCard: CardView
     private lateinit var dbProvider: IDatabaseProvider
     private var transactionsOfAsset: MutableList<Transaction> = mutableListOf()
 
@@ -81,6 +83,7 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     }
 
     private fun setUpAssetProperties() {
+        assetCard.setBackgroundResource(R.drawable.gradient_background);
         assetName.text = asset.assetName
         assetOwner.text = AustromApplication.knownUsers[asset.userId]?.username!!.startWithUppercase()
         assetBalance.text = asset.amount.toMoneyFormat()
@@ -119,6 +122,7 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         assetPrivate = findViewById(R.id.asdet_isPrivate_chb)
         transactionHolder = findViewById(R.id.asdet_transactionHolder_rcv)
         noTransactionsText = findViewById(R.id.asdet_noTransactions_txt)
+        assetCard = findViewById(R.id.asdet_assetCard_crd)
         dbProvider = FirebaseDatabaseProvider(this)
     }
 

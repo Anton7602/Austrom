@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
@@ -23,7 +24,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.datepicker.MaterialDatePicker
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 
 class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
                                         private val transactionType: TransactionType) : BottomSheetDialogFragment() {
@@ -111,7 +114,24 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         }
 
         calendarButton.setOnClickListener {
-            MaterialDatePicker.Builder.datePicker().setTitleText("Choose Transaction Date").build().show(requireActivity().supportFragmentManager, "DatePicker Dialog")
+            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Choose Transaction Date").setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
+            datePicker.addOnPositiveButtonClickListener { selection ->
+                val selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
+                for (chipView in dateChips.children) {
+                    val chip = chipView as Chip
+                    if ((chip.tag as LocalDate) == selectedDate) {
+                        chip.isChecked = true
+                        dateChips.getChildAt(0).visibility = View.GONE
+                        return@addOnPositiveButtonClickListener
+                    }
+                }
+                val customChip = dateChips.getChildAt(0) as Chip
+                customChip.visibility = View.VISIBLE
+                customChip.text = selectedDate.toDayOfWeekAndShortDateFormat()
+                customChip.tag = selectedDate
+                customChip.isChecked = true
+            }
+            datePicker.show(requireActivity().supportFragmentManager, "DatePicker Dialog")
         }
     }
 
@@ -185,6 +205,13 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
 
     private fun setUpDateChips() {
         var chipDate = LocalDate.now()
+        val customDateChip = Chip(requireActivity())
+        customDateChip.text = "Custom date"
+        customDateChip.tag = chipDate
+        customDateChip.setEnsureMinTouchTargetSize(false)
+        customDateChip.isCheckable = true
+        customDateChip.visibility = View.GONE
+        dateChips.addView(customDateChip)
         for (i in 0..9) {
             val chip = Chip(requireActivity())
             chip.text = chipDate.toDayOfWeekAndShortDateFormat()

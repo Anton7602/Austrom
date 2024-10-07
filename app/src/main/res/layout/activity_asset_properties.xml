@@ -33,13 +33,12 @@
         app:tint="@color/decline_red" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView9"
+        android:id="@+id/asdet_assetCard_crd"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/grey"
         app:cardCornerRadius="20dp"
         app:cardElevation="6dp"
         app:cardMaxElevation="6dp"
@@ -58,8 +57,8 @@
         android:elevation="8dp"
         android:text="Asset Name"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/cardView9"
-        app:layout_constraintTop_toTopOf="@+id/cardView9" />
+        app:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd"
+        app:layout_constraintTop_toTopOf="@+id/asdet_assetCard_crd" />
 
     <TextView
         android:id="@+id/asdet_balance_txt"
@@ -82,7 +81,7 @@
         android:text="RUB"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/asdet_owner_txt"
-        app:layout_constraintEnd_toEndOf="@+id/cardView9"
+        app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
         app:layout_constraintTop_toBottomOf="@+id/asdet_assetName_txt" />
 
     <TextView
@@ -92,7 +91,7 @@
         android:elevation="8dp"
         android:text="Owner"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView9"
+        app:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
         app:layout_constraintStart_toStartOf="@+id/asdet_assetName_txt"
         app:layout_constraintTop_toBottomOf="@+id/asdet_assetName_txt" />
 
@@ -105,9 +104,9 @@
         android:elevation="8dp"
         android:scaleType="centerInside"
         android:src="@drawable/img_visa_logo"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView9"
+        app:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="@+id/cardView9" />
+        app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd" />
 
     <CheckBox
         android:id="@+id/asdet_isPrimary_chb"
@@ -115,15 +114,15 @@
         android:layout_height="wrap_content"
         android:text="@string/is_primary_payment_method"
         app:layout_constraintEnd_toStartOf="@+id/asdet_isPrivate_chb"
-        app:layout_constraintStart_toStartOf="@+id/cardView9"
-        app:layout_constraintTop_toBottomOf="@+id/cardView9" />
+        app:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd"
+        app:layout_constraintTop_toBottomOf="@+id/asdet_assetCard_crd" />
 
     <CheckBox
         android:id="@+id/asdet_isPrivate_chb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Private"
-        app:layout_constraintEnd_toEndOf="@+id/cardView9"
+        app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
         app:layout_constraintTop_toTopOf="@+id/asdet_isPrimary_chb" />
 
     <androidx.recyclerview.widget.RecyclerView

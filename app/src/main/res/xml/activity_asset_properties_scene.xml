@@ -20,20 +20,20 @@
         <Constraint
             android:id="@+id/asdet_paymentSystem_img"
             android:elevation="8dp"
-            motion:layout_constraintEnd_toEndOf="@+id/cardView9"
+            motion:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
             android:layout_width="0dp"
             android:layout_height="52dp"
-            motion:layout_constraintBottom_toBottomOf="@+id/cardView9"
+            motion:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
             android:layout_marginEnd="16dp"
             motion:layout_constraintDimensionRatio="1:1"
             android:visibility="visible" />
         <Constraint
             android:id="@+id/asdet_paymentSystem_img"
             android:elevation="8dp"
-            motion:layout_constraintEnd_toEndOf="@+id/cardView9"
+            motion:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
             android:layout_width="0dp"
             android:layout_height="52dp"
-            motion:layout_constraintBottom_toBottomOf="@+id/cardView9"
+            motion:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
             android:visibility="visible"
             android:layout_marginEnd="16dp"
             motion:layout_constraintDimensionRatio="1:1" />
@@ -42,7 +42,7 @@
             android:elevation="8dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            motion:layout_constraintBottom_toBottomOf="@+id/cardView9"
+            motion:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
             motion:layout_constraintTop_toBottomOf="@+id/asdet_assetName_txt"
             motion:layout_constraintStart_toStartOf="@+id/asdet_assetName_txt"
             android:visibility="visible" />
@@ -51,7 +51,7 @@
             android:elevation="8dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            motion:layout_constraintBottom_toBottomOf="@+id/cardView9"
+            motion:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
             android:visibility="visible"
             motion:layout_constraintTop_toBottomOf="@+id/asdet_assetName_txt"
             motion:layout_constraintStart_toStartOf="@+id/asdet_assetName_txt" />
@@ -61,8 +61,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            motion:layout_constraintTop_toTopOf="@+id/cardView9"
-            motion:layout_constraintStart_toStartOf="@+id/cardView9"
+            motion:layout_constraintTop_toTopOf="@+id/asdet_assetCard_crd"
+            motion:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd"
             android:layout_marginTop="32dp"
             android:visibility="visible" />
         <Constraint
@@ -72,13 +72,13 @@
             android:layout_height="wrap_content"
             android:visibility="visible"
             android:layout_marginStart="16dp"
-            motion:layout_constraintTop_toTopOf="@+id/cardView9"
-            motion:layout_constraintStart_toStartOf="@+id/cardView9"
+            motion:layout_constraintTop_toTopOf="@+id/asdet_assetCard_crd"
+            motion:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd"
             android:layout_marginTop="32dp" />
         <Constraint
             android:id="@+id/asdet_currency_txt"
             android:elevation="8dp"
-            motion:layout_constraintEnd_toEndOf="@+id/cardView9"
+            motion:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             motion:layout_constraintBottom_toTopOf="@+id/asdet_owner_txt"
@@ -88,7 +88,7 @@
         <Constraint
             android:id="@+id/asdet_currency_txt"
             android:elevation="8dp"
-            motion:layout_constraintEnd_toEndOf="@+id/cardView9"
+            motion:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             motion:layout_constraintBottom_toTopOf="@+id/asdet_owner_txt"
@@ -128,14 +128,14 @@
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintDimensionRatio="8:1"
             android:layout_marginTop="8dp"
-            android:id="@+id/cardView9" />
+            android:id="@+id/asdet_assetCard_crd" />
         <Constraint
             android:elevation="8dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            motion:layout_constraintTop_toTopOf="@+id/cardView9"
-            motion:layout_constraintStart_toStartOf="@+id/cardView9"
+            motion:layout_constraintTop_toTopOf="@+id/asdet_assetCard_crd"
+            motion:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd"
             android:layout_marginTop="8dp"
             android:id="@+id/asdet_assetName_txt"/>
         <Constraint
@@ -143,7 +143,7 @@
             android:elevation="8dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            motion:layout_constraintBottom_toBottomOf="@+id/cardView9"
+            motion:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
             motion:layout_constraintTop_toBottomOf="@+id/asdet_assetName_txt"
             motion:layout_constraintStart_toStartOf="@+id/asdet_assetName_txt"
             android:visibility="invisible" />
@@ -152,35 +152,35 @@
             android:elevation="8dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            motion:layout_constraintBottom_toBottomOf="@+id/cardView9"
+            motion:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
             android:visibility="invisible"
             motion:layout_constraintTop_toBottomOf="@+id/asdet_assetName_txt"
             motion:layout_constraintStart_toStartOf="@+id/asdet_assetName_txt" />
         <Constraint
             android:id="@+id/asdet_paymentSystem_img"
             android:elevation="8dp"
-            motion:layout_constraintEnd_toEndOf="@+id/cardView9"
+            motion:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
             android:layout_width="0dp"
             android:layout_height="52dp"
-            motion:layout_constraintBottom_toBottomOf="@+id/cardView9"
+            motion:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
             android:layout_marginEnd="16dp"
             motion:layout_constraintDimensionRatio="1:1"
             android:visibility="invisible" />
         <Constraint
             android:id="@+id/asdet_paymentSystem_img"
             android:elevation="8dp"
-            motion:layout_constraintEnd_toEndOf="@+id/cardView9"
+            motion:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
             android:layout_width="0dp"
             android:layout_height="52dp"
-            motion:layout_constraintBottom_toBottomOf="@+id/cardView9"
+            motion:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
             android:visibility="invisible"
             android:layout_marginEnd="16dp"
             motion:layout_constraintDimensionRatio="1:1" />
         <Constraint
             android:layout_height="wrap_content"
-            motion:layout_constraintTop_toTopOf="@+id/cardView9"
+            motion:layout_constraintTop_toTopOf="@+id/asdet_assetCard_crd"
             android:layout_width="wrap_content"
-            motion:layout_constraintStart_toStartOf="@+id/cardView9"
+            motion:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd"
             android:id="@+id/asdet_isPrimary_chb" />
         <Constraint
             android:id="@+id/asdet_balance_txt"
@@ -203,7 +203,7 @@
         <Constraint
             android:id="@+id/asdet_currency_txt"
             android:elevation="8dp"
-            motion:layout_constraintEnd_toEndOf="@+id/cardView9"
+            motion:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             motion:layout_constraintBottom_toTopOf="@+id/asdet_owner_txt"
@@ -213,7 +213,7 @@
         <Constraint
             android:id="@+id/asdet_currency_txt"
             android:elevation="8dp"
-            motion:layout_constraintEnd_toEndOf="@+id/cardView9"
+            motion:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             motion:layout_constraintBottom_toTopOf="@+id/asdet_owner_txt"

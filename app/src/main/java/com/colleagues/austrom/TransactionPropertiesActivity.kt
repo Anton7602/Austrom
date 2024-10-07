@@ -75,6 +75,14 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         deleteButton.setOnClickListener {
             DeletionConfirmationDialogFragment(this).show(supportFragmentManager, "Delete Confirmation Dialog" )
         }
+
+        comment.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                transaction.comment = comment.text.toString()
+                val dbProvider : IDatabaseProvider = FirebaseDatabaseProvider(this)
+                dbProvider.updateTransaction(transaction)
+            }
+        }
     }
 
     fun updateUnallocatedSum(addedValue: Double) {
@@ -153,7 +161,9 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         }
         updateUnallocatedSum(0.0)
         unallocatedCurrency.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
-        //comment.text = transaction.comment.toString()
+        if (transaction.comment!=null) {
+            comment.setText(transaction.comment.toString())
+        }
     }
 
     private fun retrieveSelectedTransaction() {
