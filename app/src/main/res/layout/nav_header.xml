@@ -30,7 +30,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/img_avatar_placeholder" />
+        app:srcCompat="@drawable/ic_navigation_avatar_temp" />
 
     <TextView
         android:id="@+id/nav_username_txt"

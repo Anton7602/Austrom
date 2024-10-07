@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -83,7 +82,7 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     }
 
     private fun setUpAssetProperties() {
-        assetCard.setBackgroundResource(R.drawable.gradient_background);
+        assetCard.setBackgroundResource(R.drawable.sh_card_background);
         assetName.text = asset.assetName
         assetOwner.text = AustromApplication.knownUsers[asset.userId]?.username!!.startWithUppercase()
         assetBalance.text = asset.amount.toMoneyFormat()
