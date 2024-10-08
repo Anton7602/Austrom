@@ -10,4 +10,6 @@ data class User(
     val password: String? = null,
     var activeBudgetId: String? = null,
     var primaryPaymentMethod: String? = null,
-    var baseCurrencyCode: String = "USD")
+    var baseCurrencyCode: String = "USD",
+    var categories: MutableList<Category> = mutableListOf()
+)
