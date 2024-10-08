@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionPropertiesActivity
 import com.colleagues.austrom.models.Category
@@ -102,9 +103,9 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
         quantityTypeSpinner.setSelection(0)
 
         val availableCategories = when (transaction.transactionType()) {
-            TransactionType.EXPENSE -> Category.defaultExpenseCategories
-            TransactionType.INCOME ->  Category.defaultExpenseCategories
-            TransactionType.TRANSFER ->  Category.defaultTransferCategories
+            TransactionType.EXPENSE -> AustromApplication.getActiveExpenseCategories()
+            TransactionType.INCOME ->  AustromApplication.getActiveIncomeCategories()
+            TransactionType.TRANSFER ->  AustromApplication.getActiveTransferCategories()
         }
         val categoryAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, availableCategories)
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

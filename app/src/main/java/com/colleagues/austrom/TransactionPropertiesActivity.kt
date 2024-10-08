@@ -139,7 +139,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
             {
                 sourceAmount.setTextColor(Color.rgb(0,100,0))
                 sourceAmount.text = "+" + transaction.amount.toMoneyFormat()
-                categoryImage.setImageResource((Category.defaultIncomeCategories
+                categoryImage.setImageResource((AustromApplication.getActiveIncomeCategories()
                     .find { it.name == transaction.categoryId })?.imgReference ?: R.drawable.placeholder_icon_background)
             }
             TransactionType.TRANSFER ->
@@ -148,14 +148,14 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
                 sourceAmount.text = "-" + transaction.amount.toMoneyFormat()
                 targetAmount.setTextColor(Color.rgb(0,100,0))
                 targetAmount.text = "+" + transaction.secondaryAmount?.toMoneyFormat()
-                categoryImage.setImageResource((Category.defaultTransferCategories
+                categoryImage.setImageResource((AustromApplication.getActiveTransferCategories()
                     .find { it.name == transaction.categoryId })?.imgReference ?: R.drawable.placeholder_icon_background)
             }
             TransactionType.EXPENSE ->
             {
                 sourceAmount.setTextColor(Color.RED)
                 sourceAmount.text = "-" + transaction.amount.toMoneyFormat()
-                categoryImage.setImageResource((Category.defaultExpenseCategories
+                categoryImage.setImageResource((AustromApplication.getActiveExpenseCategories()
                     .find { it.name == transaction.categoryId })?.imgReference ?: R.drawable.placeholder_icon_background)
             }
         }

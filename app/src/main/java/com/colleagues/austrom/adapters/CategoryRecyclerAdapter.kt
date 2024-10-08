@@ -39,11 +39,15 @@ class CategoryRecyclerAdapter(private val categories: List<Category>) : Recycler
                 holder.categoryHolder.elevation = 1f
                 holder.categoryHolder.setBackgroundResource(R.drawable.sh_category_deselected)
                 AustromApplication.appUser?.categories?.remove(categories[position])
+                if (AustromApplication.knownUsers.isNotEmpty()) {
+                    AustromApplication.knownUsers[AustromApplication.appUser!!.userId]?.categories?.remove(categories[position])
+                }
             } else {
                 holder.isSelected = true
                 holder.categoryHolder.elevation = 4f
                 holder.categoryHolder.setBackgroundResource(R.drawable.sh_card_background)
                 AustromApplication.appUser?.categories?.add(categories[position])
+                AustromApplication.knownUsers[AustromApplication.appUser!!.userId]?.categories?.add(categories[position])
             }
         }
 

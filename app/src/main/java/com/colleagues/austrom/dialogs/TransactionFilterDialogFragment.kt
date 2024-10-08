@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.fragments.OpsFragment
@@ -35,9 +36,9 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        setUpCategoriesInChips(Category.defaultExpenseCategories, expenseCategories)
-        setUpCategoriesInChips(Category.defaultTransferCategories, transferCategories)
-        setUpCategoriesInChips(Category.defaultIncomeCategories, incomeCategories)
+        setUpCategoriesInChips(AustromApplication.getActiveExpenseCategories(), expenseCategories)
+        setUpCategoriesInChips(AustromApplication.getActiveTransferCategories(), transferCategories)
+        setUpCategoriesInChips(AustromApplication.getActiveIncomeCategories(), incomeCategories)
         matchFilter()
 
         incomeButton.setOnClickListener {

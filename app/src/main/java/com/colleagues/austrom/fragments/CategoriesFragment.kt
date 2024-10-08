@@ -33,8 +33,8 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories) {
     }
 
     private fun setUpRecyclerViews() {
-        expenseCategoriesRecyclerView.layoutManager = GridLayoutManager(activity, 4)
         expenseCategoriesRecyclerView.adapter = CategoryRecyclerAdapter(Category.defaultExpenseCategories)
+        expenseCategoriesRecyclerView.layoutManager = GridLayoutManager(activity, 4)
         transferCategoriesRecyclerView.adapter = CategoryRecyclerAdapter(Category.defaultTransferCategories)
         transferCategoriesRecyclerView.layoutManager = GridLayoutManager(activity, 4)
         incomeCategoriesRecyclerView.adapter = CategoryRecyclerAdapter(Category.defaultIncomeCategories)

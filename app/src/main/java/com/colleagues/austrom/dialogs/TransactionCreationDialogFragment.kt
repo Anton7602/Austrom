@@ -184,11 +184,10 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
     }
 
     private fun setUpCategoriesInChips() {
-
         val categories = when (transactionType) {
-            TransactionType.TRANSFER -> Category.defaultTransferCategories
-            TransactionType.INCOME -> Category.defaultIncomeCategories
-            TransactionType.EXPENSE -> Category.defaultExpenseCategories
+            TransactionType.TRANSFER -> AustromApplication.getActiveTransferCategories()
+            TransactionType.INCOME -> AustromApplication.getActiveIncomeCategories()
+            TransactionType.EXPENSE -> AustromApplication.getActiveExpenseCategories()
         }
         for (category in categories) {
             val chip = Chip(requireActivity())

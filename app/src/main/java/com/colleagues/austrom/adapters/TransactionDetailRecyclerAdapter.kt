@@ -46,9 +46,9 @@ class TransactionDetailRecyclerAdapter(private val transaction: Transaction): Re
         holder.quantityType.text = transactionDetail.typeOfQuantity.toString()
         holder.currency.text = AustromApplication.activeCurrencies[transaction.sourceId]?.symbol
         holder.categoryImage.setImageResource(when (transaction.transactionType()) {
-            TransactionType.INCOME -> (Category.defaultIncomeCategories.find { entry -> entry.name==categoryName })?.imgReference ?: R.drawable.ic_placeholder_icon
-            TransactionType.TRANSFER -> (Category.defaultTransferCategories.find { entry -> entry.name==categoryName })?.imgReference ?: R.drawable.ic_placeholder_icon
-            TransactionType.EXPENSE -> (Category.defaultExpenseCategories.find { entry -> entry.name==categoryName })?.imgReference ?: R.drawable.ic_placeholder_icon
+            TransactionType.INCOME -> (AustromApplication.getActiveExpenseCategories().find { entry -> entry.name==categoryName })?.imgReference ?: R.drawable.ic_placeholder_icon
+            TransactionType.TRANSFER -> (AustromApplication.getActiveTransferCategories().find { entry -> entry.name==categoryName })?.imgReference ?: R.drawable.ic_placeholder_icon
+            TransactionType.EXPENSE -> (AustromApplication.getActiveExpenseCategories().find { entry -> entry.name==categoryName })?.imgReference ?: R.drawable.ic_placeholder_icon
         })
     }
 }

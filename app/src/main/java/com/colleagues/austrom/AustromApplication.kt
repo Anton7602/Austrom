@@ -8,8 +8,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.User
 
 class AustromApplication : Application() {
@@ -23,6 +25,31 @@ class AustromApplication : Application() {
         var selectedTransaction: Transaction? = null
         var selectedAsset: Asset? = null
 
+
+        fun getActiveExpenseCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.EXPENSE)}
+        fun getActiveTransferCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.TRANSFER)}
+        fun getActiveIncomeCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.INCOME)}
+
+        private fun getActiveCategoriesOfType(transactionType: TransactionType) : List<Category> {
+            val activeUser = appUser ?: return listOf()
+            val expenseCategories: MutableList<Category> = mutableListOf()
+            if (activeUser.activeBudgetId!=null) {
+                for (user in knownUsers) {
+                    for (category in user.value.categories) {
+                        if (!expenseCategories.contains(category) && category.transactionType==transactionType) {
+                            expenseCategories.add(category)
+                        }
+                    }
+                }
+            } else {
+                for (category in activeUser.categories) {
+                    if (!expenseCategories.contains(category) && category.transactionType == transactionType) {
+                        expenseCategories.add(category)
+                    }
+                }
+            }
+            return expenseCategories
+        }
     }
 
     override fun onCreate() {

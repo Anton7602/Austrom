@@ -66,19 +66,19 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
                 holder.amount.text ="+" + transaction.secondaryAmount?.toMoneyFormat()
                 holder.amount.setTextColor(Color.rgb(0,100,0))
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
-                category = Category.defaultTransferCategories.find { it.name == transaction.categoryId }
+                category = AustromApplication.getActiveTransferCategories().find { it.name == transaction.categoryId }
             }
             TransactionType.EXPENSE -> {
                 holder.amount.text ="-" + transaction.amount.toMoneyFormat()
                 holder.amount.setTextColor(Color.RED)
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
-                category = Category.defaultExpenseCategories.find { it.name == transaction.categoryId }
+                category = AustromApplication.getActiveExpenseCategories().find { it.name == transaction.categoryId }
             }
             TransactionType.INCOME -> {
                 holder.amount.text = "+" + transaction.amount.toMoneyFormat()
                 holder.amount.setTextColor(Color.rgb(0,100,0))
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
-                category = Category.defaultIncomeCategories.find { it.name == transaction.categoryId }
+                category = AustromApplication.getActiveIncomeCategories().find { it.name == transaction.categoryId }
             }
         }
         holder.transactionDate.text = transaction.transactionDate?.toDayOfWeekAndShortDateFormat()
