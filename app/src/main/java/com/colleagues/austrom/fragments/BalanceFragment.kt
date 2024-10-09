@@ -84,7 +84,8 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
                 asset.value.amount/(AustromApplication.activeCurrencies[asset.value.currencyCode]?.exchangeRate ?: 1.0)
             }
         }
-        totalAmountText.text = totalAmount.toMoneyFormat()
+        //Temporary fix - both sum and currency are baked into one string to properly autoscale font. Split it in free time
+        totalAmountText.text = "${totalAmount.toMoneyFormat()} ${AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol}"
     }
 
     private fun setUpRecyclerView(assetList: MutableMap<String, Asset>) {

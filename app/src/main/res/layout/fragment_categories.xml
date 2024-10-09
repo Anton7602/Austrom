@@ -15,6 +15,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <Button
+                android:id="@+id/cat_tempTest_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="AddNew" />
+
             <TextView
                 android:id="@+id/textView14"
                 android:layout_width="match_parent"
@@ -57,6 +63,7 @@
                 android:id="@+id/cat_incomeCategoriesHolder_rcv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
         </LinearLayout>
     </ScrollView>
 

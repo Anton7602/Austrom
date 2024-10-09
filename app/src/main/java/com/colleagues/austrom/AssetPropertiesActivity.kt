@@ -82,7 +82,7 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     }
 
     private fun setUpAssetProperties() {
-        assetCard.setBackgroundResource(R.drawable.sh_card_background);
+        assetCard.setBackgroundResource(R.drawable.sh_card_background)
         assetName.text = asset.assetName
         assetOwner.text = AustromApplication.knownUsers[asset.userId]?.username!!.startWithUppercase()
         assetBalance.text = asset.amount.toMoneyFormat()
