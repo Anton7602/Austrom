@@ -1,7 +1,6 @@
 package com.colleagues.austrom.dialogs
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,19 +11,20 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
-import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryIconRecyclerAdapter
-import com.colleagues.austrom.adapters.CategoryRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
-import com.colleagues.austrom.fragments.SharedBudgetFragment
+import com.colleagues.austrom.interfaces.IDialogInitiator
+import com.colleagues.austrom.managers.IconManager
 import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class CategoryCreationDialogFragment : BottomSheetDialogFragment() {
+
+class CategoryCreationDialogFragment(private val transactionType: TransactionType, private val receiver: IDialogInitiator? = null) : BottomSheetDialogFragment() {
     private lateinit var dialogHolder: CardView
     private lateinit var categoryNameLabel: TextView
     private lateinit var categoryNameLayout: TextInputLayout
@@ -32,6 +32,8 @@ class CategoryCreationDialogFragment : BottomSheetDialogFragment() {
     private lateinit var categoryNameCallToAction: TextView
     private lateinit var iconHolder: RecyclerView
     private lateinit var submitButton: Button
+    private lateinit var topDivider: View
+    private lateinit var botDivider: View
     private var currentStageId = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -50,22 +52,31 @@ class CategoryCreationDialogFragment : BottomSheetDialogFragment() {
                 currentStageId=1
                 setStage(1)
             } else {
-
+                createCategory()
+                receiver?.receiveValue(categoryNameLabel.text.toString(), "New Category Name")
+                dismiss()
             }
         }
     }
 
     private fun setStage(stageId: Int) {
+        when (stageId) {
+            0 -> AustromApplication.showKeyboard(requireActivity(), categoryNameField)
+            1 -> AustromApplication.hideKeyboard(requireActivity(), categoryNameField)
+        }
         categoryNameLabel.text = categoryNameField.text
         categoryNameLayout.visibility= if (stageId==0) View.VISIBLE else View.GONE
-        categoryNameCallToAction.visibility= if (stageId==0) View.VISIBLE else View.GONE
-        submitButton.text = if (stageId==0) "Continue" else "Create"
+        //categoryNameCallToAction.visibility= if (stageId==0) View.VISIBLE else View.GONE
+        categoryNameCallToAction.text = if (stageId==0) "Type in a name of the new Category" else "Pick an icon for a new category"
+        submitButton.text = if (stageId==0) "Continue" else "Add"
         categoryNameLabel.visibility = if (stageId==1) View.VISIBLE else View.GONE
+        topDivider.visibility = if (stageId==1) View.VISIBLE else View.GONE
+        botDivider.visibility = if (stageId==1) View.VISIBLE else View.GONE
         iconHolder.visibility = if (stageId==1) View.VISIBLE else View.GONE
     }
 
     private fun setUpRecyclerView() {
-        iconHolder.adapter = CategoryIconRecyclerAdapter(iconList)
+        iconHolder.adapter = CategoryIconRecyclerAdapter(IconManager().getAllAvailableIcons())
         iconHolder.layoutManager = GridLayoutManager(activity, 4, LinearLayoutManager.HORIZONTAL, false)
     }
 
@@ -78,28 +89,22 @@ class CategoryCreationDialogFragment : BottomSheetDialogFragment() {
         categoryNameCallToAction = view.findViewById(R.id.catcrdial_categoryNameCTA_txt)
         iconHolder = view.findViewById(R.id.catcrdial_iconHolder_rcv)
         submitButton = view.findViewById(R.id.catcrdial_continue_btn)
+        topDivider = view.findViewById(R.id.catcrdial_topDivider_dvr)
+        botDivider = view.findViewById(R.id.catcrdial_botDivider_dvr)
     }
 
-    companion object {
-        private val iconList: List<Int> = listOf(
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_food_temp,
-            R.drawable.ic_category_rent_temp)
+
+    private fun createCategory() {
+        if (AustromApplication.appUser==null) return
+        val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+        val newCategory = Category(
+            name = categoryNameField.text.toString(),
+            type = "Mandatory",
+            imgReference = (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon,
+            transactionType = transactionType,
+        )
+        AustromApplication.appUser!!.categories.add(newCategory)
+        AustromApplication.knownUsers[AustromApplication.appUser?.userId]?.categories?.add(newCategory)
+        dbProvider.updateUser(AustromApplication.appUser!!)
     }
 }

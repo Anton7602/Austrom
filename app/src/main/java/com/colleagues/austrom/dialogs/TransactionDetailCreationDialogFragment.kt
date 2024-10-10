@@ -77,17 +77,12 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
         categorySpinner.visibility = if (stageId==3) View.VISIBLE else View.GONE
         costField.visibility = if (stageId==4) View.VISIBLE else View.GONE
         currencyLabel.visibility = if (stageId==4) View.VISIBLE else View.GONE
-        showKeyboardAndRequestFocusForEditText(when (stageId) {
+        AustromApplication.showKeyboard(requireActivity(), when (stageId) {
             1 -> detailNameField
             2 -> quantityField
             4 -> costField
             else -> detailNameField
         })
-    }
-
-    private fun showKeyboardAndRequestFocusForEditText(editText: EditText) {
-        editText.requestFocus()
-        (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun clearValues() {

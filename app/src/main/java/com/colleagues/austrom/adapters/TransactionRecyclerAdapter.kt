@@ -83,7 +83,7 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
         }
         holder.transactionDate.text = transaction.transactionDate?.toDayOfWeekAndShortDateFormat()
         if (category!=null) {
-            holder.categoryImage.setImageResource(category.imgReference!!)
+            holder.categoryImage.setImageResource(category.imgReference!!.resourceId)
         }
 
         holder.transactionHolder.setOnClickListener {

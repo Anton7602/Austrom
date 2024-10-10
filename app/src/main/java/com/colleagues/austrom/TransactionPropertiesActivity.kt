@@ -140,7 +140,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
                 sourceAmount.setTextColor(Color.rgb(0,100,0))
                 sourceAmount.text = "+" + transaction.amount.toMoneyFormat()
                 categoryImage.setImageResource((AustromApplication.getActiveIncomeCategories()
-                    .find { it.name == transaction.categoryId })?.imgReference ?: R.drawable.placeholder_icon_background)
+                    .find { it.name == transaction.categoryId })?.imgReference?.resourceId ?: R.drawable.placeholder_icon_background)
             }
             TransactionType.TRANSFER ->
             {
@@ -149,14 +149,14 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
                 targetAmount.setTextColor(Color.rgb(0,100,0))
                 targetAmount.text = "+" + transaction.secondaryAmount?.toMoneyFormat()
                 categoryImage.setImageResource((AustromApplication.getActiveTransferCategories()
-                    .find { it.name == transaction.categoryId })?.imgReference ?: R.drawable.placeholder_icon_background)
+                    .find { it.name == transaction.categoryId })?.imgReference?.resourceId ?: R.drawable.placeholder_icon_background)
             }
             TransactionType.EXPENSE ->
             {
                 sourceAmount.setTextColor(Color.RED)
                 sourceAmount.text = "-" + transaction.amount.toMoneyFormat()
                 categoryImage.setImageResource((AustromApplication.getActiveExpenseCategories()
-                    .find { it.name == transaction.categoryId })?.imgReference ?: R.drawable.placeholder_icon_background)
+                    .find { it.name == transaction.categoryId })?.imgReference?.resourceId ?: R.drawable.placeholder_icon_background)
             }
         }
         updateUnallocatedSum(0.0)

@@ -192,7 +192,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         for (category in categories) {
             val chip = Chip(requireActivity())
             chip.text = category.name
-            chip.chipIcon = ContextCompat.getDrawable(requireActivity(), category.imgReference ?: R.drawable.ic_placeholder_icon)
+            chip.chipIcon = ContextCompat.getDrawable(requireActivity(), category.imgReference?.resourceId ?: R.drawable.ic_placeholder_icon)
             chip.setEnsureMinTouchTargetSize(false)
             chip.isCheckable = true
             if (category == categories[0]) {

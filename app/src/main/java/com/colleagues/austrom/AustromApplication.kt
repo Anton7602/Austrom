@@ -1,9 +1,12 @@
 package com.colleagues.austrom
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
@@ -49,6 +52,20 @@ class AustromApplication : Application() {
                 }
             }
             return expenseCategories
+        }
+
+        fun showKeyboard(activity: Activity, view: View) {
+            view.requestFocus()
+            (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+        }
+
+        fun hideKeyboard(activity: Activity, view: View? = null) {
+            val focusedView = view ?: activity.currentFocus
+            if (focusedView != null) {
+                focusedView.clearFocus()
+                val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
+            }
         }
     }
 

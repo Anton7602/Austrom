@@ -1,6 +1,7 @@
 package com.colleagues.austrom
 
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.addCallback
@@ -118,6 +119,11 @@ class MainActivity : AppCompatActivity() {
     fun switchFragment(fragment: Fragment) {
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.main_fragmentHolder_frg, fragment)
+        when (fragment) {
+            is BalanceFragment -> filterButton.visibility = View.VISIBLE
+            is OpsFragment -> filterButton.visibility = View.VISIBLE
+            else -> filterButton.visibility = View.GONE
+        }
         transaction.commit()
     }
 
