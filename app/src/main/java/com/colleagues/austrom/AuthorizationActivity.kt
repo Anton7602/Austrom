@@ -32,7 +32,6 @@ class AuthorizationActivity : AppCompatActivity() {
             insets
         }
         bindViews()
-
         runQuickAuthorization()
 
         logInButton.setOnClickListener{

@@ -10,9 +10,11 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
@@ -22,9 +24,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.datepicker.MaterialDatePicker
+import java.time.Instant
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
+import java.time.ZoneId
 
 class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
                                         private val transactionType: TransactionType) : BottomSheetDialogFragment() {
@@ -48,9 +50,10 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        currencySymbol.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         setUpCategoriesInChips()
         setUpDateChips()
+        setUpPrimaryAsset()
+        currencySymbol.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         sumText.requestFocus()
 
         fromCard.setOnClickListener {
@@ -75,13 +78,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
             val provider = FirebaseDatabaseProvider(requireActivity())
             val categoryChip : Chip = view.findViewById(categoryChips.checkedChipId)
             val dateChip : Chip = view.findViewById(dateChips.checkedChipId)
-            val dateInt = provider.parseDateToIntDate(dateChip.tag as LocalDate)
             if (sourceName!=null && targetName!=null) {
-                val currencyCode = if (transactionType == TransactionType.INCOME) {
-                    selectedTarget?.currencyCode
-                } else {
-                    selectedSource?.currencyCode
-                }
                 val secondaryAmount = if (sumReceivedText.visibility == View.VISIBLE) {
                     sumReceivedText.text.toString().toDouble()
                 } else {
@@ -96,8 +93,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
                     amount = sumText.text.toString().toDouble(),
                     secondaryAmount = secondaryAmount,
                     categoryId = categoryChip.text.toString(),
-                    transactionDate = null,
-                    transactionDateInt = dateInt,
+                    transactionDate = (dateChip.tag as LocalDate),
                     comment = null
                 ))
                 if (selectedSource!=null) {
@@ -118,7 +114,24 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         }
 
         calendarButton.setOnClickListener {
-            MaterialDatePicker.Builder.datePicker().setTitleText("Choose Transaction Date").build().show(requireActivity().supportFragmentManager, "DatePicker Dialog")
+            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Choose Transaction Date").setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
+            datePicker.addOnPositiveButtonClickListener { selection ->
+                val selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
+                for (chipView in dateChips.children) {
+                    val chip = chipView as Chip
+                    if ((chip.tag as LocalDate) == selectedDate) {
+                        chip.isChecked = true
+                        dateChips.getChildAt(0).visibility = View.GONE
+                        return@addOnPositiveButtonClickListener
+                    }
+                }
+                val customChip = dateChips.getChildAt(0) as Chip
+                customChip.visibility = View.VISIBLE
+                customChip.text = selectedDate.toDayOfWeekAndShortDateFormat()
+                customChip.tag = selectedDate
+                customChip.isChecked = true
+            }
+            datePicker.show(requireActivity().supportFragmentManager, "DatePicker Dialog")
         }
     }
 
@@ -171,26 +184,17 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
     }
 
     private fun setUpCategoriesInChips() {
-
         val categories = when (transactionType) {
-            TransactionType.TRANSFER -> Category.defaultTransferCategories
-            TransactionType.INCOME -> Category.defaultIncomeCategories
-            TransactionType.EXPENSE -> Category.defaultExpenseCategories
+            TransactionType.TRANSFER -> AustromApplication.getActiveTransferCategories()
+            TransactionType.INCOME -> AustromApplication.getActiveIncomeCategories()
+            TransactionType.EXPENSE -> AustromApplication.getActiveExpenseCategories()
         }
         for (category in categories) {
             val chip = Chip(requireActivity())
             chip.text = category.name
-            chip.chipIcon = ContextCompat.getDrawable(requireActivity(), category.imgReference ?: R.drawable.ic_placeholder_icon)
+            chip.chipIcon = ContextCompat.getDrawable(requireActivity(), category.imgReference?.resourceId ?: R.drawable.ic_placeholder_icon)
             chip.setEnsureMinTouchTargetSize(false)
             chip.isCheckable = true
-//            chip.setChipDrawable(
-//                ChipDrawable.createFromAttributes(
-//                    requireActivity(),
-//                    null,
-//                    0,
-//                    R.style.Widget_MaterialComponents_Chip_Choice
-//                )
-//            )
             if (category == categories[0]) {
                 chip.isChecked = true
             }
@@ -200,19 +204,36 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
 
     private fun setUpDateChips() {
         var chipDate = LocalDate.now()
+        val customDateChip = Chip(requireActivity())
+        customDateChip.text = "Custom date"
+        customDateChip.tag = chipDate
+        customDateChip.setEnsureMinTouchTargetSize(false)
+        customDateChip.isCheckable = true
+        customDateChip.visibility = View.GONE
+        dateChips.addView(customDateChip)
         for (i in 0..9) {
             val chip = Chip(requireActivity())
-            var chipDayOfWeek = chipDate.dayOfWeek.toString()
-            chipDayOfWeek = chipDayOfWeek[0].titlecase() + chipDayOfWeek.lowercase().substring(1)
-            chip.text = "${chipDayOfWeek} ${chipDate.format(DateTimeFormatter.ofPattern("dd.MM"))}"
+            chip.text = chipDate.toDayOfWeekAndShortDateFormat()
+            chip.tag = chipDate
             chip.setEnsureMinTouchTargetSize(false)
             chip.isCheckable = true
-            chip.tag = chipDate
             if (i == 0) {
                 chip.isChecked = true
             }
-            chipDate = chipDate.minusDays(1)
             dateChips.addView(chip)
+            chipDate = chipDate.minusDays(1)
+        }
+    }
+
+    private fun setUpPrimaryAsset() {
+        val primaryAssetId = AustromApplication.appUser?.primaryPaymentMethod
+        if (primaryAssetId!=null && AustromApplication.activeAssets[primaryAssetId]!=null) {
+            val primaryAsset = AustromApplication.activeAssets[primaryAssetId]
+            if (transactionType==TransactionType.INCOME) {
+                receiveTargetSelection(primaryAsset, null)
+            } else {
+                receiveSourceSelection(primaryAsset, null)
+            }
         }
     }
 

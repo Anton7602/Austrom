@@ -9,10 +9,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.colleagues.austrom.AssetProperiesActivity
+import com.colleagues.austrom.AssetPropertiesActivity
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.TransactionPropertiesActivity
+import com.colleagues.austrom.extensions.startWithUppercase
+import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
@@ -47,11 +48,11 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>,
         val asset = assets.elementAt(position)
         holder.assetName.text = asset.assetName
         holder.assetType.text = asset.assetTypeId.toString()
-        holder.assetAmount.text = String.format("%.2f", asset.amount)
+        holder.assetAmount.text = asset.amount.toMoneyFormat()
         holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
         if (asset.currencyCode!=AustromApplication.appUser?.baseCurrencyCode) {
             holder.assetBaseSymbol.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
-            holder.assetBaseAmount.text = String.format("%.2f",asset.amount/(AustromApplication.activeCurrencies[asset.currencyCode]?.exchangeRate ?: 0.0))
+            holder.assetBaseAmount.text = (asset.amount/(AustromApplication.activeCurrencies[asset.currencyCode]?.exchangeRate ?: 0.0)).toMoneyFormat()
         } else {
             holder.assetBaseSymbol.visibility = View.GONE
             holder.assetBaseAmount.visibility = View.GONE
@@ -60,10 +61,9 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>,
             holder.assetOwnerIcon.visibility = View.GONE
             holder.assetOwner.visibility = View.GONE
         } else {
-            if (asset.userId== AustromApplication.appUser!!.userId) {
-                holder.assetOwner.text = AustromApplication.appUser!!.username
-            } else {
-                holder.assetOwner.text = asset.userId
+            val username = AustromApplication.knownUsers[asset.userId]?.username
+            if (username!=null) {
+                holder.assetOwner.text = username.startWithUppercase()
             }
         }
         holder.assetTypeImg.setImageResource(
@@ -78,7 +78,8 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>,
         holder.assetHolder.setOnClickListener {
             receiver?.receiveValue(asset.assetId!!, "assetID")
             if (isAllowOpenProperties) {
-                activity.startActivity(Intent(activity, AssetProperiesActivity::class.java))
+                AustromApplication.selectedAsset = asset
+                activity.startActivity(Intent(activity, AssetPropertiesActivity::class.java))
             }
         }
     }

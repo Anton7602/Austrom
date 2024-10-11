@@ -1,5 +1,8 @@
 package com.colleagues.austrom.models
 
+import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.database.IDatabaseProvider
+
 class Asset(
     var assetId: String? = null,
     val assetTypeId: AssetType? = null,
@@ -7,7 +10,16 @@ class Asset(
     val assetName: String = "",
     var amount: Double = 0.0,
     val currencyCode: String? = null,
-    val isPrivate: Boolean = false) {
+    var isPrivate: Boolean = false) {
+
+    fun delete(dbProvider: IDatabaseProvider) {
+        val transactionsOfThisAsset = dbProvider.getTransactionsOfAsset(this)
+        for (transaction in transactionsOfThisAsset) {
+            dbProvider.deleteTransaction(transaction)
+        }
+        dbProvider.deleteAsset(this)
+        AustromApplication.activeAssets.remove(assetId)
+    }
 
     companion object{
         fun groupAssetsByType(assets: MutableMap<String, Asset>) : MutableMap<String, MutableList<Asset>> {

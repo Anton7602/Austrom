@@ -138,6 +138,36 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         }
     }
 
+    override fun getUsersByBudget(budgetId: String) : MutableMap<String, User> {
+        var users : MutableMap<String, User> = mutableMapOf()
+        activity?.lifecycleScope?.launch {
+            users = getUsersByBudgetAsync(budgetId)
+        }
+        return users
+    }
+
+    private suspend fun getUsersByBudgetAsync(budgetId: String) : MutableMap<String, User> {
+        val reference = database.getReference("users")
+        val databaseQuery = reference.orderByChild("activeBudgetId").equalTo(budgetId)
+        return runBlocking {
+            try {
+                val snapshot = databaseQuery.get().await()
+                val usersList = mutableMapOf<String, User>()
+                for (child in snapshot.children) {
+                    val user = child.getValue(User::class.java)
+                    if (user!=null) {
+                        user.userId = child.key
+                        usersList[child.key.toString()] = user
+                    }
+                }
+                usersList
+            }
+            catch (e: Exception) {
+                mutableMapOf()
+            }
+        }
+    }
+
     override fun createNewBudget(budget: Budget) : String? {
         val reference = database.getReference("budgets")
         val key = reference.push().key
@@ -229,6 +259,13 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         if (!asset.assetId.isNullOrEmpty()) {
             database.getReference("assets").child(asset.assetId!!).setValue(null)
             Log.w("Debug", "Asset entry with key ${asset.assetId} deleted")
+            val transactionsOfAsset = getTransactionsOfAsset(asset)
+            if (transactionsOfAsset.isNotEmpty()) {
+                val reference = database.getReference("transactions")
+                for (transaction in transactionsOfAsset) {
+                    reference.child(transaction.transactionId!!).setValue(null)
+                }
+            }
         } else {
             Log.w("Debug", "Provided asset without id. Delete canceled")
         }
@@ -304,9 +341,41 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
             Log.w("Debug", "Couldn't get push key for the transaction")
             return null
         }
+        transaction.transactionDateInt = parseDateToIntDate(transaction.transactionDate!!)
+        val tempDateHolder = transaction.transactionDate
+        transaction.transactionDate = null
         reference.child(key).setValue(transaction)
+        transaction.transactionDate = tempDateHolder
+        transaction.transactionDateInt = null
         Log.w("Debug", "New transaction added to DB with key: $key")
         return key
+    }
+
+    override fun updateTransaction(transaction: Transaction) {
+        val transactionKey = transaction.transactionId
+        if (!transactionKey.isNullOrEmpty()) {
+            val tempDateHolder = transaction.transactionDate
+            transaction.transactionDateInt = parseDateToIntDate(transaction.transactionDate!!)
+            transaction.transactionDate = null
+            transaction.transactionId = null
+            //transaction.comment = if (transaction.comment=="null") null else transaction.comment
+            database.getReference("transactions").child(transactionKey).setValue(transaction)
+            transaction.transactionId = transactionKey
+            transaction.transactionDate = tempDateHolder
+            transaction.transactionDateInt = null
+            Log.w("Debug", "Asset entry with key ${transaction.transactionId} updated")
+        } else {
+            Log.w("Debug", "Provided asset without id. Update canceled")
+        }
+    }
+
+    override fun deleteTransaction(transaction: Transaction) {
+        if (!transaction.transactionId.isNullOrEmpty()) {
+            database.getReference("transactions").child(transaction.transactionId!!).setValue(null)
+            Log.w("Debug", "Transaction entry with key ${transaction.transactionId} deleted")
+        } else {
+            Log.w("Debug", "Provided transaction without id. Delete canceled")
+        }
     }
 
     override fun getTransactionsOfUser(user: User): MutableList<Transaction> {
@@ -374,6 +443,48 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         }
     }
 
+    override fun getTransactionsOfAsset(asset: Asset): MutableList<Transaction> {
+        var transactions : MutableList<Transaction> = mutableListOf()
+        activity?.lifecycleScope?.launch {
+            transactions = getTransactionOfAssetAsync(asset)
+        }
+        return transactions
+    }
+
+    private fun getTransactionOfAssetAsync(asset: Asset): MutableList<Transaction> {
+        val transactionsList = mutableListOf<Transaction>()
+        val reference = database.getReference("transactions")
+        val databaseQuerySource = reference.orderByChild("sourceId").equalTo(asset.assetId)
+        val databaseQueryTarget = reference.orderByChild("targetId").equalTo(asset.assetId)
+        return runBlocking {
+            try {
+                val snapshotSource = databaseQuerySource.get().await()
+                for (child in snapshotSource.children) {
+                    val transaction = child.getValue(Transaction::class.java)
+                    if (transaction != null) {
+                        transaction.transactionId = child.key
+                        transaction.transactionDate =
+                            parseIntDateToDate(transaction.transactionDateInt)
+                        transactionsList.add(transaction)
+                    }
+                }
+                val snapshotTarget = databaseQueryTarget.get().await()
+                for (child in snapshotTarget.children) {
+                    val transaction = child.getValue(Transaction::class.java)
+                    if (transaction != null) {
+                        transaction.transactionId = child.key
+                        transaction.transactionDate =
+                            parseIntDateToDate(transaction.transactionDateInt)
+                        transactionsList.add(transaction)
+                    }
+                }
+                transactionsList
+            } catch (e: Exception) {
+                mutableListOf()
+            }
+        }
+    }
+
     override fun getCurrencies(): MutableMap<String, Currency> {
         var currencies : MutableMap<String, Currency> = mutableMapOf()
         activity?.lifecycleScope?.launch {
@@ -406,7 +517,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         return (date.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).toInt()
     }
 
-    fun parseIntDateToDate(intDate: Int?) : LocalDate {
+    private fun parseIntDateToDate(intDate: Int?) : LocalDate {
         if (intDate==null || intDate.toString().length!=8) return LocalDate.now()
         val year = intDate.toString().substring(0,4).toInt()
         val month = intDate.toString().substring(4,6).toInt()

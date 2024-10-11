@@ -52,10 +52,10 @@
             android:id="@+id/main_filter_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
             android:background="@color/transparent"
+            android:contentDescription="@string/filter"
             android:elevation="4dp"
+            android:padding="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/main_toolbar_tbr"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_navigation_filter_temp" />

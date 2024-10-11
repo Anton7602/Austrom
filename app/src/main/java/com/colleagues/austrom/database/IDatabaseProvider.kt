@@ -13,6 +13,7 @@ interface IDatabaseProvider {
     fun getUserByUserId(userId: String): User?
     fun getUserByUsername(username: String) : User?
     fun getUserByEmail(email: String) : User?
+    fun getUsersByBudget(budgetId: String): MutableMap<String, User>
 
     fun createNewAsset(asset: Asset): String?
     fun updateAsset(asset: Asset)
@@ -26,8 +27,11 @@ interface IDatabaseProvider {
     fun getBudgetById(budgetId: String) : Budget?
 
     fun writeNewTransaction(transaction: Transaction): String?
+    fun updateTransaction(transaction: Transaction)
+    fun deleteTransaction(transaction: Transaction)
     fun getTransactionsOfUser(user: User) : MutableList<Transaction>
     fun getTransactionsOfBudget(budget: Budget) : MutableList<Transaction>
+    fun getTransactionsOfAsset(asset: Asset): MutableList<Transaction>
 
     fun getCurrencies(): MutableMap<String, Currency>
 }

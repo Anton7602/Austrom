@@ -20,7 +20,6 @@ import com.colleagues.austrom.adapters.AssetRecyclerAdapter
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Asset
 
-
 class AssetSelectionDialogFragment(private val isReturnToSource: Boolean = true,
     private var listOfAsset: MutableMap<String, Asset> = mutableMapOf(),
     private var parentDialog: TransactionCreationDialogFragment? = null ) : DialogFragment(), IDialogInitiator {
@@ -50,24 +49,9 @@ class AssetSelectionDialogFragment(private val isReturnToSource: Boolean = true,
         val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity()).setView(view)
         val assetSelectionDialog = adb.create()
         if (assetSelectionDialog != null && assetSelectionDialog.window != null) {
-            assetSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            assetSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
 
-//        acceptButton.setOnClickListener {
-//            if (parentDialog!=null) {
-//                val selectedAsset = AustromApplication.activeAssets.entries.elementAt((assetsRecyclerView.adapter as AssetRecyclerAdapter).selectedItemPosition).value
-//                if (isReturnToSource) {
-//                    parentDialog!!.receiveSourceSelection(selectedAsset, selectedAsset.assetName)
-//                } else {
-//                    parentDialog!!.receiveTargetSelection(selectedAsset, selectedAsset.assetName)
-//                }
-//            }
-//            dismiss()
-//        }
-
-//        cancelButton.setOnClickListener {
-//            dismiss()
-//        }
         return assetSelectionDialog
     }
 

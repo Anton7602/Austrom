@@ -9,8 +9,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
-import com.colleagues.austrom.fragments.SettingsFragment
+import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Currency
 
@@ -41,7 +40,7 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
         holder.currencyCode.text = currency.code
         holder.selectionMarker.isChecked = (currency.code == baseCurrencyCode)
         holder.currencySymbol.text = baseCurrencyCode
-        holder.currencyExchangeRate.text = String.format("%.3f", 1/currency.exchangeRate)
+        holder.currencyExchangeRate.text = (1/currency.exchangeRate).toMoneyFormat()
 
         val currencyTapOnClickListener = View.OnClickListener { _ ->
             currencyReceiver?.receiveValue(currency.name, "BaseCurrency")

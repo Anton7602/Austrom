@@ -1,7 +1,7 @@
 package com.colleagues.austrom.adapters
 
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -9,21 +9,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
-import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionPropertiesActivity
+import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
+import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
-import java.time.format.DateTimeFormatter
+import com.colleagues.austrom.models.TransactionType
 
 class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
                                  private val activity: AppCompatActivity) : RecyclerView.Adapter<TransactionRecyclerAdapter.TransactionViewHolder>() {
+
+
     class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val categoryName: TextView = itemView.findViewById(R.id.tritem_categoryName_txt)
         val categoryImage: ImageView = itemView.findViewById(R.id.tritem_categoryIcon_img)
@@ -45,41 +47,47 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
         return transactions.size
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
-        holder.categoryName.text = transactions[position].categoryId
-        holder.sourceName.text = transactions[position].sourceName
-        val source = AustromApplication.activeAssets[transactions[position].sourceId]
-        val target = AustromApplication.activeAssets[transactions[position].targetId]
+        val transaction = transactions[position]
+        holder.categoryName.text = transaction.categoryId
+        holder.sourceName.text = transaction.sourceName
+        holder.targetName.text = transaction.targetName
+        val source = AustromApplication.activeAssets[transaction.sourceId]
+        val target = AustromApplication.activeAssets[transaction.targetId]
         var category : Category? = null
-        if (transactions[position].sourceId!=null && transactions[position].targetId!=null) {
-            holder.secondaryAmount.visibility = View.VISIBLE
-            holder.secondaryAmount.text ="-" + String.format("%.2f", transactions[position].amount)
-            holder.secondaryAmount.setTextColor(Color.RED)
-            holder.secondaryCurrency.visibility = View.VISIBLE
-            holder.secondaryCurrency.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
-            holder.amount.text ="+" + String.format("%.2f", transactions[position].secondaryAmount)
-            holder.amount.setTextColor(Color.rgb(0,100,0))
-            holder.currencySymbol.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
-            category = Category.defaultTransferCategories.find { it.name == transactions[position].categoryId }
-        } else if (transactions[position].sourceId!=null) {
-            holder.amount.text ="-" + String.format("%.2f", transactions[position].amount)
-            holder.amount.setTextColor(Color.RED)
-            holder.currencySymbol.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
-            category = Category.defaultExpenseCategories.find { it.name == transactions[position].categoryId }
-        } else {
-            holder.amount.text = "+" + String.format("%.2f", transactions[position].amount)
-            holder.amount.setTextColor(Color.rgb(0,100,0))
-            holder.currencySymbol.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
-            category = Category.defaultIncomeCategories.find { it.name == transactions[position].categoryId }
+        when (transaction.transactionType()) {
+            TransactionType.TRANSFER -> {
+                holder.secondaryAmount.visibility = View.VISIBLE
+                holder.secondaryAmount.text ="-" + transaction.amount.toMoneyFormat()
+                holder.secondaryAmount.setTextColor(Color.RED)
+                holder.secondaryCurrency.visibility = View.VISIBLE
+                holder.secondaryCurrency.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
+                holder.amount.text ="+" + transaction.secondaryAmount?.toMoneyFormat()
+                holder.amount.setTextColor(Color.rgb(0,100,0))
+                holder.currencySymbol.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
+                category = AustromApplication.getActiveTransferCategories().find { it.name == transaction.categoryId }
+            }
+            TransactionType.EXPENSE -> {
+                holder.amount.text ="-" + transaction.amount.toMoneyFormat()
+                holder.amount.setTextColor(Color.RED)
+                holder.currencySymbol.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
+                category = AustromApplication.getActiveExpenseCategories().find { it.name == transaction.categoryId }
+            }
+            TransactionType.INCOME -> {
+                holder.amount.text = "+" + transaction.amount.toMoneyFormat()
+                holder.amount.setTextColor(Color.rgb(0,100,0))
+                holder.currencySymbol.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
+                category = AustromApplication.getActiveIncomeCategories().find { it.name == transaction.categoryId }
+            }
         }
-        holder.targetName.text = transactions[position].targetName
-        holder.transactionDate.text =
-            "${transactions[position].transactionDate?.dayOfWeek} ${transactions[position].transactionDate?.format(DateTimeFormatter.ofPattern("dd.MM"))}"
+        holder.transactionDate.text = transaction.transactionDate?.toDayOfWeekAndShortDateFormat()
         if (category!=null) {
-            holder.categoryImage.setImageResource(category.imgReference!!)
+            holder.categoryImage.setImageResource(category.imgReference!!.resourceId)
         }
 
         holder.transactionHolder.setOnClickListener {
+            AustromApplication.selectedTransaction = transaction
             activity.startActivity(Intent(activity, TransactionPropertiesActivity::class.java))
         }
     }

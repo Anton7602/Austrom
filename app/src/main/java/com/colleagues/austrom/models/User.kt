@@ -9,7 +9,7 @@ data class User(
     var email: String? = null,
     val password: String? = null,
     var activeBudgetId: String? = null,
-    var baseCurrencyCode: String = "USD")
-{
-
-}
+    var primaryPaymentMethod: String? = null,
+    var baseCurrencyCode: String = "USD",
+    var categories: MutableList<Category> = mutableListOf()
+)

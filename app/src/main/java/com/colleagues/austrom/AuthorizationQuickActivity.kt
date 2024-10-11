@@ -1,17 +1,13 @@
 package com.colleagues.austrom
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.view.View
 import android.view.View.OnClickListener
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -19,19 +15,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.managers.BiometricPromptManager
 import com.colleagues.austrom.models.User
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 
-class AuthorizationQuickActivity() : AppCompatActivity() {
+class AuthorizationQuickActivity : AppCompatActivity() {
     private lateinit var button1: Button
     private lateinit var button2: Button
     private lateinit var button3: Button
@@ -70,7 +66,7 @@ class AuthorizationQuickActivity() : AppCompatActivity() {
         }
         bindViews()
         initializeBiometricAuthentication()
-        username.text = authorizingUser.username?.substring(0,1)?.uppercase() + authorizingUser.username?.substring(1)
+        username.text = authorizingUser.username.startWithUppercase()
         val time = LocalTime.now()
         timeOfDay.text = if (time.hour>20) {
             "Good evening, "

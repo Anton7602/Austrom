@@ -1,7 +1,5 @@
 package com.colleagues.austrom.models
 
-import java.math.BigDecimal
-
 class Currency(val code: String = "",
                val name : String = "",
                val symbol : String ="",

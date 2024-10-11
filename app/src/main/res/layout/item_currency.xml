@@ -64,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
-                    android:text="0.912" />
+                    android:text="0.91" />
 
                 <TextView
                     android:id="@+id/curit_currencySymbol_txt"

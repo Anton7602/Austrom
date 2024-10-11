@@ -14,7 +14,7 @@
         android:theme="@style/Theme.Austrom"
         tools:targetApi="34">
         <activity
-            android:name=".AssetProperiesActivity"
+            android:name=".AssetPropertiesActivity"
             android:exported="false" />
         <activity
             android:name=".TransactionPropertiesActivity"

@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:text="-160"
+                android:text="-160.00"
                 android:textAlignment="viewEnd"
                 android:textSize="16sp"
                 android:textStyle="bold"

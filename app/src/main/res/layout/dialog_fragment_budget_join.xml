@@ -58,6 +58,7 @@
                 android:layout_weight="1"
                 android:text="Recieve invitation code from other budget memeber"
                 android:textAlignment="center"
+                android:textColor="@color/dark_grey"
                 app:layout_constraintEnd_toEndOf="@+id/bjdial_invitationCode_til"
                 app:layout_constraintStart_toStartOf="@+id/bjdial_invitationCode_til"
                 app:layout_constraintTop_toBottomOf="@+id/bjdial_invitationCode_til" />

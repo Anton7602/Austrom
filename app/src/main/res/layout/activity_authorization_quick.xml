@@ -151,9 +151,10 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@color/transparent"
+                    android:contentDescription="@string/keyboard_remove"
                     android:scaleType="centerInside"
-                    android:tint="@color/black"
-                    app:srcCompat="@android:drawable/ic_input_delete" />
+                    app:srcCompat="@android:drawable/ic_input_delete"
+                    app:tint="@color/black" />
             </androidx.cardview.widget.CardView>
 
             <Button
@@ -185,9 +186,10 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@color/transparent"
+                    android:contentDescription="@string/button_bio"
                     android:scaleType="centerInside"
-                    android:tint="@color/black"
-                    app:srcCompat="@drawable/fingerprint_dialog_fp_icon" />
+                    app:srcCompat="@drawable/fingerprint_dialog_fp_icon"
+                    app:tint="@color/black" />
             </androidx.cardview.widget.CardView>
 
         </TableRow>
@@ -229,9 +231,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:tint="@color/dark_grey"
             app:layout_constraintDimensionRatio=""
             app:srcCompat="@drawable/ic_pin_placeholder"
+            app:tint="@color/dark_grey"
             tools:layout_editor_absoluteX="24dp"
             tools:layout_editor_absoluteY="27dp" />
 
@@ -240,8 +242,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:tint="@color/dark_grey"
             app:srcCompat="@drawable/ic_pin_placeholder"
+            app:tint="@color/dark_grey"
             tools:layout_editor_absoluteX="88dp"
             tools:layout_editor_absoluteY="27dp" />
 
@@ -250,8 +252,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:tint="@color/dark_grey"
             app:srcCompat="@drawable/ic_pin_placeholder"
+            app:tint="@color/dark_grey"
             tools:layout_editor_absoluteX="152dp"
             tools:layout_editor_absoluteY="27dp" />
 
@@ -260,8 +262,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:tint="@color/dark_grey"
             app:srcCompat="@drawable/ic_pin_placeholder"
+            app:tint="@color/dark_grey"
             tools:layout_editor_absoluteX="128dp"
             tools:layout_editor_absoluteY="27dp" />
 
