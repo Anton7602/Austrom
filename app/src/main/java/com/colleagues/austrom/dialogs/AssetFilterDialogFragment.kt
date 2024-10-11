@@ -6,6 +6,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.cardview.widget.CardView
 import com.colleagues.austrom.R
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -16,11 +17,13 @@ class AssetFilterDialogFragment(private val filteredFragment: BalanceFragment) :
     private lateinit var sharingModeGroup: MaterialButtonToggleGroup
     private lateinit var personalButton: Button
     private lateinit var sharedButton: Button
+    private lateinit var dialogHolder: CardView
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background)
         applyFilter()
 
         val filterChangedListener = OnClickListener{
@@ -52,6 +55,7 @@ class AssetFilterDialogFragment(private val filteredFragment: BalanceFragment) :
         sharingModeGroup = view.findViewById(R.id.asfildial_sharingType_tgr)
         personalButton = view.findViewById(R.id.asfildial_personal_btn)
         sharedButton = view.findViewById(R.id.asfildial_shared_btn)
+        dialogHolder = view.findViewById(R.id.asfildial_holder_crv)
     }
 }
 

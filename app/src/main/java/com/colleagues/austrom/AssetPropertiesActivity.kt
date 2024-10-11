@@ -84,7 +84,11 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     private fun setUpAssetProperties() {
         assetCard.setBackgroundResource(R.drawable.sh_card_background)
         assetName.text = asset.assetName
-        assetOwner.text = AustromApplication.knownUsers[asset.userId]?.username!!.startWithUppercase()
+        assetOwner.text = if (AustromApplication.appUser!!.activeBudgetId!=null) {
+            AustromApplication.knownUsers[asset.userId]?.username!!.startWithUppercase()
+        } else {
+            AustromApplication.appUser?.username ?: "Unknown"
+        }
         assetBalance.text = asset.amount.toMoneyFormat()
         assetCurrency.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
         assetPrimary.isChecked = (asset.assetId == AustromApplication.appUser?.primaryPaymentMethod)

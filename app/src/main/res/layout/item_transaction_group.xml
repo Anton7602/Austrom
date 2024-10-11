@@ -33,7 +33,8 @@
                 android:layout_marginTop="16dp"
                 android:text="Transaction Group Title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="HardcodedText" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/trgritem_transactionholder_rcv"

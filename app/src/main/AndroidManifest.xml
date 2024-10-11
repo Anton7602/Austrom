@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/placeholder_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Austrom"
+        android:localeConfig="@xml/local_config"
         tools:targetApi="34">
         <activity
             android:name=".AssetPropertiesActivity"

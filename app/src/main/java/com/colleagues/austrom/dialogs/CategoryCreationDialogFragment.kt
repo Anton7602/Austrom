@@ -67,8 +67,8 @@ class CategoryCreationDialogFragment(private val transactionType: TransactionTyp
         categoryNameLabel.text = categoryNameField.text
         categoryNameLayout.visibility= if (stageId==0) View.VISIBLE else View.GONE
         //categoryNameCallToAction.visibility= if (stageId==0) View.VISIBLE else View.GONE
-        categoryNameCallToAction.text = if (stageId==0) "Type in a name of the new Category" else "Pick an icon for a new category"
-        submitButton.text = if (stageId==0) "Continue" else "Add"
+        categoryNameCallToAction.text = if (stageId==0) getString(R.string.type_in_a_name_of_the_new_category) else getString(R.string.pick_an_icon_for_a_new_category)
+        submitButton.text = if (stageId==0) getString(R.string.action_continue) else getString(R.string.add)
         categoryNameLabel.visibility = if (stageId==1) View.VISIBLE else View.GONE
         topDivider.visibility = if (stageId==1) View.VISIBLE else View.GONE
         botDivider.visibility = if (stageId==1) View.VISIBLE else View.GONE

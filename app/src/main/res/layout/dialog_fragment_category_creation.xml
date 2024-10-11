@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
                 android:paddingBottom="2dp"
-                android:text="Category Name"
+                android:text="@string/category_name"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -46,7 +46,7 @@
                     android:id="@+id/catcrdial_categoryName_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Category Name" />
+                    android:hint="@string/category_name" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <View
@@ -66,7 +66,8 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:listitem="@layout/item_category_icon" />
+                tools:listitem="@layout/item_category_icon"
+                tools:ignore="HardcodedText" />
 
             <View
                 android:id="@+id/catcrdial_botDivider_dvr"
@@ -82,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:text="Enter category name"
+                android:text="@string/enter_category_name"
                 android:textAlignment="center"
                 android:textColor="@color/dark_grey" />
 
@@ -93,7 +94,7 @@
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="12dp"
                 android:backgroundTint="@color/blue"
-                android:text="Continue"
+                android:text="@string/action_continue"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

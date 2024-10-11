@@ -69,13 +69,13 @@ class AuthorizationQuickActivity : AppCompatActivity() {
         username.text = authorizingUser.username.startWithUppercase()
         val time = LocalTime.now()
         timeOfDay.text = if (time.hour>20) {
-            "Good evening, "
+            getString(R.string.good_evening)
         } else if (time.hour>12) {
-            "Good afternoon,"
+            getString(R.string.good_afternoon)
         } else if (time.hour>6) {
-            "Good morning,"
+            getString(R.string.good_morning)
         } else {
-            "Good night,"
+            getString(R.string.good_night)
         }
 
         val keyboardButtonClickListener = OnClickListener { view ->

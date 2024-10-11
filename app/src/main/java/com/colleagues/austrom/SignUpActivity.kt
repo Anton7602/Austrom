@@ -51,12 +51,12 @@ class SignUpActivity : AppCompatActivity() {
                     emailTextBox.text.toString().lowercase(),
                     passwordTextBox.text.toString())
                 provider.createNewUser(newUser)
-                Toast.makeText(this, "User successfully added", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.user_successfully_added), Toast.LENGTH_LONG).show()
                 AustromApplication.appUser = newUser
                 startActivity(Intent(this, MainActivity::class.java))
                 this.finish()
             } else {
-                Toast.makeText(this, "User with provided username already exist in the system", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.user_exists), Toast.LENGTH_LONG).show()
             }
         }
 
@@ -135,15 +135,15 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun checkLogin() {
         if (loginTextBox.text.toString().isEmpty()) {
-            loginTextLayout.setError("Login cannot be empty")
+            loginTextLayout.setError(getString(R.string.login_cannot_be_empty))
             checkTextFields["login"] = false
             return
         }
         if (!loginTextBox.text.toString().matches("^[a-zA-Z0-9_-]{3,15}$".toRegex())) {
             if (!loginTextBox.text.toString().matches("^.{3,15}$".toRegex()))
-                loginTextLayout.setError("The length of login must be of 3 to 16 characters")
+                loginTextLayout.setError(getString(R.string.login_length))
             else
-                loginTextLayout.setError("Login can contain only letters, numbers and symbols _ and -")
+                loginTextLayout.setError(getString(R.string.login_limitation))
             checkTextFields["login"] = false
             return
         }
@@ -152,12 +152,12 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun checkEmail() {
         if (emailTextBox.text.toString().isEmpty()) {
-            emailTextLayout.setError("Email cannot be empty")
+            emailTextLayout.setError(getString(R.string.email_empty))
             checkTextFields["email"] = false
             return
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailTextBox.text.toString()).matches()) {
-            emailTextLayout.setError("Email has a wrong format")
+            emailTextLayout.setError(getString(R.string.email_has_a_wrong_format))
             checkTextFields["email"] = false
             return
         }
@@ -166,12 +166,12 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun checkPassword() {
         if (passwordTextBox.text.toString().isEmpty()) {
-            passwordTextLayout.setError("Password cannot be empty")
+            passwordTextLayout.setError(getString(R.string.password_cannot_be_empty))
             checkTextFields["password"] = false
             return
         }
         if (!passwordTextBox.text.toString().matches("^.{4,}$".toRegex())) {
-            passwordTextLayout.setError("Password must be at least 4 characters long")
+            passwordTextLayout.setError(getString(R.string.password_length))
             checkTextFields["password"] = false
             return
         }
@@ -180,12 +180,12 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun checkRepeatPassword() {
         if (repeatPasswordTextBox.text.toString().isEmpty()) {
-            repeatPasswordTextLayout.setError("Repeat the password, please")
+            repeatPasswordTextLayout.setError(getString(R.string.repeat_the_password))
             checkTextFields["repeatPassword"] = false
             return
         }
         if (passwordTextBox.text.toString() != repeatPasswordTextBox.text.toString()) {
-            repeatPasswordTextLayout.setError("Passwords do not match")
+            repeatPasswordTextLayout.setError(getString(R.string.passwords_do_not_match))
             checkTextFields["repeatPassword"] = false
             return
         }

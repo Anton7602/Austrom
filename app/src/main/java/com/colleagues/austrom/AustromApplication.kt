@@ -27,6 +27,7 @@ class AustromApplication : Application() {
         var knownUsers : MutableMap<String, User> = mutableMapOf()
         var selectedTransaction: Transaction? = null
         var selectedAsset: Asset? = null
+        val supportedLocales: List<String> = listOf("English", "Russian")
 
 
         fun getActiveExpenseCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.EXPENSE)}

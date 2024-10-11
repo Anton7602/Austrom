@@ -4,6 +4,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
 import java.util.Locale
 
 fun Double.toMoneyFormat(): String {
@@ -20,6 +21,6 @@ fun String?.startWithUppercase(): String {
 }
 
 fun LocalDate.toDayOfWeekAndShortDateFormat(): String {
-    val chipDayOfWeek = this.dayOfWeek.toString().lowercase().startWithUppercase()
+    val chipDayOfWeek = this.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()).startWithUppercase()
     return "$chipDayOfWeek ${this.format(DateTimeFormatter.ofPattern("dd.MM"))}"
 }

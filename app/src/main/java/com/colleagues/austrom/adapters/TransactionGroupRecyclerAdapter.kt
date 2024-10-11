@@ -1,5 +1,6 @@
 package com.colleagues.austrom.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.R
+import com.colleagues.austrom.extensions.startWithUppercase
+import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.models.Transaction
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMap<LocalDate, MutableList<Transaction>>,
                                       private val activity: AppCompatActivity) : RecyclerView.Adapter<TransactionGroupRecyclerAdapter.TransactionGroupViewHolder>(){
@@ -27,9 +32,11 @@ class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMa
         return groupedTransactions.size
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionGroupViewHolder, position: Int) {
         val transactionDate = groupedTransactions.keys.elementAt(position)
-        holder.transactionGroupName.text = "${transactionDate.dayOfWeek} ${transactionDate.format(DateTimeFormatter.ofPattern("dd.MM"))}"
+        //holder.transactionGroupName.text = "${transactionDate.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()).startWithUppercase()} ${transactionDate.format(DateTimeFormatter.ofPattern("dd.MM"))}"
+        holder.transactionGroupName.text = transactionDate.toDayOfWeekAndShortDateFormat()
         holder.transactionHolderRecyclerView.layoutManager = LinearLayoutManager(activity)
         holder.transactionHolderRecyclerView.adapter = TransactionRecyclerAdapter(groupedTransactions.values.elementAt(position), activity)
     }

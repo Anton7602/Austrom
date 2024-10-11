@@ -92,11 +92,11 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         }
         if (BigDecimal(sum).setScale(2, RoundingMode.HALF_DOWN)==BigDecimal(0).setScale(2, RoundingMode.HALF_DOWN)) {
             detailConstructorHolder.visibility = View.GONE
-            detailsLabel.text = "Total:"
+            detailsLabel.text = getString(R.string.total)
             unallocatedSum.text = transaction.amount.toMoneyFormat()
         } else {
             detailConstructorHolder.visibility = View.VISIBLE
-            detailsLabel.text = "Unallocated balance:"
+            detailsLabel.text = getString(R.string.unallocated_balance)
             unallocatedSum.text = sum.toMoneyFormat()
         }
     }

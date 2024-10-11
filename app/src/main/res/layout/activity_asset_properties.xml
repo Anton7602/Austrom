@@ -55,7 +55,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:elevation="8dp"
-        android:text="Asset Name"
+        android:text="@string/asset_name"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd"
         app:layout_constraintTop_toTopOf="@+id/asdet_assetCard_crd" />
@@ -70,7 +70,8 @@
         android:textSize="34sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="@+id/asdet_currency_txt"
-        app:layout_constraintEnd_toStartOf="@+id/asdet_currency_txt" />
+        app:layout_constraintEnd_toStartOf="@+id/asdet_currency_txt"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/asdet_currency_txt"
@@ -82,14 +83,15 @@
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/asdet_owner_txt"
         app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
-        app:layout_constraintTop_toBottomOf="@+id/asdet_assetName_txt" />
+        app:layout_constraintTop_toBottomOf="@+id/asdet_assetName_txt"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/asdet_owner_txt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:elevation="8dp"
-        android:text="Owner"
+        android:text="@string/owner"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
         app:layout_constraintStart_toStartOf="@+id/asdet_assetName_txt"
@@ -121,7 +123,7 @@
         android:id="@+id/asdet_isPrivate_chb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Private"
+        android:text="@string/privateAsset"
         app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
         app:layout_constraintTop_toTopOf="@+id/asdet_isPrimary_chb" />
 
@@ -174,7 +176,7 @@
         android:layout_marginEnd="24dp"
         android:autoSizeTextType="uniform"
         android:elevation="8dp"
-        android:text="Transactions Not Found"
+        android:text="@string/transactions_not_found"
         android:textAlignment="center"
         android:visibility="gone"
         app:layout_constraintDimensionRatio="w,1:8"

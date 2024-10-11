@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="4dp"
-        android:text="Profile Settings"
+        android:text="@string/profile_settings"
         android:textColor="@color/dark_grey"
         android:textSize="16sp" />
 
@@ -21,7 +21,7 @@
         android:id="@+id/set_baseCurrency_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:primaryText="Base Currency"
+        app:primaryText="@string/base_currency"
         app:secondaryText="Euro"
         app:settingIcon="@drawable/ic_settings_base_currency_temp" />
 
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="4dp"
-        android:text="Security Settings"
+        android:text="@string/security_settings"
         android:textColor="@color/dark_grey"
         android:textSize="16sp" />
 
@@ -39,8 +39,8 @@
         android:id="@+id/set_quickPin_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:primaryText="Quick Access Pin"
-        app:secondaryText="Disabled"
+        app:primaryText="@string/quick_access_pin"
+        app:secondaryText="@string/disabled"
         app:settingIcon="@drawable/ic_settings_quickpin_temp" />
 
     <TextView
@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="4dp"
-        android:text="App Settings"
+        android:text="@string/app_settings"
         android:textColor="@color/dark_grey"
         android:textSize="16sp"/>
 
@@ -57,8 +57,8 @@
         android:id="@+id/set_appLocale_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:primaryText="Language"
-        app:secondaryText="English"
+        app:primaryText="@string/language"
+        app:secondaryText="@string/english"
         app:settingIcon="@drawable/ic_settings_local"/>
 
 </LinearLayout>

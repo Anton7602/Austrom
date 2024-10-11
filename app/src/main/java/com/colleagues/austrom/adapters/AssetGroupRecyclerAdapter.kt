@@ -12,8 +12,9 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.AssetType
 
-class AssetGroupRecyclerAdapter(private var assetTypes: Map<String, MutableList<Asset>>,
+class AssetGroupRecyclerAdapter(private var assetTypes: Map<AssetType, MutableList<Asset>>,
                                 private var activity: AppCompatActivity) : RecyclerView.Adapter<AssetGroupRecyclerAdapter.AssetGroupViewHolder>() {
     class AssetGroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val assetTypeName: TextView = itemView.findViewById(R.id.assgritem_assettype_txt)
@@ -32,7 +33,7 @@ class AssetGroupRecyclerAdapter(private var assetTypes: Map<String, MutableList<
     }
 
     override fun onBindViewHolder(holder: AssetGroupViewHolder, position: Int) {
-        holder.assetTypeName.text = assetTypes.keys.elementAt(position)
+        holder.assetTypeName.text = activity.getString(assetTypes.keys.elementAt(position).stringResourceId).uppercase()
         holder.assetTypeCurrencySymbol.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         var sum = 0.0
         for (asset in assetTypes.values.elementAt(position)) {

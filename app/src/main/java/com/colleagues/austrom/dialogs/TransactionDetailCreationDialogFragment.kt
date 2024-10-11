@@ -77,6 +77,7 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
         categorySpinner.visibility = if (stageId==3) View.VISIBLE else View.GONE
         costField.visibility = if (stageId==4) View.VISIBLE else View.GONE
         currencyLabel.visibility = if (stageId==4) View.VISIBLE else View.GONE
+        currencyLabel.text = AustromApplication.activeCurrencies[AustromApplication.activeAssets[transaction.sourceId]?.currencyCode]?.symbol
         AustromApplication.showKeyboard(requireActivity(), when (stageId) {
             1 -> detailNameField
             2 -> quantityField

@@ -7,17 +7,7 @@
     tools:context=".dialogs.CurrencySelectionDialogFragment">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        app:cardBackgroundColor="@color/navigationBarColor"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView6"
+        android:id="@+id/csdial_holder_crv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/navigationBarColor"
@@ -37,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="2dp"
-                android:text="Currency Selection"
+                android:text="@string/currency_selection"
                 android:textSize="16sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/csdial_decline_btn"
@@ -52,6 +42,7 @@
                 android:hint="@string/currency_selection"
                 android:inputType="text"
                 android:paddingStart="50dp"
+                android:paddingEnd="50dp"
                 android:paddingTop="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/csdial_decline_btn"
                 app:layout_constraintEnd_toEndOf="parent"

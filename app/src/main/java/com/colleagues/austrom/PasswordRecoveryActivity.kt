@@ -25,7 +25,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         bindViews()
 
         recoverPasswordButton.setOnClickListener{
-            Toast.makeText(this, "Feature is not yet implemented", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.not_yet_implemented), Toast.LENGTH_LONG).show()
         }
     }
 

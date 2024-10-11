@@ -39,7 +39,7 @@ class CategoryRecyclerAdapter(private val categories: MutableList<Category>,
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         if (isShowingCreateNewCategoryButton && position==itemCount-1) {
-            holder.categoryName.text = "Add New Category"
+            holder.categoryName.text = activity.getString(R.string.add_new_category)
             holder.categoryName.setTextColor(Color.GRAY)
             holder.isSelected = false
             holder.categoryImage.setImageResource(R.drawable.ic_navigation_add_temp)

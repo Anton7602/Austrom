@@ -55,7 +55,7 @@
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Balance"
+                android:text="@string/total_balance"
                 android:textColor="@color/dark_grey"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/linearLayout"
@@ -81,7 +81,8 @@
                     android:autoSizeTextType="uniform"
                     android:maxLines="1"
                     android:text="100 000.00 RUB"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/bal_baseCurrencySymbol_txt"
@@ -93,7 +94,8 @@
                     android:maxLines="1"
                     android:text="RUB"
                     android:textColor="@color/dark_grey"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
