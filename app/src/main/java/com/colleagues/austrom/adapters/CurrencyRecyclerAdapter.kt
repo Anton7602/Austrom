@@ -15,7 +15,8 @@ import com.colleagues.austrom.models.Currency
 
 class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
                               private var currencySelector: IDialogInitiator,
-                              private var currencyReceiver: IDialogInitiator?): RecyclerView.Adapter<CurrencyRecyclerAdapter.CurrencyViewHolder>() {
+                              private var currencyReceiver: IDialogInitiator?,
+                              private val isSortingByBaseCurrencies: Boolean = true): RecyclerView.Adapter<CurrencyRecyclerAdapter.CurrencyViewHolder>() {
     class CurrencyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val currencyHolder: CardView = itemView.findViewById(R.id.curit_currencyHolder_crv)
         val currencySymbol: TextView = itemView.findViewById(R.id.curit_currencySymbol_txt)
@@ -23,6 +24,28 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
         val currencyName: TextView = itemView.findViewById(R.id.curit_currencyName_txt)
         val selectionMarker: RadioButton = itemView.findViewById(R.id.curit_selectionMarker_rbn)
         val currencyExchangeRate: TextView = itemView.findViewById(R.id.curit_currencyExchangeRate_txt)
+        val currencyGroupSeparator: CardView = itemView.findViewById(R.id.curit_categoryDivider_crd)
+        val currencyGroupHeader: TextView = itemView.findViewById(R.id.curit_categoryHeader_txt)
+    }
+
+    private val baseCurrencyCodes: List<String> = listOf("USD", "EUR","GBP", "JPY", "CNY", "CHF", "AUD", "CAD")
+    private var baseCurrencyCategoryEndIndex = 0
+    init {
+        if (isSortingByBaseCurrencies) {
+            val resortedCurrencies: MutableMap<String, Currency> = mutableMapOf()
+            for (currencyCode in baseCurrencyCodes) {
+                if (currencies[currencyCode]!=null) {
+                    resortedCurrencies[currencyCode] = currencies[currencyCode]!!
+                    baseCurrencyCategoryEndIndex++
+                }
+            }
+            for (currency in currencies) {
+                if (!resortedCurrencies.containsKey(currency.key)) {
+                    resortedCurrencies[currency.key] = currency.value
+                }
+            }
+            currencies = resortedCurrencies
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyViewHolder {
@@ -35,6 +58,10 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
 
     override fun onBindViewHolder(holder: CurrencyViewHolder, position: Int) {
         val currency = currencies.values.elementAt(position)
+        if (isSortingByBaseCurrencies) {
+            holder.currencyGroupSeparator.visibility = if(position == 0 || position == baseCurrencyCategoryEndIndex) View.VISIBLE else View.GONE
+            holder.currencyGroupHeader.text = if (position==0 && baseCurrencyCategoryEndIndex!=0) "Base Currencies" else "All Currencies"
+        }
         val baseCurrencyCode = AustromApplication.appUser?.baseCurrencyCode
         holder.currencyName.text = currency.name
         holder.currencyCode.text = currency.code

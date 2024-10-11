@@ -103,6 +103,8 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="24dp"
                         android:text="assetName"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
                         app:layout_constraintEnd_toStartOf="@+id/asitem_amount_txt"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

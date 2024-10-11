@@ -2,20 +2,17 @@ package com.colleagues.austrom.fragments
 
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
 import com.colleagues.austrom.dialogs.QuickAccessPinDialogFragment
 import com.colleagues.austrom.interfaces.IDialogInitiator
+import com.colleagues.austrom.views.SettingsButtonView
 
 class SettingsFragment : Fragment(R.layout.fragment_settings), IDialogInitiator {
-    private lateinit var baseCurrencySetting: CardView
-    private lateinit var baseCurrencyValue: TextView
-    private lateinit var quickAccessPinSetting: CardView
-    private lateinit var quickAccessPinValue: TextView
+    private lateinit var baseCurrencySetting: SettingsButtonView
+    private lateinit var quickAccessPinSetting: SettingsButtonView
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,21 +29,18 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), IDialogInitiator 
 
     override fun receiveValue(value: String, valueType: String) {
         when (valueType) {
-            "BaseCurrency" -> baseCurrencyValue.text = value
-            "QuickAccessCode" -> quickAccessPinValue.text = "****"
+            "BaseCurrency" -> baseCurrencySetting.setValueText(value)
+            "QuickAccessCode" -> quickAccessPinSetting.setValueText("****")
         }
     }
 
     private fun setSettingsValues() {
-        baseCurrencyValue.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.name
-        quickAccessPinValue.text =
-            if ((requireActivity().application as AustromApplication).getRememberedPin()!=null) {"****"} else {"Disabled"}
+        baseCurrencySetting.setValueText(AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.name ?: "Unknown currency")
+        quickAccessPinSetting.setValueText(if ((requireActivity().application as AustromApplication).getRememberedPin()!=null) {"****"} else {"Disabled"})
     }
 
     private fun bindViews(view: View) {
-        baseCurrencySetting = view.findViewById(R.id.set_baseCurrency_cdv)
-        baseCurrencyValue = view.findViewById(R.id.set_baseCurrencyName_txt)
-        quickAccessPinSetting = view.findViewById(R.id.set_quickPin_cdv)
-        quickAccessPinValue = view.findViewById(R.id.set_quickPinValue_txt)
+        baseCurrencySetting = view.findViewById(R.id.set_baseCurrency_btn)
+        quickAccessPinSetting = view.findViewById(R.id.set_quickPin_btn)
     }
 }

@@ -38,9 +38,9 @@ class CurrencySelectionDialogFragment(private val receiver: IDialogInitiator?) :
         searchField.addTextChangedListener {
             currencyHolder.adapter = if (searchField.text.isNotEmpty()) {
                 CurrencyRecyclerAdapter(AustromApplication.activeCurrencies.filter { entry -> entry.value.name.contains(searchField.text, ignoreCase = true)},
-                    this, receiver)
+                    this, receiver, false)
             } else {
-                CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, this, receiver)
+                CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, this, receiver, true)
             }
         }
     }

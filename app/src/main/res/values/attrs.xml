@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SettingsButtonView">
+        <attr name="primaryText" format="string" />
+        <attr name="secondaryText" format="string" />
+        <attr name="settingIcon" format="reference" />
+    </declare-styleable>
+</resources>
