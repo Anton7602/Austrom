@@ -27,8 +27,6 @@ class AustromApplication : Application() {
         var knownUsers : MutableMap<String, User> = mutableMapOf()
         var selectedTransaction: Transaction? = null
         var selectedAsset: Asset? = null
-        val supportedLocales: List<String> = listOf("English", "Russian")
-
 
         fun getActiveExpenseCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.EXPENSE)}
         fun getActiveTransferCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.TRANSFER)}
@@ -122,6 +120,14 @@ class AustromApplication : Application() {
 
     fun getRememberedTargets(): List<String> {
         return sharedPreferences.getStringSet("targetList", null)?.toList() ?: listOf()
+    }
+
+    fun setApplicationLanguage(languageCode: String) {
+        sharedPreferences.edit().putString("language",languageCode).apply()
+    }
+
+    fun getApplicationLanguage() : String {
+        return sharedPreferences.getString("language", "en") ?: "en"
     }
 }
 

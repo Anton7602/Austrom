@@ -8,6 +8,7 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
 import com.colleagues.austrom.dialogs.LanguageSelectionDialogFragment
 import com.colleagues.austrom.dialogs.QuickAccessPinDialogFragment
+import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.views.SettingsButtonView
 
@@ -42,6 +43,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), IDialogInitiator 
     private fun setSettingsValues() {
         baseCurrencySetting.setValueText(AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.name ?: "Unknown currency")
         quickAccessPinSetting.setValueText(if ((requireActivity().application as AustromApplication).getRememberedPin()!=null) {"****"} else {"Disabled"})
+        languageSetting.setValueText(resources.configuration.locales.get(0).displayLanguage.startWithUppercase())
     }
 
     private fun bindViews(view: View) {

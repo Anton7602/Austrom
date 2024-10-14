@@ -15,6 +15,7 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.LanguageRecyclerAdapter
 import com.colleagues.austrom.interfaces.IDialogInitiator
+import com.colleagues.austrom.models.Language
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class LanguageSelectionDialogFragment : BottomSheetDialogFragment(), IDialogInitiator {
@@ -31,7 +32,7 @@ class LanguageSelectionDialogFragment : BottomSheetDialogFragment(), IDialogInit
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
-        setUpRecyclerView(listOf("English", "Russian"))
+        setUpRecyclerView(Language.supportedLanguages)
 
         declineButton.setOnClickListener {
             this.dismiss()
@@ -39,9 +40,9 @@ class LanguageSelectionDialogFragment : BottomSheetDialogFragment(), IDialogInit
 
         searchField.addTextChangedListener {
             languagesHolder.adapter = if (searchField.text.isNotEmpty()) {
-                LanguageRecyclerAdapter(listOf("English", "Russian").filter { entry -> entry.contains(searchField.text, ignoreCase = true)}, requireActivity() as AppCompatActivity)
+                LanguageRecyclerAdapter(Language.supportedLanguages.filter { entry -> entry.languageName.contains(searchField.text, ignoreCase = true)}, requireActivity() as AppCompatActivity)
             } else {
-                LanguageRecyclerAdapter(listOf("English", "Russian"), requireActivity() as AppCompatActivity)
+                LanguageRecyclerAdapter(Language.supportedLanguages, requireActivity() as AppCompatActivity)
             }
         }
     }
@@ -52,7 +53,7 @@ class LanguageSelectionDialogFragment : BottomSheetDialogFragment(), IDialogInit
         dismiss()
     }
 
-    private fun setUpRecyclerView(languagesList: List<String>) {
+    private fun setUpRecyclerView(languagesList: List<Language>) {
         languagesHolder.layoutManager = LinearLayoutManager(activity)
         languagesHolder.adapter = LanguageRecyclerAdapter(languagesList, requireActivity() as AppCompatActivity)
     }
