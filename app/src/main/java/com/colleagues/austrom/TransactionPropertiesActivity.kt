@@ -2,6 +2,7 @@ package com.colleagues.austrom
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -11,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.FragmentContainerView
@@ -20,15 +22,16 @@ import com.colleagues.austrom.adapters.TransactionDetailRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
+import com.colleagues.austrom.dialogs.ImageSelectionDialogFragment
 import com.colleagues.austrom.dialogs.TransactionDetailCreationDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.interfaces.IDialogInitiator
-import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.textfield.TextInputEditText
+import java.io.File
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.format.DateTimeFormatter
@@ -55,7 +58,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     private lateinit var unallocatedCurrency: TextView
     private lateinit var detailConstructorHolder: FragmentContainerView
     private lateinit var detailsLabel: TextView
-
+    private lateinit var addPhoto: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +77,11 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
 
         deleteButton.setOnClickListener {
             DeletionConfirmationDialogFragment(this).show(supportFragmentManager, "Delete Confirmation Dialog" )
+        }
+
+
+        addPhoto.setOnClickListener {
+            ImageSelectionDialogFragment(transaction, this).show(supportFragmentManager, "ImageSelectionDialog")
         }
 
         comment.setOnFocusChangeListener { v, hasFocus ->
@@ -120,6 +128,13 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         fragmentTransaction.commit()
     }
 
+    private fun setUpAttachedImage() {
+        val imageFile = File(externalCacheDir, "${transaction.transactionId}.jpg")
+        if (imageFile.exists()) {
+            addPhoto.setImageURI(FileProvider.getUriForFile(this, "${applicationContext.packageName}.provider", imageFile))
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun setUpTransactionProperties() {
         if (transaction.transactionType()!=TransactionType.TRANSFER) {
@@ -134,6 +149,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         ownerText.text = AustromApplication.knownUsers[transaction.userId]?.username.startWithUppercase()
         dateText.text = transaction.transactionDate?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
         categoryText.text = transaction.categoryId
+        setUpAttachedImage()
         when (transaction.transactionType()) {
             TransactionType.INCOME ->
             {
@@ -164,6 +180,10 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         if (transaction.comment!=null) {
             comment.setText(transaction.comment.toString())
         }
+    }
+
+    private fun isUriValid(uri: Uri) : Boolean {
+        return (uri.scheme == "file" && !uri.path.isNullOrBlank() && File(uri.path).exists())
     }
 
     private fun retrieveSelectedTransaction() {
@@ -203,12 +223,16 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         unallocatedCurrency = findViewById((R.id.trdet_unallocatedCurrency_txt))
         detailConstructorHolder = findViewById(R.id.trdet_transactionDetailHolder_frt)
         detailsLabel = findViewById(R.id.trdet_detLabel_txt)
+        addPhoto = findViewById(R.id.trdet_addPhoto_btn)
     }
 
     override fun receiveValue(value: String, valueType: String) {
         if (valueType=="DialogResult" && value=="true") {
             transaction.cancel(FirebaseDatabaseProvider(this))
             this.finish()
+        }
+        if (valueType=="ImageUpdate" && value=="true") {
+            setUpAttachedImage()
         }
     }
 }

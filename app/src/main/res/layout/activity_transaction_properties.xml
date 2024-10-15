@@ -269,7 +269,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/trdet_comments_til"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="8dp"
                     android:layout_weight="10"
                     android:elevation="3dp">
@@ -282,10 +282,10 @@
                         android:hint="@string/notes" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <ImageButton
-                    android:id="@+id/imageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:id="@+id/trdet_addPhoto_btn"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:layout_marginTop="6dp"
                     android:layout_marginEnd="8dp"
                     android:background="@color/transparent"

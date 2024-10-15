@@ -1,5 +1,6 @@
 package com.colleagues.austrom.models
 
+import android.net.Uri
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.database.IDatabaseProvider
 import java.time.LocalDate
