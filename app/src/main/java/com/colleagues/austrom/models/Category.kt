@@ -1,6 +1,5 @@
 package com.colleagues.austrom.models
 
-import com.colleagues.austrom.R
 import com.colleagues.austrom.managers.Icon
 
 class Category(val name: String? = null,

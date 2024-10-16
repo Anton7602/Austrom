@@ -1,9 +1,7 @@
 package com.colleagues.austrom.dialogs
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
@@ -13,7 +11,6 @@ import androidx.fragment.app.Fragment
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionPropertiesActivity
-import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.QuantityUnit
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail

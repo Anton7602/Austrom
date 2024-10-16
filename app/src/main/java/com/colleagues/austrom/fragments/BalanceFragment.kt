@@ -1,5 +1,6 @@
 package com.colleagues.austrom.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -16,7 +17,6 @@ import com.colleagues.austrom.dialogs.AssetCreationDialogFragment
 import com.colleagues.austrom.dialogs.AssetFilter
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
-import com.colleagues.austrom.models.AssetType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class BalanceFragment : Fragment(R.layout.fragment_balance) {
@@ -75,6 +75,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         calculateTotalAmount(filteredAssets.toMutableMap())
     }
 
+    @SuppressLint("SetTextI18n")
     private fun calculateTotalAmount(assetList: MutableMap<String, Asset>) {
         baseCurrencySymbolText.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         var totalAmount = 0.0

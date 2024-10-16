@@ -1,6 +1,5 @@
 package com.colleagues.austrom.adapters
 
-import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +10,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.cardview.widget.CardView
 import androidx.core.os.LocaleListCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.models.Language
-import java.util.Locale
 
 class LanguageRecyclerAdapter(private val languages: List<Language>, private val activity: AppCompatActivity): RecyclerView.Adapter<LanguageRecyclerAdapter.LanguageViewHolder>() {
     class LanguageViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {

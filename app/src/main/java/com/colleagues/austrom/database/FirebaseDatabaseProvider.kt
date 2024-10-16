@@ -513,7 +513,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         }
     }
 
-    fun parseDateToIntDate(date: LocalDate) : Int {
+    private fun parseDateToIntDate(date: LocalDate) : Int {
         return (date.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).toInt()
     }
 

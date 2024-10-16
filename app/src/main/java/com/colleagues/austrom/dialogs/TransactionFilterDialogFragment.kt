@@ -99,6 +99,7 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
         for (child in chipGroup.children) child.isEnabled = chipGroup.isEnabled
     }
 
+    @SuppressLint("SetTextI18n")
     private fun matchFilter() {
         if (filteredFragment.activeFilter==null) {
             for (button in transactionTypeGroup.children) transactionTypeGroup.check(button.id)
@@ -136,6 +137,7 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun compareDates() {
         if (chipFrom.tag==null || chipTo.tag==null) return
         val dateFrom = (chipFrom.tag as LocalDate)

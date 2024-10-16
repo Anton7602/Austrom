@@ -1,5 +1,6 @@
 package com.colleagues.austrom.dialogs
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -203,6 +204,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setUpDateChips() {
         var chipDate = LocalDate.now()
         val customDateChip = Chip(requireActivity())

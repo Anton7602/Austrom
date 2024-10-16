@@ -2,7 +2,6 @@ package com.colleagues.austrom
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -84,7 +83,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
             ImageSelectionDialogFragment(transaction, this).show(supportFragmentManager, "ImageSelectionDialog")
         }
 
-        comment.setOnFocusChangeListener { v, hasFocus ->
+        comment.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 transaction.comment = comment.text.toString()
                 val dbProvider : IDatabaseProvider = FirebaseDatabaseProvider(this)
@@ -180,10 +179,6 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         if (transaction.comment!=null) {
             comment.setText(transaction.comment.toString())
         }
-    }
-
-    private fun isUriValid(uri: Uri) : Boolean {
-        return (uri.scheme == "file" && !uri.path.isNullOrBlank() && File(uri.path).exists())
     }
 
     private fun retrieveSelectedTransaction() {

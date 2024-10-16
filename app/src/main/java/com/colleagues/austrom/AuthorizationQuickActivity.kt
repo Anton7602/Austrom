@@ -198,8 +198,8 @@ class AuthorizationQuickActivity : AppCompatActivity() {
         pinDot3 = findViewById(R.id.qauth_symbolThird_img)
         pinDot4 = findViewById(R.id.qauth_symbolFourth_img)
         username = findViewById(R.id.qauth_username_txt)
-        timeOfDay = findViewById(R.id.qauth_timeofday_txt)
-        callToAction = findViewById(R.id.qauth_ctatext_txt)
+        timeOfDay = findViewById(R.id.qauth_timeOfDay_txt)
+        callToAction = findViewById(R.id.qauth_callToAction_txt)
         val storedUserID = (application as AustromApplication).getRememberedUser()
         if (!storedUserID.isNullOrEmpty()) {
             val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
