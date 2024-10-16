@@ -15,7 +15,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -27,24 +29,37 @@ import com.colleagues.austrom.models.Transaction
 import java.io.File
 
 class ImageSelectionDialogFragment(private val transaction: Transaction, private val receiver: IDialogInitiator) : DialogFragment() {
-    private lateinit var makePhoto: Button
-    private lateinit var choosePhoto: Button
+    private lateinit var closeButton: ImageButton
+    private lateinit var makePhotoButton: Button
+    private lateinit var choosePhotoButton: Button
     private lateinit var imageHolder: ImageView
+    private lateinit var messageText: TextView
     private lateinit var imageUri: Uri
     private val cameraRequestCode = 100
     private val galleryRequestCode = 101
-    private val requestPermissionsCustom = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { _ -> }
+    private val requestPermissionsCustom = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (permissions.keys.elementAt(0) == "android.permission.CAMERA") {
+                requestCameraPermission()
+            } else {
+                requestGalleryPermission()
+            }
+    }
     private val getImageFromGallery = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri != null) {
             copyImageFromUri(uri)
+            imageHolder.setImageURI(null)
             imageHolder.setImageURI(uri)
+            messageText.visibility = View.GONE
+            imageHolder.visibility = View.VISIBLE
             receiver.receiveValue("true", "ImageUpdate")
         }
     }
-
     private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
         if (success) {
+            imageHolder.setImageURI(null)
             imageHolder.setImageURI(imageUri)
+            messageText.visibility = View.GONE
+            imageHolder.visibility = View.VISIBLE
             receiver.receiveValue("true", "ImageUpdate")
         }
     }
@@ -54,25 +69,40 @@ class ImageSelectionDialogFragment(private val transaction: Transaction, private
         val view = i.inflate(R.layout.dialog_fragment_image_selection, null)
         bindViews(view)
         val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity()).setView(view)
-        val targetSelectionDialog = adb.create()
-        if (targetSelectionDialog != null && targetSelectionDialog.window != null) {
-            targetSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val imageSelectionDialog = adb.create()
+        if (imageSelectionDialog != null && imageSelectionDialog.window != null) {
+            imageSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
 
         val imageFile = File(requireActivity().externalCacheDir, "${transaction.transactionId}.jpg")
         if (imageFile.exists()) {
             imageHolder.setImageURI(FileProvider.getUriForFile(requireActivity(), "${requireActivity().applicationContext.packageName}.provider", imageFile))
+            messageText.visibility = View.GONE
+            imageHolder.visibility = View.VISIBLE
+        } else {
+            messageText.visibility = View.VISIBLE
+            imageHolder.visibility = View.GONE
         }
 
-        makePhoto.setOnClickListener {
+        imageHolder.setOnClickListener {
+            closeButton.visibility= if (closeButton.visibility==View.VISIBLE) View.GONE else View.VISIBLE
+            makePhotoButton.visibility= if (makePhotoButton.visibility==View.VISIBLE) View.GONE else View.VISIBLE
+            choosePhotoButton.visibility= if (choosePhotoButton.visibility==View.VISIBLE) View.GONE else View.VISIBLE
+        }
+
+        makePhotoButton.setOnClickListener {
             requestCameraPermission()
         }
 
-        choosePhoto.setOnClickListener {
+        choosePhotoButton.setOnClickListener {
             requestGalleryPermission()
         }
 
-        return targetSelectionDialog
+        closeButton.setOnClickListener {
+            dismiss()
+        }
+
+        return imageSelectionDialog
     }
 
     private fun requestGalleryPermission() {
@@ -133,9 +163,11 @@ class ImageSelectionDialogFragment(private val transaction: Transaction, private
 
 
     private fun bindViews(view: View) {
-        makePhoto = view.findViewById(R.id.imsedial_fromCamera_btn)
-        choosePhoto = view.findViewById(R.id.imsedial_fromGallery_btn)
+        makePhotoButton = view.findViewById(R.id.imsedial_fromCamera_btn)
+        choosePhotoButton = view.findViewById(R.id.imsedial_fromGallery_btn)
         imageHolder = view.findViewById(R.id.imsedial_imageHolder_img)
+        messageText = view.findViewById(R.id.imsedial_noImageMessage_txt)
+        closeButton = view.findViewById(R.id.imsedial_close_btn)
     }
 
     @Deprecated("Deprecated in Java")

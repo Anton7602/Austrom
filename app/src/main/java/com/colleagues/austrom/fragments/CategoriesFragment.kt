@@ -33,7 +33,7 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories), IDialogInitia
 
     private fun setUpRecyclerView(recyclerView: RecyclerView, categories: MutableList<Category>) {
         recyclerView.adapter = CategoryRecyclerAdapter(categories, requireActivity() as AppCompatActivity, this, true)
-        recyclerView.layoutManager = GridLayoutManager(activity, 4)
+        recyclerView.layoutManager = GridLayoutManager(activity, 5)
     }
 
     private fun setUpRecyclerViews() {

@@ -92,7 +92,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         }
     }
 
-    fun updateUnallocatedSum(addedValue: Double) {
+    fun updateUnallocatedSum(addedValue: Double = 0.0): Double {
         var sum = transaction.amount
         for (detail in transaction.details) {
             sum -= detail.cost!!
@@ -104,15 +104,18 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         } else {
             detailConstructorHolder.visibility = View.VISIBLE
             detailsLabel.text = getString(R.string.unallocated_balance)
+            sum -= addedValue
             unallocatedSum.text = sum.toMoneyFormat()
+            unallocatedSum.setTextColor(if (sum>=0) Color.BLACK else Color.RED)
         }
+        return sum
     }
 
     fun addTransactionDetail(transactionDetail: TransactionDetail) {
         val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
         transaction.details.add(0, transactionDetail)
         dbProvider.updateTransaction(transaction)
-        updateUnallocatedSum(0.0)
+        updateUnallocatedSum()
         setUpRecyclerView()
     }
 
@@ -130,7 +133,13 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     private fun setUpAttachedImage() {
         val imageFile = File(externalCacheDir, "${transaction.transactionId}.jpg")
         if (imageFile.exists()) {
+            val paddingDp = (resources.displayMetrics.density).toInt()
+            addPhoto.setPadding(paddingDp,paddingDp,paddingDp,paddingDp)
+            addPhoto.setImageURI(null)
             addPhoto.setImageURI(FileProvider.getUriForFile(this, "${applicationContext.packageName}.provider", imageFile))
+            addPhoto.setBackgroundColor(Color.TRANSPARENT)
+        } else {
+            addPhoto.setBackgroundResource(R.drawable.sh_add_image_button_background)
         }
     }
 

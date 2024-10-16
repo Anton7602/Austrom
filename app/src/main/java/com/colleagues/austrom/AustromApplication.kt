@@ -16,6 +16,7 @@ import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.User
+import java.util.Locale
 
 class AustromApplication : Application() {
     private lateinit var sharedPreferences: SharedPreferences
@@ -72,6 +73,7 @@ class AustromApplication : Application() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         sharedPreferences = getSharedPreferences("AustromPreferences", Context.MODE_PRIVATE)
+        updateResources()
     }
 
     fun setRememberedUser(newUserId: String) {
@@ -128,6 +130,14 @@ class AustromApplication : Application() {
 
     fun getApplicationLanguage() : String {
         return sharedPreferences.getString("language", "en") ?: "en"
+    }
+
+    private fun updateResources() {
+        val locale = Locale(getApplicationLanguage())
+        Locale.setDefault(locale)
+        val config = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
     }
 }
 

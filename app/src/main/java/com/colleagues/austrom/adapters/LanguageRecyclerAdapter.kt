@@ -1,5 +1,6 @@
 package com.colleagues.austrom.adapters
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.cardview.widget.CardView
 import androidx.core.os.LocaleListCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.models.Language
+import java.util.Locale
 
 class LanguageRecyclerAdapter(private val languages: List<Language>, private val activity: AppCompatActivity): RecyclerView.Adapter<LanguageRecyclerAdapter.LanguageViewHolder>() {
     class LanguageViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
@@ -32,7 +35,24 @@ class LanguageRecyclerAdapter(private val languages: List<Language>, private val
         holder.languageName.text = languages[position].languageName
         holder.selectionMarker.isChecked = languages[position].languageCode==activity.resources.configuration.locales.get(0).language
         holder.languageHolder.setOnClickListener {
-            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languages[position].languageCode))
+            switchLanguage(languages[position].languageCode)
+        }
+        holder.selectionMarker.setOnClickListener {
+            switchLanguage(languages[position].languageCode)
+        }
+    }
+
+    private fun switchLanguage(languageCode: String) {
+        (activity.application as AustromApplication).setApplicationLanguage(languageCode)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode))
+        } else  {
+            val locale = Locale(languageCode)
+            Locale.setDefault(locale)
+            val config = activity.application.resources.configuration
+            config.setLocale(locale)
+            @Suppress("DEPRECATION")
+            activity.application.resources.updateConfiguration(config, activity.resources.displayMetrics)
             activity.recreate()
         }
     }

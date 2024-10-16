@@ -54,6 +54,7 @@ class CategoryRecyclerAdapter(private val categories: MutableList<Category>,
             holder.isSelected = AustromApplication.appUser?.categories?.find { entry -> entry.name == categories[position].name } != null
             holder.categoryImage.setImageResource(categories[position].imgReference?.resourceId ?: R.drawable.ic_placeholder_icon)
             holder.categoryHolder.setBackgroundResource(if (holder.isSelected) R.drawable.sh_card_background else R.drawable.sh_category_deselected)
+            //holder.categoryHolder.setBackgroundResource(R.drawable.sh_card_background)
             holder.categoryHolder.setOnClickListener {
                 if (holder.isSelected) {
                     holder.isSelected = false

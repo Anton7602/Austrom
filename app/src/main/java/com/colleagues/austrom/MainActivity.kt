@@ -1,5 +1,6 @@
 package com.colleagues.austrom
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -128,7 +129,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun suggestSettingUpQuickAccessCode() {
-        if (intent.getBooleanExtra("newUser",false)) {
+        if (intent.getBooleanExtra("newUser",false) && (application as AustromApplication).getRememberedPin()==null) {
             SuggestQuickAccessDialogFragment().show(supportFragmentManager, "Suggest Quick Access Code Dialog")
         }
     }

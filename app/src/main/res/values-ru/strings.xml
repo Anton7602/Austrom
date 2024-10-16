@@ -120,4 +120,20 @@
     <string name="title">Название</string>
     <string name="amount">Объём</string>
     <string name="create_asset">Создать Актив</string>
+    <string name="wrong_quick_access_code">Неверный Код Быстрого Доступа. Пожалуйста, попробуйте ещё раз</string>
+    <string name="quick_access_code_doesn_t_match">Код Быстрого Доступа не совпадает. Попробуйте ещё раз</string>
+    <string name="enter_current_quick_access_code">Введите Текущий Код Быстрого Доступа</string>
+    <string name="enter_new_quick_access_code">Введите Новый Код Быстрого Доступа</string>
+    <string name="repeat_new_quick_access_code">Повторите Новый Код Быстрого Доступа</string>
+    <string name="asset_s_title_cannot_be_empty">Имя Актива не может быть пустым</string>
+    <string name="type_in_a_name_of_the_new_category">Введите имя новой Категории</string>
+    <string name="pick_an_icon_for_a_new_category">Выберите иконку новой категории</string>
+    <string name="add">Добавить</string>
+    <string name="choose_period_start_date">Выберите Начальную Дату Периода</string>
+    <string name="choose_period_end_date">Выберите Конечную Дату Периода</string>
+    <string name="hello_blank_fragment">Пустой Фрагмент</string>
+    <string name="language_selection">Выбор Языка</string>
+    <string name="select_from_gallery">Выбрать из Галереи</string>
+    <string name="take_photo">Сделать Фото</string>
+    <string name="transaction_image_selection">Загрузите связанное фото (чек или счёт). Вы можете выбрать изображение из Галереи или сделать новый снимок на камеру</string>
 </resources>
