@@ -1,5 +1,6 @@
 package com.colleagues.austrom
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -55,6 +56,14 @@ class AuthorizationQuickActivity : AppCompatActivity() {
     private lateinit var pin: String
     private var input = ""
 
+    override fun attachBaseContext(newBase: Context?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            super.attachBaseContext(newBase)
+        } else  {
+            super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -72,7 +81,7 @@ class AuthorizationQuickActivity : AppCompatActivity() {
             getString(R.string.good_evening)
         } else if (time.hour>12) {
             getString(R.string.good_afternoon)
-        } else if (time.hour>6) {
+        } else if (time.hour>5) {
             getString(R.string.good_morning)
         } else {
             getString(R.string.good_night)

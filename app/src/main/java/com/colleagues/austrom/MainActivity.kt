@@ -1,6 +1,7 @@
 package com.colleagues.austrom
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -46,6 +47,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navigationLogOutButton: ImageButton
     private lateinit var bottomNavigationBar: NavigationBarView
     private lateinit var fragmentHolder: FragmentContainerView
+
+    override fun attachBaseContext(newBase: Context?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            super.attachBaseContext(newBase)
+        } else  {
+            super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

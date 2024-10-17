@@ -48,7 +48,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="@string/recieve_invitation_code_from_other_budget_memeber"
+                android:text="@string/receive_invitation_code_from_other_budget_member"
                 android:textAlignment="center"
                 android:textColor="@color/dark_grey"
                 app:layout_constraintEnd_toEndOf="@+id/bjdial_invitationCode_til"

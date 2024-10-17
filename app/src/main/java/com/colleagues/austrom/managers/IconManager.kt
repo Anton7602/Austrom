@@ -5,10 +5,7 @@ import com.colleagues.austrom.R
 
 class IconManager {
     fun getAllAvailableIcons(): List<Icon> {
-        return listOf(Icon.I1, Icon.I2, Icon.I3, Icon.I4, Icon.I5, Icon.I6, Icon.I7, Icon.I8, Icon.I9, Icon.I10, Icon.I11, Icon.I12, Icon.I13, Icon.I14, Icon.I15,
-            Icon.I16, Icon.I17, Icon.I18, Icon.I19, Icon.I20, Icon.I21, Icon.I22, Icon.I23, Icon.I24, Icon.I25, Icon.I26, Icon.I27, Icon.I28, Icon.I29, Icon.I30, Icon.I31,
-            Icon.I32, Icon.I33, Icon.I34, Icon.I35, Icon.I36, Icon.I37, Icon.I38, Icon.I39, Icon.I40, Icon.I41, Icon.I42, Icon.I43, Icon.I44, Icon.I45, Icon.I46,
-            Icon.I47, Icon.I48, Icon.I49,Icon.I50, Icon.I51, Icon.I52, Icon.I53, Icon.I54, Icon.I55, Icon.I56, Icon.I57, Icon.I58, Icon.I59, Icon.I60, Icon.I61, Icon.I62, Icon.I63 )
+        return Icon.entries
     }
 }
 

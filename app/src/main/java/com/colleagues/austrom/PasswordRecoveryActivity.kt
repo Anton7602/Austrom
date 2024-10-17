@@ -1,5 +1,7 @@
 package com.colleagues.austrom
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
@@ -12,6 +14,14 @@ import com.google.android.material.textfield.TextInputEditText
 class PasswordRecoveryActivity : AppCompatActivity() {
     private lateinit var recoverPasswordButton: TextView
     private lateinit var emailTextBox : TextInputEditText
+
+    override fun attachBaseContext(newBase: Context?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            super.attachBaseContext(newBase)
+        } else  {
+            super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,7 +1,9 @@
 package com.colleagues.austrom
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -58,6 +60,14 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     private lateinit var detailConstructorHolder: FragmentContainerView
     private lateinit var detailsLabel: TextView
     private lateinit var addPhoto: ImageView
+
+    override fun attachBaseContext(newBase: Context?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            super.attachBaseContext(newBase)
+        } else  {
+            super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

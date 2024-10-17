@@ -49,10 +49,10 @@ class LanguageRecyclerAdapter(private val languages: List<Language>, private val
         } else  {
             val locale = Locale(languageCode)
             Locale.setDefault(locale)
-            val config = activity.application.resources.configuration
+            val config = activity.resources.configuration
             config.setLocale(locale)
             @Suppress("DEPRECATION")
-            activity.application.resources.updateConfiguration(config, activity.resources.displayMetrics)
+            activity.resources.updateConfiguration(config, activity.resources.displayMetrics)
             activity.recreate()
         }
     }

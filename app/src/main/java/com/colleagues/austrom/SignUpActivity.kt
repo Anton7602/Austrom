@@ -1,6 +1,8 @@
 package com.colleagues.austrom
 
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
@@ -25,6 +27,14 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var emailTextLayout: TextInputLayout
     private lateinit var passwordTextLayout: TextInputLayout
     private lateinit var repeatPasswordTextLayout: TextInputLayout
+
+    override fun attachBaseContext(newBase: Context?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            super.attachBaseContext(newBase)
+        } else  {
+            super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

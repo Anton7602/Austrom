@@ -1,5 +1,7 @@
 package com.colleagues.austrom
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.CheckBox
@@ -37,6 +39,14 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     private lateinit var assetCard: CardView
     private lateinit var dbProvider: IDatabaseProvider
     private var transactionsOfAsset: MutableList<Transaction> = mutableListOf()
+
+    override fun attachBaseContext(newBase: Context?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            super.attachBaseContext(newBase)
+        } else  {
+            super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

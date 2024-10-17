@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Austrom</string>
     <string name="forgot_password">Forgot Password</string>
-    <string name="applogo">AppLogo</string>
+    <string name="appLogo">AppLogo</string>
     <string name="sign_in">Sign In</string>
     <string name="login">Login</string>
     <string name="password">Password</string>
@@ -64,13 +64,13 @@
     <string name="all_currencies">All Currencies</string>
     <string name="food">Food</string>
     <string name="no_assets_found">No Assets Found</string>
-    <string name="cancel">CANCEL</string>
-    <string name="accept">ACCEPT</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">Accept</string>
     <string name="search">Search</string>
     <string name="budget_name">Budget Name</string>
     <string name="enter_the_name_you_want_you_budget_to_have">Enter the name you want you budget to have</string>
     <string name="invitation_code">Invitation Code</string>
-    <string name="recieve_invitation_code_from_other_budget_memeber">Receive invitation code from other budget member</string>
+    <string name="receive_invitation_code_from_other_budget_member">Receive invitation code from other budget member</string>
     <string name="category_name">Category Name</string>
     <string name="enter_category_name">Enter Category Name</string>
     <string name="action_continue">Continue</string>
