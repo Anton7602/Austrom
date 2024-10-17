@@ -1,8 +1,10 @@
 package com.colleagues.austrom.models
 
+import android.content.Context
+import com.colleagues.austrom.R
 import com.colleagues.austrom.managers.Icon
 
-class Category(val name: String? = null,
+class Category(var name: String? = null,
                val type: String? = null,
                val imgReference: Icon? = null,
                val transactionType: TransactionType = TransactionType.EXPENSE) {
@@ -48,6 +50,35 @@ class Category(val name: String? = null,
 
         var defaultTransferCategories : List<Category> = listOf(
             Category("Transfer", "Optional", Icon.I14, TransactionType.TRANSFER),
+        )
+
+        fun localizeCategoriesNames(categories: List<Category>, context: Context) : List<Category> {
+            for (category in categories) {
+                if (categoriesNamesResourceMap.containsKey(category.name?.lowercase())) {
+                    category.name = context.getString(categoriesNamesResourceMap[category.name!!.lowercase()]!!)
+                }
+            }
+            return categories
+        }
+
+        private val categoriesNamesResourceMap: Map<String, Int> = mapOf(
+            Pair("food", R.string.food),
+            Pair("clothes", R.string.clothes),
+            Pair("health", R.string.health),
+            Pair("house", R.string.house),
+            Pair("transport", R.string.transport),
+            Pair("travel", R.string.travel),
+            Pair("subscriptions", R.string.subscriptions),
+            Pair("entertainment", R.string.entertainment),
+            Pair("sport", R.string.sport),
+            Pair("beauty", R.string.beauty),
+            Pair("presents", R.string.presents),
+            Pair("education", R.string.education),
+            Pair("equipment", R.string.equipment),
+            Pair("other", R.string.other),
+            Pair("wages", R.string.wages),
+            Pair("cashback", R.string.cashback),
+            Pair("transfer", R.string.transfer),
         )
     }
 }

@@ -146,8 +146,10 @@ class MainActivity : AppCompatActivity() {
     private fun downloadCashedValues() {
         val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
         if (AustromApplication.activeCurrencies.isEmpty()) {
-            AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(dbProvider.getCurrencies(), AustromApplication.appUser?.baseCurrencyCode)
+            AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(
+                Currency.localizeCurrencyNames(dbProvider.getCurrencies(), this), AustromApplication.appUser?.baseCurrencyCode)
         }
+        AustromApplication.activeCurrencies = Currency.localizeCurrencyNames(AustromApplication.activeCurrencies, this)
         if (AustromApplication.appUser?.activeBudgetId!=null) {
             AustromApplication.knownUsers = dbProvider.getUsersByBudget(AustromApplication.appUser?.activeBudgetId!!)
         }
@@ -167,7 +169,7 @@ class MainActivity : AppCompatActivity() {
             toolbar.setPadding(0, insets.top, 0,0)
             navigationHeaderLayout.setPadding(0, insets.top, 0,0)
             bottomNavigationBar.setPadding(0,0,0,insets.bottom)
-//          v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
+            //v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
             WindowInsetsCompat.CONSUMED
         }
     }

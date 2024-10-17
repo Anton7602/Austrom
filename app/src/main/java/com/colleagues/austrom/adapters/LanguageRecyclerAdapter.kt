@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.models.Language
-import java.util.Locale
 
 class LanguageRecyclerAdapter(private val languages: List<Language>, private val activity: AppCompatActivity): RecyclerView.Adapter<LanguageRecyclerAdapter.LanguageViewHolder>() {
     class LanguageViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
@@ -47,12 +46,6 @@ class LanguageRecyclerAdapter(private val languages: List<Language>, private val
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode))
         } else  {
-            val locale = Locale(languageCode)
-            Locale.setDefault(locale)
-            val config = activity.resources.configuration
-            config.setLocale(locale)
-            @Suppress("DEPRECATION")
-            activity.resources.updateConfiguration(config, activity.resources.displayMetrics)
             activity.recreate()
         }
     }
