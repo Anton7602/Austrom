@@ -30,8 +30,13 @@ class CategoryIconRecyclerAdapter(private var drawableIds: List<Icon>): Recycler
     override fun onBindViewHolder(holder: CategoryIconViewHolder, position: Int) {
         holder.icon = drawableIds[position]
         holder.iconHolder.setImageResource(holder.icon.resourceId)
-        if (holder.isSelected) holder.iconHolder.setBackgroundResource(R.drawable.sh_card_background)
-        else holder.iconHolder.setBackgroundColor(Color.TRANSPARENT)
+        if (holder.icon == selectedIcon) {
+            holder.iconHolder.setBackgroundResource(R.drawable.sh_card_background)
+            selectedViewHolder = holder
+        }
+        else {
+            holder.iconHolder.setBackgroundColor(Color.TRANSPARENT)
+        }
         holder.iconHolder.setOnClickListener {
             if (selectedViewHolder!=null) {
                 selectedViewHolder!!.iconHolder.setBackgroundColor(Color.TRANSPARENT)
