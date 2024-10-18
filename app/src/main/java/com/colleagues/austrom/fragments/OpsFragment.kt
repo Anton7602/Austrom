@@ -13,12 +13,14 @@ import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.dialogs.TransactionCreationDialogFragment
+import com.colleagues.austrom.dialogs.TransactionCreationDialogFragment2
 import com.colleagues.austrom.dialogs.TransactionFilter
+import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class OpsFragment : Fragment(R.layout.fragment_ops) {
+class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
     private lateinit var transactionHolder: RecyclerView
     private lateinit var addNewTransactionButton: FloatingActionButton
     private lateinit var addIncomeButton: FloatingActionButton
@@ -38,17 +40,17 @@ class OpsFragment : Fragment(R.layout.fragment_ops) {
 
         addIncomeButton.setOnClickListener {
             switchTransactionTypesButtonsVisibility()
-            TransactionCreationDialogFragment(this, TransactionType.INCOME).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
+            TransactionCreationDialogFragment2(TransactionType.INCOME, this, ).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
         }
 
         addExpenseButton.setOnClickListener {
             switchTransactionTypesButtonsVisibility()
-            TransactionCreationDialogFragment(this, TransactionType.EXPENSE).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
+            TransactionCreationDialogFragment2(TransactionType.EXPENSE, this).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
         }
 
         addTransferButton.setOnClickListener {
             switchTransactionTypesButtonsVisibility()
-            TransactionCreationDialogFragment(this, TransactionType.TRANSFER).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
+            TransactionCreationDialogFragment2(TransactionType.TRANSFER, this).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
         }
     }
 
@@ -111,6 +113,10 @@ class OpsFragment : Fragment(R.layout.fragment_ops) {
         val groupedTransactions = Transaction.groupTransactionsByDate(transactionList)
         transactionHolder.layoutManager = LinearLayoutManager(activity)
         transactionHolder.adapter = TransactionGroupRecyclerAdapter(groupedTransactions, (requireActivity() as AppCompatActivity))
+    }
+
+    override fun receiveValue(value: String, valueType: String) {
+        TODO("Not yet implemented")
     }
 
     private fun bindViews(view: View) {
