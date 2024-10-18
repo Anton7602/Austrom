@@ -46,7 +46,7 @@
     <string name="language">Язык</string>
     <string name="english">Английский</string>
     <string name="disabled">Отключено</string>
-    <string name="privateAsset">Личный</string>
+    <string name="privateAsset">Приватный</string>
     <string name="asset_name">Имя Актива</string>
     <string name="owner">Владелец</string>
     <string name="transactions_not_found">Транзакции не найдены</string>
@@ -338,4 +338,5 @@
     <string name="ZMK">Замбийская Квача</string>
     <string name="ZMW">Замбийская Квача</string>
     <string name="ZWL">Зимбабвийский Доллар</string>
+    <string name="money_format">Денежный Формат</string>
 </resources>

@@ -22,6 +22,7 @@ class CurrencySelectionDialogFragment(private val receiver: IDialogInitiator?) :
     private lateinit var declineButton: ImageButton
     private lateinit var searchField: EditText
     private lateinit var dialogHolder: CardView
+    private lateinit var searchFieldHolder: CardView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_fragment_currency_selection, container, false)
@@ -31,6 +32,7 @@ class CurrencySelectionDialogFragment(private val receiver: IDialogInitiator?) :
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
+        searchFieldHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
 
         currencyHolder.layoutManager = LinearLayoutManager(activity)
         currencyHolder.adapter = CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, this,  receiver, requireActivity() as AppCompatActivity)
@@ -60,5 +62,6 @@ class CurrencySelectionDialogFragment(private val receiver: IDialogInitiator?) :
         declineButton = view.findViewById(R.id.csdial_decline_btn)
         searchField = view.findViewById(R.id.csdial_search_txt)
         dialogHolder = view.findViewById(R.id.csdial_holder_crv)
+        searchFieldHolder = view.findViewById(R.id.csdial_searchHolder_crv)
     }
 }

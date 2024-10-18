@@ -77,6 +77,7 @@
         android:layout_marginEnd="8dp"
         android:elevation="8dp"
         android:fontFamily="@font/inconsolata"
+        android:paddingHorizontal="4dp"
         android:text="100 000.00"
         android:textSize="34sp"
         android:textStyle="italic"
@@ -104,6 +105,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="10dp"
+        android:fontFamily="@font/inconsolata"
         android:text="Card Holder"
         app:layout_constraintBottom_toTopOf="@+id/asdet_owner_txt"
         app:layout_constraintStart_toStartOf="@+id/asdet_owner_txt" />
@@ -124,14 +126,15 @@
     <ImageView
         android:id="@+id/asdet_paymentSystem_img"
         android:layout_width="0dp"
-        android:layout_height="52dp"
+        android:layout_height="0dp"
         android:contentDescription="@string/payment_technology"
         android:elevation="8dp"
         android:scaleType="centerInside"
         android:src="@drawable/img_visa_logo"
         app:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd" />
+        app:layout_constraintDimensionRatio="2:1"
+        app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
+        app:layout_constraintStart_toEndOf="@+id/divider15" />
 
     <CheckBox
         android:id="@+id/asdet_isPrimary_chb"
@@ -206,5 +209,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cardView10" />
+
+    <View
+        android:id="@+id/divider15"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
+        app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd"
+        app:layout_constraintTop_toTopOf="@+id/asdet_assetCard_crd" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

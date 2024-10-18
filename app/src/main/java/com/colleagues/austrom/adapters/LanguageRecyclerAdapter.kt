@@ -13,12 +13,14 @@ import androidx.core.os.LocaleListCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.models.Language
+import com.colleagues.austrom.extensions.startWithUppercase
+import java.util.Locale
 
-class LanguageRecyclerAdapter(private val languages: List<Language>, private val activity: AppCompatActivity): RecyclerView.Adapter<LanguageRecyclerAdapter.LanguageViewHolder>() {
+class LanguageRecyclerAdapter(private val languages: List<Locale>, private val activity: AppCompatActivity): RecyclerView.Adapter<LanguageRecyclerAdapter.LanguageViewHolder>() {
     class LanguageViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
         var languageHolder: CardView = itemView.findViewById(R.id.lanit_languageHolder_crv)
         var languageName: TextView = itemView.findViewById(R.id.lanit_languageName_txt)
+        var languageCode: TextView = itemView.findViewById(R.id.lanit_languageCode_txt)
         var selectionMarker: RadioButton = itemView.findViewById(R.id.lanit_selectionMarker)
     }
 
@@ -31,20 +33,21 @@ class LanguageRecyclerAdapter(private val languages: List<Language>, private val
     }
 
     override fun onBindViewHolder(holder: LanguageViewHolder, position: Int) {
-        holder.languageName.text = languages[position].languageName
-        holder.selectionMarker.isChecked = languages[position].languageCode==activity.resources.configuration.locales.get(0).language
+        holder.languageName.text = languages[position].displayLanguage.startWithUppercase()
+        holder.languageCode.text = languages[position].language.uppercase()
+        holder.selectionMarker.isChecked = languages[position]==activity.resources.configuration.locales.get(0)
         holder.languageHolder.setOnClickListener {
-            switchLanguage(languages[position].languageCode)
+            switchLanguage(languages[position])
         }
         holder.selectionMarker.setOnClickListener {
-            switchLanguage(languages[position].languageCode)
+            switchLanguage(languages[position])
         }
     }
 
-    private fun switchLanguage(languageCode: String) {
-        (activity.application as AustromApplication).setApplicationLanguage(languageCode)
+    private fun switchLanguage(locale: Locale) {
+        (activity.application as AustromApplication).setApplicationLanguage(locale.language)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode))
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(locale.language))
         } else  {
             activity.recreate()
         }

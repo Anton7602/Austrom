@@ -23,9 +23,11 @@
                 android:id="@+id/curit_categoryHeader_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
                 android:text="@string/popular_currencies"
-                android:textAlignment="center"
+                android:textAlignment="viewStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="@color/dark_grey"
                 android:textSize="16sp" />
 
             <View

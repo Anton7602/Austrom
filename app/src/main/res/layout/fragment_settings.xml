@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/set_mainHolder_lly"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -22,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:primaryText="@string/base_currency"
-        app:secondaryText="Euro"
+        app:secondaryText="@string/USD"
         app:settingIcon="@drawable/ic_settings_base_currency_temp" />
 
     <TextView
@@ -51,7 +52,7 @@
         android:layout_marginVertical="4dp"
         android:text="@string/app_settings"
         android:textColor="@color/dark_grey"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
     <com.colleagues.austrom.views.SettingsButtonView
         android:id="@+id/set_appLocale_btn"
@@ -59,6 +60,21 @@
         android:layout_height="wrap_content"
         app:primaryText="@string/language"
         app:secondaryText="@string/english"
-        app:settingIcon="@drawable/ic_settings_local"/>
+        app:settingIcon="@drawable/ic_settings_local" />
+
+    <View
+        android:id="@+id/divider16"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey" />
+
+    <com.colleagues.austrom.views.SettingsButtonView
+        android:id="@+id/set_moneyFormat_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:primaryText="@string/money_format"
+        app:secondaryText="1 234 567.89 $"
+        app:settingIcon="@drawable/ic_settings_money_format_temp" />
 
 </LinearLayout>

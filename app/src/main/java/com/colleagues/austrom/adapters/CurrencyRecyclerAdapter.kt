@@ -73,8 +73,8 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
         holder.currencyExchangeRate.text = (1/currency.exchangeRate).toMoneyFormat()
 
         val currencyTapOnClickListener = View.OnClickListener { _ ->
-            currencyReceiver?.receiveValue(currency.name, "BaseCurrency")
             currencySelector.receiveValue(currency.code, "CurrencyCode")
+            currencyReceiver?.receiveValue(currency.name, "BaseCurrency")
             holder.selectionMarker.isChecked = true
         }
         holder.currencyHolder.setOnClickListener (currencyTapOnClickListener)

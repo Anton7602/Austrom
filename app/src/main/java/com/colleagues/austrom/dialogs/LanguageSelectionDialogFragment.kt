@@ -15,14 +15,15 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.LanguageRecyclerAdapter
 import com.colleagues.austrom.interfaces.IDialogInitiator
-import com.colleagues.austrom.models.Language
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.util.Locale
 
 class LanguageSelectionDialogFragment : BottomSheetDialogFragment(), IDialogInitiator {
     private lateinit var dialogHolder: CardView
     private lateinit var languagesHolder: RecyclerView
     private lateinit var declineButton: ImageButton
     private lateinit var searchField: EditText
+    private lateinit var searchHolder: CardView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_fragment_language_selection, container, false)
@@ -32,7 +33,8 @@ class LanguageSelectionDialogFragment : BottomSheetDialogFragment(), IDialogInit
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
-        setUpRecyclerView(Language.supportedLanguages)
+        searchHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
+        setUpRecyclerView(AustromApplication.supportedLanguages)
 
         declineButton.setOnClickListener {
             this.dismiss()
@@ -40,9 +42,9 @@ class LanguageSelectionDialogFragment : BottomSheetDialogFragment(), IDialogInit
 
         searchField.addTextChangedListener {
             languagesHolder.adapter = if (searchField.text.isNotEmpty()) {
-                LanguageRecyclerAdapter(Language.supportedLanguages.filter { entry -> entry.languageName.contains(searchField.text, ignoreCase = true)}, requireActivity() as AppCompatActivity)
+                LanguageRecyclerAdapter(AustromApplication.supportedLanguages.filter { entry -> entry.displayLanguage.contains(searchField.text, ignoreCase = true)}, requireActivity() as AppCompatActivity)
             } else {
-                LanguageRecyclerAdapter(Language.supportedLanguages, requireActivity() as AppCompatActivity)
+                LanguageRecyclerAdapter(AustromApplication.supportedLanguages, requireActivity() as AppCompatActivity)
             }
         }
     }
@@ -53,7 +55,7 @@ class LanguageSelectionDialogFragment : BottomSheetDialogFragment(), IDialogInit
         dismiss()
     }
 
-    private fun setUpRecyclerView(languagesList: List<Language>) {
+    private fun setUpRecyclerView(languagesList: List<Locale>) {
         languagesHolder.layoutManager = LinearLayoutManager(activity)
         languagesHolder.adapter = LanguageRecyclerAdapter(languagesList, requireActivity() as AppCompatActivity)
     }
@@ -63,5 +65,6 @@ class LanguageSelectionDialogFragment : BottomSheetDialogFragment(), IDialogInit
         declineButton = view.findViewById(R.id.lsdial_close_btn)
         searchField = view.findViewById(R.id.lsdial_languageName_txt)
         dialogHolder = view.findViewById(R.id.lsdial_holder_crv)
+        searchHolder = view.findViewById(R.id.lsdial_searchHolder_crv)
     }
 }
