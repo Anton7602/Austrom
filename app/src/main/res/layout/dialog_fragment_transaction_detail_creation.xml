@@ -40,7 +40,7 @@
                     android:layout_weight="1"
                     android:paddingVertical="14dp"
                     android:paddingEnd="48dp"
-                    android:text="Add New Entry"
+                    android:text="@string/add_new_entry"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="Item Name"
+                    android:hint="@string/item_name"
                     android:inputType="text"
                     android:paddingTop="14dp"
                     android:paddingBottom="14dp"
@@ -66,7 +66,7 @@
                     android:layout_weight="1"
                     android:breakStrategy="simple"
                     android:ems="0"
-                    android:hint="Quantity"
+                    android:hint="@string/quantity"
                     android:hyphenationFrequency="normal"
                     android:inputType="numberDecimal"
                     android:paddingStart="0dp"
@@ -101,7 +101,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="Cost"
+                    android:hint="@string/cost"
                     android:inputType="numberDecimal"
                     android:paddingTop="14dp"
                     android:paddingBottom="14dp"
@@ -116,7 +116,8 @@
                     android:paddingHorizontal="8dp"
                     android:text="RUB"
                     android:textSize="16sp"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:ignore="HardcodedText" />
 
                 <ImageButton
                     android:id="@+id/trdetcr_forward_btn"

@@ -44,7 +44,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/nav_userImage_img"
         app:layout_constraintEnd_toStartOf="@+id/nav_logout_btn"
         app:layout_constraintStart_toEndOf="@+id/nav_userImage_img"
-        app:layout_constraintTop_toTopOf="@+id/nav_userImage_img" />
+        app:layout_constraintTop_toTopOf="@+id/nav_userImage_img"
+        tools:ignore="HardcodedText" />
 
     <ImageButton
         android:id="@+id/nav_logout_btn"

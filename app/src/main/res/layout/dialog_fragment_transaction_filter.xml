@@ -2,20 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/trfildial_holder_cly"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".dialogs.TransactionFilterDialogFragment">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        app:cardBackgroundColor="@color/navigationBarColor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView12"
+        android:id="@+id/trfildial_holder_crv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/navigationBarColor"
@@ -44,7 +37,7 @@
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Income"
+                    android:text="@string/income"
                     app:icon="@drawable/ic_transactiontype_income_temp" />
 
                 <Button
@@ -52,7 +45,7 @@
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Transfer"
+                    android:text="@string/transfer"
                     app:icon="@drawable/ic_transactiontype_transfer_temp" />
 
                 <Button
@@ -60,7 +53,7 @@
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Expense"
+                    android:text="@string/expense"
                     app:icon="@drawable/ic_transactiontype_expense_temp" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -108,7 +101,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="Income Categories"
+                android:text="@string/income_categories"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/trfildial_transactionType_tgr" />
@@ -119,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Transfer Categories"
+                android:text="@string/transfer_categories"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/trfildial_incomeCat_cgr" />
 
@@ -129,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Expense Categories"
+                android:text="@string/expense_categories"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/trfildial_transferCat_cgr" />
 
@@ -169,7 +162,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Period"
+                android:text="@string/period"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/trfildial_expenseCat_cgr" />
 
@@ -179,7 +172,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="From"
+                android:text="@string/from"
                 app:chipIcon="@drawable/ic_navigation_calendar_temp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/trfildial_dateTo_chp"
@@ -191,7 +184,7 @@
                 android:id="@+id/trfildial_dateTo_chp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="To"
+                android:text="@string/to"
                 app:chipIcon="@drawable/ic_navigation_calendar_temp"
                 app:layout_constraintBottom_toBottomOf="@+id/trfildial_dateFrom_chp"
                 app:layout_constraintEnd_toEndOf="parent"

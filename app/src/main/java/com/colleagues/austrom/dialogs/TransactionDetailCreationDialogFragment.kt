@@ -1,19 +1,19 @@
 package com.colleagues.austrom.dialogs
 
-import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionPropertiesActivity
-import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.QuantityUnit
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
@@ -41,18 +41,40 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
         setStage(0)
 
         addRemoveButton.setOnClickListener { if (currentStageId==0) setStage(1) else setStage(0) }
+
         constructorLabel.setOnClickListener{ setStage(1) }
+
+        costField.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (costField.text.isNotEmpty()) {
+                    parent.updateUnallocatedSum(costField.text.toString().toDouble())
+                } else {
+                    parent.updateUnallocatedSum()
+                }
+            }
+        })
+
         forwardButton.setOnClickListener {
             if (currentStageId==4) {
-                parent.addTransactionDetail(TransactionDetail(
-                    name = detailNameField.text.toString(),
-                    quantity = if (quantityField.text.toString().isEmpty()) null else quantityField.text.toString().toDouble(),
-                    typeOfQuantity = if (quantityField.text.toString().isEmpty()) null else quantityTypeSpinner.selectedItem as QuantityUnit,
-                    cost = costField.text.toString().toDouble(),
-                    categoryName = if (categorySpinner.selectedItem.toString()!=transaction.categoryId) categorySpinner.selectedItem.toString() else null
-                ))
-                setStage(0)
-                clearValues()
+                if (costField.text.toString().isNotEmpty()) {
+                    if (parent.updateUnallocatedSum(costField.text.toString().toDouble())>=0) {
+                        parent.addTransactionDetail(TransactionDetail(
+                            name = detailNameField.text.toString(),
+                            quantity = if (quantityField.text.toString().isEmpty()) null else quantityField.text.toString().toDouble(),
+                            typeOfQuantity = if (quantityField.text.toString().isEmpty()) null else quantityTypeSpinner.selectedItem as QuantityUnit,
+                            cost = costField.text.toString().toDouble(),
+                            categoryName = if (categorySpinner.selectedItem.toString()!=transaction.categoryId) categorySpinner.selectedItem.toString() else null
+                        ))
+                        setStage(0)
+                        clearValues()
+                    } else {
+                        //Error message. Transaction balance is negative
+                    }
+                } else {
+                    //Error message Cost Field is Empty
+                }
             } else {
                 setStage(currentStageId+1)
             }
@@ -77,6 +99,7 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
         categorySpinner.visibility = if (stageId==3) View.VISIBLE else View.GONE
         costField.visibility = if (stageId==4) View.VISIBLE else View.GONE
         currencyLabel.visibility = if (stageId==4) View.VISIBLE else View.GONE
+        currencyLabel.text = AustromApplication.activeCurrencies[AustromApplication.activeAssets[transaction.sourceId]?.currencyCode]?.symbol
         AustromApplication.showKeyboard(requireActivity(), when (stageId) {
             1 -> detailNameField
             2 -> quantityField

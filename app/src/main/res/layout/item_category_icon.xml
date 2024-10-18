@@ -9,10 +9,12 @@
         android:id="@+id/caticit_icon_img"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:contentDescription="iconImage"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_placeholder_icon" />
+        app:srcCompat="@drawable/ic_placeholder_icon"
+        tools:ignore="HardcodedText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

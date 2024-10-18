@@ -7,17 +7,7 @@
     tools:context=".dialogs.AssetFilterDialogFragment">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        app:cardBackgroundColor="@color/navigationBarColor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView11"
+        android:id="@+id/asfildial_holder_crv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/navigationBarColor"
@@ -49,7 +39,7 @@
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Personal"
+                    android:text="@string/personal"
                     app:icon="@drawable/ic_assettype_owner_temp"
                     app:iconTint="@color/black" />
 
@@ -58,7 +48,7 @@
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Shared"
+                    android:text="@string/shared"
                     app:icon="@drawable/ic_navigation_sharedbudget_temp" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
 

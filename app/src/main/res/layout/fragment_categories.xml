@@ -20,7 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="Expense"
+                android:text="@string/expense"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="Transfer"
+                android:text="@string/transfer"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="Income"
+                android:text="@string/income"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <androidx.recyclerview.widget.RecyclerView

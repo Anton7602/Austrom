@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
@@ -15,6 +16,7 @@ import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class QuickAccessPinDialogFragment(private val receiver: IDialogInitiator?=null) : BottomSheetDialogFragment() {
+    private lateinit var dialogHolder: CardView
     private lateinit var button1: Button
     private lateinit var button2: Button
     private lateinit var button3: Button
@@ -45,6 +47,7 @@ class QuickAccessPinDialogFragment(private val receiver: IDialogInitiator?=null)
         super.onViewCreated(view, savedInstanceState)
         currentCode = (requireActivity().application as AustromApplication).getRememberedPin() ?: ""
         bindViews(view)
+        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
         applyMode()
 
         val keyboardButtonClickListener = View.OnClickListener { buttonPressed ->
@@ -78,7 +81,7 @@ class QuickAccessPinDialogFragment(private val receiver: IDialogInitiator?=null)
                             input = ""
                             applyMode()
                         } else {
-                            callToAction.text = "Wrong Quick Access Code. Please try again"
+                            callToAction.text = getString(R.string.wrong_quick_access_code)
                             input = ""
                         }
                     }
@@ -94,7 +97,7 @@ class QuickAccessPinDialogFragment(private val receiver: IDialogInitiator?=null)
                             receiver?.receiveValue("****", "QuickAccessCode")
                             dismiss()
                         } else {
-                            callToAction.text = "Quick Access Code doesn't match. Try again"
+                            callToAction.text = getString(R.string.quick_access_code_doesn_t_match)
                             input = ""
                         }
                     }
@@ -138,6 +141,7 @@ class QuickAccessPinDialogFragment(private val receiver: IDialogInitiator?=null)
         pinDot3 = view.findViewById(R.id.qapdial_pinThird_img)
         pinDot4 = view.findViewById(R.id.qapdial_pinForth_img)
         callToAction = view.findViewById(R.id.qapdial_ctaText_cta)
+        dialogHolder = view.findViewById(R.id.qapdial_holder_crv)
     }
 
     private fun applyMode() {
@@ -146,9 +150,9 @@ class QuickAccessPinDialogFragment(private val receiver: IDialogInitiator?=null)
             mode = QuickAccessDialogMode.SETUP
         }
         callToAction.text = when (mode) {
-            QuickAccessDialogMode.VALIDATE -> "Enter Current Quick Access Code"
-            QuickAccessDialogMode.SETUP ->  "Enter New Quick Access Code"
-            QuickAccessDialogMode.REPEAT -> "Repeat New Quick Access Code"
+            QuickAccessDialogMode.VALIDATE -> getString(R.string.enter_current_quick_access_code)
+            QuickAccessDialogMode.SETUP -> getString(R.string.enter_new_quick_access_code)
+            QuickAccessDialogMode.REPEAT -> getString(R.string.repeat_new_quick_access_code)
         }
     }
 }

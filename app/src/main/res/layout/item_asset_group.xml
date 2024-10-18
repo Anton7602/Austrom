@@ -32,7 +32,8 @@
                 android:layout_marginTop="16dp"
                 android:text="Asset Type"
                 app:layout_constraintStart_toEndOf="@+id/assgritem_dropdown_btn"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/assgritem_sumamount_txt"
@@ -42,7 +43,8 @@
                 android:text="1 000.00"
                 app:layout_constraintBottom_toBottomOf="@+id/assgritem_assettype_txt"
                 app:layout_constraintEnd_toStartOf="@+id/assgritem_currencysymbol_txt"
-                app:layout_constraintTop_toTopOf="@+id/assgritem_assettype_txt" />
+                app:layout_constraintTop_toTopOf="@+id/assgritem_assettype_txt"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/assgritem_currencysymbol_txt"
@@ -52,7 +54,8 @@
                 android:text="Р"
                 app:layout_constraintBottom_toBottomOf="@+id/assgritem_sumamount_txt"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/assgritem_sumamount_txt" />
+                app:layout_constraintTop_toTopOf="@+id/assgritem_sumamount_txt"
+                tools:ignore="HardcodedText" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/assgritem_assetholder_rcv"
@@ -75,7 +78,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/assgritem_assettype_txt"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/assgritem_assettype_txt"
-                app:srcCompat="@drawable/ic_navigation_up_temp" />
+                app:srcCompat="@drawable/ic_navigation_up_temp"
+                tools:ignore="HardcodedText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

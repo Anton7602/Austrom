@@ -1,5 +1,6 @@
 package com.colleagues.austrom.dialogs
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +18,6 @@ import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.models.Asset
-import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -42,6 +42,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
     private lateinit var calendarButton: ImageButton
     private lateinit var currencySymbol: TextView
     private lateinit var currencySymbolReceived: TextView
+    private lateinit var dialogHolder: CardView
     private var selectedSource : Asset? = null
     private var sourceName: String? = null
     private var selectedTarget : Asset? = null
@@ -50,6 +51,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background)
         setUpCategoriesInChips()
         setUpDateChips()
         setUpPrimaryAsset()
@@ -202,6 +204,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setUpDateChips() {
         var chipDate = LocalDate.now()
         val customDateChip = Chip(requireActivity())
@@ -250,5 +253,6 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         calendarButton = view.findViewById(R.id.ctdial_openCalendar_btn)
         currencySymbol = view.findViewById(R.id.ctdial_currencySymbol_txt)
         currencySymbolReceived = view.findViewById(R.id.ctdial_currencyReceived_txt)
+        dialogHolder = view.findViewById(R.id.ctdial_holder_crv)
     }
 }

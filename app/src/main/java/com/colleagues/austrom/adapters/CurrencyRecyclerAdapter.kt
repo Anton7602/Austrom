@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
@@ -16,6 +17,7 @@ import com.colleagues.austrom.models.Currency
 class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
                               private var currencySelector: IDialogInitiator,
                               private var currencyReceiver: IDialogInitiator?,
+                              private var activity: AppCompatActivity,
                               private val isSortingByBaseCurrencies: Boolean = true): RecyclerView.Adapter<CurrencyRecyclerAdapter.CurrencyViewHolder>() {
     class CurrencyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val currencyHolder: CardView = itemView.findViewById(R.id.curit_currencyHolder_crv)
@@ -60,7 +62,8 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
         val currency = currencies.values.elementAt(position)
         if (isSortingByBaseCurrencies) {
             holder.currencyGroupSeparator.visibility = if(position == 0 || position == baseCurrencyCategoryEndIndex) View.VISIBLE else View.GONE
-            holder.currencyGroupHeader.text = if (position==0 && baseCurrencyCategoryEndIndex!=0) "Base Currencies" else "All Currencies"
+            holder.currencyGroupHeader.text = if (position==0 && baseCurrencyCategoryEndIndex!=0) activity.getString( R.string.popular_currencies)
+            else activity.getString(R.string.all_currencies)
         }
         val baseCurrencyCode = AustromApplication.appUser?.baseCurrencyCode
         holder.currencyName.text = currency.name
@@ -70,8 +73,8 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
         holder.currencyExchangeRate.text = (1/currency.exchangeRate).toMoneyFormat()
 
         val currencyTapOnClickListener = View.OnClickListener { _ ->
-            currencyReceiver?.receiveValue(currency.name, "BaseCurrency")
             currencySelector.receiveValue(currency.code, "CurrencyCode")
+            currencyReceiver?.receiveValue(currency.name, "BaseCurrency")
             holder.selectionMarker.isChecked = true
         }
         holder.currencyHolder.setOnClickListener (currencyTapOnClickListener)

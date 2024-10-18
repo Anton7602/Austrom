@@ -8,15 +8,7 @@
     tools:context=".dialogs.AssetCreationDialogFragment">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:elevation="4dp"
-        app:cardBackgroundColor="@color/navigationBarColor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.cardview.widget.CardView
+        android:id="@+id/cadial_holder_crv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/navigationBarColor"
@@ -64,7 +56,7 @@
                             android:id="@+id/cadial_title_txt"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Title" />
+                            android:hint="@string/title" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.chip.ChipGroup
@@ -99,7 +91,7 @@
                             style="@style/Widget.Material3.Chip.Suggestion"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Investment" />
+                            android:text="@string/investment" />
                     </com.google.android.material.chip.ChipGroup>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -116,7 +108,7 @@
                             android:id="@+id/cadial_amount_txt"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Amount"
+                            android:hint="@string/amount"
                             android:inputType="number" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -139,21 +131,24 @@
                             style="@style/Widget.Material3.Chip.Suggestion"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="EUR" />
+                            android:text="EUR"
+                            tools:ignore="HardcodedText" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/cadial_dollar_chp"
                             style="@style/Widget.Material3.Chip.Suggestion"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="USD" />
+                            android:text="USD"
+                            tools:ignore="HardcodedText" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/cadial_rouble_chp"
                             style="@style/Widget.Material3.Chip.Suggestion"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="RUB" />
+                            android:text="RUB"
+                            tools:ignore="HardcodedText" />
                     </com.google.android.material.chip.ChipGroup>
 
 
@@ -169,7 +164,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="24dp"
                 android:backgroundTint="@color/blue"
-                android:text="Create Asset"
+                android:text="@string/create_asset"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

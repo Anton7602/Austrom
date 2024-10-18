@@ -10,9 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.toMoneyFormat
-import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
-import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
 
 class TransactionDetailRecyclerAdapter(private val transaction: Transaction): RecyclerView.Adapter<TransactionDetailRecyclerAdapter.TransactionDetailViewHolder>() {

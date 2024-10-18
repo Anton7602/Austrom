@@ -39,7 +39,7 @@ class CategoryRecyclerAdapter(private val categories: MutableList<Category>,
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         if (isShowingCreateNewCategoryButton && position==itemCount-1) {
-            holder.categoryName.text = "Add New Category"
+            holder.categoryName.text = activity.getString(R.string.add_new_category)
             holder.categoryName.setTextColor(Color.GRAY)
             holder.isSelected = false
             holder.categoryImage.setImageResource(R.drawable.ic_navigation_add_temp)
@@ -54,6 +54,7 @@ class CategoryRecyclerAdapter(private val categories: MutableList<Category>,
             holder.isSelected = AustromApplication.appUser?.categories?.find { entry -> entry.name == categories[position].name } != null
             holder.categoryImage.setImageResource(categories[position].imgReference?.resourceId ?: R.drawable.ic_placeholder_icon)
             holder.categoryHolder.setBackgroundResource(if (holder.isSelected) R.drawable.sh_card_background else R.drawable.sh_category_deselected)
+            //holder.categoryHolder.setBackgroundResource(R.drawable.sh_card_background)
             holder.categoryHolder.setOnClickListener {
                 if (holder.isSelected) {
                     holder.isSelected = false

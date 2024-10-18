@@ -37,7 +37,8 @@
                 android:textColor="#929191"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="HardcodedText" />
 
             <ImageView
                 android:id="@+id/tritem_categoryIcon_img"
@@ -58,7 +59,8 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/tritem_categoryIcon_img"
                 app:layout_constraintStart_toEndOf="@+id/tritem_categoryIcon_img"
-                app:layout_constraintTop_toTopOf="@+id/tritem_categoryIcon_img" />
+                app:layout_constraintTop_toTopOf="@+id/tritem_categoryIcon_img"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/tritem_amount_txt"
@@ -71,7 +73,8 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/tritem_targetName_txt"
                 app:layout_constraintEnd_toStartOf="@+id/tritem_currencySymbol_txt"
-                app:layout_constraintTop_toTopOf="@+id/tritem_targetName_txt" />
+                app:layout_constraintTop_toTopOf="@+id/tritem_targetName_txt"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/tritem_currencySymbol_txt"
@@ -82,7 +85,8 @@
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/tritem_amount_txt"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tritem_amount_txt" />
+                app:layout_constraintTop_toTopOf="@+id/tritem_amount_txt"
+                tools:ignore="HardcodedText" />
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -105,7 +109,8 @@
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView2"
                 app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintTop_toTopOf="@+id/imageView2" />
+                app:layout_constraintTop_toTopOf="@+id/imageView2"
+                tools:ignore="HardcodedText" />
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -127,7 +132,8 @@
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView2"
                 app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintTop_toTopOf="@+id/imageView2" />
+                app:layout_constraintTop_toTopOf="@+id/imageView2"
+                tools:ignore="HardcodedText" />
 
             <ImageView
                 android:id="@+id/imageView4"
@@ -151,7 +157,8 @@
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView4"
                 app:layout_constraintStart_toEndOf="@+id/imageView4"
-                app:layout_constraintTop_toTopOf="@+id/imageView4" />
+                app:layout_constraintTop_toTopOf="@+id/imageView4"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/tritem_secondarycurrency_txt"
@@ -163,7 +170,8 @@
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/tritem_sourceName_txt"
                 app:layout_constraintEnd_toEndOf="@+id/tritem_currencySymbol_txt"
-                app:layout_constraintTop_toTopOf="@+id/tritem_sourceName_txt" />
+                app:layout_constraintTop_toTopOf="@+id/tritem_sourceName_txt"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/tritem_secondaryamount_txt"
@@ -176,7 +184,8 @@
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/tritem_secondarycurrency_txt"
                 app:layout_constraintEnd_toStartOf="@+id/tritem_secondarycurrency_txt"
-                app:layout_constraintTop_toTopOf="@+id/tritem_secondarycurrency_txt" />
+                app:layout_constraintTop_toTopOf="@+id/tritem_secondarycurrency_txt"
+                tools:ignore="HardcodedText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

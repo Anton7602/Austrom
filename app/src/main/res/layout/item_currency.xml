@@ -23,9 +23,11 @@
                 android:id="@+id/curit_categoryHeader_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Base Currencies"
-                android:textAlignment="center"
+                android:paddingHorizontal="16dp"
+                android:text="@string/popular_currencies"
+                android:textAlignment="viewStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="@color/dark_grey"
                 android:textSize="16sp" />
 
             <View
@@ -73,14 +75,16 @@
                     android:layout_marginBottom="4dp"
                     android:text="RUB"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/curit_currencyName_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Russian Ruble"
-                    android:textColor="@color/dark_grey" />
+                    android:textColor="@color/dark_grey"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
             <LinearLayout
@@ -98,13 +102,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
-                    android:text="0.91" />
+                    android:text="0.91"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/curit_currencySymbol_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="$" />
+                    android:text="$"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
             <View

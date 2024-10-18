@@ -1,10 +1,12 @@
 package com.colleagues.austrom.dialogs
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.colleagues.austrom.AustromApplication
@@ -23,6 +25,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment) : BottomSheetDialogFragment() {
+    private lateinit var dialogHolder: CardView
     private lateinit var transactionTypeGroup: MaterialButtonToggleGroup
     private lateinit var incomeButton: Button
     private lateinit var transferButton: Button
@@ -33,9 +36,11 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
     private lateinit var chipFrom: Chip
     private lateinit var chipTo: Chip
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background)
         setUpCategoriesInChips(AustromApplication.getActiveExpenseCategories(), expenseCategories)
         setUpCategoriesInChips(AustromApplication.getActiveTransferCategories(), transferCategories)
         setUpCategoriesInChips(AustromApplication.getActiveIncomeCategories(), incomeCategories)
@@ -58,13 +63,13 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
             filteredFragment.filterTransactions(generateFilter())
         }
         chipFrom.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Choose Period Start Date")
+            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.choose_period_start_date))
                 .setSelection(if (chipFrom.tag ==null) MaterialDatePicker.todayInUtcMilliseconds() else
                     (chipFrom.tag as LocalDate).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                 .build()
             datePicker.addOnPositiveButtonClickListener { selection ->
                 val selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
-                chipFrom.text = "From: ${selectedDate.toDayOfWeekAndShortDateFormat()}"
+                chipFrom.text = "${getString(R.string.from)} ${selectedDate.toDayOfWeekAndShortDateFormat()}"
                 chipFrom.tag = selectedDate
                 compareDates()
                 filteredFragment.filterTransactions(generateFilter())
@@ -72,13 +77,13 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
             datePicker.show(requireActivity().supportFragmentManager, "DatePicker Dialog")
         }
         chipTo.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Choose Period End Date")
+            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.choose_period_end_date))
                 .setSelection(if (chipTo.tag ==null) MaterialDatePicker.todayInUtcMilliseconds() else
                         (chipTo.tag as LocalDate).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
                 .build()
             datePicker.addOnPositiveButtonClickListener { selection ->
                 val selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
-                chipTo.text = "To: ${selectedDate.toDayOfWeekAndShortDateFormat()}"
+                chipTo.text = "${getString(R.string.to)} ${selectedDate.toDayOfWeekAndShortDateFormat()}"
                 chipTo.tag = selectedDate
                 compareDates()
                 filteredFragment.filterTransactions(generateFilter())
@@ -94,6 +99,7 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
         for (child in chipGroup.children) child.isEnabled = chipGroup.isEnabled
     }
 
+    @SuppressLint("SetTextI18n")
     private fun matchFilter() {
         if (filteredFragment.activeFilter==null) {
             for (button in transactionTypeGroup.children) transactionTypeGroup.check(button.id)
@@ -123,23 +129,24 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
         }
         if (filteredFragment.activeFilter!!.dateFrom!=null) {
             chipFrom.tag  = filteredFragment.activeFilter!!.dateFrom
-            chipFrom.text = "From: ${filteredFragment.activeFilter!!.dateFrom!!.toDayOfWeekAndShortDateFormat()}"
+            chipFrom.text = "${getString(R.string.from)}: ${filteredFragment.activeFilter!!.dateFrom!!.toDayOfWeekAndShortDateFormat()}"
         }
         if (filteredFragment.activeFilter!!.dateTo!=null) {
             chipTo.tag  = filteredFragment.activeFilter!!.dateTo
-            chipTo.text = "To: ${filteredFragment.activeFilter!!.dateTo!!.toDayOfWeekAndShortDateFormat()}"
+            chipTo.text = "${getString(R.string.to)}: ${filteredFragment.activeFilter!!.dateTo!!.toDayOfWeekAndShortDateFormat()}"
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun compareDates() {
         if (chipFrom.tag==null || chipTo.tag==null) return
         val dateFrom = (chipFrom.tag as LocalDate)
         val dateTo = (chipTo.tag as LocalDate)
         if (dateFrom > dateTo) {
             chipFrom.tag = dateTo
-            chipFrom.text = "From: ${dateTo.toDayOfWeekAndShortDateFormat()}"
+            chipFrom.text = "${getString(R.string.from)}: ${dateTo.toDayOfWeekAndShortDateFormat()}"
             chipTo.tag = dateFrom
-            chipTo.text = "To ${dateFrom.toDayOfWeekAndShortDateFormat()}"
+            chipTo.text = "${getString(R.string.to)}: ${dateFrom.toDayOfWeekAndShortDateFormat()}"
         }
     }
 
@@ -204,6 +211,7 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
         incomeCategories = view.findViewById(R.id.trfildial_incomeCat_cgr)
         chipFrom = view.findViewById(R.id.trfildial_dateFrom_chp)
         chipTo = view.findViewById(R.id.trfildial_dateTo_chp)
+        dialogHolder = view.findViewById(R.id.trfildial_holder_crv)
     }
 }
 

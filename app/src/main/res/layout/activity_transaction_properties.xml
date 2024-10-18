@@ -84,7 +84,7 @@
                     android:autoSizeTextType="uniform"
                     android:gravity="center"
                     android:paddingVertical="4dp"
-                    android:text="Category"
+                    android:text="@string/category"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -107,7 +107,8 @@
                     android:autoSizeTextType="none"
                     android:text="100 000"
                     android:textAlignment="viewEnd"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/trdet_primaryCurrency_txt"
@@ -116,7 +117,8 @@
                     android:layout_marginHorizontal="4dp"
                     android:layout_weight="1"
                     android:text="RUB"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
             <LinearLayout
@@ -138,7 +140,8 @@
                     android:layout_weight="1"
                     android:text="1 000"
                     android:textAlignment="viewEnd"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/trdet_secondaryCurrency_txt"
@@ -147,7 +150,8 @@
                     android:layout_marginHorizontal="4dp"
                     android:layout_weight="1"
                     android:text="$"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
             <TextView
@@ -160,7 +164,7 @@
                 android:elevation="3dp"
                 android:gravity="center_vertical|end"
                 android:paddingVertical="2dp"
-                android:text="Source"
+                android:text="@string/source"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView7"
                 app:layout_constraintEnd_toStartOf="@+id/imageView7"
@@ -182,12 +186,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:contentDescription="ImageTransaction"
                 android:elevation="3dp"
                 android:paddingVertical="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/trdet_fromAmount_lly"
-                app:srcCompat="@drawable/ic_navigation_transferdirection_temp" />
+                app:srcCompat="@drawable/ic_navigation_transferdirection_temp"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/trdet_target_txt"
@@ -199,7 +205,7 @@
                 android:elevation="3dp"
                 android:gravity="center_vertical"
                 android:paddingVertical="2dp"
-                android:text="Target"
+                android:text="@string/target"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/trdet_source_txt"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -222,7 +228,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:elevation="3dp"
-                android:text="Owner"
+                android:text="@string/owner"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView8"
                 app:layout_constraintStart_toEndOf="@+id/imageView8"
@@ -247,7 +253,8 @@
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/trdet_owner_txt"
                 app:layout_constraintEnd_toStartOf="@+id/imageView9"
-                app:layout_constraintTop_toTopOf="@+id/trdet_owner_txt" />
+                app:layout_constraintTop_toTopOf="@+id/trdet_owner_txt"
+                tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:id="@+id/linearLayout4"
@@ -261,8 +268,8 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/trdet_comments_til"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="8dp"
                     android:layout_weight="10"
                     android:elevation="3dp">
@@ -272,20 +279,22 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="top"
-                        android:hint="Notes" />
+                        android:hint="@string/notes" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <ImageButton
-                    android:id="@+id/imageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:id="@+id/trdet_addPhoto_btn"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="4dp"
                     android:layout_marginTop="6dp"
                     android:layout_marginEnd="8dp"
                     android:background="@color/transparent"
                     android:contentDescription="Add Photo"
                     android:elevation="3dp"
                     android:padding="12dp"
-                    app:srcCompat="@android:drawable/ic_menu_add" />
+                    app:srcCompat="@android:drawable/ic_menu_camera"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
             <Button
@@ -297,7 +306,7 @@
                 android:layout_weight="1"
                 android:autoSizeTextType="none"
                 android:elevation="4dp"
-                android:text="Cancel Transaction"
+                android:text="@string/cancel_transaction"
                 android:textColor="@color/decline_red"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -338,7 +347,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:autoSizeTextType="uniform"
-                android:text="Transaction Details"
+                android:text="@string/transaction_details"
                 android:textAlignment="center"
                 android:textColor="@color/dark_grey"
                 app:layout_constraintDimensionRatio="w,1:15"
@@ -380,7 +389,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:autoSizeTextType="none"
-                    android:text="Unallocated balance"
+                    android:text="@string/unallocated_balance"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -392,7 +401,8 @@
                     android:autoSizeTextType="none"
                     android:text="100 000.00"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/trdet_unallocatedCurrency_txt"
@@ -401,7 +411,8 @@
                     android:autoSizeTextType="none"
                     android:text="RUB"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
             <View

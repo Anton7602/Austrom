@@ -8,6 +8,7 @@
     tools:context=".dialogs.TargetSelectionDialogFragment">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/tsdial_holder_crv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cardBackgroundColor="@color/navigationBarColor"
@@ -25,10 +26,9 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
                 android:ems="10"
-                android:hint="Target Name"
+                android:hint="@string/target_name"
                 android:inputType="text"
-                android:paddingStart="8dp"
-                android:paddingLeft="8dp"
+                android:paddingHorizontal="8dp"
                 android:paddingTop="16dp"
                 app:layout_constraintBottom_toTopOf="@+id/tsdial_cancelButton_btn"
                 app:layout_constraintEnd_toEndOf="parent"

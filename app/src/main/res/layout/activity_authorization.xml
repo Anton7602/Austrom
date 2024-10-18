@@ -23,7 +23,7 @@
         android:id="@+id/auth_avatar_img"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="@string/applogo"
+        android:contentDescription="@string/appLogo"
         app:layout_constraintBottom_toTopOf="@+id/auth_info_cly"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/sign_in"
+            android:text="@string/authorization"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

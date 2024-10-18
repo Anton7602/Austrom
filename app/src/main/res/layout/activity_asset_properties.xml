@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/asdet_mainHolder_cly"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey"
-    app:layoutDescription="@xml/activity_asset_properties_scene"
     tools:context=".AssetPropertiesActivity">
 
     <ImageButton
@@ -27,7 +26,7 @@
         android:background="@color/transparent"
         android:contentDescription="@string/delete"
         android:padding="8dp"
-        android:src="@drawable/ic_nvaigation_delete_temp"
+        android:src="@drawable/ic_navigation_delete_temp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/decline_red" />
@@ -53,12 +52,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:elevation="8dp"
-        android:text="Asset Name"
+        android:fontFamily="@font/inconsolata"
+        android:text="@string/asset_name"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd"
         app:layout_constraintTop_toTopOf="@+id/asdet_assetCard_crd" />
+
+    <TextView
+        android:id="@+id/textView22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="10dp"
+        android:fontFamily="@font/inconsolata"
+        android:text="Card Balance"
+        app:layout_constraintBottom_toTopOf="@+id/asdet_balance_txt"
+        app:layout_constraintStart_toStartOf="@+id/asdet_balance_txt" />
 
     <TextView
         android:id="@+id/asdet_balance_txt"
@@ -66,47 +76,65 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:elevation="8dp"
+        android:fontFamily="@font/inconsolata"
+        android:paddingHorizontal="4dp"
         android:text="100 000.00"
         android:textSize="34sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="@+id/asdet_currency_txt"
-        app:layout_constraintEnd_toStartOf="@+id/asdet_currency_txt" />
+        app:layout_constraintEnd_toStartOf="@+id/asdet_currency_txt"
+        app:layout_constraintStart_toStartOf="@+id/asdet_assetName_txt"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/asdet_currency_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="4dp"
         android:elevation="8dp"
+        android:fontFamily="@font/inconsolata"
         android:text="RUB"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/asdet_owner_txt"
-        app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
-        app:layout_constraintTop_toBottomOf="@+id/asdet_assetName_txt" />
+        app:layout_constraintStart_toEndOf="@+id/asdet_balance_txt"
+        app:layout_constraintTop_toBottomOf="@+id/asdet_assetName_txt"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="10dp"
+        android:fontFamily="@font/inconsolata"
+        android:text="Card Holder"
+        app:layout_constraintBottom_toTopOf="@+id/asdet_owner_txt"
+        app:layout_constraintStart_toStartOf="@+id/asdet_owner_txt" />
 
     <TextView
         android:id="@+id/asdet_owner_txt"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
         android:elevation="8dp"
-        android:text="Owner"
+        android:fontFamily="@font/inconsolata"
+        android:text="@string/owner"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
-        app:layout_constraintStart_toStartOf="@+id/asdet_assetName_txt"
-        app:layout_constraintTop_toBottomOf="@+id/asdet_assetName_txt" />
+        app:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd" />
 
     <ImageView
         android:id="@+id/asdet_paymentSystem_img"
         android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginEnd="16dp"
+        android:layout_height="0dp"
         android:contentDescription="@string/payment_technology"
         android:elevation="8dp"
         android:scaleType="centerInside"
         android:src="@drawable/img_visa_logo"
         app:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd" />
+        app:layout_constraintDimensionRatio="2:1"
+        app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
+        app:layout_constraintStart_toEndOf="@+id/divider15" />
 
     <CheckBox
         android:id="@+id/asdet_isPrimary_chb"
@@ -121,7 +149,7 @@
         android:id="@+id/asdet_isPrivate_chb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Private"
+        android:text="@string/privateAsset"
         app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
         app:layout_constraintTop_toTopOf="@+id/asdet_isPrimary_chb" />
 
@@ -174,7 +202,7 @@
         android:layout_marginEnd="24dp"
         android:autoSizeTextType="uniform"
         android:elevation="8dp"
-        android:text="Transactions Not Found"
+        android:text="@string/transactions_not_found"
         android:textAlignment="center"
         android:visibility="gone"
         app:layout_constraintDimensionRatio="w,1:8"
@@ -182,4 +210,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cardView10" />
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+    <View
+        android:id="@+id/divider15"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/asdet_assetCard_crd"
+        app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd"
+        app:layout_constraintTop_toTopOf="@+id/asdet_assetCard_crd" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

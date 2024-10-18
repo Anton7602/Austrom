@@ -16,6 +16,7 @@ import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.User
+import java.util.Locale
 
 class AustromApplication : Application() {
     private lateinit var sharedPreferences: SharedPreferences
@@ -27,7 +28,8 @@ class AustromApplication : Application() {
         var knownUsers : MutableMap<String, User> = mutableMapOf()
         var selectedTransaction: Transaction? = null
         var selectedAsset: Asset? = null
-
+        var supportedLanguages: List<Locale> = listOf(Locale("en"), Locale("ru"))
+        private var appLanguageCode: String? = null
 
         fun getActiveExpenseCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.EXPENSE)}
         fun getActiveTransferCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.TRANSFER)}
@@ -67,12 +69,23 @@ class AustromApplication : Application() {
                 imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
             }
         }
+
+        fun updateBaseContextLocale(context: Context?) : Context? {
+            if (context == null) return null
+            if (appLanguageCode==null) return context
+            val locale = Locale(appLanguageCode ?: "en")
+            Locale.setDefault(locale)
+            val config = context.resources.configuration
+            config.setLocale(locale)
+            return context.createConfigurationContext(config);
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         sharedPreferences = getSharedPreferences("AustromPreferences", Context.MODE_PRIVATE)
+        appLanguageCode = sharedPreferences.getString("language", null)
     }
 
     fun setRememberedUser(newUserId: String) {
@@ -121,6 +134,15 @@ class AustromApplication : Application() {
 
     fun getRememberedTargets(): List<String> {
         return sharedPreferences.getStringSet("targetList", null)?.toList() ?: listOf()
+    }
+
+    fun setApplicationLanguage(languageCode: String) {
+        appLanguageCode = languageCode
+        sharedPreferences.edit().putString("language",languageCode).apply()
+    }
+
+    fun getApplicationLanguage() : String {
+        return appLanguageCode ?: "en"
     }
 }
 

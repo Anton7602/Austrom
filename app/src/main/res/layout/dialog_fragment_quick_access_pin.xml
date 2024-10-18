@@ -7,15 +7,7 @@
     tools:context=".dialogs.QuickAccessPinDialogFragment">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        app:cardBackgroundColor="@color/navigationBarColor"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView7"
+        android:id="@+id/qapdial_holder_crv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/navigationBarColor"
@@ -36,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:text="Enter Old Quick Access Code"
+                android:text="@string/enter_old_quick_access_code"
                 android:textAlignment="center"
                 android:textSize="16sp" />
 
@@ -101,7 +93,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:text="1"
-                        app:cornerRadius="16dp" />
+                        app:cornerRadius="16dp"
+                        tools:ignore="HardcodedText" />
 
                     <Button
                         android:id="@+id/qapdial_button2_btn"
@@ -110,7 +103,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="2"
-                        app:cornerRadius="16dp" />
+                        app:cornerRadius="16dp"
+                        tools:ignore="HardcodedText" />
 
                     <Button
                         android:id="@+id/qapdial_button3_btn"
@@ -118,7 +112,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:text="3"
-                        app:cornerRadius="16dp" />
+                        app:cornerRadius="16dp"
+                        tools:ignore="HardcodedText" />
                 </TableRow>
 
                 <TableRow
@@ -131,7 +126,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:text="4"
-                        app:cornerRadius="16dp" />
+                        app:cornerRadius="16dp"
+                        tools:ignore="HardcodedText" />
 
                     <Button
                         android:id="@+id/qapdial_button5_btn"
@@ -139,7 +135,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:text="5"
-                        app:cornerRadius="16dp" />
+                        app:cornerRadius="16dp"
+                        tools:ignore="HardcodedText" />
 
                     <Button
                         android:id="@+id/qapdial_button6_btn"
@@ -147,7 +144,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:text="6"
-                        app:cornerRadius="16dp" />
+                        app:cornerRadius="16dp"
+                        tools:ignore="HardcodedText" />
                 </TableRow>
 
                 <TableRow
@@ -160,7 +158,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:text="7"
-                        app:cornerRadius="16dp" />
+                        app:cornerRadius="16dp"
+                        tools:ignore="HardcodedText" />
 
                     <Button
                         android:id="@+id/qapdial_button8_btn"
@@ -168,7 +167,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:text="8"
-                        app:cornerRadius="16dp" />
+                        app:cornerRadius="16dp"
+                        tools:ignore="HardcodedText" />
 
                     <Button
                         android:id="@+id/qapdial_button9_btn"
@@ -176,7 +176,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:text="9"
-                        app:cornerRadius="16dp" />
+                        app:cornerRadius="16dp"
+                        tools:ignore="HardcodedText" />
                 </TableRow>
 
                 <TableRow
@@ -198,7 +199,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:text="0"
-                        app:cornerRadius="16dp" />
+                        app:cornerRadius="16dp"
+                        tools:ignore="HardcodedText" />
 
                     <Button
                         android:id="@+id/button11"

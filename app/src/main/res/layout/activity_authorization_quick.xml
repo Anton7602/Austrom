@@ -42,7 +42,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="1"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="16dp"
+                tools:ignore="HardcodedText" />
 
             <Button
                 android:id="@+id/qauth_keyboard_2_btn"
@@ -51,7 +52,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="2"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="16dp"
+                tools:ignore="HardcodedText" />
 
             <Button
                 android:id="@+id/qauth_keyboard_3_btn"
@@ -60,7 +62,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="3"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="16dp"
+                tools:ignore="HardcodedText" />
         </TableRow>
 
         <TableRow
@@ -75,7 +78,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="4"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="16dp"
+                tools:ignore="HardcodedText" />
 
             <Button
                 android:id="@+id/qauth_keyboard_5_btn"
@@ -84,7 +88,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="5"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="16dp"
+                tools:ignore="HardcodedText" />
 
             <Button
                 android:id="@+id/qauth_keyboard_6_btn"
@@ -93,7 +98,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="6"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="16dp"
+                tools:ignore="HardcodedText" />
         </TableRow>
 
         <TableRow
@@ -108,7 +114,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="7"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="16dp"
+                tools:ignore="HardcodedText" />
 
             <Button
                 android:id="@+id/qauth_keyboard_8_btn"
@@ -117,7 +124,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="8"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="16dp"
+                tools:ignore="HardcodedText" />
 
             <Button
                 android:id="@+id/qauth_keyboard_9_btn"
@@ -126,7 +134,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="9"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="16dp"
+                tools:ignore="HardcodedText" />
         </TableRow>
 
         <TableRow
@@ -166,7 +175,8 @@
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:text="0"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="16dp"
+                tools:ignore="HardcodedText,VisualLintButtonSize" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/qauth_keyboard_bio_crv"
@@ -231,46 +241,54 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
+            android:contentDescription="firstSymbol"
             app:layout_constraintDimensionRatio=""
             app:srcCompat="@drawable/ic_pin_placeholder"
             app:tint="@color/dark_grey"
             tools:layout_editor_absoluteX="24dp"
-            tools:layout_editor_absoluteY="27dp" />
+            tools:layout_editor_absoluteY="27dp"
+            tools:ignore="HardcodedText" />
 
         <ImageView
             android:id="@+id/qauth_symbolSecond_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
+            android:contentDescription="secondSymbol"
             app:srcCompat="@drawable/ic_pin_placeholder"
             app:tint="@color/dark_grey"
             tools:layout_editor_absoluteX="88dp"
-            tools:layout_editor_absoluteY="27dp" />
+            tools:layout_editor_absoluteY="27dp"
+            tools:ignore="HardcodedText" />
 
         <ImageView
             android:id="@+id/qauth_symbolThird_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
+            android:contentDescription="thirdSymbol"
             app:srcCompat="@drawable/ic_pin_placeholder"
             app:tint="@color/dark_grey"
             tools:layout_editor_absoluteX="152dp"
-            tools:layout_editor_absoluteY="27dp" />
+            tools:layout_editor_absoluteY="27dp"
+            tools:ignore="HardcodedText" />
 
         <ImageView
             android:id="@+id/qauth_symbolFourth_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
+            android:contentDescription="forthSymbol"
             app:srcCompat="@drawable/ic_pin_placeholder"
             app:tint="@color/dark_grey"
             tools:layout_editor_absoluteX="128dp"
-            tools:layout_editor_absoluteY="27dp" />
+            tools:layout_editor_absoluteY="27dp"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/qauth_timeofday_txt"
+        android:id="@+id/qauth_timeOfDay_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -278,7 +296,8 @@
         android:text="Good Morning,"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/qauth_username_txt"
@@ -287,15 +306,16 @@
         android:layout_marginTop="8dp"
         android:text="Username"
         android:textSize="34sp"
-        app:layout_constraintStart_toStartOf="@+id/qauth_timeofday_txt"
-        app:layout_constraintTop_toBottomOf="@+id/qauth_timeofday_txt" />
+        app:layout_constraintStart_toStartOf="@+id/qauth_timeOfDay_txt"
+        app:layout_constraintTop_toBottomOf="@+id/qauth_timeOfDay_txt"
+        tools:ignore="HardcodedText" />
 
     <TextView
-        android:id="@+id/qauth_ctatext_txt"
+        android:id="@+id/qauth_callToAction_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Enter Quick Access Code"
+        android:text="@string/enter_quick_access_code"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
         app:layout_constraintStart_toStartOf="@+id/linearLayout3" />

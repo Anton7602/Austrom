@@ -1,5 +1,6 @@
 package com.colleagues.austrom
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -55,6 +56,14 @@ class AuthorizationQuickActivity : AppCompatActivity() {
     private lateinit var pin: String
     private var input = ""
 
+    override fun attachBaseContext(newBase: Context?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            super.attachBaseContext(newBase)
+        } else  {
+            super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -69,13 +78,13 @@ class AuthorizationQuickActivity : AppCompatActivity() {
         username.text = authorizingUser.username.startWithUppercase()
         val time = LocalTime.now()
         timeOfDay.text = if (time.hour>20) {
-            "Good evening, "
+            getString(R.string.good_evening)
         } else if (time.hour>12) {
-            "Good afternoon,"
-        } else if (time.hour>6) {
-            "Good morning,"
+            getString(R.string.good_afternoon)
+        } else if (time.hour>5) {
+            getString(R.string.good_morning)
         } else {
-            "Good night,"
+            getString(R.string.good_night)
         }
 
         val keyboardButtonClickListener = OnClickListener { view ->
@@ -198,8 +207,8 @@ class AuthorizationQuickActivity : AppCompatActivity() {
         pinDot3 = findViewById(R.id.qauth_symbolThird_img)
         pinDot4 = findViewById(R.id.qauth_symbolFourth_img)
         username = findViewById(R.id.qauth_username_txt)
-        timeOfDay = findViewById(R.id.qauth_timeofday_txt)
-        callToAction = findViewById(R.id.qauth_ctatext_txt)
+        timeOfDay = findViewById(R.id.qauth_timeOfDay_txt)
+        callToAction = findViewById(R.id.qauth_callToAction_txt)
         val storedUserID = (application as AustromApplication).getRememberedUser()
         if (!storedUserID.isNullOrEmpty()) {
             val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)

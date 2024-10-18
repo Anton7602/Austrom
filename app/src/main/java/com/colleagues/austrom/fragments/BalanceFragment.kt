@@ -1,5 +1,6 @@
 package com.colleagues.austrom.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -74,6 +75,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         calculateTotalAmount(filteredAssets.toMutableMap())
     }
 
+    @SuppressLint("SetTextI18n")
     private fun calculateTotalAmount(assetList: MutableMap<String, Asset>) {
         baseCurrencySymbolText.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         var totalAmount = 0.0

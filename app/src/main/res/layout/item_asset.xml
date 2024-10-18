@@ -67,7 +67,8 @@
                         android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="HardcodedText" />
 
                     <ImageView
                         android:id="@+id/asitem_assetType_img"
@@ -107,7 +108,8 @@
                         android:textStyle="bold"
                         app:layout_constraintEnd_toStartOf="@+id/asitem_amount_txt"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="HardcodedText" />
 
                     <TextView
                         android:id="@+id/asitem_amount_txt"
@@ -118,7 +120,8 @@
                         android:textAlignment="viewEnd"
                         app:layout_constraintBottom_toBottomOf="@+id/asitem_currencySymbol_txt"
                         app:layout_constraintEnd_toStartOf="@+id/asitem_currencySymbol_txt"
-                        app:layout_constraintTop_toTopOf="@+id/asitem_currencySymbol_txt" />
+                        app:layout_constraintTop_toTopOf="@+id/asitem_currencySymbol_txt"
+                        tools:ignore="HardcodedText" />
 
                     <TextView
                         android:id="@+id/asitem_currencySymbol_txt"
@@ -128,7 +131,8 @@
                         android:layout_marginEnd="8dp"
                         android:text="$"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="HardcodedText" />
 
                     <TextView
                         android:id="@+id/asitem_owner_txt"
@@ -140,7 +144,8 @@
                         android:textSize="10sp"
                         app:layout_constraintEnd_toEndOf="@+id/asitem_assetName_txt"
                         app:layout_constraintStart_toEndOf="@+id/asitem_ownerIcon_img"
-                        app:layout_constraintTop_toBottomOf="@+id/asitem_assetName_txt" />
+                        app:layout_constraintTop_toBottomOf="@+id/asitem_assetName_txt"
+                        tools:ignore="HardcodedText" />
 
                     <ImageView
                         android:id="@+id/asitem_ownerIcon_img"
@@ -159,7 +164,8 @@
                         android:textSize="10sp"
                         app:layout_constraintBottom_toBottomOf="@+id/asitem_owner_txt"
                         app:layout_constraintEnd_toEndOf="@+id/asitem_currencySymbol_txt"
-                        app:layout_constraintTop_toTopOf="@+id/asitem_owner_txt" />
+                        app:layout_constraintTop_toTopOf="@+id/asitem_owner_txt"
+                        tools:ignore="HardcodedText" />
 
                     <TextView
                         android:id="@+id/asitem_baseCurrencyAmount_txt"
@@ -170,7 +176,8 @@
                         android:textSize="10sp"
                         app:layout_constraintBottom_toBottomOf="@+id/asitem_baseCurrencySymbol_txt"
                         app:layout_constraintEnd_toStartOf="@+id/asitem_baseCurrencySymbol_txt"
-                        app:layout_constraintTop_toTopOf="@+id/asitem_baseCurrencySymbol_txt" />
+                        app:layout_constraintTop_toTopOf="@+id/asitem_baseCurrencySymbol_txt"
+                        tools:ignore="HardcodedText" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 

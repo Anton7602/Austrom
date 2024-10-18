@@ -1,5 +1,7 @@
 package com.colleagues.austrom
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -45,6 +47,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navigationLogOutButton: ImageButton
     private lateinit var bottomNavigationBar: NavigationBarView
     private lateinit var fragmentHolder: FragmentContainerView
+
+    override fun attachBaseContext(newBase: Context?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            super.attachBaseContext(newBase)
+        } else  {
+            super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,7 +138,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun suggestSettingUpQuickAccessCode() {
-        if (intent.getBooleanExtra("newUser",false)) {
+        if (intent.getBooleanExtra("newUser",false) && (application as AustromApplication).getRememberedPin()==null) {
             SuggestQuickAccessDialogFragment().show(supportFragmentManager, "Suggest Quick Access Code Dialog")
         }
     }
@@ -136,8 +146,10 @@ class MainActivity : AppCompatActivity() {
     private fun downloadCashedValues() {
         val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
         if (AustromApplication.activeCurrencies.isEmpty()) {
-            AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(dbProvider.getCurrencies(), AustromApplication.appUser?.baseCurrencyCode)
+            AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(
+                Currency.localizeCurrencyNames(dbProvider.getCurrencies(), this), AustromApplication.appUser?.baseCurrencyCode)
         }
+        AustromApplication.activeCurrencies = Currency.localizeCurrencyNames(AustromApplication.activeCurrencies, this)
         if (AustromApplication.appUser?.activeBudgetId!=null) {
             AustromApplication.knownUsers = dbProvider.getUsersByBudget(AustromApplication.appUser?.activeBudgetId!!)
         }
@@ -157,7 +169,7 @@ class MainActivity : AppCompatActivity() {
             toolbar.setPadding(0, insets.top, 0,0)
             navigationHeaderLayout.setPadding(0, insets.top, 0,0)
             bottomNavigationBar.setPadding(0,0,0,insets.bottom)
-//          v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
+            //v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
             WindowInsetsCompat.CONSUMED
         }
     }
