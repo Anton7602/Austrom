@@ -43,7 +43,7 @@ class AssetCreationDialogFragment(private val parentDialog: BalanceFragment?) : 
             if (titleTextView.text.toString().isNotEmpty()) {
                 provider.createNewAsset(
                     Asset(
-                        assetTypeId = getTypeID(assetType.text.toString()),
+                        assetTypeId = getTypeID(assetType.tag.toString()),
                         assetName = titleTextView.text.toString(),
                         userId = AustromApplication.appUser?.userId.toString(),
                         amount = if (amountTextView.text.toString().isNotEmpty())
@@ -65,9 +65,9 @@ class AssetCreationDialogFragment(private val parentDialog: BalanceFragment?) : 
     //REDO!!!!
     private fun getTypeID(typeName : String) : AssetType? {
         when(typeName) {
-            "Card" -> return AssetType.CARD
-            "Cash" -> return AssetType.CASH
-            "Investment" -> return AssetType.INVESTMENT
+            "CARD" -> return AssetType.CARD
+            "CASH" -> return AssetType.CASH
+            "INVESTMENT" -> return AssetType.INVESTMENT
         }
         return null
     }

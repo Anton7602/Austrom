@@ -40,17 +40,20 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
 
         addIncomeButton.setOnClickListener {
             switchTransactionTypesButtonsVisibility()
-            TransactionCreationDialogFragment2(TransactionType.INCOME, this, ).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
+            //TransactionCreationDialogFragment2(TransactionType.INCOME, this, ).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
+            TransactionCreationDialogFragment(this, TransactionType.INCOME).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
         }
 
         addExpenseButton.setOnClickListener {
             switchTransactionTypesButtonsVisibility()
-            TransactionCreationDialogFragment2(TransactionType.EXPENSE, this).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
+            //TransactionCreationDialogFragment2(TransactionType.EXPENSE, this).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
+            TransactionCreationDialogFragment(this, TransactionType.EXPENSE).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
         }
 
         addTransferButton.setOnClickListener {
             switchTransactionTypesButtonsVisibility()
-            TransactionCreationDialogFragment2(TransactionType.TRANSFER, this).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
+            //TransactionCreationDialogFragment2(TransactionType.TRANSFER, this).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
+            TransactionCreationDialogFragment(this, TransactionType.TRANSFER).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
         }
     }
 

@@ -339,4 +339,6 @@
     <string name="ZMW">Замбийская Квача</string>
     <string name="ZWL">Зимбабвийский Доллар</string>
     <string name="money_format">Денежный Формат</string>
+    <string name="card_holder">Владелец Карты</string>
+    <string name="card_balance">Баланс Карты</string>
 </resources>

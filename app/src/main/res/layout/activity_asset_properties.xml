@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:elevation="10dp"
         android:fontFamily="@font/inconsolata"
-        android:text="Card Balance"
+        android:text="@string/card_balance"
         app:layout_constraintBottom_toTopOf="@+id/asdet_balance_txt"
         app:layout_constraintStart_toStartOf="@+id/asdet_balance_txt" />
 
@@ -106,7 +106,7 @@
         android:layout_height="wrap_content"
         android:elevation="10dp"
         android:fontFamily="@font/inconsolata"
-        android:text="Card Holder"
+        android:text="@string/card_holder"
         app:layout_constraintBottom_toTopOf="@+id/asdet_owner_txt"
         app:layout_constraintStart_toStartOf="@+id/asdet_owner_txt" />
 

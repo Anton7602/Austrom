@@ -61,7 +61,7 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
                 holder.secondaryAmount.setTextColor(Color.RED)
                 holder.secondaryCurrency.visibility = View.VISIBLE
                 holder.secondaryCurrency.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
-                holder.amount.text ="+" + transaction.secondaryAmount?.toMoneyFormat()
+                holder.amount.text ="+" + if(transaction.secondaryAmount==null) transaction.amount.toMoneyFormat() else transaction.secondaryAmount?.toMoneyFormat()
                 holder.amount.setTextColor(Color.rgb(0,100,0))
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
                 category = AustromApplication.getActiveTransferCategories().find { it.name == transaction.categoryId }

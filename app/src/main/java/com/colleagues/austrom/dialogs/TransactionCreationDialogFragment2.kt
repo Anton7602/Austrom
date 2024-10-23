@@ -36,7 +36,7 @@ class TransactionCreationDialogFragment2(private val transactionType: Transactio
 
 
         forwardButton.setOnClickListener {
-            setStage(currentStageId++)
+            setStage(++currentStageId)
         }
 
 

@@ -14,9 +14,9 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.interfaces.IDialogInitiator
 
 class DeletionConfirmationDialogFragment(private var reciever: IDialogInitiator,
-                                         private val message: String? = "The action you about to do is irreversible. Are you sure you want to proceed?",
-                                         private val titleAccept: String? = "DELETE",
-                                         private val titleDecline: String? = "CANCEL") : DialogFragment() {
+                                         private var message: String? = null,
+                                         private var titleAccept: String? = null,
+                                         private var titleDecline: String? = null) : DialogFragment() {
     private lateinit var acceptButton: Button
     private lateinit var cancelButton: Button
     private lateinit var messageLabel: TextView
@@ -45,9 +45,10 @@ class DeletionConfirmationDialogFragment(private var reciever: IDialogInitiator,
     }
 
     private fun setUpValues() {
-        acceptButton.text = titleAccept
-        cancelButton.text = titleDecline
-        messageLabel.text = message
+        acceptButton.text = if (titleAccept==null) requireActivity().getString(R.string.delete) else titleAccept
+        cancelButton.text = if (titleDecline==null) requireActivity().getString(R.string.cancel) else titleDecline
+        messageLabel.text = if (message==null) requireActivity().getString(R.string.the_action_you_about_to_do_is_irreversible_are_you_sure_you_want_to_proceed) else message
+
     }
 
     private fun bindViews(view: View) {

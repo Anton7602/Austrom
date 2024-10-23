@@ -340,4 +340,6 @@
     <string name="ZMW">Zambian Kwacha</string>
     <string name="ZWL">Zimbabwean dollar</string>
     <string name="money_format">Money Format</string>
+    <string name="card_holder">Card Holder</string>
+    <string name="card_balance">Card Balance</string>
 </resources>
