@@ -342,4 +342,6 @@
     <string name="money_format">Money Format</string>
     <string name="card_holder">Card Holder</string>
     <string name="card_balance">Card Balance</string>
+    <string name="data_import">Data Import</string>
+    <string name="data_export">Data Export</string>
 </resources>

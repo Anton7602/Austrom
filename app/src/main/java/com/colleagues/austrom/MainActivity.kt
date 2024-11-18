@@ -28,6 +28,8 @@ import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.fragments.BudgetFragment
 import com.colleagues.austrom.fragments.CategoriesFragment
+import com.colleagues.austrom.fragments.ExportFragment
+import com.colleagues.austrom.fragments.ImportFragment
 import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.fragments.SettingsFragment
 import com.colleagues.austrom.fragments.SharedBudgetEmptyFragment
@@ -94,7 +96,8 @@ class MainActivity : AppCompatActivity() {
                         switchFragment(SharedBudgetEmptyFragment())
                     }
                 }
-                R.id.nav_categories_mit ->  switchFragment(CategoriesFragment())
+                R.id.nav_export_mit ->  switchFragment(ExportFragment())
+                R.id.nav_import_mit ->  switchFragment(ImportFragment())
                 R.id.nav_settings_mit ->  switchFragment(SettingsFragment())
                 else -> status = false
             }

@@ -341,4 +341,6 @@
     <string name="money_format">Денежный Формат</string>
     <string name="card_holder">Владелец Карты</string>
     <string name="card_balance">Баланс Карты</string>
+    <string name="data_import">Импорт Данных</string>
+    <string name="data_export">Экспорт Данных</string>
 </resources>
