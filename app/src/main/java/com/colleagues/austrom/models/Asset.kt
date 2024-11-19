@@ -1,11 +1,17 @@
 package com.colleagues.austrom.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.google.firebase.database.Exclude
+import java.security.MessageDigest
 
+@Entity
 class Asset(
-    var assetId: String? = null,
+    @PrimaryKey(autoGenerate = false) @Exclude
+    var assetId: String = "",
     val assetTypeId: AssetType? = null,
     val userId: String? = null,
     val assetName: String = "",
@@ -23,6 +29,15 @@ class Asset(
     }
 
     companion object{
+        fun generateUniqueAssetKey(asset: Asset) : String {
+            val currentDateTime = System.currentTimeMillis()
+            val uniqueString = "${asset.userId}-$currentDateTime"
+            val digest = MessageDigest.getInstance("SHA-256")
+            val hashBytes = digest.digest(uniqueString.toByteArray())
+            val hexString = hashBytes.joinToString("") { "%02x".format(it) }
+            return hexString.take(24)
+        }
+
         fun groupAssetsByType(assets: MutableMap<String, Asset>) : MutableMap<AssetType, MutableList<Asset>> {
             val groupedAssets = mutableMapOf<AssetType, MutableList<Asset>>()
             for (asset in assets) {

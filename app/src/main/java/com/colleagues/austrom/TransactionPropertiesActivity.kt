@@ -104,9 +104,9 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
 
     fun updateUnallocatedSum(addedValue: Double = 0.0): Double {
         var sum = transaction.amount
-        for (detail in transaction.details) {
-            sum -= detail.cost!!
-        }
+//        for (detail in transaction.details) {
+//            sum -= detail.cost!!
+//        }
         if (BigDecimal(sum).setScale(2, RoundingMode.HALF_DOWN)==BigDecimal(0).setScale(2, RoundingMode.HALF_DOWN)) {
             detailConstructorHolder.visibility = View.GONE
             detailsLabel.text = getString(R.string.total)
@@ -123,7 +123,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
 
     fun addTransactionDetail(transactionDetail: TransactionDetail) {
         val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
-        transaction.details.add(0, transactionDetail)
+        //transaction.details.add(0, transactionDetail)
         dbProvider.updateTransaction(transaction)
         updateUnallocatedSum()
         setUpRecyclerView()

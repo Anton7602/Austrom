@@ -3,6 +3,7 @@ package com.colleagues.austrom.database
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Currency
@@ -27,6 +28,8 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         }
         user.username = user.username?.lowercase()
         user.email = user.email?.lowercase()
+        val encryptionManager = EncryptionManager()
+        user.password = encryptionManager.hashPassword(user.password.toString())
         reference.child(key).setValue(user)
         Log.w("Debug", "New user added to DB with key: $key")
         return  key
@@ -232,13 +235,11 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
     }
 
     override fun createNewAsset(asset: Asset): String? {
-        val reference = database.getReference("assets")
-        val key = reference.push().key
-        if (key == null) {
-            Log.w("Debug", "Couldn't get push key for the asset")
-            return null
-        }
-        reference.child(key).setValue(asset)
+        val reference = database.getReference("encAssets")
+        val encryptionManager = EncryptionManager()
+        //val key = reference.push().key
+        val key = Asset.generateUniqueAssetKey(asset)
+        reference.child(key).setValue(encryptionManager.encrypt(asset))
         Log.w("Debug", "New asset added to DB with key: $key")
         return key
     }
@@ -246,9 +247,9 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
     override fun updateAsset(asset: Asset) {
         val assetKey = asset.assetId
         if (!assetKey.isNullOrEmpty()) {
-            asset.assetId = null
+            //asset.assetId = null
             database.getReference("assets").child(assetKey).setValue(asset)
-            asset.assetId = assetKey
+            //asset.assetId = assetKey
             Log.w("Debug", "Asset entry with key ${asset.assetId} updated")
         } else {
             Log.w("Debug", "Provided asset without id. Update canceled")
@@ -281,22 +282,27 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
 
 
     private fun getAssetsOfUserAsync(user: User) : MutableMap<String, Asset> {
-        val reference = database.getReference("assets")
-        val databaseQuery = reference.orderByChild("userId").equalTo(user.userId)
+        val reference = database.getReference("encAssets")
+        //val databaseQuery = reference.orderByChild("userId").equalTo(user.userId)
+        val databaseQuery = reference
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()
                 val assetsList = mutableMapOf<String, Asset>()
+                val encryptionManager = EncryptionManager()
                 for (child in snapshot.children) {
-                    val asset = child.getValue(Asset::class.java)
+                    //val asset = child.getValue(Asset::class.java)
+                    val text = child.getValue(String::class.java).toString()
+                    val asset = encryptionManager.decryptAsset(text)
                     if (asset!=null) {
-                        asset.assetId = child.key
+                        asset.assetId = child.key.toString()
                         assetsList[child.key.toString()] = asset
                     }
                 }
                 assetsList
             }
             catch (e: Exception) {
+                val testing = e.message
                 mutableMapOf()
             }
         }
@@ -357,7 +363,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
             val tempDateHolder = transaction.transactionDate
             transaction.transactionDateInt = parseDateToIntDate(transaction.transactionDate!!)
             transaction.transactionDate = null
-            transaction.transactionId = null
+            transaction.transactionId = ""
             //transaction.comment = if (transaction.comment=="null") null else transaction.comment
             database.getReference("transactions").child(transactionKey).setValue(transaction)
             transaction.transactionId = transactionKey
@@ -397,7 +403,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
                 for (child in snapshot.children) {
                     val transaction = child.getValue(Transaction::class.java)
                     if (transaction!=null) {
-                        transaction.transactionId = child.key
+                        transaction.transactionId = child.key.toString()
                         transaction.transactionDate = parseIntDateToDate(transaction.transactionDateInt)
                         transactionsList.add(transaction)
                     }
@@ -429,7 +435,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
                     for (child in snapshot.children) {
                         val transaction = child.getValue(Transaction::class.java)
                         if (transaction!=null) {
-                            transaction.transactionId = child.key
+                            transaction.transactionId = child.key.toString()
                             transaction.transactionDate = parseIntDateToDate(transaction.transactionDateInt)
                             transactionsList.add(transaction)
                         }
@@ -462,7 +468,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
                 for (child in snapshotSource.children) {
                     val transaction = child.getValue(Transaction::class.java)
                     if (transaction != null) {
-                        transaction.transactionId = child.key
+                        transaction.transactionId = child.key.toString()
                         transaction.transactionDate =
                             parseIntDateToDate(transaction.transactionDateInt)
                         transactionsList.add(transaction)
@@ -472,7 +478,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
                 for (child in snapshotTarget.children) {
                     val transaction = child.getValue(Transaction::class.java)
                     if (transaction != null) {
-                        transaction.transactionId = child.key
+                        transaction.transactionId = child.key.toString()
                         transaction.transactionDate =
                             parseIntDateToDate(transaction.transactionDateInt)
                         transactionsList.add(transaction)

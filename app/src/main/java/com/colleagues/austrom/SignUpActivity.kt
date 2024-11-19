@@ -56,10 +56,10 @@ class SignUpActivity : AppCompatActivity() {
             val existingUser = provider.getUserByEmail(emailTextBox.text.toString().lowercase())
             if (existingUser == null) {
                 val newUser = User(
-                    null,
-                    loginTextBox.text.toString().lowercase(),
-                    emailTextBox.text.toString().lowercase(),
-                    passwordTextBox.text.toString())
+                    userId = null,
+                    username = loginTextBox.text.toString().lowercase(),
+                    email =  emailTextBox.text.toString().lowercase(),
+                    password = passwordTextBox.text.toString())
                 provider.createNewUser(newUser)
                 Toast.makeText(this, getString(R.string.user_successfully_added), Toast.LENGTH_LONG).show()
                 AustromApplication.appUser = newUser

@@ -11,6 +11,7 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
 
 class TransactionDetailRecyclerAdapter(private val transaction: Transaction): RecyclerView.Adapter<TransactionDetailRecyclerAdapter.TransactionDetailViewHolder>() {
@@ -31,11 +32,13 @@ class TransactionDetailRecyclerAdapter(private val transaction: Transaction): Re
 
 
     override fun getItemCount(): Int {
-        return transaction.details.size
+        //return transaction.details.size
+        return 5
     }
 
     override fun onBindViewHolder(holder: TransactionDetailViewHolder, position: Int) {
-        val transactionDetail = transaction.details[position]
+        //val transactionDetail = transaction.details[position]
+        val transactionDetail = TransactionDetail()
         val categoryName = transactionDetail.categoryName ?: transaction.categoryId
         holder.itemName.text = transactionDetail.name
         holder.cost.text = transactionDetail.cost?.toMoneyFormat()

@@ -5,11 +5,13 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Base64
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
@@ -17,6 +19,8 @@ import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.User
 import java.util.Locale
+import javax.crypto.SecretKey
+import javax.crypto.spec.SecretKeySpec
 
 class AustromApplication : Application() {
     private lateinit var sharedPreferences: SharedPreferences
@@ -86,6 +90,8 @@ class AustromApplication : Application() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         sharedPreferences = getSharedPreferences("AustromPreferences", Context.MODE_PRIVATE)
         appLanguageCode = sharedPreferences.getString("language", null)
+        EncryptionManager.encryptionKey = getEncryptionKey()
+        EncryptionManager.activeApplication = this
     }
 
     fun setRememberedUser(newUserId: String) {
@@ -110,6 +116,20 @@ class AustromApplication : Application() {
 
     fun forgetRememberedPin() {
         sharedPreferences.edit().remove("appQuickPin").apply()
+    }
+
+    fun setEncryptionKey(encryptionKey: SecretKey) {
+        sharedPreferences.edit().putString("encryptionKey", Base64.encodeToString(encryptionKey.encoded, Base64.DEFAULT)).apply()
+    }
+
+    fun getEncryptionKey(): SecretKey? {
+        val keyString = sharedPreferences.getString("encryptionKey", null) ?: return null
+        val keyBytes = Base64.decode(keyString, Base64.DEFAULT)
+        return SecretKeySpec(keyBytes, 0, keyBytes.size, "AES")
+    }
+
+    fun forgetEncryptionKey() {
+        sharedPreferences.edit().remove("encryptionKey").apply()
     }
 
     fun setNewBaseCurrency(currency: Currency) {

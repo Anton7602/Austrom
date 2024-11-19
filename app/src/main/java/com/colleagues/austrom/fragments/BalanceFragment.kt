@@ -13,10 +13,12 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.AssetGroupRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetCreationDialogFragment
 import com.colleagues.austrom.dialogs.AssetFilter
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Budget
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class BalanceFragment : Fragment(R.layout.fragment_balance) {
@@ -42,11 +44,12 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     }
 
     fun updateAssetsList() {
-        val dbProvider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+        val dbProvider : IDatabaseProvider = LocalDatabaseProvider(requireActivity())
         val user = AustromApplication.appUser
         if (user!=null) {
             val activeAssets = if (user.activeBudgetId!=null) {
-                val budget = dbProvider.getBudgetById(user.activeBudgetId!!)
+                //val budget = dbProvider.getBudgetById(user.activeBudgetId!!)
+                val budget:  Budget? = null
                 if (budget!=null) {
                     dbProvider.getAssetsOfBudget(budget)
                 } else {

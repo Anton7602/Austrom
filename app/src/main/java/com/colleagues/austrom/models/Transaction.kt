@@ -1,11 +1,24 @@
 package com.colleagues.austrom.models
 
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.database.IDatabaseProvider
+import java.security.MessageDigest
 import java.time.LocalDate
 
+@Entity(foreignKeys = [ForeignKey(entity = Asset::class,
+    parentColumns = ["assetId"],
+    childColumns = ["sourceId"],
+    onDelete = ForeignKey.SET_NULL),
+    ForeignKey(entity = Asset::class,
+        parentColumns = ["assetId"],
+        childColumns = ["targetId"],
+        onDelete = ForeignKey.SET_NULL)])
 class Transaction(
-    var transactionId: String? = null,
+    @PrimaryKey(autoGenerate = false)
+    var transactionId: String = "",
     val userId: String? = null,
     val sourceId: String? = null,
     val sourceName: String? = null,
@@ -16,8 +29,9 @@ class Transaction(
     val categoryId: String? = null,
     var transactionDate: LocalDate? = null,
     var transactionDateInt: Int? = null,
-    var comment: String? = null,
-    val details: MutableList<TransactionDetail> = mutableListOf())  {
+    var comment: String? = null)
+    //val details: MutableList<TransactionDetail> = mutableListOf())
+    {
 
     fun transactionType(): TransactionType {
         return if (this.sourceId!=null && this.targetId!=null) TransactionType.TRANSFER
@@ -67,6 +81,15 @@ class Transaction(
                 groupedTransactions[transaction.transactionDate]!!.add(transaction)
             }
             return  groupedTransactions
+        }
+
+        fun generateUniqueTransactionKey(transaction: Transaction) : String {
+            val currentDateTime = System.currentTimeMillis()
+            val uniqueString = "${transaction.userId}-$currentDateTime"
+            val digest = MessageDigest.getInstance("SHA-256")
+            val hashBytes = digest.digest(uniqueString.toByteArray())
+            val hexString = hashBytes.joinToString("") { "%02x".format(it) }
+            return hexString.take(24)
         }
     }
 }

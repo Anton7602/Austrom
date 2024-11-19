@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.models.User
 import com.google.android.material.textfield.TextInputEditText
 
@@ -45,8 +46,9 @@ class AuthorizationActivity : AppCompatActivity() {
 
         logInButton.setOnClickListener{
             val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
+            val encryptionManager = EncryptionManager()
             val existingUser = dbProvider.getUserByEmail(loginTextBox.text.toString().lowercase())
-            if (existingUser== null || existingUser.password!=passwordTextBox.text.toString()) {
+            if (existingUser== null  || !encryptionManager.isPasswordFitsHash(passwordTextBox.text.toString(),existingUser.password.toString())) {
                 Toast.makeText(this, "Email or password is incorrect", Toast.LENGTH_LONG).show()
             } else {
                 launchMainActivity(existingUser)

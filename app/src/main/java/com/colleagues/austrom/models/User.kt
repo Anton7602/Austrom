@@ -7,9 +7,11 @@ data class User(
     var userId: String? = null,
     var username: String? = null,
     var email: String? = null,
-    val password: String? = null,
+    var password: String? = null,
     var activeBudgetId: String? = null,
     var primaryPaymentMethod: String? = null,
     var baseCurrencyCode: String = "USD",
     var categories: MutableList<Category> = mutableListOf()
+
+
 )

@@ -34,6 +34,7 @@ import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.fragments.SettingsFragment
 import com.colleagues.austrom.fragments.SharedBudgetEmptyFragment
 import com.colleagues.austrom.fragments.SharedBudgetFragment
+import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.models.Currency
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
@@ -63,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         bindViews()
+        //this.deleteDatabase("local_database")
         setSupportActionBar(toolbar)
         adjustInsets()
         downloadCashedValues()
@@ -75,7 +77,6 @@ class MainActivity : AppCompatActivity() {
                 is BalanceFragment -> AssetFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
                 is OpsFragment -> TransactionFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
             }
-
         }
 
         navigationView.setNavigationItemSelectedListener { item ->

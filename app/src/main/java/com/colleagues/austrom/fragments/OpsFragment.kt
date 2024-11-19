@@ -12,10 +12,12 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.TransactionCreationDialogFragment
 import com.colleagues.austrom.dialogs.TransactionCreationDialogFragment2
 import com.colleagues.austrom.dialogs.TransactionFilter
 import com.colleagues.austrom.interfaces.IDialogInitiator
+import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -63,11 +65,12 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
     }
 
     fun updateTransactionsList() {
-        val provider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+        val provider : IDatabaseProvider = LocalDatabaseProvider(requireActivity())
         val user = AustromApplication.appUser
         if (user !=null) {
             transactionList = if (user.activeBudgetId != null) {
-                val budget = provider.getBudgetById(user.activeBudgetId!!)
+                //val budget = provider.getBudgetById(user.activeBudgetId!!)
+                val budget: Budget? = null
                 if (budget!=null) {
                     provider.getTransactionsOfBudget(budget)
                 } else {
