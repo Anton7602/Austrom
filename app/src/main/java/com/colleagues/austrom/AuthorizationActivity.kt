@@ -42,6 +42,7 @@ class AuthorizationActivity : AppCompatActivity() {
             insets
         }
         bindViews()
+        //this.deleteDatabase("local_database")
         runQuickAuthorization()
 
         logInButton.setOnClickListener{

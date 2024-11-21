@@ -344,4 +344,8 @@
     <string name="card_balance">Card Balance</string>
     <string name="data_import">Data Import</string>
     <string name="data_export">Data Export</string>
+    <string name="import_from_csv_file">Import from CSV file</string>
+    <string name="import_export">Import/Export</string>
+    <string name="import_operations">Import Operations</string>
+    <string name="export_operations">Export Operations</string>
 </resources>

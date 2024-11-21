@@ -7,6 +7,7 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.database.IDatabaseProvider
 import com.google.firebase.database.Exclude
 import java.security.MessageDigest
+import java.util.UUID
 
 @Entity
 class Asset(
@@ -30,12 +31,13 @@ class Asset(
 
     companion object{
         fun generateUniqueAssetKey(asset: Asset) : String {
-            val currentDateTime = System.currentTimeMillis()
-            val uniqueString = "${asset.userId}-$currentDateTime"
-            val digest = MessageDigest.getInstance("SHA-256")
-            val hashBytes = digest.digest(uniqueString.toByteArray())
-            val hexString = hashBytes.joinToString("") { "%02x".format(it) }
-            return hexString.take(24)
+//            val currentDateTime = System.currentTimeMillis()
+//            val uniqueString = "${asset.userId}-$currentDateTime"
+//            val digest = MessageDigest.getInstance("SHA-256")
+//            val hashBytes = digest.digest(uniqueString.toByteArray())
+//            val hexString = hashBytes.joinToString("") { "%02x".format(it) }
+//            return hexString.take(24)
+            return UUID.randomUUID().toString()
         }
 
         fun groupAssetsByType(assets: MutableMap<String, Asset>) : MutableMap<AssetType, MutableList<Asset>> {

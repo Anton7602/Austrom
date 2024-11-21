@@ -7,15 +7,16 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.database.IDatabaseProvider
 import java.security.MessageDigest
 import java.time.LocalDate
+import java.util.UUID
 
 @Entity(foreignKeys = [ForeignKey(entity = Asset::class,
     parentColumns = ["assetId"],
     childColumns = ["sourceId"],
-    onDelete = ForeignKey.SET_NULL),
+    onDelete = ForeignKey.NO_ACTION),
     ForeignKey(entity = Asset::class,
         parentColumns = ["assetId"],
         childColumns = ["targetId"],
-        onDelete = ForeignKey.SET_NULL)])
+        onDelete = ForeignKey.NO_ACTION)])
 class Transaction(
     @PrimaryKey(autoGenerate = false)
     var transactionId: String = "",
@@ -84,12 +85,13 @@ class Transaction(
         }
 
         fun generateUniqueTransactionKey(transaction: Transaction) : String {
-            val currentDateTime = System.currentTimeMillis()
-            val uniqueString = "${transaction.userId}-$currentDateTime"
-            val digest = MessageDigest.getInstance("SHA-256")
-            val hashBytes = digest.digest(uniqueString.toByteArray())
-            val hexString = hashBytes.joinToString("") { "%02x".format(it) }
-            return hexString.take(24)
+//            val currentDateTime = System.currentTimeMillis()
+//            val uniqueString = "${transaction.userId}-$currentDateTime"
+//            val digest = MessageDigest.getInstance("SHA-256")
+//            val hashBytes = digest.digest(uniqueString.toByteArray())
+//            val hexString = hashBytes.joinToString("") { "%02x".format(it) }
+//            return hexString.take(24)
+            return UUID.randomUUID().toString()
         }
     }
 }

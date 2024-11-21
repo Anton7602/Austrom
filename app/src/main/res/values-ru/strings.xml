@@ -343,4 +343,8 @@
     <string name="card_balance">Баланс Карты</string>
     <string name="data_import">Импорт Данных</string>
     <string name="data_export">Экспорт Данных</string>
+    <string name="import_from_csv_file">Импорт из CSV файла</string>
+    <string name="import_export">Импорт/Экспорт</string>
+    <string name="import_operations">Операции по Импорту</string>
+    <string name="export_operations">Операции по Экспорту</string>
 </resources>

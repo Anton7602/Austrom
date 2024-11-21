@@ -2,16 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
-    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <!-- Devices running Android 12L (API level 32) or lower  -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-    <!-- Devices running Android 13 (API level 33) or higher -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <!-- To handle the reselection within the app on devices running Android 14-->
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
 
     <application
@@ -21,11 +26,14 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/placeholder_icon"
         android:label="@string/app_name"
+        android:localeConfig="@xml/local_config"
         android:roundIcon="@mipmap/placeholder_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Austrom"
-        android:localeConfig="@xml/local_config"
         tools:targetApi="34">
+        <activity
+            android:name=".ImportParametersActivity"
+            android:exported="false" />
         <activity
             android:name=".AssetPropertiesActivity"
             android:exported="false" />

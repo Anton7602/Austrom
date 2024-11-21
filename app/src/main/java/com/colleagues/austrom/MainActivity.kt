@@ -27,14 +27,11 @@ import com.colleagues.austrom.dialogs.TransactionFilterDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.fragments.BudgetFragment
-import com.colleagues.austrom.fragments.CategoriesFragment
-import com.colleagues.austrom.fragments.ExportFragment
 import com.colleagues.austrom.fragments.ImportFragment
 import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.fragments.SettingsFragment
 import com.colleagues.austrom.fragments.SharedBudgetEmptyFragment
 import com.colleagues.austrom.fragments.SharedBudgetFragment
-import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.models.Currency
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
@@ -64,7 +61,6 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         bindViews()
-        //this.deleteDatabase("local_database")
         setSupportActionBar(toolbar)
         adjustInsets()
         downloadCashedValues()
@@ -97,8 +93,7 @@ class MainActivity : AppCompatActivity() {
                         switchFragment(SharedBudgetEmptyFragment())
                     }
                 }
-                R.id.nav_export_mit ->  switchFragment(ExportFragment())
-                R.id.nav_import_mit ->  switchFragment(ImportFragment())
+                R.id.nav_import_export_mit ->  switchFragment(ImportFragment())
                 R.id.nav_settings_mit ->  switchFragment(SettingsFragment())
                 else -> status = false
             }

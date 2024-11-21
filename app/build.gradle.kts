@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.database.ktx)
+    implementation(libs.opencsv.opencsv)
     implementation(libs.androidx.biometric)
     implementation(libs.gson)
     implementation(libs.jbcrypt)

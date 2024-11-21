@@ -16,6 +16,7 @@ activity = "1.8.0"
 constraintlayout = "2.1.4"
 firebaseDatabaseKtx = "21.0.0"
 biometricKtx = "1.1.0"
+opencsvVersion = "5.5.2"
 roomRuntime = "2.6.1"
 securityCrypto = "1.1.0-alpha06"
 
@@ -39,6 +40,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
 androidx-biometric-ktx = { group = "androidx.biometric", name = "biometric-ktx", version.ref = "biometricKtx" }
+opencsv-opencsv = { module = "com.opencsv:opencsv", version.ref = "opencsvVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
