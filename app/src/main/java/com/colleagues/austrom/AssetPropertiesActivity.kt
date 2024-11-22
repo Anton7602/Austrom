@@ -15,8 +15,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
-import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
@@ -37,7 +37,7 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     private lateinit var transactionHolder: RecyclerView
     private lateinit var noTransactionsText: TextView
     private lateinit var assetCard: CardView
-    private lateinit var dbProvider: IDatabaseProvider
+    private lateinit var dbProvider: LocalDatabaseProvider
     private var transactionsOfAsset: MutableList<Transaction> = mutableListOf()
 
     override fun attachBaseContext(newBase: Context?) {
@@ -136,12 +136,12 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         transactionHolder = findViewById(R.id.asdet_transactionHolder_rcv)
         noTransactionsText = findViewById(R.id.asdet_noTransactions_txt)
         assetCard = findViewById(R.id.asdet_assetCard_crd)
-        dbProvider = FirebaseDatabaseProvider(this)
+        dbProvider = LocalDatabaseProvider(this)
     }
 
     override fun receiveValue(value: String, valueType: String) {
         if (valueType=="DialogResult" && value=="true") {
-            asset.delete(FirebaseDatabaseProvider(this))
+            asset.delete(LocalDatabaseProvider(this))
             this.finish()
         }
     }

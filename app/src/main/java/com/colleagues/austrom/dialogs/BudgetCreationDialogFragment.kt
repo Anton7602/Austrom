@@ -10,7 +10,7 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.fragments.SharedBudgetFragment
 import com.colleagues.austrom.models.Budget
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -30,7 +30,7 @@ class BudgetCreationDialogFragment : BottomSheetDialogFragment() {
         submitNewBudget.setOnClickListener {
             val budgetCreator = AustromApplication.appUser
             if (budgetCreator!=null) {
-                val provider : IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+                val provider : IRemoteDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
                 val newBudget = Budget(
                     budgetName =  budgetNameTextView.text.toString(),
                     users =  arrayListOf(budgetCreator.userId.toString())

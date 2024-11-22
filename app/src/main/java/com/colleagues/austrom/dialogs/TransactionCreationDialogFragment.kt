@@ -14,8 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.fragments.OpsFragment
@@ -79,7 +77,7 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         }
 
         submitButton.setOnClickListener {
-            val provider: IDatabaseProvider = LocalDatabaseProvider(requireActivity())
+            val provider = LocalDatabaseProvider(requireActivity())
             val categoryChip : Chip = view.findViewById(categoryChips.checkedChipId)
             val dateChip : Chip = view.findViewById(dateChips.checkedChipId)
             if (sourceName!=null && targetName!=null) {

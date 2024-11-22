@@ -10,11 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
-import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.TransactionCreationDialogFragment
-import com.colleagues.austrom.dialogs.TransactionCreationDialogFragment2
 import com.colleagues.austrom.dialogs.TransactionFilter
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Budget
@@ -65,7 +63,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
     }
 
     fun updateTransactionsList() {
-        val provider : IDatabaseProvider = LocalDatabaseProvider(requireActivity())
+        val provider = LocalDatabaseProvider(requireActivity())
         val user = AustromApplication.appUser
         if (user !=null) {
             transactionList = if (user.activeBudgetId != null) {

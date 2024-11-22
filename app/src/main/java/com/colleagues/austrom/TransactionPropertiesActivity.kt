@@ -20,8 +20,8 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.TransactionDetailRecyclerAdapter
-import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
 import com.colleagues.austrom.dialogs.ImageSelectionDialogFragment
 import com.colleagues.austrom.dialogs.TransactionDetailCreationDialogFragment
@@ -54,12 +54,13 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     private lateinit var categoryText: TextView
     private lateinit var categoryImage: ImageView
     private lateinit var comment: TextInputEditText
-    private lateinit var transactionDetails: RecyclerView
+    private lateinit var transactionDetailsRecyclerView: RecyclerView
     private lateinit var unallocatedSum: TextView
     private lateinit var unallocatedCurrency: TextView
     private lateinit var detailConstructorHolder: FragmentContainerView
     private lateinit var detailsLabel: TextView
     private lateinit var addPhoto: ImageView
+    private var transactionDetails = listOf<TransactionDetail>()
 
     override fun attachBaseContext(newBase: Context?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -96,7 +97,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         comment.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 transaction.comment = comment.text.toString()
-                val dbProvider : IDatabaseProvider = FirebaseDatabaseProvider(this)
+                val dbProvider  = LocalDatabaseProvider(this)
                 dbProvider.updateTransaction(transaction)
             }
         }
@@ -104,9 +105,9 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
 
     fun updateUnallocatedSum(addedValue: Double = 0.0): Double {
         var sum = transaction.amount
-//        for (detail in transaction.details) {
-//            sum -= detail.cost!!
-//        }
+        for (detail in transactionDetails) {
+            sum -= detail.cost!!
+        }
         if (BigDecimal(sum).setScale(2, RoundingMode.HALF_DOWN)==BigDecimal(0).setScale(2, RoundingMode.HALF_DOWN)) {
             detailConstructorHolder.visibility = View.GONE
             detailsLabel.text = getString(R.string.total)
@@ -122,16 +123,17 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     }
 
     fun addTransactionDetail(transactionDetail: TransactionDetail) {
-        val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
-        //transaction.details.add(0, transactionDetail)
-        dbProvider.updateTransaction(transaction)
+        transactionDetail.transactionId = transaction.transactionId
+        val dbProvider = LocalDatabaseProvider(this)
+        dbProvider.writeNewTransactionDetail(transactionDetail)
+        transactionDetails = dbProvider.getTransactionDetailsOfTransaction(transaction)
         updateUnallocatedSum()
         setUpRecyclerView()
     }
 
     private fun setUpRecyclerView() {
-        transactionDetails.layoutManager = LinearLayoutManager(this)
-        transactionDetails.adapter = TransactionDetailRecyclerAdapter(transaction)
+        transactionDetailsRecyclerView.layoutManager = LinearLayoutManager(this)
+        transactionDetailsRecyclerView.adapter = TransactionDetailRecyclerAdapter(transaction, transactionDetails)
     }
 
     private fun setUpFragment() {
@@ -193,6 +195,8 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
                     .find { it.name == transaction.categoryId })?.imgReference?.resourceId ?: R.drawable.placeholder_icon_background)
             }
         }
+        val provider = LocalDatabaseProvider(this)
+        transactionDetails = provider.getTransactionDetailsOfTransaction(transaction)
         updateUnallocatedSum(0.0)
         unallocatedCurrency.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
         if (transaction.comment!=null) {
@@ -232,7 +236,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         categoryText = findViewById(R.id.trdet_category_txt)
         categoryImage = findViewById(R.id.trdet_category_img)
         comment = findViewById(R.id.trdet_comments_txt)
-        transactionDetails = findViewById(R.id.trdet_transactionDetails_rcv)
+        transactionDetailsRecyclerView = findViewById(R.id.trdet_transactionDetails_rcv)
         unallocatedSum = findViewById((R.id.trdet_unallocatedSum_txt))
         unallocatedCurrency = findViewById((R.id.trdet_unallocatedCurrency_txt))
         detailConstructorHolder = findViewById(R.id.trdet_transactionDetailHolder_frt)
@@ -242,7 +246,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
 
     override fun receiveValue(value: String, valueType: String) {
         if (valueType=="DialogResult" && value=="true") {
-            transaction.cancel(FirebaseDatabaseProvider(this))
+            transaction.cancel(LocalDatabaseProvider(this))
             this.finish()
         }
         if (valueType=="ImageUpdate" && value=="true") {

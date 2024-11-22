@@ -12,7 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.models.User
 import com.google.android.material.textfield.TextInputEditText
@@ -46,19 +47,21 @@ class AuthorizationActivity : AppCompatActivity() {
         runQuickAuthorization()
 
         logInButton.setOnClickListener{
-            val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
+            val dbProvider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(this)
             val encryptionManager = EncryptionManager()
             val existingUser = dbProvider.getUserByEmail(loginTextBox.text.toString().lowercase())
             if (existingUser== null  || !encryptionManager.isPasswordFitsHash(passwordTextBox.text.toString(),existingUser.password.toString())) {
                 Toast.makeText(this, "Email or password is incorrect", Toast.LENGTH_LONG).show()
             } else {
+                existingUser.password = passwordTextBox.text.toString()
+                val localProvider = LocalDatabaseProvider(this)
+                localProvider.writeNewUser(existingUser)
                 launchMainActivity(existingUser)
             }
         }
 
         signUpButton.setOnClickListener{
             startActivity(Intent(this, SignUpActivity::class.java))
-
         }
 
         forgotPasswordButton.setOnClickListener{
@@ -81,7 +84,7 @@ class AuthorizationActivity : AppCompatActivity() {
         val storedUserID = (application as AustromApplication).getRememberedUser()
         val storedPin = (application as AustromApplication).getRememberedPin()
         if (!storedUserID.isNullOrEmpty() && !storedPin.isNullOrEmpty()) {
-            val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
+            val dbProvider = LocalDatabaseProvider(this)
             val existingUser = dbProvider.getUserByUserId(storedUserID)
             if (existingUser!= null) {
                 startActivity(Intent(applicationContext, AuthorizationQuickActivity::class.java))

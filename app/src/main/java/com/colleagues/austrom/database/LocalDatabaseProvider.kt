@@ -1,75 +1,113 @@
 package com.colleagues.austrom.database
 
+import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.User
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+class LocalDatabaseProvider(private val context: Context) {
+    private val localDatabase = LocalDatabase.getDatabase(context)
 
-
-
-
-class LocalDatabaseProvider(private val activity: FragmentActivity) : IDatabaseProvider {
-    private val localDatabase = LocalDatabase.getDatabase(activity.baseContext)
-
-    override fun createNewUser(user: User): String? {
-        TODO("Not yet implemented")
+    fun writeNewUser(user: User): String {
+        val dao = localDatabase.userDao()
+        if (user.userId.isEmpty()) {
+            user.userId = User.generateUniqueAssetKey()
+        }
+        runBlocking {
+            dao.insertUser(user)
+        }
+        return user.userId
     }
 
-    override fun updateUser(user: User) {
-        TODO("Not yet implemented")
+    fun updateUser(user: User) {
+        val dao = localDatabase.userDao()
+        runBlocking {
+            dao.updateUser(user)
+        }
     }
 
-    override fun deleteUser(user: User) {
-        TODO("Not yet implemented")
+    fun deleteUser(user: User) {
+        val dao = localDatabase.userDao()
+        runBlocking {
+            dao.deleteUser(user)
+        }
     }
 
-    override fun getUserByUserId(userId: String): User? {
-        TODO("Not yet implemented")
+    fun getUserByUserId(userId: String): User? {
+        val dao = localDatabase.userDao()
+        var user: User? = null;
+        var users: List<User>
+        runBlocking {
+            users = dao.getUserByUserId(userId)
+        }
+        if (users.isNotEmpty()) {
+            user = users[0]
+        }
+        return user
     }
 
-    override fun getUserByUsername(username: String): User? {
-        TODO("Not yet implemented")
+    fun getUserByUsername(username: String): User? {
+        val dao = localDatabase.userDao()
+        var user: User? = null;
+        var users: List<User>
+        runBlocking {
+            users = dao.getUserByUsername(username)
+        }
+        if (users.isNotEmpty()) {
+            user = users[0]
+        }
+        return user
     }
 
-    override fun getUserByEmail(email: String): User? {
-        TODO("Not yet implemented")
-    }
+//    fun getUserByEmail(email: String): User? {
+//        TODO("Not yet implemented")
+//    }
 
-    override fun getUsersByBudget(budgetId: String): MutableMap<String, User> {
-        TODO("Not yet implemented")
-    }
-
-    override fun createNewAsset(asset: Asset): String? {
+    fun createNewAsset(asset: Asset): String {
         val dao = localDatabase.assetDao()
-        asset.assetId = Asset.generateUniqueAssetKey(asset);
-        activity.lifecycleScope.launch {
+        asset.assetId = Asset.generateUniqueAssetKey();
+        runBlocking {
             dao.insertAsset(asset)
         }
         return asset.assetId
     }
 
-    override fun updateAsset(asset: Asset) {
-        TODO("Not yet implemented")
+    fun сreateNewAssetAsync(asset: Asset): String {
+        val dao = localDatabase.assetDao()
+        asset.assetId = Asset.generateUniqueAssetKey();
+        runBlocking {
+            dao.insertAsset(asset)
+        }
+        return asset.assetId
     }
 
-    override fun deleteAsset(asset: Asset) {
-        TODO("Not yet implemented")
+    fun updateAsset(asset: Asset) {
+        val dao = localDatabase.assetDao()
+        runBlocking {
+            dao.updateAsset(asset)
+        }
     }
 
-    override fun getAssetsOfUser(user: User): MutableMap<String, Asset> {
+    fun deleteAsset(asset: Asset) {
+        val dao = localDatabase.assetDao()
+        runBlocking {
+            dao.deleteAsset(asset)
+        }
+    }
+
+    fun getAssetsOfUser(user: User): MutableMap<String, Asset> {
         val assetMap = mutableMapOf<String, Asset>()
         val dao = localDatabase.assetDao()
         runBlocking {
-            val assets = dao.getAssetsOfUser(user.userId.toString())
+            val assets = dao.getAssetsOfUser(user.userId)
             for (asset in assets) {
                 assetMap[asset.assetId] = asset
             }
@@ -77,7 +115,7 @@ class LocalDatabaseProvider(private val activity: FragmentActivity) : IDatabaseP
         return assetMap
     }
 
-    override fun getAssetsOfBudget(budget: Budget): MutableMap<String, Asset> {
+    fun getAssetsOfBudget(budget: Budget): MutableMap<String, Asset> {
         val assetMap = mutableMapOf<String, Asset>()
         val dao = localDatabase.assetDao()
         runBlocking {
@@ -89,40 +127,46 @@ class LocalDatabaseProvider(private val activity: FragmentActivity) : IDatabaseP
         return assetMap
     }
 
-    override fun createNewBudget(budget: Budget): String? {
-        TODO("Not yet implemented")
-    }
+//    override fun createNewBudget(budget: Budget): String? {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun updateBudget(budget: Budget) {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun deleteBudget(budget: Budget) {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun getBudgetById(budgetId: String): Budget? {
+//        TODO("Not yet implemented")
+//    }
 
-    override fun updateBudget(budget: Budget) {
-        TODO("Not yet implemented")
-    }
-
-    override fun deleteBudget(budget: Budget) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getBudgetById(budgetId: String): Budget? {
-        TODO("Not yet implemented")
-    }
-
-    override fun writeNewTransaction(transaction: Transaction): String? {
+    fun writeNewTransaction(transaction: Transaction): String {
         val dao = localDatabase.transactionDao()
-        transaction.transactionId = Transaction.generateUniqueTransactionKey(transaction);
-        activity.lifecycleScope.launch {
+        transaction.transactionId = Transaction.generateUniqueTransactionKey();
+        runBlocking {
             dao.insertTransaction(transaction)
         }
         return transaction.transactionId
     }
 
-    override fun updateTransaction(transaction: Transaction) {
-        TODO("Not yet implemented")
+    fun updateTransaction(transaction: Transaction) {
+        val dao = localDatabase.transactionDao()
+        runBlocking {
+            dao.updateTransaction(transaction)
+        }
     }
 
-    override fun deleteTransaction(transaction: Transaction) {
-        TODO("Not yet implemented")
+    fun deleteTransaction(transaction: Transaction) {
+        val dao = localDatabase.transactionDao()
+        runBlocking {
+            dao.deleteTransaction(transaction)
+        }
     }
 
-    override fun getTransactionsOfUser(user: User): MutableList<Transaction> {
+    fun getTransactionsOfUser(user: User): MutableList<Transaction> {
         val dao =  localDatabase.transactionDao()
         var transactions: MutableList<Transaction>
         runBlocking {
@@ -131,7 +175,7 @@ class LocalDatabaseProvider(private val activity: FragmentActivity) : IDatabaseP
         return transactions
     }
 
-    override fun getTransactionsOfBudget(budget: Budget): MutableList<Transaction> {
+    fun getTransactionsOfBudget(budget: Budget): MutableList<Transaction> {
         val dao =  localDatabase.transactionDao()
         var transactions: MutableList<Transaction>
         runBlocking {
@@ -140,7 +184,7 @@ class LocalDatabaseProvider(private val activity: FragmentActivity) : IDatabaseP
         return transactions
     }
 
-    override fun getTransactionsOfAsset(asset: Asset): MutableList<Transaction> {
+    fun getTransactionsOfAsset(asset: Asset): MutableList<Transaction> {
         val dao =  localDatabase.transactionDao()
         var transactions: MutableList<Transaction>
         runBlocking {
@@ -149,36 +193,56 @@ class LocalDatabaseProvider(private val activity: FragmentActivity) : IDatabaseP
         return transactions
     }
 
-    override fun getCurrencies(): MutableMap<String, Currency> {
-        TODO("Not yet implemented")
+    fun writeNewTransactionDetail(transactionDetail: TransactionDetail): String {
+        val dao = localDatabase.transactionDetailDao()
+        transactionDetail.transactionDetailId = TransactionDetail.generateUniqueTransactionKey();
+        runBlocking {
+            dao.insertTransactionDetail(transactionDetail)
+        }
+        return transactionDetail.transactionDetailId
     }
 
-}
+    fun getTransactionDetailsOfTransaction(transaction: Transaction) : List<TransactionDetail> {
+        val dao = localDatabase.transactionDetailDao()
+        var transactionDetails: MutableList<TransactionDetail>
+        runBlocking {
+            transactionDetails = dao.getTransactionDetailsOfTransaction(transaction.transactionId).toMutableList()
+        }
+        return transactionDetails
+    }
 
-@Dao
-interface AssetDao {
-    @Insert
-    suspend fun insertAsset(asset: Asset)
+    fun writeCurrency(currency: Currency) {
+        val dao = localDatabase.currencyDao()
+        runBlocking {
+            dao.insertCurrency(currency)
+        }
+    }
 
-    @Query("SELECT * FROM Asset WHERE Asset.userId=:userId")
-    suspend fun getAssetsOfUser(userId: String): List<Asset>
+    fun getCurrencies(): MutableMap<String, Currency> {
+        val dao = localDatabase.currencyDao()
+        val currenciesMap = mutableMapOf<String, Currency>()
+        runBlocking {
+            val currencies = dao.getAllCurrencies()
+            for (currency in currencies) {
+                currenciesMap[currency.code] = currency
+            }
+        }
+        return currenciesMap
+    }
 
-    @Query("SELECT * FROM Asset")
-    suspend fun getAssetsOfBudget(): List<Asset>
+    fun writeCategory(category: Category) {
+        val dao = localDatabase.categoryDao()
+        runBlocking {
+            dao.insertCategory(category)
+        }
+    }
 
-}
-
-@Dao
-interface TransactionDao {
-    @Insert
-    suspend fun insertTransaction(transaction: Transaction)
-
-    @Query("SELECT * FROM `Transaction` as Trn WHERE Trn.userId=:userId")
-    suspend fun getTransactionsOfUser(userId: String): List<Transaction>
-
-    @Query("SELECT * FROM `Transaction` as Trn WHERE Trn.sourceId=:assetId OR Trn.targetId=:assetId")
-    suspend fun getTransactionsOfAsset(assetId: String): List<Transaction>
-
-    @Query("SELECT * FROM `Transaction`")
-    suspend fun getTransactionsOfBudget(): List<Transaction>
+    fun getCategories(): List<Category> {
+        val dao = localDatabase.categoryDao()
+        val categories = listOf<Category>()
+        runBlocking {
+            dao.getAllCategories()
+        }
+        return categories
+    }
 }

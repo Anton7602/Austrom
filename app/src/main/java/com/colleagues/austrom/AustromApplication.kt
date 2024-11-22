@@ -9,8 +9,7 @@ import android.util.Base64
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
-import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
@@ -39,23 +38,24 @@ class AustromApplication : Application() {
         fun getActiveTransferCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.TRANSFER)}
         fun getActiveIncomeCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.INCOME)}
 
+        //TODO("Fix Categories")
         private fun getActiveCategoriesOfType(transactionType: TransactionType) : List<Category> {
             val activeUser = appUser ?: return listOf()
             val expenseCategories: MutableList<Category> = mutableListOf()
             if (activeUser.activeBudgetId!=null) {
                 for (user in knownUsers) {
-                    for (category in user.value.categories) {
-                        if (!expenseCategories.contains(category) && category.transactionType==transactionType) {
-                            expenseCategories.add(category)
-                        }
-                    }
+//                    for (category in user.value.categories) {
+//                        if (!expenseCategories.contains(category) && category.transactionType==transactionType) {
+//                            expenseCategories.add(category)
+//                        }
+//                    }
                 }
             } else {
-                for (category in activeUser.categories) {
-                    if (!expenseCategories.contains(category) && category.transactionType == transactionType) {
-                        expenseCategories.add(category)
-                    }
-                }
+//                for (category in activeUser.categories) {
+//                    if (!expenseCategories.contains(category) && category.transactionType == transactionType) {
+//                        expenseCategories.add(category)
+//                    }
+//                }
             }
             return expenseCategories
         }
@@ -134,7 +134,7 @@ class AustromApplication : Application() {
 
     fun setNewBaseCurrency(currency: Currency) {
         if (appUser!=null) {
-            val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(null)
+            val dbProvider = LocalDatabaseProvider(this)
             appUser!!.baseCurrencyCode = currency.code
             dbProvider.updateUser(appUser!!)
             Currency.switchRatesToNewBaseCurrency(activeCurrencies, currency.code)

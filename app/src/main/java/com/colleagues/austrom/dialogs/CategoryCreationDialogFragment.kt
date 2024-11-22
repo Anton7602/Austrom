@@ -14,7 +14,7 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryIconRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.managers.IconManager
 import com.colleagues.austrom.models.Category
@@ -96,15 +96,16 @@ class CategoryCreationDialogFragment(private val transactionType: TransactionTyp
 
     private fun createCategory() {
         if (AustromApplication.appUser==null) return
-        val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+        val dbProvider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
         val newCategory = Category(
+            id = 0,
             name = categoryNameField.text.toString(),
             type = "Mandatory",
             imgReference = (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon,
             transactionType = transactionType,
         )
-        AustromApplication.appUser!!.categories.add(newCategory)
-        AustromApplication.knownUsers[AustromApplication.appUser?.userId]?.categories?.add(newCategory)
+        //AustromApplication.appUser!!.categories.add(newCategory)
+        //AustromApplication.knownUsers[AustromApplication.appUser?.userId]?.categories?.add(newCategory)
         dbProvider.updateUser(AustromApplication.appUser!!)
     }
 }

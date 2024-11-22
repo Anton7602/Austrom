@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.AssetGroupRecyclerAdapter
-import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetCreationDialogFragment
 import com.colleagues.austrom.dialogs.AssetFilter
@@ -44,12 +43,12 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     }
 
     fun updateAssetsList() {
-        val dbProvider : IDatabaseProvider = LocalDatabaseProvider(requireActivity())
+        val dbProvider = LocalDatabaseProvider(requireActivity())
         val user = AustromApplication.appUser
         if (user!=null) {
             val activeAssets = if (user.activeBudgetId!=null) {
                 //val budget = dbProvider.getBudgetById(user.activeBudgetId!!)
-                val budget:  Budget? = null
+                val budget = Budget()
                 if (budget!=null) {
                     dbProvider.getAssetsOfBudget(budget)
                 } else {
@@ -62,6 +61,8 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
                 val filteredAssets = (activeAssets.filter { entry ->
                     !entry.value.isPrivate || entry.value.userId==AustromApplication.appUser?.userId }).toMutableMap()
                 AustromApplication.activeAssets = filteredAssets
+            } else {
+                AustromApplication.activeAssets = mutableMapOf()
             }
         }
         setUpRecyclerView(AustromApplication.activeAssets)
@@ -93,6 +94,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         totalAmountText.text = "${totalAmount.toMoneyFormat()} ${AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol}"
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setUpRecyclerView(assetList: MutableMap<String, Asset>) {
         assetHolderRecyclerView.layoutManager = LinearLayoutManager(activity)
         val groupedAssets = Asset.groupAssetsByType(assetList)

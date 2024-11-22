@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.models.User
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -52,11 +52,11 @@ class SignUpActivity : AppCompatActivity() {
         signUpButton.isEnabled = false
 
         signUpButton.setOnClickListener{
-            val provider : IDatabaseProvider = FirebaseDatabaseProvider(this)
+            val provider : IRemoteDatabaseProvider = FirebaseDatabaseProvider(this)
             val existingUser = provider.getUserByEmail(emailTextBox.text.toString().lowercase())
             if (existingUser == null) {
                 val newUser = User(
-                    userId = null,
+                    userId = User.generateUniqueAssetKey(),
                     username = loginTextBox.text.toString().lowercase(),
                     email =  emailTextBox.text.toString().lowercase(),
                     password = passwordTextBox.text.toString())

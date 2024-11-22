@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
-import com.colleagues.austrom.database.IDatabaseProvider
-import java.security.MessageDigest
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import java.time.LocalDate
 import java.util.UUID
 
@@ -39,7 +39,7 @@ class Transaction(
         else if (this.sourceId!=null) TransactionType.EXPENSE else TransactionType.INCOME
     }
 
-    fun cancel(dbProvider: IDatabaseProvider) {
+    fun cancel(dbProvider: LocalDatabaseProvider) {
         when (this.transactionType()) {
             TransactionType.INCOME -> {
                 val target = AustromApplication.activeAssets[targetId]
@@ -84,13 +84,7 @@ class Transaction(
             return  groupedTransactions
         }
 
-        fun generateUniqueTransactionKey(transaction: Transaction) : String {
-//            val currentDateTime = System.currentTimeMillis()
-//            val uniqueString = "${transaction.userId}-$currentDateTime"
-//            val digest = MessageDigest.getInstance("SHA-256")
-//            val hashBytes = digest.digest(uniqueString.toByteArray())
-//            val hexString = hashBytes.joinToString("") { "%02x".format(it) }
-//            return hexString.take(24)
+        fun generateUniqueTransactionKey() : String {
             return UUID.randomUUID().toString()
         }
     }

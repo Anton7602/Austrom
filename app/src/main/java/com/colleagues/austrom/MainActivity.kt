@@ -20,7 +20,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentTransaction
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetFilterDialogFragment
 import com.colleagues.austrom.dialogs.SuggestQuickAccessDialogFragment
 import com.colleagues.austrom.dialogs.TransactionFilterDialogFragment
@@ -32,6 +33,7 @@ import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.fragments.SettingsFragment
 import com.colleagues.austrom.fragments.SharedBudgetEmptyFragment
 import com.colleagues.austrom.fragments.SharedBudgetFragment
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
@@ -63,6 +65,8 @@ class MainActivity : AppCompatActivity() {
         bindViews()
         setSupportActionBar(toolbar)
         adjustInsets()
+        fillInDefaultCategories()
+        fillInDefaultCurrencies()
         downloadCashedValues()
         navigationUserNameTextView.text = AustromApplication.appUser?.username!!.startWithUppercase()
         suggestSettingUpQuickAccessCode()
@@ -79,7 +83,7 @@ class MainActivity : AppCompatActivity() {
             var status = true
             when(item.itemId) {
                 R.id.nav_sharedBudget_mit -> {
-                    val provider: IDatabaseProvider = FirebaseDatabaseProvider(this)
+                    val provider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(this)
                     val activeBudgetId = AustromApplication.appUser?.activeBudgetId
                     if (activeBudgetId!=null) {
                         val activeBudget = provider.getBudgetById(activeBudgetId)
@@ -143,10 +147,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun downloadCashedValues() {
-        val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
+        val dbProvider = FirebaseDatabaseProvider(this)
         if (AustromApplication.activeCurrencies.isEmpty()) {
             AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(
-                Currency.localizeCurrencyNames(dbProvider.getCurrencies(), this), AustromApplication.appUser?.baseCurrencyCode)
+                Currency.localizeCurrencyNames(dbProvider.getCurrenciesAsync(), this), AustromApplication.appUser?.baseCurrencyCode)
         }
         AustromApplication.activeCurrencies = Currency.localizeCurrencyNames(AustromApplication.activeCurrencies, this)
         if (AustromApplication.appUser?.activeBudgetId!=null) {
@@ -170,6 +174,40 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationBar.setPadding(0,0,0,insets.bottom)
             //v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
             WindowInsetsCompat.CONSUMED
+        }
+    }
+
+    private fun fillInDefaultCategories() {
+        val dbProvider = LocalDatabaseProvider(this)
+        if (dbProvider.getCategories().isEmpty()) {
+            for (category in Category.defaultExpenseCategories) {
+                dbProvider.writeCategory(category)
+            }
+
+            for (category in Category.defaultTransferCategories) {
+                dbProvider.writeCategory(category)
+            }
+
+            for (category in Category.defaultIncomeCategories) {
+                dbProvider.writeCategory(category)
+            }
+        }
+    }
+
+    private fun fillInDefaultCurrencies() {
+        val dbProvider = LocalDatabaseProvider(this)
+        if (dbProvider.getCurrencies().isEmpty()) {
+            val currencies = Currency.getSupportedCurrenciesList()
+            var currenciesMap = mutableMapOf<String, Currency>()
+            for (currency in currencies) {
+                currenciesMap[currency.code] = currency
+            }
+            currenciesMap = Currency.localizeCurrencyNames(currenciesMap, this)
+            for (item in currenciesMap) {
+                val currency = item.value
+                currency.exchangeRate = 0.0
+                dbProvider.writeCurrency(currency)
+            }
         }
     }
 

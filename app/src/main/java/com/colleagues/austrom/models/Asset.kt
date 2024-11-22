@@ -4,9 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.google.firebase.database.Exclude
-import java.security.MessageDigest
 import java.util.UUID
 
 @Entity
@@ -18,9 +18,10 @@ class Asset(
     val assetName: String = "",
     var amount: Double = 0.0,
     val currencyCode: String? = null,
-    var isPrivate: Boolean = false) {
+    var isPrivate: Boolean = false,
+    var isArchived: Boolean = false) {
 
-    fun delete(dbProvider: IDatabaseProvider) {
+    fun delete(dbProvider: LocalDatabaseProvider) {
         val transactionsOfThisAsset = dbProvider.getTransactionsOfAsset(this)
         for (transaction in transactionsOfThisAsset) {
             dbProvider.deleteTransaction(transaction)
@@ -30,13 +31,7 @@ class Asset(
     }
 
     companion object{
-        fun generateUniqueAssetKey(asset: Asset) : String {
-//            val currentDateTime = System.currentTimeMillis()
-//            val uniqueString = "${asset.userId}-$currentDateTime"
-//            val digest = MessageDigest.getInstance("SHA-256")
-//            val hashBytes = digest.digest(uniqueString.toByteArray())
-//            val hexString = hashBytes.joinToString("") { "%02x".format(it) }
-//            return hexString.take(24)
+        fun generateUniqueAssetKey() : String {
             return UUID.randomUUID().toString()
         }
 

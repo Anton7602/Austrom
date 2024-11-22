@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.dialogs.CategoryCreationDialogFragment
 import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
 import com.colleagues.austrom.dialogs.LanguageSelectionDialogFragment
 import com.colleagues.austrom.dialogs.QuickAccessPinDialogFragment
@@ -15,6 +16,7 @@ import com.colleagues.austrom.views.SettingsButtonView
 
 class SettingsFragment : Fragment(R.layout.fragment_settings), IDialogInitiator {
     private lateinit var baseCurrencySetting: SettingsButtonView
+    private lateinit var categorySetting: SettingsButtonView
     private lateinit var quickAccessPinSetting: SettingsButtonView
     private lateinit var languageSetting: SettingsButtonView
     private lateinit var moneyFormatSetting: SettingsButtonView
@@ -32,6 +34,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), IDialogInitiator 
         }
         languageSetting.setOnClickListener {
             LanguageSelectionDialogFragment().show(requireActivity().supportFragmentManager, "Language Selection Dialog")
+        }
+        categorySetting.setOnClickListener {
+
         }
     }
 
@@ -56,6 +61,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), IDialogInitiator 
         baseCurrencySetting = view.findViewById(R.id.set_baseCurrency_btn)
         quickAccessPinSetting = view.findViewById(R.id.set_quickPin_btn)
         languageSetting = view.findViewById(R.id.set_appLocale_btn)
+        categorySetting = view.findViewById(R.id.set_categories_btn)
         moneyFormatSetting = view.findViewById(R.id.set_moneyFormat_btn)
     }
 }

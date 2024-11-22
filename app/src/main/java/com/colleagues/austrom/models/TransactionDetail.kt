@@ -3,7 +3,6 @@ package com.colleagues.austrom.models
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.time.LocalDate
 import java.util.UUID
 
 @Entity(foreignKeys = [ForeignKey(entity = Transaction::class,
@@ -13,7 +12,7 @@ import java.util.UUID
 class TransactionDetail(
     @PrimaryKey
     var transactionDetailId: String = "",
-    val transactionId: String = "",
+    var transactionId: String = "",
     val name: String? = null,
     val quantity: Double? = null,
     val typeOfQuantity: QuantityUnit? = null,

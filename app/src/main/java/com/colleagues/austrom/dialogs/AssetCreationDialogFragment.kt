@@ -9,8 +9,7 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.models.Asset
@@ -38,7 +37,7 @@ class AssetCreationDialogFragment(private val parentDialog: BalanceFragment?) : 
         dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background)
 
         createNewAssetButton.setOnClickListener {
-            val provider : IDatabaseProvider = LocalDatabaseProvider(requireActivity())
+            val provider = LocalDatabaseProvider(requireActivity())
             val assetType : Chip = view.findViewById(typeChipGroup.checkedChipId)
             val currencyType : Chip = view.findViewById(currencyChipGroup.checkedChipId)
             if (titleTextView.text.toString().isNotEmpty()) {

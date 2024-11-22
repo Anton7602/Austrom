@@ -1,17 +1,25 @@
 package com.colleagues.austrom.models
 
-import com.google.firebase.database.IgnoreExtraProperties
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.google.firebase.database.Exclude
+import java.util.UUID
 
-@IgnoreExtraProperties
+@Entity
 data class User(
-    var userId: String? = null,
+    @PrimaryKey(autoGenerate = false) @Exclude
+    var userId: String = "",
     var username: String? = null,
     var email: String? = null,
     var password: String? = null,
     var activeBudgetId: String? = null,
     var primaryPaymentMethod: String? = null,
-    var baseCurrencyCode: String = "USD",
-    var categories: MutableList<Category> = mutableListOf()
+    var baseCurrencyCode: String = "USD") {
+    //var categories: MutableList<Category> = mutableListOf()) {
 
-
-)
+    companion object {
+        fun generateUniqueAssetKey() : String {
+            return UUID.randomUUID().toString()
+        }
+    }
+}

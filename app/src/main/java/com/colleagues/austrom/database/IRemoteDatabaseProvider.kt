@@ -6,7 +6,7 @@ import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.User
 
-interface IDatabaseProvider {
+interface IRemoteDatabaseProvider {
     fun createNewUser(user: User): String?
     fun updateUser(user: User)
     fun deleteUser(user: User)

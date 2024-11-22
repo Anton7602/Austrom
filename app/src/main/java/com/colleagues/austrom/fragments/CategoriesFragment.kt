@@ -10,7 +10,7 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Category
 
@@ -27,7 +27,7 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories), IDialogInitia
 
     override fun onPause() {
         super.onPause()
-        val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+        val dbProvider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
         dbProvider.updateUser(AustromApplication.appUser!!)
     }
 

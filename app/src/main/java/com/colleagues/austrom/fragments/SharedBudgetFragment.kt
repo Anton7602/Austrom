@@ -9,7 +9,7 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.models.Budget
 
 class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout.fragment_shared_budget) {
@@ -25,7 +25,7 @@ class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout
         budgetInviteCode.text = activeBudget.budgetId
 
         leaveButton.setOnClickListener {
-            val provider: IDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+            val provider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
             val user = AustromApplication.appUser
             if (user?.userId != null) {
                 user.activeBudgetId = null

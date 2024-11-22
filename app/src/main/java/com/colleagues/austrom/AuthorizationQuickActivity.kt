@@ -21,7 +21,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.managers.BiometricPromptManager
 import com.colleagues.austrom.models.User
@@ -211,12 +211,18 @@ class AuthorizationQuickActivity : AppCompatActivity() {
         callToAction = findViewById(R.id.qauth_callToAction_txt)
         val storedUserID = (application as AustromApplication).getRememberedUser()
         if (!storedUserID.isNullOrEmpty()) {
-            val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(this)
-            val existingUser = dbProvider.getUserByUserId(storedUserID)
+            val dbProvider = LocalDatabaseProvider(this)
+            var existingUser = dbProvider.getUserByUserId(storedUserID)
             if (existingUser!= null) {
                 authorizingUser = existingUser
             } else {
-                this.finish()
+                val remoteDbProvider = FirebaseDatabaseProvider(this)
+                existingUser = remoteDbProvider.getUserByUserId(storedUserID)
+                if (existingUser!= null) {
+                    authorizingUser = existingUser
+                } else {
+                    this.finish()
+                }
             }
         }
         val storedPin = (application as AustromApplication).getRememberedPin()

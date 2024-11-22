@@ -16,29 +16,27 @@ import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatabaseProvider{
+class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemoteDatabaseProvider{
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
     override fun createNewUser(user: User): String? {
         val reference = database.getReference("users")
-        val key = reference.push().key
-        if (key == null) {
-            Log.w("Debug", "Couldn't get push key for the user")
-            return null
-        }
         user.username = user.username?.lowercase()
         user.email = user.email?.lowercase()
         val encryptionManager = EncryptionManager()
         user.password = encryptionManager.hashPassword(user.password.toString())
+        val key = user.userId
+        user.userId = ""
         reference.child(key).setValue(user)
-        Log.w("Debug", "New user added to DB with key: $key")
-        return  key
+        user.userId =key
+        Log.w("Debug", "New user added to DB with key: $user.userId")
+        return  user.userId
     }
 
     override fun updateUser(user: User) {
         val userKey = user.userId
         if (!userKey.isNullOrEmpty()) {
-            user.userId=null
+            //user.userId=null
             user.username = user.username?.lowercase()
             user.email = user.email?.lowercase()
             database.getReference("users").child(userKey).setValue(user)
@@ -51,7 +49,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
 
     override fun deleteUser(user: User) {
         if (user.userId!=null) {
-            database.getReference("users").child(user.userId!!).setValue(null)
+            database.getReference("users").child(user.userId).setValue(null)
             Log.w("Debug", "User entry with key ${user.userId} deleted")
         } else {
             Log.w("Debug", "Provided user without id. Delete canceled")
@@ -74,7 +72,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
                 val snapshot = databaseQuery.get().await()
                 val user = snapshot.getValue(User::class.java)
                 if (user !=null) {
-                    user.userId = snapshot.key
+                    user.userId = snapshot.key.toString()
                 }
                 user
             } catch (e: Exception) {
@@ -100,7 +98,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
                 if (snapshot.childrenCount>0) {
                     val user = snapshot.children.elementAt(0).getValue(User::class.java)
                     if (user != null) {
-                        user.userId = snapshot.children.elementAt(0).key
+                        user.userId = snapshot.children.elementAt(0).key.toString()
                     }
                     user
                 } else {
@@ -129,7 +127,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
                 if (snapshot.childrenCount>0) {
                     val user = snapshot.children.elementAt(0).getValue(User::class.java)
                     if (user != null) {
-                        user.userId = snapshot.children.elementAt(0).key
+                        user.userId = snapshot.children.elementAt(0).key.toString()
                     }
                     user
                 } else {
@@ -159,7 +157,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
                 for (child in snapshot.children) {
                     val user = child.getValue(User::class.java)
                     if (user!=null) {
-                        user.userId = child.key
+                        user.userId = child.key.toString()
                         usersList[child.key.toString()] = user
                     }
                 }
@@ -238,7 +236,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         val reference = database.getReference("encAssets")
         val encryptionManager = EncryptionManager()
         //val key = reference.push().key
-        val key = Asset.generateUniqueAssetKey(asset)
+        val key = Asset.generateUniqueAssetKey()
         reference.child(key).setValue(encryptionManager.encrypt(asset))
         Log.w("Debug", "New asset added to DB with key: $key")
         return key
@@ -499,7 +497,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
         return currencies
     }
 
-    private fun getCurrenciesAsync(): MutableMap<String, Currency> {
+    fun getCurrenciesAsync(): MutableMap<String, Currency> {
         val databaseQuery = database.getReference("currencies")
         val currenciesList = mutableMapOf<String, Currency>()
         return runBlocking {

@@ -26,7 +26,7 @@ class CategoryRecyclerAdapter(private val categories: MutableList<Category>,
     }
 
     init {
-        if (isShowingCreateNewCategoryButton) categories.add(Category("Add New Category"))
+        if (isShowingCreateNewCategoryButton) categories.add(Category(0,"Add New Category"))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
@@ -51,7 +51,7 @@ class CategoryRecyclerAdapter(private val categories: MutableList<Category>,
             }
         } else {
             holder.categoryName.text = categories[position].name
-            holder.isSelected = AustromApplication.appUser?.categories?.find { entry -> entry.name == categories[position].name } != null
+            //holder.isSelected = AustromApplication.appUser?.categories?.find { entry -> entry.name == categories[position].name } != null
             holder.categoryImage.setImageResource(categories[position].imgReference?.resourceId ?: R.drawable.ic_placeholder_icon)
             holder.categoryHolder.setBackgroundResource(if (holder.isSelected) R.drawable.sh_card_background else R.drawable.sh_category_deselected)
             //holder.categoryHolder.setBackgroundResource(R.drawable.sh_card_background)
@@ -60,16 +60,16 @@ class CategoryRecyclerAdapter(private val categories: MutableList<Category>,
                     holder.isSelected = false
                     holder.categoryHolder.elevation = 1f
                     holder.categoryHolder.setBackgroundResource(R.drawable.sh_category_deselected)
-                    AustromApplication.appUser?.categories?.remove(categories[position])
+                    //AustromApplication.appUser?.categories?.remove(categories[position])
                     if (AustromApplication.knownUsers.isNotEmpty()) {
-                        AustromApplication.knownUsers[AustromApplication.appUser!!.userId]?.categories?.remove(categories[position])
+                        //AustromApplication.knownUsers[AustromApplication.appUser!!.userId]?.categories?.remove(categories[position])
                     }
                 } else {
                     holder.isSelected = true
                     holder.categoryHolder.elevation = 4f
                     holder.categoryHolder.setBackgroundResource(R.drawable.sh_card_background)
-                    AustromApplication.appUser?.categories?.add(categories[position])
-                    AustromApplication.knownUsers[AustromApplication.appUser!!.userId]?.categories?.add(categories[position])
+                    //AustromApplication.appUser?.categories?.add(categories[position])
+                    //AustromApplication.knownUsers[AustromApplication.appUser!!.userId]?.categories?.add(categories[position])
                 }
             }
         }
