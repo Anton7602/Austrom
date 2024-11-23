@@ -3,13 +3,17 @@ package com.colleagues.austrom.database
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.User
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
@@ -492,12 +496,12 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
     override fun getCurrencies(): MutableMap<String, Currency> {
         var currencies : MutableMap<String, Currency> = mutableMapOf()
         activity?.lifecycleScope?.launch {
-            currencies = getCurrenciesAsync()
+            currencies = getCurrenciesAsyncOld()
         }
         return currencies
     }
 
-    fun getCurrenciesAsync(): MutableMap<String, Currency> {
+    fun getCurrenciesAsyncOld(): MutableMap<String, Currency> {
         val databaseQuery = database.getReference("currencies")
         val currenciesList = mutableMapOf<String, Currency>()
         return runBlocking {
@@ -515,6 +519,36 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
                 mutableMapOf()
             }
         }
+    }
+
+    fun setCurrenciesListener() {
+        val databaseReference = database.getReference("currencies")
+        val currencyListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val currencies = mutableMapOf<String, Currency>()
+                for (snapshotItem in dataSnapshot.children) {
+                    val currency = snapshotItem.getValue(Currency::class.java)
+                    if (currency!=null) {
+                        currencies[currency.code] = currency
+                    }
+                }
+                if (activity?.baseContext!=null) {
+                    AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(
+                        Currency.localizeCurrencyNames(currencies, activity.baseContext), AustromApplication.appUser?.baseCurrencyCode)
+                    val dbProvider = LocalDatabaseProvider(activity.baseContext)
+                    dbProvider.deleteAllCurrencies()
+                    currencies.forEach { currency ->
+                        dbProvider.writeCurrency(currency.value)
+                    }
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("Debug", "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        databaseReference.addValueEventListener(currencyListener)
     }
 
     private fun parseDateToIntDate(date: LocalDate) : Int {

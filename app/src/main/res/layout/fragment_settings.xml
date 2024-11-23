@@ -28,6 +28,12 @@
 
     </com.colleagues.austrom.views.SettingsButtonView>
 
+    <View
+        android:id="@+id/divider17"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey" />
+
     <com.colleagues.austrom.views.SettingsButtonView
         android:id="@+id/set_categories_btn"
         android:layout_width="match_parent"

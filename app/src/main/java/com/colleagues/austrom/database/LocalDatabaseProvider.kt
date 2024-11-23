@@ -41,6 +41,18 @@ class LocalDatabaseProvider(private val context: Context) {
         }
     }
 
+    fun getAllUsers(): MutableMap<String, User> {
+        val dao = localDatabase.userDao()
+        val users = mutableMapOf<String, User>()
+        runBlocking {
+            val userList = dao.getAllUsers()
+            userList.forEach{user ->
+                users[user.userId] = user
+            }
+        }
+        return users
+    }
+
     fun getUserByUserId(userId: String): User? {
         val dao = localDatabase.userDao()
         var user: User? = null;
@@ -228,6 +240,12 @@ class LocalDatabaseProvider(private val context: Context) {
             }
         }
         return currenciesMap
+    }
+
+    fun deleteAllCurrencies() {
+        runBlocking {
+            localDatabase.currencyDao().deleteAllCurrencies()
+        }
     }
 
     fun writeCategory(category: Category) {

@@ -5,4 +5,7 @@
         <attr name="secondaryText" format="string" />
         <attr name="settingIcon" format="reference" />
     </declare-styleable>
+    <declare-styleable name="ImportFieldControlView">
+        <attr name="fieldName" format="string" />
+    </declare-styleable>
 </resources>

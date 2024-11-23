@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         adjustInsets()
         fillInDefaultCategories()
         fillInDefaultCurrencies()
+        fillInKnownUsers()
         downloadCashedValues()
         navigationUserNameTextView.text = AustromApplication.appUser?.username!!.startWithUppercase()
         suggestSettingUpQuickAccessCode()
@@ -148,14 +149,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun downloadCashedValues() {
         val dbProvider = FirebaseDatabaseProvider(this)
-        if (AustromApplication.activeCurrencies.isEmpty()) {
-            AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(
-                Currency.localizeCurrencyNames(dbProvider.getCurrenciesAsync(), this), AustromApplication.appUser?.baseCurrencyCode)
-        }
-        AustromApplication.activeCurrencies = Currency.localizeCurrencyNames(AustromApplication.activeCurrencies, this)
-        if (AustromApplication.appUser?.activeBudgetId!=null) {
-            AustromApplication.knownUsers = dbProvider.getUsersByBudget(AustromApplication.appUser?.activeBudgetId!!)
-        }
+        dbProvider.setCurrenciesListener()
+//        if (AustromApplication.activeCurrencies.isEmpty()) {
+//            AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(
+//                Currency.localizeCurrencyNames(dbProvider.getCurrenciesAsync(), this), AustromApplication.appUser?.baseCurrencyCode)
+//        }
+//        AustromApplication.activeCurrencies = Currency.localizeCurrencyNames(AustromApplication.activeCurrencies, this)
+//        if (AustromApplication.appUser?.activeBudgetId!=null) {
+//            AustromApplication.knownUsers = dbProvider.getUsersByBudget(AustromApplication.appUser?.activeBudgetId!!)
+//        }
     }
 
     private fun setUpNavigationDrawer() {
@@ -209,6 +211,13 @@ class MainActivity : AppCompatActivity() {
                 dbProvider.writeCurrency(currency)
             }
         }
+        AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(
+            Currency.localizeCurrencyNames(dbProvider.getCurrencies(), this), AustromApplication.appUser?.baseCurrencyCode)
+    }
+
+    private fun fillInKnownUsers() {
+        val dbProvider = LocalDatabaseProvider(this)
+        AustromApplication.knownUsers = dbProvider.getAllUsers()
     }
 
     private fun bindViews() {

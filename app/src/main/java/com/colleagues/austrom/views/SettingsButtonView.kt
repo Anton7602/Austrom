@@ -27,8 +27,8 @@ class SettingsButtonView(context: Context, attrs: AttributeSet) : CardView(conte
         val iconResId = attributes.getResourceId(R.styleable.SettingsButtonView_settingIcon, 0)
 
         // Set attributes to views
-        labelTextView.text = labelText ?: "Unknown text"
-        valueTextView.text = valueText ?: "Unknown text"
+        labelTextView.text = labelText ?: "Label"
+        valueTextView.text = valueText ?: "Value"
         if (iconResId != 0) {
             iconImageView.setImageResource(iconResId)
         }

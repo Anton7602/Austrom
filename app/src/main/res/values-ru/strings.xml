@@ -347,4 +347,9 @@
     <string name="import_export">Импорт/Экспорт</string>
     <string name="import_operations">Операции по Импорту</string>
     <string name="export_operations">Операции по Экспорту</string>
+    <string name="date">Дата</string>
+    <string name="comment">Комментарий</string>
+    <string name="transaction_example">Пример Транзакции</string>
+    <string name="string_dynamic">Динамический</string>
+    <string name="string_static">Статический</string>
 </resources>

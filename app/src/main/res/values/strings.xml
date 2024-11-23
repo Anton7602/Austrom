@@ -128,6 +128,8 @@
     <string name="type_in_a_name_of_the_new_category">Type in a name of the new Category</string>
     <string name="pick_an_icon_for_a_new_category">Pick an icon for a new category</string>
     <string name="add">Add</string>
+    <string name="string_dynamic">Dynamic</string>
+    <string name="string_static">Static</string>
     <string name="choose_period_start_date">Choose Period Start Date</string>
     <string name="choose_period_end_date">Choose Period End Date</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -348,4 +350,8 @@
     <string name="import_export">Import/Export</string>
     <string name="import_operations">Import Operations</string>
     <string name="export_operations">Export Operations</string>
+    <string name="date">Date</string>
+    <string name="comment">Comment</string>
+    <string name="transaction_example">Transaction Example</string>
+    <string name="currency">Currency</string>
 </resources>
