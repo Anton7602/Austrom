@@ -60,6 +60,9 @@ interface UserDao {
     @Delete
     suspend fun deleteUser(user: User)
 
+    @Query("SELECT * FROM User")
+    suspend fun getAllUsers(): List<User>
+
     @Query("SELECT * FROM User WHERE User.userId=:userId")
     suspend fun getUserByUserId(userId: String): List<User>
 
@@ -135,6 +138,9 @@ interface CurrencyDao {
 
     @Query("SELECT * FROM CURRENCY")
     suspend fun getAllCurrencies(): List<Currency>
+
+    @Query("DELETE FROM Currency")
+    suspend fun deleteAllCurrencies()
 }
 
 @Dao

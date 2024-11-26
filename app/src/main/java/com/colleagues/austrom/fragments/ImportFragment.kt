@@ -1,12 +1,16 @@
 package com.colleagues.austrom.fragments
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.ImportParametersActivity
 import com.colleagues.austrom.R
@@ -39,7 +43,7 @@ class ImportFragment : Fragment(R.layout.fragment_import) {
 
     private fun pickCsvFile() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "text/csv"
+            type = "*/*"
             addCategory(Intent.CATEGORY_OPENABLE)
         }
         filePickerLauncher.launch(intent)

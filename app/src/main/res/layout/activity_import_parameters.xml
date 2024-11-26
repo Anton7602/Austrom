@@ -8,6 +8,14 @@
     android:orientation="vertical"
     tools:context=".ImportParametersActivity">
 
+    <TextView
+        android:id="@+id/textView31"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/transaction_example"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/tritem_transactionHolder_cdv"
         android:layout_width="match_parent"
@@ -26,46 +34,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="8dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp">
-
-            <TextView
-                android:id="@+id/tritem_date_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:text="August 11, Saturday"
-                android:textColor="#929191"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="HardcodedText" />
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <ImageView
-                android:id="@+id/tritem_categoryIcon_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tritem_date_txt"
-                app:srcCompat="@drawable/ic_placeholder_icon" />
+                android:id="@+id/imppar_example_categoryIcon_img"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="@+id/imageView2"
+                app:layout_constraintStart_toStartOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_settings_local"
+                app:tint="@color/dark_grey" />
 
             <TextView
-                android:id="@+id/tritem_targetName_txt"
+                android:id="@+id/imppar_example_targetName_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="4dp"
                 android:text="Target"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/tritem_categoryIcon_img"
-                app:layout_constraintStart_toEndOf="@+id/tritem_categoryIcon_img"
-                app:layout_constraintTop_toTopOf="@+id/tritem_categoryIcon_img"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imppar_example_categoryIcon_img"
+                app:layout_constraintStart_toEndOf="@+id/imppar_example_categoryIcon_img"
+                app:layout_constraintTop_toTopOf="@+id/imppar_example_categoryIcon_img"
                 tools:ignore="HardcodedText" />
 
             <TextView
-                android:id="@+id/tritem_amount_txt"
+                android:id="@+id/imppar_example_amount_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
@@ -73,21 +70,21 @@
                 android:textAlignment="viewEnd"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/tritem_targetName_txt"
-                app:layout_constraintEnd_toStartOf="@+id/tritem_currencySymbol_txt"
-                app:layout_constraintTop_toTopOf="@+id/tritem_targetName_txt"
+                app:layout_constraintBottom_toBottomOf="@+id/imppar_example_targetName_txt"
+                app:layout_constraintEnd_toStartOf="@+id/imppar_example_currencySymbol_txt"
+                app:layout_constraintTop_toTopOf="@+id/imppar_example_targetName_txt"
                 tools:ignore="HardcodedText" />
 
             <TextView
-                android:id="@+id/tritem_currencySymbol_txt"
+                android:id="@+id/imppar_example_currencySymbol_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:text="$"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/tritem_amount_txt"
+                app:layout_constraintBottom_toBottomOf="@+id/imppar_example_amount_txt"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tritem_amount_txt"
+                app:layout_constraintTop_toTopOf="@+id/imppar_example_amount_txt"
                 tools:ignore="HardcodedText" />
 
             <ImageView
@@ -96,41 +93,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:background="@color/transparent"
-                app:layout_constraintStart_toStartOf="@+id/tritem_targetName_txt"
-                app:layout_constraintTop_toBottomOf="@+id/tritem_targetName_txt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imppar_example_targetName_txt"
                 app:srcCompat="@drawable/ic_transaction_source_temp" />
 
             <TextView
-                android:id="@+id/tritem_categoryName_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Category"
-                android:textColor="#929191"
-                android:textSize="12sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintTop_toTopOf="@+id/imageView2"
-                tools:ignore="HardcodedText" />
-
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@+id/imageView2"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2"
-                app:srcCompat="@drawable/ic_transaction_target_temp" />
-
-            <TextView
-                android:id="@+id/tritem_sourceName_txt"
+                android:id="@+id/imppar_example_sourceName_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
                 android:layout_marginStart="4dp"
                 android:text="Source"
-                android:textColor="@color/dark_grey"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView2"
                 app:layout_constraintStart_toEndOf="@+id/imageView2"
@@ -138,225 +110,459 @@
                 tools:ignore="HardcodedText" />
 
             <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/imageView5"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_marginTop="4dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/imageView3"
-                app:layout_constraintTop_toBottomOf="@+id/imageView3"
-                app:srcCompat="@drawable/ic_transaction_comment_temp" />
+                android:foregroundTintMode="add"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="@+id/imageView2"
+                app:layout_constraintStart_toStartOf="@+id/imageView2"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2"
+                app:srcCompat="@drawable/ic_navigation_categories_temp"
+                app:tint="@color/dark_grey" />
 
             <TextView
-                android:id="@+id/tritem_comment_txt"
+                android:id="@+id/imppar_example_category_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Comment (Not Yet Supported)"
-                android:textColor="#929191"
+                android:text="@string/category"
                 android:textSize="12sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-                app:layout_constraintStart_toEndOf="@+id/imageView4"
-                app:layout_constraintTop_toTopOf="@+id/imageView4"
-                tools:ignore="HardcodedText" />
+                app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+                app:layout_constraintStart_toStartOf="@+id/imppar_example_sourceName_txt"
+                app:layout_constraintTop_toTopOf="@+id/imageView5" />
+
+            <ImageView
+                android:id="@+id/imageView10"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="@+id/imppar_example_currencySymbol_txt"
+                app:layout_constraintTop_toTopOf="@+id/imageView5"
+                app:srcCompat="@drawable/ic_navigation_calendar_temp"
+                app:tint="@color/dark_grey" />
 
             <TextView
-                android:id="@+id/tritem_secondarycurrency_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RUB"
-                android:textColor="#929191"
-                android:textSize="12sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/tritem_sourceName_txt"
-                app:layout_constraintEnd_toEndOf="@+id/tritem_currencySymbol_txt"
-                app:layout_constraintTop_toTopOf="@+id/tritem_sourceName_txt"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:id="@+id/tritem_secondaryamount_txt"
+                android:id="@+id/imppar_example_date_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:text="-16000"
-                android:textColor="#929191"
+                android:text="@string/date"
                 android:textSize="12sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/tritem_secondarycurrency_txt"
-                app:layout_constraintEnd_toStartOf="@+id/tritem_secondarycurrency_txt"
-                app:layout_constraintTop_toTopOf="@+id/tritem_secondarycurrency_txt"
-                tools:ignore="HardcodedText" />
+                app:layout_constraintBottom_toBottomOf="@+id/imageView10"
+                app:layout_constraintEnd_toEndOf="@+id/imppar_example_amount_txt"
+                app:layout_constraintEnd_toStartOf="@+id/imageView10"
+                app:layout_constraintTop_toTopOf="@+id/imageView10" />
+
+            <ImageView
+                android:id="@+id/imageView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:layout_constraintStart_toStartOf="@+id/imageView5"
+                app:layout_constraintTop_toBottomOf="@+id/imageView5"
+                app:srcCompat="@drawable/ic_transaction_comment_temp" />
+
+            <TextView
+                android:id="@+id/imppar_example_comment_txt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="1dp"
+                android:text="@string/comment"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView11"
+                app:layout_constraintEnd_toEndOf="@+id/imageView10"
+                app:layout_constraintStart_toEndOf="@+id/imageView11"
+                app:layout_constraintTop_toTopOf="@+id/imageView11" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
-    <LinearLayout
+    <View
+        android:id="@+id/divider18"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layoutDirection="rtl"
-        android:orientation="horizontal">
+        android:layout_height="1dp"
+        android:background="@color/grey" />
 
-        <Spinner
-            android:id="@+id/imppar_source_spn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:padding="14dp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/imppar_source_txt"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/source"
-            android:textSize="18sp" />
+            android:orientation="vertical" >
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textView32"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Fileds Mapping"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layoutDirection="rtl"
-        android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <Spinner
-            android:id="@+id/imppar_target_spn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:padding="14dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layoutDirection="rtl"
+                    android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/imppar_target_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/target"
-            android:textSize="18sp" />
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/imppar_sourceSwitch_sch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layoutDirection="ltr"
+                        android:text="@string/string_dynamic" />
 
-    </LinearLayout>
+                    <TextView
+                        android:id="@+id/imppar_source_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="8dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/source"
+                        android:textSize="18sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layoutDirection="rtl"
-        android:orientation="horizontal">
+                </LinearLayout>
 
-        <Spinner
-            android:id="@+id/imppar_amount_spn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:padding="14dp" />
+                <Spinner
+                    android:id="@+id/imppar_source_dynamic_spn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
 
-        <TextView
-            android:id="@+id/imppar_amount_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/amount"
-            android:textSize="18sp" />
-    </LinearLayout>
+                <Spinner
+                    android:id="@+id/imppar_source_static_spn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:visibility="gone" />
+            </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layoutDirection="rtl"
-        android:orientation="horizontal">
+            <View
+                android:id="@+id/divider25"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey" />
 
-        <Spinner
-            android:id="@+id/imppar_currency_spn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:padding="14dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/imppar_currency_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Currency"
-            android:textSize="18sp" />
-    </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layoutDirection="rtl"
+                    android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layoutDirection="rtl"
-        android:orientation="horizontal">
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/imppar_targetSwitch_sch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layoutDirection="ltr"
+                        android:text="@string/string_dynamic" />
 
-        <Spinner
-            android:id="@+id/imppar_date_spn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:padding="14dp" />
+                    <TextView
+                        android:id="@+id/imppar_target_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="8dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/target"
+                        android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/imppar_date_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Date"
-            android:textSize="18sp" />
-    </LinearLayout>
+                </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layoutDirection="rtl"
-        android:orientation="horizontal">
+                <Spinner
+                    android:id="@+id/imppar_target_dynamic_spn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
 
-        <Spinner
-            android:id="@+id/imppar_category_spn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:padding="14dp" />
+                <EditText
+                    android:id="@+id/imppar_target_static_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/target"
+                    android:padding="8dp"
+                    android:visibility="gone" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/imppar_category_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_weight="1"
-            android:text="@string/category"
-            android:textSize="18sp" />
-    </LinearLayout>
+            <View
+                android:id="@+id/divider26"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layoutDirection="rtl"
-        android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <Spinner
-            android:id="@+id/imppar_comment_spn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:padding="14dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layoutDirection="rtl"
+                    android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/imppar_comment_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_weight="1"
-            android:text="Comment"
-            android:textSize="18sp" />
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/imppar_amountSwitch_sch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layoutDirection="ltr"
+                        android:text="@string/string_dynamic" />
 
-    </LinearLayout>
+                    <TextView
+                        android:id="@+id/imppar_amount_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="8dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/amount"
+                        android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/imppar_accept_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="24dp"
-        android:text="Import Transactions" />
+                </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/imppar_amount_dynamic_spn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+
+                <EditText
+                    android:id="@+id/imppar_amount_static_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/amount"
+                    android:padding="8dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider27"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layoutDirection="rtl"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/imppar_currencySwitch_sch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layoutDirection="ltr"
+                        android:text="@string/string_dynamic" />
+
+                    <TextView
+                        android:id="@+id/imppar_currency_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="8dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/currency"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+
+                <Spinner
+                    android:id="@+id/imppar_currency_dynamic_spn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+
+                <Spinner
+                    android:id="@+id/imppar_currency_static_spn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider28"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layoutDirection="rtl"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/imppar_dateSwitch_sch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layoutDirection="ltr"
+                        android:text="@string/string_dynamic" />
+
+                    <TextView
+                        android:id="@+id/imppar_date_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="8dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/date"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+
+                <Spinner
+                    android:id="@+id/imppar_date_dynamic_spn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+
+                <Spinner
+                    android:id="@+id/imppar_date_static_spn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider29"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layoutDirection="rtl"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/imppar_categorySwitch_sch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layoutDirection="ltr"
+                        android:text="@string/string_dynamic" />
+
+                    <TextView
+                        android:id="@+id/imppar_category_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="8dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/category"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+
+                <Spinner
+                    android:id="@+id/imppar_category_dynamic_spn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+
+                <Spinner
+                    android:id="@+id/imppar_category_static_spn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider30"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layoutDirection="rtl"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/imppar_commentSwitch_sch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layoutDirection="ltr"
+                        android:text="@string/string_dynamic" />
+
+                    <TextView
+                        android:id="@+id/imppar_comment_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="8dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/comment"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/imppar_comment_dynamic_spn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+
+                <EditText
+                    android:id="@+id/imppar_comment_static_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:hint="@string/comment"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/imppar_accept_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:backgroundTint="@color/blue"
+                android:text="Import Transactions" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

@@ -18,6 +18,7 @@ import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -187,9 +188,13 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
 
     private fun setUpCategoriesInChips() {
         val categories = when (transactionType) {
-            TransactionType.TRANSFER -> AustromApplication.getActiveTransferCategories()
-            TransactionType.INCOME -> AustromApplication.getActiveIncomeCategories()
-            TransactionType.EXPENSE -> AustromApplication.getActiveExpenseCategories()
+            //TransactionType.TRANSFER -> AustromApplication.getActiveTransferCategories()
+            //TransactionType.INCOME -> AustromApplication.getActiveIncomeCategories()
+            //TransactionType.EXPENSE -> AustromApplication.getActiveExpenseCategories()
+
+            TransactionType.TRANSFER -> Category.defaultTransferCategories
+            TransactionType.INCOME -> Category.defaultIncomeCategories
+            TransactionType.EXPENSE -> Category.defaultExpenseCategories
         }
         for (category in categories) {
             val chip = Chip(requireActivity())
