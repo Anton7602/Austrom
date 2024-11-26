@@ -32,6 +32,15 @@
         android:theme="@style/Theme.Austrom"
         tools:targetApi="34">
         <activity
+            android:name=".TransactionCreationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AssetCreationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CategoryCreationActivity"
+            android:exported="false" />
+        <activity
             android:name=".ImportParametersActivity"
             android:exported="false" />
         <activity

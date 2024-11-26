@@ -9,6 +9,7 @@ import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
+import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.User
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -237,11 +238,16 @@ class LocalDatabaseProvider(private val context: Context) {
         }
     }
 
-    fun getCategories(): List<Category> {
+    fun getCategories(transactionType: TransactionType? = null): List<Category> {
         val dao = localDatabase.categoryDao()
-        val categories = listOf<Category>()
+        var categories: List<Category>
         runBlocking {
-            dao.getAllCategories()
+            categories = when (transactionType) {
+                TransactionType.INCOME -> dao.getCategories(transactionType)
+                TransactionType.EXPENSE -> dao.getCategories(transactionType)
+                TransactionType.TRANSFER -> listOf()
+                null -> dao.getAllCategories()
+            }
         }
         return categories
     }

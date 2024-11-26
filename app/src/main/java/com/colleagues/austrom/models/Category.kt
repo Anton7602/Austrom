@@ -9,7 +9,7 @@ import com.colleagues.austrom.managers.Icon
 @Entity
 class Category(
     @PrimaryKey(autoGenerate = true)
-    var id: Int,
+    var id: Int = 0,
     var name: String? = null,
     val type: String? = null,
     val imgReference: Icon? = null,

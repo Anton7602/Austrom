@@ -184,10 +184,6 @@ class MainActivity : AppCompatActivity() {
                 dbProvider.writeCategory(category)
             }
 
-            for (category in Category.defaultTransferCategories) {
-                dbProvider.writeCategory(category)
-            }
-
             for (category in Category.defaultIncomeCategories) {
                 dbProvider.writeCategory(category)
             }

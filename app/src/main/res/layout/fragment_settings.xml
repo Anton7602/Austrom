@@ -28,12 +28,18 @@
 
     </com.colleagues.austrom.views.SettingsButtonView>
 
+    <View
+        android:id="@+id/divider16"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey" />
+
     <com.colleagues.austrom.views.SettingsButtonView
         android:id="@+id/set_categories_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:primaryText="@string/categories"
-        app:secondaryText="Food, House..."
+        app:secondaryText="No Categories Present"
         app:settingIcon="@drawable/ic_navigation_categories_temp" />
 
     <TextView
@@ -71,12 +77,6 @@
         app:primaryText="@string/language"
         app:secondaryText="@string/english"
         app:settingIcon="@drawable/ic_settings_local" />
-
-    <View
-        android:id="@+id/divider16"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey" />
 
     <com.colleagues.austrom.views.SettingsButtonView
         android:id="@+id/set_moneyFormat_btn"

@@ -16,6 +16,7 @@ import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
+import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.User
 import java.time.LocalDate
 import java.time.ZoneId
@@ -149,6 +150,9 @@ interface CategoryDao {
 
     @Query("SELECT * FROM Category")
     suspend fun getAllCategories(): List<Category>
+
+    @Query("SELECT * FROM Category WHERE Category.transactionType = :transactionType")
+    suspend fun getCategories(transactionType: TransactionType): List<Category>
 }
 
 class Converters {
