@@ -206,6 +206,15 @@ class LocalDatabaseProvider(private val context: Context) {
         return transactions
     }
 
+    fun getTransactionOfCategory(category: Category): MutableList<Transaction> {
+        val dao = localDatabase.transactionDao()
+        var transaction: MutableList<Transaction>
+        runBlocking {
+            transaction = dao.getTransactionsByCategoryId(category.id).toMutableList()
+        }
+        return transaction
+    }
+
     fun writeNewTransactionDetail(transactionDetail: TransactionDetail): String {
         val dao = localDatabase.transactionDetailDao()
         transactionDetail.transactionDetailId = TransactionDetail.generateUniqueTransactionKey();
@@ -268,5 +277,21 @@ class LocalDatabaseProvider(private val context: Context) {
             }
         }
         return categories
+    }
+
+    fun getCategoryById(categoryId: String) : Category? {
+        val dao = localDatabase.categoryDao()
+        var category: Category? = null
+        runBlocking {
+            category = dao.getCategoryById(categoryId).first()
+        }
+        return category
+    }
+
+    fun updateCategory(category: Category) {
+        val dao = localDatabase.categoryDao()
+        runBlocking {
+            dao.updateCategory(category)
+        }
     }
 }

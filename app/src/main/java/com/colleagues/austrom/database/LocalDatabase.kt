@@ -106,6 +106,9 @@ interface TransactionDao {
     @Query("SELECT * FROM `Transaction` as Trn WHERE Trn.sourceId=:assetId OR Trn.targetId=:assetId")
     suspend fun getTransactionsOfAsset(assetId: String): List<Transaction>
 
+    @Query ("SELECT * FROM `TRANSACTION` as Trn WHERE Trn.categoryId = :categoryId ")
+    suspend fun getTransactionsByCategoryId(categoryId: String): List<Transaction>
+
     @Query("SELECT * FROM `Transaction`")
     suspend fun getTransactionsOfBudget(): List<Transaction>
 }
@@ -159,6 +162,9 @@ interface CategoryDao {
 
     @Query("SELECT * FROM Category WHERE Category.transactionType = :transactionType")
     suspend fun getCategories(transactionType: TransactionType): List<Category>
+
+    @Query("SELECT * FROM CATEGORY WHERE Category.id = :categoryId")
+    suspend fun getCategoryById(categoryId: String): List<Category>
 }
 
 class Converters {

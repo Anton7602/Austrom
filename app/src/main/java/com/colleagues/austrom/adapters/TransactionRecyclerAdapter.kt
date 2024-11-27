@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionPropertiesActivity
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Category
@@ -47,13 +48,14 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
+        val dbProvider = LocalDatabaseProvider(activity)
         val transaction = transactions[position]
         holder.categoryName.text = transaction.categoryId
         holder.sourceName.text = transaction.sourceName
         holder.targetName.text = transaction.targetName
         val source = AustromApplication.activeAssets[transaction.sourceId]
         val target = AustromApplication.activeAssets[transaction.targetId]
-        var category : Category? = null
+        var category : Category? =  if (transaction.categoryId!=null) dbProvider.getCategoryById(transaction.categoryId!!) else null
         when (transaction.transactionType()) {
             TransactionType.TRANSFER -> {
                 holder.secondaryAmount.visibility = View.VISIBLE
@@ -64,19 +66,17 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
                 holder.amount.text ="+" + if(transaction.secondaryAmount==null) transaction.amount.toMoneyFormat() else transaction.secondaryAmount?.toMoneyFormat()
                 holder.amount.setTextColor(Color.rgb(0,100,0))
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
-                category = AustromApplication.getActiveTransferCategories().find { it.name == transaction.categoryId }
+
             }
             TransactionType.EXPENSE -> {
                 holder.amount.text ="-" + transaction.amount.toMoneyFormat()
                 holder.amount.setTextColor(Color.RED)
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
-                category = AustromApplication.getActiveExpenseCategories().find { it.name == transaction.categoryId }
             }
             TransactionType.INCOME -> {
                 holder.amount.text = "+" + transaction.amount.toMoneyFormat()
                 holder.amount.setTextColor(Color.rgb(0,100,0))
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
-                category = AustromApplication.getActiveIncomeCategories().find { it.name == transaction.categoryId }
             }
         }
         holder.transactionDate.text = transaction.transactionDate?.toDayOfWeekAndShortDateFormat()

@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.R
+import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.managers.Icon
 
-class CategoryIconRecyclerAdapter(private var drawableIds: List<Icon>): RecyclerView.Adapter<CategoryIconRecyclerAdapter.CategoryIconViewHolder>() {
+class CategoryIconRecyclerAdapter(private var drawableIds: List<Icon>, private var parent: IDialogInitiator? = null): RecyclerView.Adapter<CategoryIconRecyclerAdapter.CategoryIconViewHolder>() {
     private var selectedViewHolder: CategoryIconViewHolder? = null
+    private var allViewHolders: MutableList<CategoryIconViewHolder> = mutableListOf()
     var selectedIcon: Icon? = selectedViewHolder?.icon
 
     class CategoryIconViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -38,14 +40,31 @@ class CategoryIconRecyclerAdapter(private var drawableIds: List<Icon>): Recycler
             holder.iconHolder.setBackgroundColor(Color.TRANSPARENT)
         }
         holder.iconHolder.setOnClickListener {
-            if (selectedViewHolder!=null) {
-                selectedViewHolder!!.iconHolder.setBackgroundColor(Color.TRANSPARENT)
-                selectedViewHolder!!.isSelected=false
+            changeSelectedIcon(holder)
+        }
+        allViewHolders.add(holder)
+    }
+
+    fun selectIcon(selectedIcon: Icon) {
+        allViewHolders.forEach{ holder ->
+            if (holder.icon.resourceId == selectedIcon.resourceId) {
+                changeSelectedIcon(holder)
+                return
             }
-            holder.isSelected = true
-            holder.iconHolder.setBackgroundResource(R.drawable.sh_card_background)
-            selectedViewHolder = holder
-            selectedIcon = holder.icon
+        }
+    }
+
+    private fun changeSelectedIcon(holder: CategoryIconViewHolder) {
+        if (selectedViewHolder!=null) {
+            selectedViewHolder!!.iconHolder.setBackgroundColor(Color.TRANSPARENT)
+            selectedViewHolder!!.isSelected=false
+        }
+        holder.isSelected = true
+        holder.iconHolder.setBackgroundResource(R.drawable.sh_card_background)
+        selectedViewHolder = holder
+        selectedIcon = holder.icon
+        if (parent!=null) {
+            parent!!.receiveValue(holder.icon.resourceId.toString(), "SelectedIcon")
         }
     }
 }

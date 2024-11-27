@@ -16,16 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Asset
-import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.opencsv.CSVParserBuilder
-import com.opencsv.CSVReader
 import com.opencsv.CSVReaderBuilder
 import java.io.BufferedReader
-import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.time.LocalDate
@@ -53,7 +50,8 @@ class ImportParametersActivity : AppCompatActivity() {
     private lateinit var dateStaticValue: Spinner
     private lateinit var dateSwitchMaterial: SwitchMaterial
     private lateinit var categoryDynamicSpinner: Spinner
-    private lateinit var categoryStaticSpinner: Spinner
+    private lateinit var categoryExpenseStaticSpinner: Spinner
+    private lateinit var categoryIncomeStaticSpinner: Spinner
     private lateinit var categorySwitchMaterial: SwitchMaterial
     private lateinit var commentDynamicSpinner: Spinner
     private lateinit var commentStaticValue: EditText
@@ -113,7 +111,7 @@ class ImportParametersActivity : AppCompatActivity() {
         amountStaticValue.onFocusChangeListener = valueChangedListener
         currencyStaticSpinner.onItemSelectedListener = selectionChangedListener
         dateDynamicSpinner.onFocusChangeListener = valueChangedListener
-        categoryStaticSpinner.onItemSelectedListener = selectionChangedListener
+        categoryExpenseStaticSpinner.onItemSelectedListener = selectionChangedListener
         commentStaticValue.onFocusChangeListener = valueChangedListener
 
         sourceSwitchMaterial.setOnClickListener {
@@ -167,10 +165,12 @@ class ImportParametersActivity : AppCompatActivity() {
         categorySwitchMaterial.setOnClickListener {
             if (categorySwitchMaterial.isChecked) {
                 categoryDynamicSpinner.visibility = View.VISIBLE
-                categoryStaticSpinner.visibility = View.GONE
+                categoryExpenseStaticSpinner.visibility = View.GONE
+                categoryIncomeStaticSpinner.visibility = View.GONE
             } else {
                 categoryDynamicSpinner.visibility = View.GONE
-                categoryStaticSpinner.visibility = View.VISIBLE
+                categoryExpenseStaticSpinner.visibility = View.VISIBLE
+                categoryIncomeStaticSpinner.visibility = View.VISIBLE
             }
             updateExampleTransactionFromCSV(fileUri!!)
             categorySwitchMaterial.text =if (categorySwitchMaterial.isChecked) getString(R.string.string_dynamic) else getString(R.string.string_static)
@@ -218,6 +218,7 @@ class ImportParametersActivity : AppCompatActivity() {
                     if (asset==null) {
                         //TODO("Something Should Be Done Here")
                     }
+                    val dbProvider = LocalDatabaseProvider(this)
                     val amount = parseDouble(if (amountSwitchMaterial.isChecked) line?.get(amountDynamicSpinner.selectedItemPosition)!! else amountStaticValue.text.toString()) ?: 0.0
                     var sourceName: String? = null
                     var sourceId: String? = null
@@ -230,16 +231,20 @@ class ImportParametersActivity : AppCompatActivity() {
                     }
                     if (amount>0) {
                         targetId = asset?.assetId
+                        val categories = dbProvider.getCategories(TransactionType.INCOME)
                         targetName = if (sourceSwitchMaterial.isChecked) line?.get(sourceDynamicSpinner.selectedItemPosition) else sourceStaticSpinner.selectedItem.toString()
                         sourceName = if (targetSwitchMaterial.isChecked) line?.get(targetDynamicSpinner.selectedItemPosition) else targetStaticValue.text.toString()
+                        categoryId = if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else (categories.find { l -> l.name == categoryIncomeStaticSpinner.selectedItem.toString() })?.id
 //                        categoryId = AustromApplication.getActiveIncomeCategories().find {
 //                            it.name == if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else categoryStaticSpinner.selectedItem.toString()
 //                        }?.id.toString()
                     }
                     if (amount<0) {
                         sourceId = asset?.assetId
+                        val categories = dbProvider.getCategories(TransactionType.EXPENSE)
                         sourceName = if (sourceSwitchMaterial.isChecked) line?.get(sourceDynamicSpinner.selectedItemPosition) else sourceStaticSpinner.selectedItem.toString()
                         targetName = if (targetSwitchMaterial.isChecked) line?.get(targetDynamicSpinner.selectedItemPosition) else targetStaticValue.text.toString()
+                        categoryId = if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else (categories.find { l -> l.name == categoryExpenseStaticSpinner.selectedItem.toString() })?.id
 //                        categoryId = AustromApplication.getActiveExpenseCategories().find {
 //                            it.name == if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else categoryStaticSpinner.selectedItem.toString()
 //                        }?.id.toString()
@@ -280,11 +285,11 @@ class ImportParametersActivity : AppCompatActivity() {
             csvReader.readNext().also { line = it }
             csvReader.readNext().also { line = it }
             if (line != null) {
-                sourceTxt.text = if (sourceSwitchMaterial.isChecked) line?.get(sourceDynamicSpinner.selectedItemPosition) else sourceStaticSpinner.selectedItem.toString()
+                sourceTxt.text = if (sourceSwitchMaterial.isChecked) line?.get(sourceDynamicSpinner.selectedItemPosition) else sourceStaticSpinner.selectedItem?.toString()
                 targetTxt.text = if (targetSwitchMaterial.isChecked) line?.get(targetDynamicSpinner.selectedItemPosition) else targetStaticValue.text.toString()
                 amountTxt.text = if (amountSwitchMaterial.isChecked) line?.get(amountDynamicSpinner.selectedItemPosition) else amountStaticValue.text.toString()
-                currencyTxt.text = if (currencySwitchMaterial.isChecked) line?.get(currencyDynamicSpinner.selectedItemPosition) else currencyStaticSpinner.selectedItem.toString()
-                categoryTxt.text = if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else categoryStaticSpinner.selectedItem.toString()
+                currencyTxt.text = if (currencySwitchMaterial.isChecked) line?.get(currencyDynamicSpinner.selectedItemPosition) else currencyStaticSpinner.selectedItem?.toString()
+                categoryTxt.text = if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else categoryExpenseStaticSpinner.selectedItem?.toString()
                 dateTxt.text = if (dateSwitchMaterial.isChecked) line?.get(dateDynamicSpinner.selectedItemPosition) else dateStaticValue.toString()
                 commentTxt.text = if (commentSwitchMaterial.isChecked) line?.get(commentDynamicSpinner.selectedItemPosition) else commentStaticValue.text.toString()
             }
@@ -311,12 +316,16 @@ class ImportParametersActivity : AppCompatActivity() {
                     categoryDynamicSpinner.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, columnNames)
                     commentDynamicSpinner.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, columnNames)
 
+                    val dbProvider = LocalDatabaseProvider(this)
+
                     sourceStaticSpinner.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
                         AustromApplication.activeAssets.map { it.value.assetName })
                     currencyStaticSpinner.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
                         AustromApplication.activeCurrencies.map { it.value.name })
-                    categoryStaticSpinner.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
-                        Category.defaultExpenseCategories.map { it.name!! })
+                    categoryExpenseStaticSpinner.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
+                        dbProvider.getCategories(TransactionType.EXPENSE).map { it.name!! })
+                    categoryIncomeStaticSpinner.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
+                        dbProvider.getCategories(TransactionType.INCOME).map { it.name!! })
                 }
             }
             csvReader.close()
@@ -385,7 +394,8 @@ class ImportParametersActivity : AppCompatActivity() {
         amountStaticValue = findViewById(R.id.imppar_amount_static_txt)
         currencyStaticSpinner = findViewById(R.id.imppar_currency_static_spn)
         dateStaticValue = findViewById(R.id.imppar_date_static_spn)
-        categoryStaticSpinner = findViewById(R.id.imppar_category_static_spn)
+        categoryExpenseStaticSpinner = findViewById(R.id.imppar_category_expense_static_spn2)
+        categoryIncomeStaticSpinner = findViewById(R.id.imppar_category_income_static_spn)
         commentStaticValue = findViewById(R.id.imppar_comment_static_txt)
 
         sourceSwitchMaterial = findViewById(R.id.imppar_sourceSwitch_sch)

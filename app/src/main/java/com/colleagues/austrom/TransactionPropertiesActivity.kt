@@ -157,6 +157,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
 
     @SuppressLint("SetTextI18n")
     private fun setUpTransactionProperties() {
+        val dbProvider = LocalDatabaseProvider(this)
         if (transaction.transactionType()!=TransactionType.TRANSFER) {
             toLayout.visibility = View.GONE
         }
@@ -168,7 +169,9 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         targetCurrency.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
         ownerText.text = AustromApplication.knownUsers[transaction.userId]?.username.startWithUppercase()
         dateText.text = transaction.transactionDate?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-        categoryText.text = transaction.categoryId
+        if (transaction.categoryId!=null) {
+            categoryText.text = dbProvider.getCategoryById(transaction.categoryId!!)?.name
+        }
         setUpAttachedImage()
         when (transaction.transactionType()) {
             TransactionType.INCOME ->

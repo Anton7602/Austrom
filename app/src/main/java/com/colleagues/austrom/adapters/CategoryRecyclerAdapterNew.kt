@@ -41,7 +41,7 @@ class CategoryRecyclerAdapterNew(private val categories: List<Category>,
         holder.categoryName.text = categories[position].name
         holder.categoryImage.setImageResource(categories[position].imgReference?.resourceId ?: R.drawable.ic_placeholder_icon)
         holder.categoryHolder.setOnClickListener {
-            activity.startActivity(Intent(activity, CategoryCreationActivity::class.java).putExtra("CategoryName", holder.categoryName.text.toString()))
+            activity.startActivity(Intent(activity, CategoryCreationActivity::class.java).putExtra("CategoryId", categories[position].id))
         }
     }
 }

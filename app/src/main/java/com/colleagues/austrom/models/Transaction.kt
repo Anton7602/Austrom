@@ -27,7 +27,7 @@ class Transaction(
     val targetName: String? = null,
     val amount: Double = 0.0,
     val secondaryAmount: Double? = null,
-    val categoryId: String? = null,
+    var categoryId: String? = null,
     var transactionDate: LocalDate? = null,
     var transactionDateInt: Int? = null,
     var comment: String? = null)

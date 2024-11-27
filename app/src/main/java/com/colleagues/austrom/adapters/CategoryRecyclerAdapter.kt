@@ -26,7 +26,7 @@ class CategoryRecyclerAdapter(private val categories: MutableList<Category>,
     }
 
     init {
-        if (isShowingCreateNewCategoryButton) categories.add(Category(0,"Add New Category"))
+        if (isShowingCreateNewCategoryButton) categories.add(Category("New Category","Add New Category"))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {

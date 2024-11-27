@@ -201,7 +201,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="Fileds Mapping"
+                android:text="@string/fileds_mapping"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <LinearLayout
@@ -496,7 +496,14 @@
                     android:padding="8dp" />
 
                 <Spinner
-                    android:id="@+id/imppar_category_static_spn"
+                    android:id="@+id/imppar_category_income_static_spn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/imppar_category_expense_static_spn2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="8dp"

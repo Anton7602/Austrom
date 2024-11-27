@@ -355,4 +355,6 @@
     <string name="comment">Comment</string>
     <string name="transaction_example">Transaction Example</string>
     <string name="currency">Currency</string>
+    <string name="update">Update</string>
+    <string name="fileds_mapping">Fileds Mapping</string>
 </resources>
