@@ -3,6 +3,7 @@ package com.colleagues.austrom
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.CategoryIconRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.dialogs.CategoryPullDialogFragment
+import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.managers.IconManager
 import com.colleagues.austrom.models.Category
@@ -32,8 +35,7 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
         setContentView(R.layout.activity_category_creation)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            //v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
         bindViews()
@@ -84,14 +86,20 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
                     type = "Mandatory",
                     imgReference = (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon,
                     transactionType = TransactionType.EXPENSE))
+                finish()
             } else {
-                var transactions = dbProvider.getTransactionOfCategory(category!!)
-                transactions.forEach{ transaction ->
-                    transaction.categoryId = category!!.id
-                    //TODO("FINISH!!!!")
+                if (dbProvider.getCategories(category!!.transactionType).size<=1) {
+                    Toast.makeText(this, getString(R.string.category_delete_not_allowed), Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                val transactions = dbProvider.getTransactionOfCategory(category!!)
+                if (transactions.isEmpty()) {
+                    dbProvider.deleteCategory(category!!)
+                    finish()
+                } else {
+                    CategoryPullDialogFragment(category!!, transactions, this).show(supportFragmentManager, "Transaction Target Dialog")
                 }
             }
-            finish()
         }
 
         iconHolder.setOnClickListener {
@@ -112,9 +120,22 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
     }
 
     override fun receiveValue(value: String, valueType: String) {
-        val drawableID = value.toIntOrNull()
-        if (drawableID!=null) {
-            selectedIconImage.setImageResource(drawableID)
+        when(valueType) {
+            "TransactionTransfer" -> {
+                if (value == "Success") {
+                    if (category!=null) {
+                        val dbProvider = LocalDatabaseProvider(this)
+                        dbProvider.deleteCategory(category!!)
+                        finish()
+                    }
+                }
+            }
+            "SelectedIcon" -> {
+                val drawableID = value.toIntOrNull()
+                if (drawableID!=null) {
+                    selectedIconImage.setImageResource(drawableID)
+                }
+            }
         }
     }
 }

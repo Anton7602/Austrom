@@ -15,8 +15,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.colleagues.austrom.adapters.CategoryArrayAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -51,7 +53,9 @@ class ImportParametersActivity : AppCompatActivity() {
     private lateinit var dateSwitchMaterial: SwitchMaterial
     private lateinit var categoryDynamicSpinner: Spinner
     private lateinit var categoryExpenseStaticSpinner: Spinner
+    private lateinit var categoryExpenseStaticLabel: TextView
     private lateinit var categoryIncomeStaticSpinner: Spinner
+    private lateinit var categoryIncomeStaticLabel: TextView
     private lateinit var categorySwitchMaterial: SwitchMaterial
     private lateinit var commentDynamicSpinner: Spinner
     private lateinit var commentStaticValue: EditText
@@ -165,11 +169,15 @@ class ImportParametersActivity : AppCompatActivity() {
         categorySwitchMaterial.setOnClickListener {
             if (categorySwitchMaterial.isChecked) {
                 categoryDynamicSpinner.visibility = View.VISIBLE
+                categoryExpenseStaticLabel.visibility = View.GONE
                 categoryExpenseStaticSpinner.visibility = View.GONE
+                categoryIncomeStaticLabel.visibility = View.GONE
                 categoryIncomeStaticSpinner.visibility = View.GONE
             } else {
                 categoryDynamicSpinner.visibility = View.GONE
+                categoryExpenseStaticLabel.visibility = View.VISIBLE
                 categoryExpenseStaticSpinner.visibility = View.VISIBLE
+                categoryIncomeStaticLabel.visibility = View.VISIBLE
                 categoryIncomeStaticSpinner.visibility = View.VISIBLE
             }
             updateExampleTransactionFromCSV(fileUri!!)
@@ -234,7 +242,7 @@ class ImportParametersActivity : AppCompatActivity() {
                         val categories = dbProvider.getCategories(TransactionType.INCOME)
                         targetName = if (sourceSwitchMaterial.isChecked) line?.get(sourceDynamicSpinner.selectedItemPosition) else sourceStaticSpinner.selectedItem.toString()
                         sourceName = if (targetSwitchMaterial.isChecked) line?.get(targetDynamicSpinner.selectedItemPosition) else targetStaticValue.text.toString()
-                        categoryId = if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else (categories.find { l -> l.name == categoryIncomeStaticSpinner.selectedItem.toString() })?.id
+                        categoryId = if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else (categoryIncomeStaticSpinner.selectedItem as Category).id
 //                        categoryId = AustromApplication.getActiveIncomeCategories().find {
 //                            it.name == if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else categoryStaticSpinner.selectedItem.toString()
 //                        }?.id.toString()
@@ -244,7 +252,7 @@ class ImportParametersActivity : AppCompatActivity() {
                         val categories = dbProvider.getCategories(TransactionType.EXPENSE)
                         sourceName = if (sourceSwitchMaterial.isChecked) line?.get(sourceDynamicSpinner.selectedItemPosition) else sourceStaticSpinner.selectedItem.toString()
                         targetName = if (targetSwitchMaterial.isChecked) line?.get(targetDynamicSpinner.selectedItemPosition) else targetStaticValue.text.toString()
-                        categoryId = if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else (categories.find { l -> l.name == categoryExpenseStaticSpinner.selectedItem.toString() })?.id
+                        categoryId = if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else (categoryExpenseStaticSpinner.selectedItem as Category).id
 //                        categoryId = AustromApplication.getActiveExpenseCategories().find {
 //                            it.name == if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else categoryStaticSpinner.selectedItem.toString()
 //                        }?.id.toString()
@@ -322,10 +330,8 @@ class ImportParametersActivity : AppCompatActivity() {
                         AustromApplication.activeAssets.map { it.value.assetName })
                     currencyStaticSpinner.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
                         AustromApplication.activeCurrencies.map { it.value.name })
-                    categoryExpenseStaticSpinner.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
-                        dbProvider.getCategories(TransactionType.EXPENSE).map { it.name!! })
-                    categoryIncomeStaticSpinner.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
-                        dbProvider.getCategories(TransactionType.INCOME).map { it.name!! })
+                    categoryExpenseStaticSpinner.adapter = CategoryArrayAdapter(this, dbProvider.getCategories(TransactionType.EXPENSE))
+                    categoryIncomeStaticSpinner.adapter = CategoryArrayAdapter(this, dbProvider.getCategories(TransactionType.INCOME))
                 }
             }
             csvReader.close()
@@ -395,7 +401,9 @@ class ImportParametersActivity : AppCompatActivity() {
         currencyStaticSpinner = findViewById(R.id.imppar_currency_static_spn)
         dateStaticValue = findViewById(R.id.imppar_date_static_spn)
         categoryExpenseStaticSpinner = findViewById(R.id.imppar_category_expense_static_spn2)
+        categoryExpenseStaticLabel = findViewById(R.id.imppar_category_expense_label)
         categoryIncomeStaticSpinner = findViewById(R.id.imppar_category_income_static_spn)
+        categoryIncomeStaticLabel = findViewById(R.id.imppar_category_income_label)
         commentStaticValue = findViewById(R.id.imppar_comment_static_txt)
 
         sourceSwitchMaterial = findViewById(R.id.imppar_sourceSwitch_sch)

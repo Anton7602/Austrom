@@ -294,4 +294,10 @@ class LocalDatabaseProvider(private val context: Context) {
             dao.updateCategory(category)
         }
     }
+
+    fun deleteCategory(category: Category) {
+        runBlocking {
+            localDatabase.categoryDao().deleteCategory(category)
+        }
+    }
 }

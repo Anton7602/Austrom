@@ -356,4 +356,7 @@
     <string name="currency">Валюта</string>
     <string name="update">Обновить</string>
     <string name="fileds_mapping">Назначение Полей</string>
+    <string name="transactions_transfer">Перенос транзакций</string>
+    <string name="transaction_Transfer_message">Категория, которую вы пытаетесь удалить содержит %s транзакций. Пожалуйста, выберите с какой категорией ассоциировать эти транзакции в будущем.</string>
+    <string name="category_delete_not_allowed">Невозможно удалить выбранную категорию. Хотя бы одна категория должна оставаться в каждом типе транзакции</string>
 </resources>

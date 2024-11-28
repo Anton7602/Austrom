@@ -495,11 +495,31 @@
                     android:layout_height="wrap_content"
                     android:padding="8dp" />
 
+                <TextView
+                    android:id="@+id/imppar_category_income_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/income"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="10sp"
+                    android:visibility="gone" />
+
                 <Spinner
                     android:id="@+id/imppar_category_income_static_spn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/imppar_category_expense_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/expense"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="10sp"
                     android:visibility="gone" />
 
                 <Spinner

@@ -356,5 +356,9 @@
     <string name="transaction_example">Transaction Example</string>
     <string name="currency">Currency</string>
     <string name="update">Update</string>
-    <string name="fileds_mapping">Fileds Mapping</string>
+    <string name="fileds_mapping">Fields Mapping</string>
+    <string name="transactions_transfer">Transactions Transfer</string>
+    <string name="transaction_Transfer_message">Category you are trying to delete contains %s transactions. Please, select new category for them to be associated with.</string>
+    <string name="category_delete_not_allowed">Can\'t delete this category. At least one category has to be present in every transaction type</string>
+
 </resources>
