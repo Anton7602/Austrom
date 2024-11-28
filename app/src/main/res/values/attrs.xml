@@ -5,7 +5,8 @@
         <attr name="secondaryText" format="string" />
         <attr name="settingIcon" format="reference" />
     </declare-styleable>
-    <declare-styleable name="ImportFieldControlView">
-        <attr name="fieldName" format="string" />
+    <declare-styleable name="TransactionHeaderView">
+        <attr name="IncomeSum" format="float" />
+        <attr name="ExpenseSum" format="float" />
     </declare-styleable>
 </resources>

@@ -14,14 +14,17 @@ import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.TransactionCreationDialogFragment
 import com.colleagues.austrom.dialogs.TransactionFilter
+import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
+import com.colleagues.austrom.views.TransactionHeaderView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
     private lateinit var transactionHolder: RecyclerView
+    private lateinit var transactionsHeader: TransactionHeaderView
     private lateinit var addNewTransactionButton: FloatingActionButton
     private lateinit var addIncomeButton: FloatingActionButton
     private lateinit var addExpenseButton: FloatingActionButton
@@ -81,6 +84,18 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
                 setUpRecyclerView(transactionList)
             }
         }
+        var incomeSum = 0.0
+        var expenseSum = 0.0
+        transactionList.forEach{ transaction ->
+            if (transaction.transactionType() == TransactionType.EXPENSE) {
+                expenseSum+=transaction.amount
+            }
+            if (transaction.transactionType() == TransactionType.INCOME) {
+                incomeSum+=transaction.amount
+            }
+        }
+        transactionsHeader.setIncome(incomeSum)
+        transactionsHeader.setExpense(expenseSum)
     }
 
     fun filterTransactions(filter: TransactionFilter) {
@@ -129,5 +144,6 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
         addIncomeButton = view.findViewById(R.id.ops_income_fab)
         addExpenseButton = view.findViewById(R.id.ops_expense_fab)
         addTransferButton = view.findViewById(R.id.ops_transfer_fab)
+        transactionsHeader = view.findViewById(R.id.ops_transactionsHeader_trhed)
     }
 }
