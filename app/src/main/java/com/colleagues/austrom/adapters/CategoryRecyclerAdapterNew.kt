@@ -16,6 +16,7 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionPropertiesActivity
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.models.TransactionType
 
 class CategoryRecyclerAdapterNew(private val categories: List<Category>,
                                  private val activity: AppCompatActivity,
@@ -38,10 +39,16 @@ class CategoryRecyclerAdapterNew(private val categories: List<Category>,
     }
 
     override fun onBindViewHolder(holder: CategoryNewViewHolder, position: Int) {
-        holder.categoryName.text = categories[position].name
-        holder.categoryImage.setImageResource(categories[position].imgReference?.resourceId ?: R.drawable.ic_placeholder_icon)
+        val category = categories[position]
+        holder.categoryName.text = category.name
+        holder.categoryImage.setImageResource(category.imgReference?.resourceId ?: R.drawable.ic_placeholder_icon)
+        holder.editButton.visibility = if (category.id.isNotEmpty()) View.VISIBLE else View.GONE
         holder.categoryHolder.setOnClickListener {
-            activity.startActivity(Intent(activity, CategoryCreationActivity::class.java).putExtra("CategoryId", categories[position].id))
+            if (category.id.isNotEmpty()) {
+                activity.startActivity(Intent(activity, CategoryCreationActivity::class.java).putExtra("CategoryId", categories[position].id))
+            } else {
+                activity.startActivity(Intent(activity, CategoryCreationActivity::class.java).putExtra("isExpenseCategory", (category.transactionType == TransactionType.EXPENSE)))
+            }
         }
     }
 }

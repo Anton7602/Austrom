@@ -8,6 +8,7 @@
     tools:context=".CategoryCreationActivity">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView9"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:cardBackgroundColor="@color/navigationBarColor"
@@ -22,10 +23,9 @@
         android:id="@+id/catcr_categoryName_til"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/catcr_negativeResult_btn"
         app:layout_constraintStart_toEndOf="@+id/catcr_categoryIcon_img"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -57,50 +57,10 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/toggleButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/catcr_negativeResult_btn"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="@color/decline_red"
-            android:paddingVertical="12dp"
-            android:text="@string/expense"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:drawableStart="@drawable/ic_transactiontype_expense_temp" />
-
-        <Button
-            android:id="@+id/catcr_positiveResult_btn"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="@color/dark_green"
-            android:paddingVertical="12dp"
-            android:text="@string/income"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:drawableEnd="@drawable/ic_transactiontype_income_temp" />
-    </com.google.android.material.button.MaterialButtonToggleGroup>
-
     <ImageButton
         android:id="@+id/catcr_categoryIcon_img"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
         android:backgroundTint="@color/transparent"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@+id/catcr_categoryName_til"
@@ -108,4 +68,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/catcr_categoryName_til"
         app:srcCompat="@drawable/ic_placeholder_icon" />
+
+    <ImageButton
+        android:id="@+id/catcr_negativeResult_btn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/sh_icon_background"
+        android:backgroundTint="@color/expenseRed"
+        app:layout_constraintBottom_toBottomOf="@+id/catcr_positiveResult_btn"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintEnd_toStartOf="@+id/catcr_positiveResult_btn"
+        app:layout_constraintTop_toTopOf="@+id/catcr_positiveResult_btn"
+        app:srcCompat="@drawable/ic_navigation_close_temp" />
+
+    <ImageButton
+        android:id="@+id/catcr_positiveResult_btn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/sh_icon_background"
+        android:backgroundTint="@color/incomeGreen"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/catcr_categoryIcon_img"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/catcr_categoryIcon_img"
+        app:srcCompat="@drawable/ic_navigation_done_temp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

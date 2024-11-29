@@ -5,7 +5,6 @@ import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.colleagues.austrom.R
@@ -14,20 +13,25 @@ import com.colleagues.austrom.extensions.toMoneyFormat
 class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(context, attrs) {
     private lateinit var incomeSumTextView: TextView
     private lateinit var expenseSumTextView: TextView
+    private lateinit var holderCardView: CardView
+
+    private var incomeSum: Double = 0.0
+    private var expenseSum: Double = 0.0
+    private var currencySymbol: String = "$"
 
     init {
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(R.layout.view_transaction_list_header, this, true)
         bindViews(view)
 
-        // Obtain custom attributes
         val attributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.TransactionHeaderView)
-        val incomeSum = attributes.getFloat(R.styleable.TransactionHeaderView_IncomeSum, 0f).toDouble()
-        val expenseSum = attributes.getFloat(R.styleable.TransactionHeaderView_ExpenseSum, 0f).toDouble()
+        incomeSum = attributes.getFloat(R.styleable.TransactionHeaderView_IncomeSum, 0f).toDouble()
+        expenseSum = attributes.getFloat(R.styleable.TransactionHeaderView_ExpenseSum, 0f).toDouble()
+        currencySymbol = attributes.getString(R.styleable.TransactionHeaderView_CurrencySymbol) ?: "$"
 
-        // Set attributes to views
-        incomeSumTextView.text = incomeSum.toMoneyFormat() ?: "0.0 $"
-        expenseSumTextView.text = expenseSum.toMoneyFormat() ?: "0.0 $"
+        incomeSumTextView.text = "${incomeSum.toMoneyFormat()} $currencySymbol"
+        expenseSumTextView.text = "${expenseSum.toMoneyFormat()} $currencySymbol"
+        holderCardView.setBackgroundResource(R.drawable.img_transaction_header_card_background)
 
         attributes.recycle()
     }
@@ -35,13 +39,22 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
     private fun bindViews(view: View) {
         incomeSumTextView = view.findViewById(R.id.trlistheadview_incomeSum_txt)
         expenseSumTextView = view.findViewById(R.id.trlistheadview_expenseSum_txt)
+        holderCardView = view.findViewById(R.id.trlistheadview_holder_crd)
     }
 
     fun setIncome(value: Double) {
-        incomeSumTextView.text = value.toMoneyFormat()
+        incomeSum = value
+        incomeSumTextView.text = "${incomeSum.toMoneyFormat()} $currencySymbol"
     }
 
     fun setExpense(value: Double) {
-        expenseSumTextView.text = value.toMoneyFormat()
+        expenseSum = value
+        expenseSumTextView.text = "${expenseSum.toMoneyFormat()} $currencySymbol"
+    }
+
+    fun setCurrencySymbol(value: String) {
+        currencySymbol = value
+        incomeSumTextView.text = "${incomeSum.toMoneyFormat()} $currencySymbol"
+        expenseSumTextView.text = "${expenseSum.toMoneyFormat()} $currencySymbol"
     }
 }

@@ -135,7 +135,7 @@ class MainActivity : AppCompatActivity() {
         transaction.replace(R.id.main_fragmentHolder_frg, fragment)
         when (fragment) {
             is BalanceFragment -> filterButton.visibility = View.VISIBLE
-            is OpsFragment -> filterButton.visibility = View.VISIBLE
+            is OpsFragment -> filterButton.visibility = View.GONE
             else -> filterButton.visibility = View.GONE
         }
         transaction.commit()

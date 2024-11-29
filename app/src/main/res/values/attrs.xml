@@ -8,5 +8,6 @@
     <declare-styleable name="TransactionHeaderView">
         <attr name="IncomeSum" format="float" />
         <attr name="ExpenseSum" format="float" />
+        <attr name="CurrencySymbol" format="string" />
     </declare-styleable>
 </resources>

@@ -3,192 +3,203 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/backgroundColor">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/tritem_transactionHolder_cdv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="2dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="2dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="10dp"
+        android:background="@drawable/img_transaction_card_background"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="w,1:7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tritem_date_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:text="August 11, Saturday"
-                android:textColor="#929191"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+            <ImageView
+                android:id="@+id/tritem_iconBackgroundShape_img"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:contentDescription="categoryBackground"
+                app:layout_constraintBottom_toTopOf="@+id/guideline20"
+                app:layout_constraintEnd_toStartOf="@+id/guideline12"
+                app:layout_constraintStart_toStartOf="@+id/guideline16"
+                app:layout_constraintTop_toTopOf="@+id/guideline19"
+                app:srcCompat="@drawable/sh_icon_background"
                 tools:ignore="HardcodedText" />
 
             <ImageView
                 android:id="@+id/tritem_categoryIcon_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tritem_date_txt"
-                app:srcCompat="@drawable/ic_placeholder_icon" />
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:contentDescription="@string/category"
+                android:elevation="2dp"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tritem_iconBackgroundShape_img"
+                app:layout_constraintDimensionRatio="h,"
+                app:layout_constraintEnd_toStartOf="@+id/guideline12"
+                app:layout_constraintStart_toStartOf="@+id/guideline16"
+                app:layout_constraintTop_toTopOf="@+id/tritem_iconBackgroundShape_img"
+                app:srcCompat="@drawable/ic_placeholder_icon"
+                app:tint="@color/primaryTextColor" />
 
             <TextView
                 android:id="@+id/tritem_targetName_txt"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_height="0dp"
                 android:layout_marginEnd="8dp"
+                android:maxLines="1"
                 android:text="Target"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/tritem_categoryIcon_img"
+                android:textAppearance="@style/PrimaryCardTextAutoscale"
+                app:layout_constraintBottom_toTopOf="@+id/guideline10"
                 app:layout_constraintEnd_toStartOf="@+id/tritem_amount_txt"
-                app:layout_constraintStart_toEndOf="@+id/tritem_categoryIcon_img"
-                app:layout_constraintTop_toTopOf="@+id/tritem_categoryIcon_img"
+                app:layout_constraintStart_toStartOf="@+id/guideline9"
+                app:layout_constraintTop_toTopOf="@+id/guideline14"
                 tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/tritem_amount_txt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
+                android:layout_height="0dp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/dm_sans_light"
                 android:text="-160.00"
                 android:textAlignment="viewEnd"
+                android:textColor="@color/expenseRed"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/tritem_targetName_txt"
+                app:layout_constraintBottom_toTopOf="@+id/guideline10"
                 app:layout_constraintEnd_toStartOf="@+id/tritem_currencySymbol_txt"
-                app:layout_constraintTop_toTopOf="@+id/tritem_targetName_txt"
+                app:layout_constraintTop_toTopOf="@+id/guideline14"
                 tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/tritem_currencySymbol_txt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_height="0dp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/dm_sans_light"
                 android:text="$"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/expenseRed"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/tritem_amount_txt"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline13"
                 app:layout_constraintTop_toTopOf="@+id/tritem_amount_txt"
                 tools:ignore="HardcodedText" />
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:background="@color/transparent"
-                app:layout_constraintStart_toStartOf="@+id/tritem_targetName_txt"
-                app:layout_constraintTop_toBottomOf="@+id/tritem_targetName_txt"
-                app:srcCompat="@drawable/ic_transaction_source_temp" />
-
             <TextView
                 android:id="@+id/tritem_categoryName_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="bottom"
+                android:maxLines="1"
                 android:text="Category"
-                android:textColor="#929191"
-                android:textSize="12sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintTop_toTopOf="@+id/imageView2"
+                android:textAppearance="@style/SecondaryCardTextAutoscale"
+                app:layout_constraintBottom_toTopOf="@+id/guideline15"
+                app:layout_constraintEnd_toStartOf="@+id/guideline17"
+                app:layout_constraintStart_toStartOf="@+id/guideline9"
+                app:layout_constraintTop_toTopOf="@+id/guideline18"
                 tools:ignore="HardcodedText" />
-
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@+id/imageView2"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2"
-                app:srcCompat="@drawable/ic_transaction_target_temp" />
 
             <TextView
                 android:id="@+id/tritem_sourceName_txt"
                 android:layout_width="0dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="4dp"
+                android:layout_height="0dp"
+                android:gravity="bottom|end"
+                android:maxLines="1"
                 android:text="Source"
-                android:textColor="@color/dark_grey"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                app:layout_constraintEnd_toStartOf="@+id/tritem_secondarycurrency_txt"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintTop_toTopOf="@+id/imageView2"
+                android:textAppearance="@style/SecondaryCardTextAutoscale"
+                app:layout_constraintBottom_toTopOf="@+id/guideline15"
+                app:layout_constraintEnd_toStartOf="@+id/guideline13"
+                app:layout_constraintStart_toStartOf="@+id/guideline17"
+                app:layout_constraintTop_toTopOf="@+id/guideline18"
                 tools:ignore="HardcodedText" />
 
-            <ImageView
-                android:id="@+id/imageView4"
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/imageView3"
-                app:layout_constraintTop_toBottomOf="@+id/imageView3"
-                app:srcCompat="@drawable/ic_transaction_comment_temp" />
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.1937" />
 
-            <TextView
-                android:id="@+id/tritem_comment_txt"
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Comment (Not Yet Supported)"
-                android:textColor="#929191"
-                android:textSize="12sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-                app:layout_constraintStart_toEndOf="@+id/imageView4"
-                app:layout_constraintTop_toTopOf="@+id/imageView4"
-                tools:ignore="HardcodedText" />
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
 
-            <TextView
-                android:id="@+id/tritem_secondarycurrency_txt"
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RUB"
-                android:textColor="#929191"
-                android:textSize="12sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/tritem_sourceName_txt"
-                app:layout_constraintEnd_toEndOf="@+id/tritem_currencySymbol_txt"
-                app:layout_constraintTop_toTopOf="@+id/tritem_sourceName_txt"
-                tools:ignore="HardcodedText" />
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.15" />
 
-            <TextView
-                android:id="@+id/tritem_secondaryamount_txt"
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:text="-16000"
-                android:textColor="#929191"
-                android:textSize="12sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/tritem_secondarycurrency_txt"
-                app:layout_constraintEnd_toStartOf="@+id/tritem_secondarycurrency_txt"
-                app:layout_constraintTop_toTopOf="@+id/tritem_secondarycurrency_txt"
-                tools:ignore="HardcodedText" />
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.95" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.2" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.80" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.05" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.55" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.15" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.85" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

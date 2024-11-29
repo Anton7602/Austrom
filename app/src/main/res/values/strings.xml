@@ -360,5 +360,9 @@
     <string name="transactions_transfer">Transactions Transfer</string>
     <string name="transaction_Transfer_message">Category you are trying to delete contains %s transactions. Please, select new category for them to be associated with.</string>
     <string name="category_delete_not_allowed">Can\'t delete this category. At least one category has to be present in every transaction type</string>
+    <string name="fromAsset">from</string>
+    <string name="toAsset">to</string>
+    <string name="create_transaction">Create Transaction</string>
+    <string name="empty_name_category_not_allower">Please, specify category name</string>
 
 </resources>

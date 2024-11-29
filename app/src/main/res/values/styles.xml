@@ -8,4 +8,28 @@
         <item name="android:backgroundTint">@color/transparent</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
+    <style name="PrimaryCardText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:fontFamily">@font/dm_sans_light</item>
+    </style>
+
+    <style name="SecondaryCardText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/secondaryTextColor</item>
+        <item name="android:fontFamily">@font/dm_sans_light</item>
+    </style>
+
+    <style name="PrimaryCardTextAutoscale" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:fontFamily">@font/dm_sans_light</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">11sp</item>
+    </style>
+
+    <style name="SecondaryCardTextAutoscale" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/secondaryTextColor</item>
+        <item name="android:fontFamily">@font/dm_sans_light</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">11sp</item>
+    </style>
 </resources>

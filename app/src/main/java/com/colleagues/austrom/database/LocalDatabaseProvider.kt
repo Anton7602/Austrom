@@ -140,6 +140,15 @@ class LocalDatabaseProvider(private val context: Context) {
         return assetMap
     }
 
+    fun getAssetById(assetId: String): Asset? {
+        var asset: Asset? = null
+        val dao = localDatabase.assetDao()
+        runBlocking {
+            asset = dao.getAssetById(assetId).first()
+        }
+        return asset
+    }
+
 //    override fun createNewBudget(budget: Budget): String? {
 //        TODO("Not yet implemented")
 //    }

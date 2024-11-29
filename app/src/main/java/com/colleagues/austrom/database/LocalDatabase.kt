@@ -87,6 +87,9 @@ interface AssetDao {
 
     @Query("SELECT * FROM Asset")
     suspend fun getAssetsOfBudget(): List<Asset>
+
+    @Query("SELECT * FROM Asset WHERE Asset.assetId = :id")
+    suspend fun getAssetById(id: String): List<Asset>
 }
 
 @Dao

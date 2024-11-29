@@ -11,8 +11,13 @@
     <color name="dark_green">#FF006400</color>
     <color name="decline_red">#FFFF0000</color>
 
+    <color name="backgroundColor">#FF0C0C0C</color>
     <color name="expenseRed">#FFD42222</color>
+    <color name="transferYellow">#FFF0AA28</color>
     <color name="incomeGreen">#FF64A30E</color>
     <color name="transactionGrey">#FF6F737E</color>
+    <color name="primaryTextColor">#FFFFFFFF</color>
+    <color name="secondaryTextColor">#FF6F737E</color>
+
 
 </resources>

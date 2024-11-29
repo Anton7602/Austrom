@@ -3,15 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor">
 
     <com.colleagues.austrom.views.TransactionHeaderView
         android:id="@+id/ops_transactionsHeader_trhed"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,7 +21,9 @@
         android:id="@+id/ops_transactionHolder_rcv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -28,15 +31,28 @@
         app:layout_constraintTop_toBottomOf="@+id/ops_transactionsHeader_trhed"
         tools:listitem="@layout/item_transaction_group" />
 
+    <ImageButton
+        android:id="@+id/ops_createNewTransaction_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="-2dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/img_add_new_button_background"
+        android:contentDescription="@string/create_transaction"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_navigation_add_temp"
+        app:tint="@color/primaryTextColor" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/ops_addNew_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:contentDescription="@string/add_new_asset"
         android:focusable="true"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_navigation_add_temp" />
@@ -66,7 +82,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/ops_income_fab"
         app:layout_constraintEnd_toStartOf="@+id/ops_addNew_fab"
-        app:srcCompat="@drawable/ic_transactiontype_transfer_temp"/>
+        app:srcCompat="@drawable/ic_transactiontype_transfer_temp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/ops_expense_fab"

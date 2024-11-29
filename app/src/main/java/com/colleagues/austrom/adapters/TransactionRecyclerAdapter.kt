@@ -15,7 +15,6 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionPropertiesActivity
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
@@ -28,13 +27,10 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
     class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val categoryName: TextView = itemView.findViewById(R.id.tritem_categoryName_txt)
         val categoryImage: ImageView = itemView.findViewById(R.id.tritem_categoryIcon_img)
-        val transactionDate: TextView = itemView.findViewById(R.id.tritem_date_txt)
         val amount: TextView = itemView.findViewById(R.id.tritem_amount_txt)
         val currencySymbol: TextView = itemView.findViewById(R.id.tritem_currencySymbol_txt)
-        val sourceName: TextView = itemView.findViewById(R.id.tritem_sourceName_txt)
-        val targetName: TextView = itemView.findViewById(R.id.tritem_targetName_txt)
-        val secondaryAmount: TextView = itemView.findViewById(R.id.tritem_secondaryamount_txt)
-        val secondaryCurrency: TextView = itemView.findViewById(R.id.tritem_secondarycurrency_txt)
+        val primaryParticipant: TextView = itemView.findViewById(R.id.tritem_sourceName_txt)
+        val secondaryParticipant: TextView = itemView.findViewById(R.id.tritem_targetName_txt)
         val transactionHolder: CardView = itemView.findViewById(R.id.tritem_transactionHolder_cdv)
     }
 
@@ -49,20 +45,15 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
         val dbProvider = LocalDatabaseProvider(activity)
+        holder.transactionHolder.setBackgroundResource(R.drawable.img_transaction_card_background)
         val transaction = transactions[position]
-        holder.categoryName.text = transaction.categoryId
-        holder.sourceName.text = transaction.sourceName
-        holder.targetName.text = transaction.targetName
+
         val source = AustromApplication.activeAssets[transaction.sourceId]
         val target = AustromApplication.activeAssets[transaction.targetId]
-        var category : Category? =  if (transaction.categoryId!=null) dbProvider.getCategoryById(transaction.categoryId!!) else null
+        val category : Category? =  if (transaction.categoryId!=null) dbProvider.getCategoryById(transaction.categoryId!!) else null
+        holder.categoryName.text = category?.name
         when (transaction.transactionType()) {
             TransactionType.TRANSFER -> {
-                holder.secondaryAmount.visibility = View.VISIBLE
-                holder.secondaryAmount.text ="-" + transaction.amount.toMoneyFormat()
-                holder.secondaryAmount.setTextColor(Color.RED)
-                holder.secondaryCurrency.visibility = View.VISIBLE
-                holder.secondaryCurrency.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
                 holder.amount.text ="+" + if(transaction.secondaryAmount==null) transaction.amount.toMoneyFormat() else transaction.secondaryAmount?.toMoneyFormat()
                 holder.amount.setTextColor(Color.rgb(0,100,0))
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
@@ -70,16 +61,21 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
             }
             TransactionType.EXPENSE -> {
                 holder.amount.text ="-" + transaction.amount.toMoneyFormat()
-                holder.amount.setTextColor(Color.RED)
+                holder.amount.setTextColor(activity.getColor(R.color.expenseRed))
+                holder.currencySymbol.setTextColor(activity.getColor(R.color.expenseRed))
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
+                holder.primaryParticipant.text = "${activity.getString(R.string.fromAsset)} ${transaction.sourceName}"
+                holder.secondaryParticipant.text = transaction.targetName
             }
             TransactionType.INCOME -> {
                 holder.amount.text = "+" + transaction.amount.toMoneyFormat()
-                holder.amount.setTextColor(Color.rgb(0,100,0))
+                holder.amount.setTextColor(activity.getColor(R.color.incomeGreen))
+                holder.currencySymbol.setTextColor(activity.getColor(R.color.incomeGreen))
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
+                holder.primaryParticipant.text = "${activity.getString(R.string.toAsset)} ${transaction.targetName}"
+                holder.secondaryParticipant.text = transaction.sourceName
             }
         }
-        holder.transactionDate.text = transaction.transactionDate?.toDayOfWeekAndShortDateFormat()
         if (category!=null) {
             holder.categoryImage.setImageResource(category.imgReference!!.resourceId)
         }

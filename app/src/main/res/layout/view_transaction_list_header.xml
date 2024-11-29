@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparent">
+    android:background="@color/backgroundColor"
+    android:elevation="0dp">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/trlistheadview_holder_crd"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginVertical="5dp"
@@ -15,29 +17,12 @@
         app:layout_constraintDimensionRatio="5.5:2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/img_transaction_header_card_background">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="17dp"
-            android:paddingBottom="17dp">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                android:fontFamily="@font/dm_sans_light"
-                android:text="13 Nov - 13 Dec"
-                android:visibility="gone"
-                app:chipCornerRadius="10dp"
-                app:chipMinHeight="0dp"
-                app:chipMinTouchTargetSize="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline8"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toTopOf="@+id/guideline7" />
+            android:layout_height="match_parent">
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroup"
@@ -117,7 +102,7 @@
                 android:text="@string/expense"
                 android:textAlignment="center"
                 android:textColor="@color/transactionGrey"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 app:layout_constraintBottom_toBottomOf="@+id/cardView6"
                 app:layout_constraintEnd_toStartOf="@+id/guideline4"
                 app:layout_constraintStart_toStartOf="@+id/guideline" />
@@ -129,17 +114,17 @@
                 android:layout_marginStart="8dp"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/dm_sans"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:lines="1"
                 android:maxLines="1"
                 android:paddingVertical="2dp"
                 android:text="97.5 $"
-                android:textAlignment="center"
                 android:textColor="@color/expenseRed"
                 app:layout_constraintBottom_toTopOf="@+id/textView26"
                 app:layout_constraintEnd_toStartOf="@+id/guideline4"
                 app:layout_constraintStart_toEndOf="@+id/cardView6"
-                app:layout_constraintTop_toTopOf="@+id/cardView6" />
+                app:layout_constraintTop_toTopOf="@+id/cardView6"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/textView30"
@@ -151,7 +136,7 @@
                 android:text="@string/income"
                 android:textAlignment="center"
                 android:textColor="@color/transactionGrey"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 app:layout_constraintBottom_toBottomOf="@+id/cardView6"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintStart_toEndOf="@+id/cardView7" />
@@ -163,15 +148,15 @@
                 android:layout_marginStart="8dp"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/dm_sans"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:paddingVertical="2dp"
                 android:text="185 650.5 RUB"
-                android:textAlignment="center"
                 android:textColor="@color/incomeGreen"
                 app:layout_constraintBottom_toTopOf="@+id/textView30"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintStart_toEndOf="@+id/cardView7"
-                app:layout_constraintTop_toTopOf="@+id/cardView7" />
+                app:layout_constraintTop_toTopOf="@+id/cardView7"
+                tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -284,7 +269,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
-                android:tint="@color/black"
+                android:tint="@color/primaryTextColor"
                 app:layout_constraintBottom_toBottomOf="@+id/chipGroup"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintTop_toTopOf="@+id/chipGroup"

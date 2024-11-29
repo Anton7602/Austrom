@@ -2,6 +2,7 @@ package com.colleagues.austrom
 
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -25,8 +26,9 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
     private lateinit var categoryName: TextInputEditText
     private lateinit var selectedIconImage: ImageView
     private lateinit var iconHolder: RecyclerView
-    private lateinit var submitButton: Button
-    private lateinit var declineButton: Button
+    private lateinit var submitButton: ImageButton
+    private lateinit var declineButton: ImageButton
+    private var isExpenseCategoryBeingCreated = false;
     private var category: Category? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,20 +49,24 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
             val dbProvider = LocalDatabaseProvider(this)
             category = dbProvider.getCategoryById(intent.getStringExtra("CategoryId")!!)
             if (category!=null) {
-                submitButton.text = getText(R.string.update)
-                declineButton.text = getText(R.string.delete)
-                submitButton.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_navigation_up_temp,0)
-                declineButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_navigation_delete_temp,0,0,0)
                 categoryName.setText(category!!.name)
                 if (category!!.imgReference!=null) {
                     selectedIconImage.setImageResource(category!!.imgReference!!.resourceId)
                     (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon = category!!.imgReference
                 }
+                declineButton.setImageResource(R.drawable.ic_navigation_delete_temp)
             }
-
+        } else {
+            if (intent.getBooleanExtra("isExpenseCategory", false)){
+                isExpenseCategoryBeingCreated = true
+            }
         }
 
         submitButton.setOnClickListener {
+            if (categoryName.text.toString().isEmpty()) {
+                Toast.makeText(this, getString(R.string.empty_name_category_not_allower), Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
             val dbProvider = LocalDatabaseProvider(this)
             if (category==null) {
                 dbProvider.writeCategory(Category(
@@ -68,7 +74,7 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
                     name = categoryName.text.toString(),
                     type = "Mandatory",
                     imgReference = (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon,
-                    transactionType = TransactionType.INCOME))
+                    transactionType = if (isExpenseCategoryBeingCreated) TransactionType.EXPENSE else TransactionType.INCOME))
             } else {
                 category!!.name = categoryName.text.toString()
                 category!!.imgReference = (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon
@@ -78,14 +84,12 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
         }
 
         declineButton.setOnClickListener {
+            if (categoryName.text.toString().isEmpty()) {
+                Toast.makeText(this, getString(R.string.empty_name_category_not_allower), Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
             val dbProvider = LocalDatabaseProvider(this)
             if (category==null) {
-                dbProvider.writeCategory(Category(
-                    id = Category.generateCategoryId(),
-                    name = categoryName.text.toString(),
-                    type = "Mandatory",
-                    imgReference = (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon,
-                    transactionType = TransactionType.EXPENSE))
                 finish()
             } else {
                 if (dbProvider.getCategories(category!!.transactionType).size<=1) {

@@ -1,7 +1,9 @@
 package com.colleagues.austrom.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.TransactionCreationActivity
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
@@ -29,6 +32,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
     private lateinit var addIncomeButton: FloatingActionButton
     private lateinit var addExpenseButton: FloatingActionButton
     private lateinit var addTransferButton: FloatingActionButton
+    private lateinit var createNewTransactionButton: ImageButton
     private var transactionList: MutableList<Transaction> = mutableListOf()
     var activeFilter: TransactionFilter? = null
 
@@ -57,6 +61,10 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
             switchTransactionTypesButtonsVisibility()
             //TransactionCreationDialogFragment2(TransactionType.TRANSFER, this).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
             TransactionCreationDialogFragment(this, TransactionType.TRANSFER).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
+        }
+
+        createNewTransactionButton.setOnClickListener {
+            startActivity(Intent(requireActivity(), TransactionCreationActivity::class.java))
         }
     }
 
@@ -88,14 +96,21 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
         var expenseSum = 0.0
         transactionList.forEach{ transaction ->
             if (transaction.transactionType() == TransactionType.EXPENSE) {
-                expenseSum+=transaction.amount
+                val transactionsAsset = provider.getAssetById(transaction.sourceId!!)
+                if (transactionsAsset!=null) {
+                    expenseSum+= if (transactionsAsset.currencyCode==AustromApplication.appUser!!.baseCurrencyCode) transaction.amount else transaction.amount/(AustromApplication.activeCurrencies[transactionsAsset.currencyCode]?.exchangeRate ?: 1.0)
+                }
             }
             if (transaction.transactionType() == TransactionType.INCOME) {
-                incomeSum+=transaction.amount
+                val transactionsAsset = provider.getAssetById(transaction.targetId!!)
+                if (transactionsAsset!=null) {
+                    incomeSum+= if (transactionsAsset.currencyCode==AustromApplication.appUser!!.baseCurrencyCode) transaction.amount else transaction.amount/(AustromApplication.activeCurrencies[transactionsAsset.currencyCode]?.exchangeRate ?: 1.0)
+                }
             }
         }
         transactionsHeader.setIncome(incomeSum)
         transactionsHeader.setExpense(expenseSum)
+        transactionsHeader.setCurrencySymbol(AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]!!.symbol)
     }
 
     fun filterTransactions(filter: TransactionFilter) {
@@ -145,5 +160,6 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
         addExpenseButton = view.findViewById(R.id.ops_expense_fab)
         addTransferButton = view.findViewById(R.id.ops_transfer_fab)
         transactionsHeader = view.findViewById(R.id.ops_transactionsHeader_trhed)
+        createNewTransactionButton = view.findViewById(R.id.ops_createNewTransaction_btn)
     }
 }
