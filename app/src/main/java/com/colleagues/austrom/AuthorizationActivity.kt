@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
@@ -39,9 +40,11 @@ class AuthorizationActivity : AppCompatActivity() {
         setContentView(R.layout.activity_authorization)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(0, 0, 0, 0)
             insets
         }
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=false
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=false
         bindViews()
         //this.deleteDatabase("local_database")
         runQuickAuthorization()

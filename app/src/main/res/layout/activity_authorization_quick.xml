@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/navigationBarColor"
+    android:background="@color/backgroundColor"
     tools:context=".AuthorizationQuickActivity">
 
 
@@ -245,9 +245,9 @@
             app:layout_constraintDimensionRatio=""
             app:srcCompat="@drawable/ic_pin_placeholder"
             app:tint="@color/dark_grey"
+            tools:ignore="HardcodedText"
             tools:layout_editor_absoluteX="24dp"
-            tools:layout_editor_absoluteY="27dp"
-            tools:ignore="HardcodedText" />
+            tools:layout_editor_absoluteY="27dp" />
 
         <ImageView
             android:id="@+id/qauth_symbolSecond_img"
@@ -257,9 +257,9 @@
             android:contentDescription="secondSymbol"
             app:srcCompat="@drawable/ic_pin_placeholder"
             app:tint="@color/dark_grey"
+            tools:ignore="HardcodedText"
             tools:layout_editor_absoluteX="88dp"
-            tools:layout_editor_absoluteY="27dp"
-            tools:ignore="HardcodedText" />
+            tools:layout_editor_absoluteY="27dp" />
 
         <ImageView
             android:id="@+id/qauth_symbolThird_img"
@@ -269,9 +269,9 @@
             android:contentDescription="thirdSymbol"
             app:srcCompat="@drawable/ic_pin_placeholder"
             app:tint="@color/dark_grey"
+            tools:ignore="HardcodedText"
             tools:layout_editor_absoluteX="152dp"
-            tools:layout_editor_absoluteY="27dp"
-            tools:ignore="HardcodedText" />
+            tools:layout_editor_absoluteY="27dp" />
 
         <ImageView
             android:id="@+id/qauth_symbolFourth_img"
@@ -281,9 +281,9 @@
             android:contentDescription="forthSymbol"
             app:srcCompat="@drawable/ic_pin_placeholder"
             app:tint="@color/dark_grey"
+            tools:ignore="HardcodedText"
             tools:layout_editor_absoluteX="128dp"
-            tools:layout_editor_absoluteY="27dp"
-            tools:ignore="HardcodedText" />
+            tools:layout_editor_absoluteY="27dp" />
 
     </LinearLayout>
 

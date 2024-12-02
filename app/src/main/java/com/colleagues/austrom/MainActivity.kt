@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -177,6 +178,8 @@ class MainActivity : AppCompatActivity() {
             //v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
             WindowInsetsCompat.CONSUMED
         }
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=false
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=false
     }
 
     private fun fillInDefaultCategories() {
