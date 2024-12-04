@@ -364,5 +364,10 @@
     <string name="toAsset">to</string>
     <string name="create_transaction">Create Transaction</string>
     <string name="empty_name_category_not_allower">Please, specify category name</string>
+    <string name="import_transactions">Import Transactions</string>
+    <string name="transaction_amount_is_zero">"Transaction Amount Is Zero; "</string>
+    <string name="asset_does_not_match_any_active_asset">"Asset does not match any active asset; "</string>
+    <string name="category_does_not_match_any_of_existing">"Category does not match any of existing; "</string>
+    <string name="no_issues_encountered">No issues encountered</string>
 
 </resources>

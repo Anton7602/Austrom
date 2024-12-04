@@ -32,6 +32,9 @@
         android:theme="@style/Theme.Austrom"
         tools:targetApi="34">
         <activity
+            android:name=".TransactionApprovementActivity"
+            android:exported="false" />
+        <activity
             android:name=".TransactionCreationActivity"
             android:exported="false" />
         <activity

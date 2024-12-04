@@ -33,7 +33,7 @@ class BudgetCreationDialogFragment : BottomSheetDialogFragment() {
                 val provider : IRemoteDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
                 val newBudget = Budget(
                     budgetName =  budgetNameTextView.text.toString(),
-                    users =  arrayListOf(budgetCreator.userId.toString())
+                    users =  arrayListOf(budgetCreator.userId)
                 )
                 newBudget.budgetId = provider.createNewBudget(newBudget)
                 budgetCreator.activeBudgetId = newBudget.budgetId

@@ -294,6 +294,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:text="Good Morning,"
+        android:textColor="@color/secondaryTextColor"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -305,6 +306,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Username"
+        android:textColor="@color/primaryTextColor"
         android:textSize="34sp"
         app:layout_constraintStart_toStartOf="@+id/qauth_timeOfDay_txt"
         app:layout_constraintTop_toBottomOf="@+id/qauth_timeOfDay_txt"
@@ -316,6 +318,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:text="@string/enter_quick_access_code"
+        android:textColorHighlight="@color/secondaryTextColor"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
         app:layout_constraintStart_toStartOf="@+id/linearLayout3" />

@@ -1,7 +1,6 @@
 package com.colleagues.austrom
 
 import android.os.Bundle
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.CategoryIconRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CategoryPullDialogFragment
-import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.managers.IconManager
 import com.colleagues.austrom.models.Category
