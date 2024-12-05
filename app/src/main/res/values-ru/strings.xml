@@ -368,4 +368,9 @@
     <string name="asset_does_not_match_any_active_asset">"Актив не соответствует ни одному из известных; "</string>
     <string name="category_does_not_match_any_of_existing">Категория не соответствует ни одной из известных</string>
     <string name="no_issues_encountered">Никаких Проблем Не Обнаружено</string>
+    <string name="transactions_are_read_from_file">%1$d транзакций считано из файла</string>
+    <string name="transactions_from_file">Транзакции из файла</string>
+    <string name="in_this_date_transaction_of_this_exact_amount_already_exist_are_you_sure_it_isn_t_duplicate">В эту дату уже существует транзакция с данной суммой. Вы уверены что это не дубликат?</string>
+    <string name="asset">Актив</string>
+    <string name="link_unknown_values">Связать Неизвестные Значения</string>
 </resources>

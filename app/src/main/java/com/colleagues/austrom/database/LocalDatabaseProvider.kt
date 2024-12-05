@@ -42,6 +42,12 @@ class LocalDatabaseProvider(private val context: Context) {
         }
     }
 
+    fun deleteAllUsers() {
+        runBlocking {
+            localDatabase.userDao().clearAllUsers()
+        }
+    }
+
     fun getAllUsers(): MutableMap<String, User> {
         val dao = localDatabase.userDao()
         val users = mutableMapOf<String, User>()
@@ -222,6 +228,17 @@ class LocalDatabaseProvider(private val context: Context) {
             transaction = dao.getTransactionsByCategoryId(category.id).toMutableList()
         }
         return transaction
+    }
+
+    fun isCollidingTransactionExist(transaction: Transaction): Boolean {
+        var result = false
+        val dao = localDatabase.transactionDao()
+        runBlocking {
+            if (transaction.transactionDate!=null) {
+                result = (dao.getCollidingTransaction(transaction.transactionDate!!, transaction.amount).isNotEmpty())
+            }
+        }
+        return result
     }
 
     fun writeNewTransactionDetail(transactionDetail: TransactionDetail): String {

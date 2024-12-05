@@ -60,6 +60,9 @@ interface UserDao {
     @Delete
     suspend fun deleteUser(user: User)
 
+    @Query("DELETE FROM User")
+    suspend fun clearAllUsers()
+
     @Query("SELECT * FROM User")
     suspend fun getAllUsers(): List<User>
 
@@ -68,7 +71,6 @@ interface UserDao {
 
     @Query("SELECT * FROM User WHERE User.username=:username")
     suspend fun getUserByUsername(username: String): List<User>
-
 }
 
 @Dao
@@ -114,6 +116,9 @@ interface TransactionDao {
 
     @Query("SELECT * FROM `Transaction`")
     suspend fun getTransactionsOfBudget(): List<Transaction>
+
+    @Query("SELECT * FROM `Transaction` as Trn WHERE transactionDate = :date AND amount = :amount")
+    suspend fun getCollidingTransaction(date: LocalDate, amount: Double): List<Transaction>
 }
 
 @Dao

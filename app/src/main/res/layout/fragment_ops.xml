@@ -34,12 +34,13 @@
     <ImageButton
         android:id="@+id/ops_createNewTransaction_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginEnd="-2dp"
         android:layout_marginBottom="32dp"
         android:background="@drawable/img_add_new_button_background"
         android:contentDescription="@string/create_transaction"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_navigation_add_temp"
         app:tint="@color/primaryTextColor" />

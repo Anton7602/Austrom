@@ -13,15 +13,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
+import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
+import com.colleagues.austrom.dialogs.ImportTransactionDialogFragment
 import com.colleagues.austrom.extensions.toMoneyFormat
+import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
+import kotlin.math.absoluteValue
 
-class TransactionExtendedRecyclerAdapter(private val transactions: List<Transaction>,
+class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<Transaction>,
                                          private val activity: AppCompatActivity,
-                                         private val isShowingActionButtons: Boolean = false)  : RecyclerView.Adapter<TransactionExtendedRecyclerAdapter.TransactionExtendedViewHolder>() {
-
+                                         private val isShowingActionButtons: Boolean = false)  : RecyclerView.Adapter<TransactionExtendedRecyclerAdapter.TransactionExtendedViewHolder>(), IDialogInitiator {
+    //var viewHolders: MutableList<TransactionExtendedViewHolder> = mutableListOf()
 
     class TransactionExtendedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val primaryParticipant: TextView = itemView.findViewById(R.id.tritemext_targetName_txt)
@@ -38,9 +41,26 @@ class TransactionExtendedRecyclerAdapter(private val transactions: List<Transact
         val editButton: ImageButton = itemView.findViewById(R.id.tritemext_edit_btn)
         val acceptButton: ImageButton = itemView.findViewById(R.id.tritemext_accept_btn)
         val issueMessage: TextView = itemView.findViewById(R.id.tritemext_issueMessage_txt)
+        var transaction: Transaction? = null
         var isIssueEncountered: Boolean = false
-        var categoryId: String? = null
-        var assetId: String? = null
+        var isWarningEncountered: Boolean = false
+
+        fun switchDisplayMode(issueMessageText: String, activity: AppCompatActivity) {
+            transactionHolderBackground.setImageResource(R.drawable.img_transaction_extended_ok)
+            issueMessage.text = activity.getString(R.string.no_issues_encountered)
+            issueMessage.setTextColor(activity.getColor(R.color.incomeGreen))
+            if (isWarningEncountered) {
+                transactionHolderBackground.setImageResource(R.drawable.img_transaction_extended_warning)
+                issueMessage.text = issueMessageText
+                issueMessage.setTextColor(activity.getColor(R.color.transferYellow))
+            }
+
+            if (isIssueEncountered) {
+                transactionHolderBackground.setImageResource(R.drawable.img_transaction_extended_error)
+                issueMessage.text = issueMessageText
+                issueMessage.setTextColor(activity.getColor(R.color.expenseRed))
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionExtendedViewHolder {
@@ -55,69 +75,97 @@ class TransactionExtendedRecyclerAdapter(private val transactions: List<Transact
     override fun onBindViewHolder(holder: TransactionExtendedViewHolder, position: Int) {
         val dbProvider = LocalDatabaseProvider(activity)
         val transaction = transactions[position]
-        var issueMessage = ""
-        holder.issueMessage.text = "No Issues Found"
+        var issueMessageText = ""
+        val activeAsset = if (AustromApplication.activeAssets.values.find { l -> l.assetName==transaction.targetName } != null) {
+            AustromApplication.activeAssets.values.find { l -> l.assetName==transaction.targetName }
+        } else {
+            AustromApplication.activeAssets.values.find { l -> l.assetName==transaction.sourceName }
+        }
+        val assetId = activeAsset?.assetId
+        var categoryId: String? = null
+
+        holder.isIssueEncountered = false
+        holder.isWarningEncountered = false
         holder.actionButtonsHolder.visibility = if (isShowingActionButtons) View.VISIBLE else View.GONE
         holder.transactionHolderBackground.visibility = if (isShowingActionButtons) View.VISIBLE else View.GONE
         holder.categoryName.text = transaction.categoryId
         holder.comment.text = transaction.comment
         holder.amount.text = transaction.amount.toMoneyFormat()
         holder.date.text = transaction.transactionDate.toString()
-        val activeAsset = if (AustromApplication.activeAssets.values.find { l -> l.assetName==transaction.targetName } != null) {
-            AustromApplication.activeAssets.values.find { l -> l.assetName==transaction.targetName }
-        } else {
-            AustromApplication.activeAssets.values.find { l -> l.assetName==transaction.sourceName }
-        }
         holder.currencySymbol.text = if (activeAsset!=null) AustromApplication.activeCurrencies[activeAsset.currencyCode]?.symbol ?: "$" else "$"
+        holder.primaryParticipant.text = transaction.sourceName
+        holder.secondaryParticipant.text = transaction.targetName
         if (transaction.amount>0.0) {
-            holder.primaryParticipant.text = transaction.sourceName
-            holder.secondaryParticipant.text = transaction.targetName
             holder.amount.setTextColor(activity.getColor(R.color.incomeGreen))
             holder.currencySymbol.setTextColor(activity.getColor(R.color.incomeGreen))
             val incomeCategories = dbProvider.getCategories(TransactionType.INCOME)
-            holder.categoryId = (incomeCategories.find { l -> l.name==transaction.categoryId })?.id
+            categoryId = (incomeCategories.find { l -> l.name==transaction.categoryId })?.id
         } else if (transaction.amount<0.0) {
-            holder.primaryParticipant.text = transaction.targetName
-            holder.secondaryParticipant.text = transaction.sourceName
             holder.amount.setTextColor(activity.getColor(R.color.expenseRed))
             holder.currencySymbol.setTextColor(activity.getColor(R.color.expenseRed))
             val expenseCategories = dbProvider.getCategories(TransactionType.EXPENSE)
-            holder.categoryId = (expenseCategories.find { l -> l.name==transaction.categoryId })?.id
+            categoryId = (expenseCategories.find { l -> l.name==transaction.categoryId })?.id
         } else {
             holder.primaryParticipant.text = transaction.sourceName
             holder.secondaryParticipant.text = transaction.targetName
-            issueMessage += activity.getString(R.string.transaction_amount_is_zero)
+            issueMessageText += activity.getString(R.string.transaction_amount_is_zero)
             holder.isIssueEncountered = true
         }
 
-        if (activeAsset==null) {
-            issueMessage += activity.getString(R.string.asset_does_not_match_any_active_asset)
+        if (assetId==null) {
+            issueMessageText += activity.getString(R.string.asset_does_not_match_any_active_asset)
             holder.isIssueEncountered = true
-        } else {
-            holder.assetId = activeAsset.assetId
+        }
+        if (categoryId == null) {
+            issueMessageText += activity.getString(R.string.category_does_not_match_any_of_existing)
+            holder.isIssueEncountered = true
         }
 
-        if (holder.categoryId == null) {
-            issueMessage += activity.getString(R.string.category_does_not_match_any_of_existing)
-            holder.isIssueEncountered = true
-        }
-        
         if (!holder.isIssueEncountered) {
-            holder.issueMessage.text = activity.getString(R.string.no_issues_encountered)
-        } else {
-            holder.issueMessage.text = issueMessage
+            holder.transaction = Transaction(
+                userId = AustromApplication.appUser!!.userId,
+                sourceId = if (transaction.amount<0) assetId else null,
+                sourceName = transaction.sourceName,
+                targetId = if (transaction.amount>0) assetId else null,
+                targetName = transaction.targetName,
+                amount = transaction.amount.absoluteValue,
+                categoryId = categoryId,
+                transactionDate = transaction.transactionDate,
+                comment = transaction.comment
+            )
+            if (dbProvider.isCollidingTransactionExist(holder.transaction!!)) {
+                holder.isWarningEncountered = true
+                issueMessageText = activity.getString(R.string.in_this_date_transaction_of_this_exact_amount_already_exist_are_you_sure_it_isn_t_duplicate)
+            }
         }
 
+        holder.switchDisplayMode(issueMessageText, activity)
         holder.cancelButton.setOnClickListener {
-
+            val index = transactions.indexOf(transaction)
+            transactions.remove(transaction)
+            this.notifyItemRemoved(index)
         }
-
         holder.editButton.setOnClickListener {
-
+            ImportTransactionDialogFragment(transaction, activity, this).show(activity.supportFragmentManager, "Import Linking Dialog" )
         }
-
         holder.acceptButton.setOnClickListener {
+            if (!holder.isIssueEncountered && holder.transaction!=null) {
+                holder.transaction!!.submit(dbProvider)
+                val index = transactions.indexOf(transaction)
+                transactions.remove(transaction)
+                this.notifyItemRemoved(index)
+            }
+        }
+        //viewHolders.add(holder)
+    }
 
+    override fun receiveValue(value: String, valueType: String) {
+        transactions.forEach { transaction ->
+            if (transaction.categoryId == valueType) {
+                transaction.categoryId = value
+                val index = transactions.indexOf(transaction)
+                this.notifyItemChanged(index)
+            }
         }
     }
 }

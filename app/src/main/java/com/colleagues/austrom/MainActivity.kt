@@ -124,6 +124,8 @@ class MainActivity : AppCompatActivity() {
             AustromApplication.appUser = null
             AustromApplication.activeAssets = mutableMapOf()
             AustromApplication.knownUsers = mutableMapOf()
+            val dbProvider = LocalDatabaseProvider(this)
+            dbProvider.deleteAllUsers()
             this.finish()
         }
 

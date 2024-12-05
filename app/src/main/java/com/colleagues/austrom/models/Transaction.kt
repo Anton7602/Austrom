@@ -30,9 +30,7 @@ class Transaction(
     var categoryId: String? = null,
     var transactionDate: LocalDate? = null,
     var transactionDateInt: Int? = null,
-    var comment: String? = null)
-    //val details: MutableList<TransactionDetail> = mutableListOf())
-    {
+    var comment: String? = null)    {
 
     fun transactionType(): TransactionType {
         return if (this.sourceId!=null && this.targetId!=null) TransactionType.TRANSFER
@@ -66,6 +64,38 @@ class Transaction(
                     source.amount+=this.amount
                     dbProvider.updateAsset(source)
                     dbProvider.deleteTransaction(this)
+                }
+            }
+        }
+    }
+
+    fun submit(dbProvider: LocalDatabaseProvider) {
+        when (this.transactionType()) {
+            TransactionType.INCOME -> {
+                val activeAsset = AustromApplication.activeAssets[targetId]
+                if (activeAsset!=null) {
+                    activeAsset.amount+=amount
+                    dbProvider.updateAsset(activeAsset)
+                    dbProvider.writeNewTransaction(this)
+                }
+            }
+            TransactionType.EXPENSE -> {
+                val activeAsset = AustromApplication.activeAssets[sourceId]
+                if (activeAsset!=null) {
+                    activeAsset.amount-=amount
+                    dbProvider.updateAsset(activeAsset)
+                    dbProvider.writeNewTransaction(this)
+                }
+            }
+            TransactionType.TRANSFER -> {
+                val source = AustromApplication.activeAssets[sourceId]
+                val target = AustromApplication.activeAssets[targetId]
+                if (source!=null && target!=null) {
+                    source.amount-=this.amount
+                    target.amount+=this.amount
+                    dbProvider.updateAsset(source)
+                    dbProvider.updateAsset(target)
+                    dbProvider.writeNewTransaction(this)
                 }
             }
         }

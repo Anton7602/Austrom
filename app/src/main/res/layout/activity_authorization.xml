@@ -51,6 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/authorization"
+            android:textAppearance="@style/PrimaryCardText"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -60,6 +61,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            app:helperTextTextColor="@color/secondaryTextColor"
+            app:hintTextColor="@color/secondaryTextColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/auth_label_txt">
@@ -68,7 +71,9 @@
                 android:id="@+id/auth_login_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/email" />
+                android:hint="@string/email"
+                android:textAppearance="@style/PrimaryCardText"
+                android:textColor="@color/primaryTextColor" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -77,6 +82,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:endIconMode="password_toggle"
+            app:helperTextTextColor="@color/secondaryTextColor"
+            app:hintTextColor="@color/secondaryTextColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/auth_login_til">
@@ -86,7 +93,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/password"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textAppearance="@style/PrimaryCardText"
+                android:textColor="@color/primaryTextColor" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -117,6 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/forgot_password"
+                android:textAppearance="@style/SecondaryCardText"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

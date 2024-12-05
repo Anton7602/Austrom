@@ -18,6 +18,7 @@
     <color name="transactionGrey">#FF6F737E</color>
     <color name="primaryTextColor">#FFFFFFFF</color>
     <color name="secondaryTextColor">#FF6F737E</color>
+    <color name="cardBorderStrokeColor">#05FFFFFF</color>
 
 
 </resources>

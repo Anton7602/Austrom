@@ -369,5 +369,10 @@
     <string name="asset_does_not_match_any_active_asset">"Asset does not match any active asset; "</string>
     <string name="category_does_not_match_any_of_existing">"Category does not match any of existing; "</string>
     <string name="no_issues_encountered">No issues encountered</string>
+    <string name="transactions_are_read_from_file">%1$d transactions are read from file.</string>
+    <string name="transactions_from_file">Transactions from file</string>
+    <string name="in_this_date_transaction_of_this_exact_amount_already_exist_are_you_sure_it_isn_t_duplicate">In this date transaction of this exact amount already exist. Are you sure it isn\'t duplicate?</string>
+    <string name="asset">Asset</string>
+    <string name="link_unknown_values">Link Unknown Values</string>
 
 </resources>
