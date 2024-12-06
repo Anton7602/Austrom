@@ -36,6 +36,7 @@ import com.colleagues.austrom.fragments.SharedBudgetEmptyFragment
 import com.colleagues.austrom.fragments.SharedBudgetFragment
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
+import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 
@@ -195,6 +196,10 @@ class MainActivity : AppCompatActivity() {
                 dbProvider.writeCategory(category)
             }
         }
+        val activeIncomeCategories = dbProvider.getCategories(TransactionType.INCOME)
+        val activeExpenseCategories = dbProvider.getCategories(TransactionType.EXPENSE)
+        activeIncomeCategories.forEach { category -> AustromApplication.activeIncomeCategories[category.id] = category }
+        activeExpenseCategories.forEach { category -> AustromApplication.activeExpenseCategories[category.id] = category }
     }
 
     private fun fillInDefaultCurrencies() {

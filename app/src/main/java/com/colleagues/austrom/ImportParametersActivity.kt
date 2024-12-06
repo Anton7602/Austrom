@@ -148,18 +148,37 @@ class ImportParametersActivity : AppCompatActivity() {
             importedTransactions = mutableListOf()
             while (csvReader.readNext().also { line = it } != null) {
                 val asset = AustromApplication.activeAssets.values.find { it.assetName == if (sourceSwitchMaterial.isChecked) line?.get(sourceDynamicSpinner.selectedItemPosition) else sourceStaticSpinner.selectedItem.toString() }
+                val amount = (if (amountSwitchMaterial.isChecked) line?.get(amountDynamicSpinner.selectedItemPosition).parseToDouble() else amountStaticValue.text.toString().parseToDouble()) ?: 0.0
 
-                importedTransactions.add(Transaction(
-                    userId = AustromApplication.appUser!!.userId,
-                    sourceName = if (targetSwitchMaterial.isChecked) line?.get(targetDynamicSpinner.selectedItemPosition) else targetStaticValue.text.toString(),
-                    sourceId = null,
-                    targetName = if (sourceSwitchMaterial.isChecked) line?.get(sourceDynamicSpinner.selectedItemPosition) else sourceStaticSpinner.selectedItem.toString(),
-                    targetId = asset?.assetId,
-                    categoryId = if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else (categoryIncomeStaticSpinner.selectedItem as Category).name,
-                    amount = (if (amountSwitchMaterial.isChecked) line?.get(amountDynamicSpinner.selectedItemPosition).parseToDouble() else amountStaticValue.text.toString().parseToDouble()) ?: 0.0,
-                    transactionDate = if (dateSwitchMaterial.isChecked) line?.get(dateDynamicSpinner.selectedItemPosition).parseToLocalDate() else dateStaticValue.toString().parseToLocalDate(),
-                    comment =  if (commentSwitchMaterial.isChecked) line?.get(commentDynamicSpinner.selectedItemPosition) else commentStaticValue.text.toString()
-                ))
+                if (amount>0) {
+                    val category = AustromApplication.activeIncomeCategories.values.find { l -> l.name == (if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else (categoryIncomeStaticSpinner.selectedItem as Category).name) }
+                    importedTransactions.add(Transaction(
+                        userId = AustromApplication.appUser!!.userId,
+                        sourceName = if (targetSwitchMaterial.isChecked) line?.get(targetDynamicSpinner.selectedItemPosition) else targetStaticValue.text.toString(),
+                        sourceId = null,
+                        targetName = if (sourceSwitchMaterial.isChecked) line?.get(sourceDynamicSpinner.selectedItemPosition) else sourceStaticSpinner.selectedItem.toString(),
+                        targetId = asset?.assetId,
+                        categoryId = category?.id
+                            ?: if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else (categoryIncomeStaticSpinner.selectedItem as Category).name,
+                        amount = amount,
+                        transactionDate = if (dateSwitchMaterial.isChecked) line?.get(dateDynamicSpinner.selectedItemPosition).parseToLocalDate() else dateStaticValue.toString().parseToLocalDate(),
+                        comment =  if (commentSwitchMaterial.isChecked) line?.get(commentDynamicSpinner.selectedItemPosition) else commentStaticValue.text.toString()
+                    ))
+                } else {
+                    val category = AustromApplication.activeExpenseCategories.values.find { l -> l.name == (if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else (categoryIncomeStaticSpinner.selectedItem as Category).name) }
+                    importedTransactions.add(Transaction(
+                        userId = AustromApplication.appUser!!.userId,
+                        sourceName = if (sourceSwitchMaterial.isChecked) line?.get(sourceDynamicSpinner.selectedItemPosition) else sourceStaticSpinner.selectedItem.toString(),
+                        sourceId = asset?.assetId,
+                        targetName = if (targetSwitchMaterial.isChecked) line?.get(targetDynamicSpinner.selectedItemPosition) else targetStaticValue.text.toString(),
+                        targetId = null,
+                        categoryId = category?.id
+                            ?: if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else (categoryIncomeStaticSpinner.selectedItem as Category).name,
+                        amount = amount,
+                        transactionDate = if (dateSwitchMaterial.isChecked) line?.get(dateDynamicSpinner.selectedItemPosition).parseToLocalDate() else dateStaticValue.toString().parseToLocalDate(),
+                        comment =  if (commentSwitchMaterial.isChecked) line?.get(commentDynamicSpinner.selectedItemPosition) else commentStaticValue.text.toString()
+                    ))
+                }
             }
             exampleTransactionHolder.adapter = TransactionExtendedRecyclerAdapter(importedTransactions, this, true)
             exampleTransactionHolder.adapter!!.notifyItemRangeChanged(0, importedTransactions.size)

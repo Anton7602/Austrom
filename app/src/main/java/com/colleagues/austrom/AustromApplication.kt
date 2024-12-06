@@ -28,6 +28,8 @@ class AustromApplication : Application() {
         var appUser : User? = null
         var activeAssets : MutableMap<String, Asset> = mutableMapOf()
         var activeCurrencies : MutableMap<String, Currency> = mutableMapOf()
+        var activeIncomeCategories : MutableMap<String, Category> = mutableMapOf()
+        var activeExpenseCategories : MutableMap<String, Category> = mutableMapOf()
         var knownUsers : MutableMap<String, User> = mutableMapOf()
         var selectedTransaction: Transaction? = null
         var selectedAsset: Asset? = null

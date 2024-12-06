@@ -70,35 +70,58 @@ class Transaction(
     }
 
     fun submit(dbProvider: LocalDatabaseProvider) {
-        when (this.transactionType()) {
-            TransactionType.INCOME -> {
-                val activeAsset = AustromApplication.activeAssets[targetId]
-                if (activeAsset!=null) {
-                    activeAsset.amount+=amount
-                    dbProvider.updateAsset(activeAsset)
-                    dbProvider.writeNewTransaction(this)
+        when (this.validate()) {
+            TransactionValidationType.VALID -> {
+                when (this.transactionType()) {
+                    TransactionType.INCOME -> {
+                        val activeAsset = AustromApplication.activeAssets[targetId]
+                        if (activeAsset!=null) {
+                            activeAsset.amount+=amount
+                            dbProvider.updateAsset(activeAsset)
+                            dbProvider.writeNewTransaction(this)
+                        }
+                    }
+                    TransactionType.EXPENSE -> {
+                        val activeAsset = AustromApplication.activeAssets[sourceId]
+                        if (activeAsset!=null) {
+                            activeAsset.amount-=amount
+                            dbProvider.updateAsset(activeAsset)
+                            dbProvider.writeNewTransaction(this)
+                        }
+                    }
+                    TransactionType.TRANSFER -> {
+                        val source = AustromApplication.activeAssets[sourceId]
+                        val target = AustromApplication.activeAssets[targetId]
+                        if (source!=null && target!=null) {
+                            source.amount-=this.amount
+                            target.amount+=this.amount
+                            dbProvider.updateAsset(source)
+                            dbProvider.updateAsset(target)
+                            dbProvider.writeNewTransaction(this)
+                        }
+                    }
                 }
             }
-            TransactionType.EXPENSE -> {
-                val activeAsset = AustromApplication.activeAssets[sourceId]
-                if (activeAsset!=null) {
-                    activeAsset.amount-=amount
-                    dbProvider.updateAsset(activeAsset)
-                    dbProvider.writeNewTransaction(this)
-                }
-            }
-            TransactionType.TRANSFER -> {
-                val source = AustromApplication.activeAssets[sourceId]
-                val target = AustromApplication.activeAssets[targetId]
-                if (source!=null && target!=null) {
-                    source.amount-=this.amount
-                    target.amount+=this.amount
-                    dbProvider.updateAsset(source)
-                    dbProvider.updateAsset(target)
-                    dbProvider.writeNewTransaction(this)
-                }
-            }
+            TransactionValidationType.UNKNOWN_ASSET_INVALID -> throw InvalidTransactionException("Assets used in this transaction not recognized by the App", TransactionValidationType.UNKNOWN_ASSET_INVALID)
+            TransactionValidationType.UNKNOWN_CATEGORY_INVALID -> throw InvalidTransactionException("Category used in this transaction not recognized by the App", TransactionValidationType.UNKNOWN_ASSET_INVALID)
+            TransactionValidationType.NEGATIVE_ASSET_AMOUNT_INVALID -> throw InvalidTransactionException("Assets used in this transaction not recognized by the App", TransactionValidationType.UNKNOWN_ASSET_INVALID)
         }
+    }
+
+    fun validate(): TransactionValidationType {
+        if (sourceId == null && targetId==null) return TransactionValidationType.UNKNOWN_ASSET_INVALID
+        when (transactionType()) {
+            TransactionType.INCOME -> if (AustromApplication.activeAssets[targetId]==null) return TransactionValidationType.UNKNOWN_ASSET_INVALID
+            TransactionType.EXPENSE -> if (AustromApplication.activeAssets[sourceId]==null) return TransactionValidationType.UNKNOWN_ASSET_INVALID
+            TransactionType.TRANSFER -> if (AustromApplication.activeAssets[sourceId]==null || AustromApplication.activeAssets[targetId]==null) return TransactionValidationType.UNKNOWN_ASSET_INVALID
+        }
+        when (transactionType()) {
+            TransactionType.INCOME -> if (AustromApplication.activeIncomeCategories[categoryId]==null) return TransactionValidationType.UNKNOWN_CATEGORY_INVALID
+            TransactionType.EXPENSE -> if (AustromApplication.activeExpenseCategories[categoryId]==null) return TransactionValidationType.UNKNOWN_CATEGORY_INVALID
+            TransactionType.TRANSFER -> {}
+        }
+        if (transactionType() == TransactionType.EXPENSE && AustromApplication.activeAssets[sourceId]!!.amount-amount<0) return TransactionValidationType.NEGATIVE_ASSET_AMOUNT_INVALID
+        return TransactionValidationType.VALID
     }
 
     companion object{
@@ -123,3 +146,9 @@ class Transaction(
 enum class TransactionType {
     INCOME, EXPENSE, TRANSFER
 }
+
+enum class TransactionValidationType{
+    VALID, UNKNOWN_ASSET_INVALID, UNKNOWN_CATEGORY_INVALID, NEGATIVE_ASSET_AMOUNT_INVALID
+}
+
+class InvalidTransactionException(message: String, validationType: TransactionValidationType) : Exception(message)

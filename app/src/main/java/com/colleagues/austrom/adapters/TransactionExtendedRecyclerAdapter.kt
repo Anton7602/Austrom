@@ -75,7 +75,6 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
     override fun onBindViewHolder(holder: TransactionExtendedViewHolder, position: Int) {
         val dbProvider = LocalDatabaseProvider(activity)
         val transaction = transactions[position]
-        var issueMessageText = ""
         val activeAsset = if (AustromApplication.activeAssets.values.find { l -> l.assetName==transaction.targetName } != null) {
             AustromApplication.activeAssets.values.find { l -> l.assetName==transaction.targetName }
         } else {
@@ -108,16 +107,16 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         } else {
             holder.primaryParticipant.text = transaction.sourceName
             holder.secondaryParticipant.text = transaction.targetName
-            issueMessageText += activity.getString(R.string.transaction_amount_is_zero)
+            holder.issueMessage.text = activity.getString(R.string.transaction_amount_is_zero)
             holder.isIssueEncountered = true
         }
 
         if (assetId==null) {
-            issueMessageText += activity.getString(R.string.asset_does_not_match_any_active_asset)
+            holder.issueMessage.text = activity.getString(R.string.asset_does_not_match_any_active_asset)
             holder.isIssueEncountered = true
         }
         if (categoryId == null) {
-            issueMessageText += activity.getString(R.string.category_does_not_match_any_of_existing)
+            holder.issueMessage.text = activity.getString(R.string.category_does_not_match_any_of_existing)
             holder.isIssueEncountered = true
         }
 
@@ -135,18 +134,18 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
             )
             if (dbProvider.isCollidingTransactionExist(holder.transaction!!)) {
                 holder.isWarningEncountered = true
-                issueMessageText = activity.getString(R.string.in_this_date_transaction_of_this_exact_amount_already_exist_are_you_sure_it_isn_t_duplicate)
+                holder.issueMessage.text = activity.getString(R.string.in_this_date_transaction_of_this_exact_amount_already_exist_are_you_sure_it_isn_t_duplicate)
             }
         }
 
-        holder.switchDisplayMode(issueMessageText, activity)
+        holder.switchDisplayMode("issueMessageText", activity)
         holder.cancelButton.setOnClickListener {
             val index = transactions.indexOf(transaction)
             transactions.remove(transaction)
             this.notifyItemRemoved(index)
         }
         holder.editButton.setOnClickListener {
-            ImportTransactionDialogFragment(transaction, activity, this).show(activity.supportFragmentManager, "Import Linking Dialog" )
+            ImportTransactionDialogFragment(transaction, transactions, activity, this).show(activity.supportFragmentManager, "Import Linking Dialog" )
         }
         holder.acceptButton.setOnClickListener {
             if (!holder.isIssueEncountered && holder.transaction!=null) {
@@ -159,13 +158,12 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         //viewHolders.add(holder)
     }
 
+    fun submitAllValidTransactions() {
+        val dbProvider = LocalDatabaseProvider(activity)
+        transactions.forEach { transaction -> transaction.submit(dbProvider) }
+    }
+
     override fun receiveValue(value: String, valueType: String) {
-        transactions.forEach { transaction ->
-            if (transaction.categoryId == valueType) {
-                transaction.categoryId = value
-                val index = transactions.indexOf(transaction)
-                this.notifyItemChanged(index)
-            }
-        }
+        this.notifyItemChanged(value.toInt())
     }
 }
