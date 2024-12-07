@@ -2,22 +2,18 @@ package com.colleagues.austrom.models
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.UUID
 
 @Entity(foreignKeys = [ForeignKey(entity = Transaction::class,
         parentColumns = ["transactionId"],
         childColumns = ["transactionId"],
-        onDelete = ForeignKey.NO_ACTION)])
-class TransactionDetail(
-    @PrimaryKey
-    var transactionDetailId: String = "",
-    var transactionId: String = "",
-    val name: String? = null,
-    val quantity: Double? = null,
-    val typeOfQuantity: QuantityUnit? = null,
-    val cost: Double? = null,
-    val categoryName: String? = null) {
+        onDelete = ForeignKey.CASCADE)],
+    indices = [Index(value = ["transactionId"])])
+class TransactionDetail(val transactionId: String, val name: String, val cost: Double, val quantity: Double? = null, val typeOfQuantity: QuantityUnit? = null, val categoryName: String? = null) {
+    @PrimaryKey(autoGenerate = false)
+    var transactionDetailId: String = generateUniqueTransactionKey()
 
     companion object{
         fun generateUniqueTransactionKey() : String {

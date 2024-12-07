@@ -45,9 +45,10 @@ class CategoryIconRecyclerAdapter(private var drawableIds: List<Icon>, private v
         allViewHolders.add(holder)
     }
 
-    fun selectIcon(selectedIcon: Icon) {
+    fun selectIcon(icon: Icon) {
+        selectedIcon = icon
         allViewHolders.forEach{ holder ->
-            if (holder.icon.resourceId == selectedIcon.resourceId) {
+            if (holder.icon.resourceId == icon.resourceId) {
                 changeSelectedIcon(holder)
                 return
             }

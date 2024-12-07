@@ -27,9 +27,11 @@ import com.colleagues.austrom.dialogs.TransactionDetailCreationDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.interfaces.IDialogInitiator
+import com.colleagues.austrom.models.InvalidTransactionException
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
+import com.colleagues.austrom.models.TransactionValidationType
 import com.google.android.material.textfield.TextInputEditText
 import java.io.File
 import java.math.BigDecimal
@@ -105,7 +107,7 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     fun updateUnallocatedSum(addedValue: Double = 0.0): Double {
         var sum = transaction.amount
         for (detail in transactionDetails) {
-            sum -= detail.cost!!
+            sum -= detail.cost
         }
         if (BigDecimal(sum).setScale(2, RoundingMode.HALF_DOWN)==BigDecimal(0).setScale(2, RoundingMode.HALF_DOWN)) {
             detailConstructorHolder.visibility = View.GONE
@@ -122,7 +124,6 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     }
 
     fun addTransactionDetail(transactionDetail: TransactionDetail) {
-        transactionDetail.transactionId = transaction.transactionId
         val dbProvider = LocalDatabaseProvider(this)
         dbProvider.writeNewTransactionDetail(transactionDetail)
         transactionDetails = dbProvider.getTransactionDetailsOfTransaction(transaction)
@@ -160,47 +161,46 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         if (transaction.transactionType()!=TransactionType.TRANSFER) {
             toLayout.visibility = View.GONE
         }
-        val source = AustromApplication.activeAssets[transaction.sourceId]
-        val target = AustromApplication.activeAssets[transaction.targetId]
-        sourceText.text = transaction.sourceName
-        targetText.text = transaction.targetName
-        sourceCurrency.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
-        targetCurrency.text = AustromApplication.activeCurrencies[target?.currencyCode]?.symbol
         ownerText.text = AustromApplication.knownUsers[transaction.userId]?.username.startWithUppercase()
-        dateText.text = transaction.transactionDate?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-        if (transaction.categoryId!=null) {
-            categoryText.text = dbProvider.getCategoryById(transaction.categoryId!!)?.name
-        }
+        dateText.text = transaction.transactionDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
         setUpAttachedImage()
         when (transaction.transactionType()) {
             TransactionType.INCOME ->
             {
+                sourceText.text = transaction.transactionName
+                targetText.text = AustromApplication.activeAssets[transaction.assetId]?.assetName ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
+                sourceCurrency.text = AustromApplication.activeCurrencies[AustromApplication.activeAssets[transaction.assetId]?.currencyCode]?.symbol
+                targetCurrency.text = AustromApplication.activeCurrencies[AustromApplication.activeAssets[transaction.assetId]?.currencyCode]?.symbol
                 sourceAmount.setTextColor(Color.rgb(0,100,0))
                 sourceAmount.text = "+" + transaction.amount.toMoneyFormat()
-                categoryImage.setImageResource((AustromApplication.getActiveIncomeCategories()
-                    .find { it.name == transaction.categoryId })?.imgReference?.resourceId ?: R.drawable.placeholder_icon_background)
+                categoryText.text = AustromApplication.activeIncomeCategories[transaction.categoryId]?.name ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_CATEGORY_INVALID)
+                categoryImage.setImageResource((AustromApplication.activeIncomeCategories.values.find { it.name == transaction.categoryId })?.imgReference?.resourceId ?: R.drawable.placeholder_icon_background)
             }
             TransactionType.TRANSFER ->
             {
-                sourceAmount.setTextColor(Color.RED)
-                sourceAmount.text = "-" + transaction.amount.toMoneyFormat()
-                targetAmount.setTextColor(Color.rgb(0,100,0))
-                targetAmount.text = "+" + transaction.secondaryAmount?.toMoneyFormat()
-                categoryImage.setImageResource((AustromApplication.getActiveTransferCategories()
-                    .find { it.name == transaction.categoryId })?.imgReference?.resourceId ?: R.drawable.placeholder_icon_background)
+                //TODO("Fix Transfer Transactions")
+//                sourceAmount.setTextColor(Color.RED)
+//                sourceAmount.text = "-" + transaction.amount.toMoneyFormat()
+//                targetAmount.setTextColor(Color.rgb(0,100,0))
+//                targetAmount.text = "+" + transaction.secondaryAmount?.toMoneyFormat()
+//                categoryImage.setImageResource((AustromApplication.activeTransferCategories.values.find { it.name == transaction.categoryId })?.imgReference?.resourceId ?: R.drawable.placeholder_icon_background)
             }
             TransactionType.EXPENSE ->
             {
+                sourceText.text = AustromApplication.activeAssets[transaction.assetId]?.assetName ?: throw InvalidTransactionException("", TransactionValidationType.UNKNOWN_ASSET_INVALID)
+                targetText.text = transaction.transactionName
+                sourceCurrency.text = AustromApplication.activeCurrencies[AustromApplication.activeAssets[transaction.assetId]?.currencyCode]?.symbol
+                targetCurrency.text = AustromApplication.activeCurrencies[AustromApplication.activeAssets[transaction.assetId]?.currencyCode]?.symbol
                 sourceAmount.setTextColor(Color.RED)
                 sourceAmount.text = "-" + transaction.amount.toMoneyFormat()
-                categoryImage.setImageResource((AustromApplication.getActiveExpenseCategories()
-                    .find { it.name == transaction.categoryId })?.imgReference?.resourceId ?: R.drawable.placeholder_icon_background)
+                categoryText.text = AustromApplication.activeIncomeCategories[transaction.categoryId]?.name ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_CATEGORY_INVALID)
+                categoryImage.setImageResource((AustromApplication.activeExpenseCategories.values.find { it.name == transaction.categoryId })?.imgReference?.resourceId ?: R.drawable.placeholder_icon_background)
             }
         }
         val provider = LocalDatabaseProvider(this)
         transactionDetails = provider.getTransactionDetailsOfTransaction(transaction)
         updateUnallocatedSum(0.0)
-        unallocatedCurrency.text = AustromApplication.activeCurrencies[source?.currencyCode]?.symbol
+        unallocatedCurrency.text = AustromApplication.activeCurrencies[AustromApplication.activeAssets[transaction.assetId]?.currencyCode]?.symbol
         if (transaction.comment!=null) {
             comment.setText(transaction.comment.toString())
         }

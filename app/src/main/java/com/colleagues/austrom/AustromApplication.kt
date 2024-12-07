@@ -30,37 +30,12 @@ class AustromApplication : Application() {
         var activeCurrencies : MutableMap<String, Currency> = mutableMapOf()
         var activeIncomeCategories : MutableMap<String, Category> = mutableMapOf()
         var activeExpenseCategories : MutableMap<String, Category> = mutableMapOf()
+        var activeTransferCategories: MutableMap<String, Category> = mutableMapOf()
         var knownUsers : MutableMap<String, User> = mutableMapOf()
         var selectedTransaction: Transaction? = null
         var selectedAsset: Asset? = null
         var supportedLanguages: List<Locale> = listOf(Locale("en"), Locale("ru"))
         private var appLanguageCode: String? = null
-
-        fun getActiveExpenseCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.EXPENSE)}
-        fun getActiveTransferCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.TRANSFER)}
-        fun getActiveIncomeCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.INCOME)}
-
-        //TODO("Fix Categories")
-        private fun getActiveCategoriesOfType(transactionType: TransactionType) : List<Category> {
-            val activeUser = appUser ?: return listOf()
-            val expenseCategories: MutableList<Category> = mutableListOf()
-            if (activeUser.activeBudgetId!=null) {
-                for (user in knownUsers) {
-//                    for (category in user.value.categories) {
-//                        if (!expenseCategories.contains(category) && category.transactionType==transactionType) {
-//                            expenseCategories.add(category)
-//                        }
-//                    }
-                }
-            } else {
-//                for (category in activeUser.categories) {
-//                    if (!expenseCategories.contains(category) && category.transactionType == transactionType) {
-//                        expenseCategories.add(category)
-//                    }
-//                }
-            }
-            return expenseCategories
-        }
 
         fun showKeyboard(activity: Activity, view: View) {
             view.requestFocus()

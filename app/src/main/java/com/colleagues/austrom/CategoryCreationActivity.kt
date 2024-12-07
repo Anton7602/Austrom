@@ -15,8 +15,11 @@ import com.colleagues.austrom.adapters.CategoryIconRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CategoryPullDialogFragment
 import com.colleagues.austrom.interfaces.IDialogInitiator
+import com.colleagues.austrom.managers.Icon
 import com.colleagues.austrom.managers.IconManager
 import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.models.CategoryValidationType
+import com.colleagues.austrom.models.InvalidCategoryException
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.textfield.TextInputEditText
 
@@ -39,25 +42,23 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
             insets
         }
         bindViews()
-
         iconHolder.adapter = CategoryIconRecyclerAdapter(IconManager().getAllAvailableIcons(), this)
         iconHolder.layoutManager = GridLayoutManager(this, 5, LinearLayoutManager.VERTICAL, false)
 
         if (intent.getStringExtra("CategoryId")!=null) {
-            val dbProvider = LocalDatabaseProvider(this)
-            category = dbProvider.getCategoryById(intent.getStringExtra("CategoryId")!!)
+            val categoryId = intent.getStringExtra("CategoryId")
+            category = AustromApplication.activeIncomeCategories[categoryId] ?: AustromApplication.activeExpenseCategories[categoryId]
             if (category!=null) {
                 categoryName.setText(category!!.name)
-                if (category!!.imgReference!=null) {
-                    selectedIconImage.setImageResource(category!!.imgReference!!.resourceId)
-                    (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon = category!!.imgReference
-                }
+                selectedIconImage.setImageResource(category!!.imgReference.resourceId)
+                (iconHolder.adapter as CategoryIconRecyclerAdapter).selectIcon(category!!.imgReference)
                 declineButton.setImageResource(R.drawable.ic_navigation_delete_temp)
             }
         } else {
             if (intent.getBooleanExtra("isExpenseCategory", false)){
                 isExpenseCategoryBeingCreated = true
             }
+            (iconHolder.adapter as CategoryIconRecyclerAdapter).selectIcon(Icon.I0)
         }
 
         submitButton.setOnClickListener {
@@ -67,25 +68,26 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
             }
             val dbProvider = LocalDatabaseProvider(this)
             if (category==null) {
-                dbProvider.writeCategory(Category(
-                    id = Category.generateCategoryId(),
+                val newCategory = Category(
                     name = categoryName.text.toString(),
-                    type = "Mandatory",
-                    imgReference = (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon,
-                    transactionType = if (isExpenseCategoryBeingCreated) TransactionType.EXPENSE else TransactionType.INCOME))
+                    imgReference = (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon ?: throw InvalidCategoryException(CategoryValidationType.UNKNOWN_ICON_INVALID),
+                    transactionType = if (isExpenseCategoryBeingCreated) TransactionType.EXPENSE else TransactionType.INCOME)
+                dbProvider.writeCategory(newCategory)
+                if (isExpenseCategoryBeingCreated) {
+                    AustromApplication.activeExpenseCategories[newCategory.categoryId] = newCategory
+                } else AustromApplication.activeIncomeCategories[newCategory.categoryId] = newCategory
             } else {
                 category!!.name = categoryName.text.toString()
-                category!!.imgReference = (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon
+                category!!.imgReference = (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon ?: throw InvalidCategoryException(CategoryValidationType.UNKNOWN_ICON_INVALID)
                 dbProvider.updateCategory(category!!)
+                if (category!!.transactionType == TransactionType.INCOME) {
+                    AustromApplication.activeIncomeCategories[category!!.categoryId] = category!!
+                } else AustromApplication.activeIncomeCategories[category!!.categoryId] = category!!
             }
             finish()
         }
 
         declineButton.setOnClickListener {
-            if (categoryName.text.toString().isEmpty()) {
-                Toast.makeText(this, getString(R.string.empty_name_category_not_allower), Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
             val dbProvider = LocalDatabaseProvider(this)
             if (category==null) {
                 finish()
@@ -97,6 +99,11 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
                 val transactions = dbProvider.getTransactionOfCategory(category!!)
                 if (transactions.isEmpty()) {
                     dbProvider.deleteCategory(category!!)
+                    when (category!!.transactionType) {
+                        TransactionType.INCOME -> AustromApplication.activeIncomeCategories.remove(category!!.categoryId)
+                        TransactionType.EXPENSE -> AustromApplication.activeExpenseCategories.remove(category!!.categoryId)
+                        TransactionType.TRANSFER -> {}
+                    }
                     finish()
                 } else {
                     CategoryPullDialogFragment(category!!, transactions, this).show(supportFragmentManager, "Transaction Target Dialog")

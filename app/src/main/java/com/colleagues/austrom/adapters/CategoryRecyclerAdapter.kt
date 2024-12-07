@@ -13,7 +13,9 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.dialogs.CategoryCreationDialogFragment
 import com.colleagues.austrom.interfaces.IDialogInitiator
+import com.colleagues.austrom.managers.Icon
 import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.models.TransactionType
 
 class CategoryRecyclerAdapter(private val categories: MutableList<Category>,
                               private val activity: AppCompatActivity, private val receiver: IDialogInitiator? = null,
@@ -26,7 +28,7 @@ class CategoryRecyclerAdapter(private val categories: MutableList<Category>,
     }
 
     init {
-        if (isShowingCreateNewCategoryButton) categories.add(Category("New Category","Add New Category"))
+        if (isShowingCreateNewCategoryButton) categories.add(Category("New Category", Icon.I64, TransactionType.TRANSFER, ""))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {

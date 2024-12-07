@@ -14,6 +14,8 @@ import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
+import com.colleagues.austrom.models.AssetValidationType
+import com.colleagues.austrom.models.InvalidAssetException
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -37,24 +39,22 @@ class AssetCreationDialogFragment(private val parentDialog: BalanceFragment?) : 
         dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background)
 
         createNewAssetButton.setOnClickListener {
-            val provider = LocalDatabaseProvider(requireActivity())
+            val dbProvider = LocalDatabaseProvider(requireActivity())
             val assetType : Chip = view.findViewById(typeChipGroup.checkedChipId)
             val currencyType : Chip = view.findViewById(currencyChipGroup.checkedChipId)
             if (titleTextView.text.toString().isNotEmpty()) {
-                provider.createNewAsset(
+                try {
                     Asset(
-                        assetTypeId = getTypeID(assetType.tag.toString()),
+                        assetTypeId = getTypeID(assetType.tag.toString()) ?: throw InvalidAssetException(AssetValidationType.UNKNOWN_ASSET_TYPE_INVALID),
                         assetName = titleTextView.text.toString(),
-                        userId = AustromApplication.appUser?.userId.toString(),
-                        amount = if (amountTextView.text.toString().isNotEmpty())
-                        {amountTextView.text.toString().toDouble()} else {0.0},
+                        amount = if (amountTextView.text.toString().isNotEmpty()) amountTextView.text.toString().toDouble() else 0.0,
                         currencyCode = currencyType.text.toString(),
-                        isPrivate = false
-                    )
-                )
-                //TestChanges
-                parentDialog?.updateAssetsList()
-                this.dismiss()
+                    ).add(dbProvider)
+                    parentDialog?.updateAssetsList()
+                    this.dismiss()
+                } catch (ex: InvalidAssetException) {
+                    Toast.makeText(requireActivity(), ex.message, Toast.LENGTH_LONG).show()
+                }
             } else {
                 Toast.makeText(requireActivity(),
                     getString(R.string.asset_s_title_cannot_be_empty), Toast.LENGTH_LONG).show()

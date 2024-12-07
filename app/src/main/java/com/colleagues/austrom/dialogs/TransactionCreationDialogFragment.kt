@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -19,6 +20,7 @@ import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.models.InvalidTransactionException
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -78,42 +80,48 @@ class TransactionCreationDialogFragment(private val parentDialog: OpsFragment,
         }
 
         submitButton.setOnClickListener {
-            val provider = LocalDatabaseProvider(requireActivity())
+            val dbProvider = LocalDatabaseProvider(requireActivity())
             val categoryChip : Chip = view.findViewById(categoryChips.checkedChipId)
             val dateChip : Chip = view.findViewById(dateChips.checkedChipId)
             if (sourceName!=null && targetName!=null) {
-                val secondaryAmount = if (sumReceivedText.visibility == View.VISIBLE) {
-                    sumReceivedText.text.toString().toDouble()
-                } else {
-                    null
-                }
-                provider.writeNewTransaction(Transaction(
-                    userId = AustromApplication.appUser?.userId,
-                    sourceId = selectedSource?.assetId,
-                    sourceName = sourceName,
-                    targetId = selectedTarget?.assetId,
-                    targetName = targetName,
-                    amount = sumText.text.toString().toDouble(),
-                    secondaryAmount = secondaryAmount,
-                    categoryId = categoryChip.text.toString(),
-                    transactionDate = (dateChip.tag as LocalDate),
-                    comment = null
-                ))
-                if (selectedSource!=null) {
-                    selectedSource!!.amount -= sumText.text.toString().toDouble()
-                    provider.updateAsset(selectedSource!!)
-                }
-                if (selectedTarget!=null) {
-                    if (sumReceivedText.visibility == View.VISIBLE) {
-                        selectedTarget!!.amount += sumReceivedText.text.toString().toDouble()
-                    } else {
-                        selectedTarget!!.amount += sumText.text.toString().toDouble()
+                try{
+                    when (transactionType) {
+                        TransactionType.EXPENSE -> Transaction(
+                            amount = -sumText.text.toString().toDouble(),
+                            assetId = selectedSource!!.assetId,
+                            categoryId = categoryChip.text.toString(),
+                            transactionName = targetName.toString(),
+                            transactionDate = (dateChip.tag as LocalDate)).submit(dbProvider)
+                        TransactionType.INCOME -> Transaction(
+                            amount = sumText.text.toString().toDouble(),
+                            assetId = selectedTarget!!.assetId,
+                            categoryId = categoryChip.text.toString(),
+                            transactionName = sourceName.toString(),
+                            transactionDate = (dateChip.tag as LocalDate)).submit(dbProvider)
+                        TransactionType.TRANSFER -> {
+                            val transactionOut = Transaction(
+                                amount = -sumText.text.toString().toDouble(),
+                                assetId = selectedSource!!.assetId,
+                                categoryId = categoryChip.text.toString(),
+                                transactionName = targetName.toString(),
+                                transactionDate = (dateChip.tag as LocalDate))
+                            val transactionIn = Transaction(
+                                amount = if (sumReceivedText.visibility == View.VISIBLE) sumReceivedText.text.toString().toDouble() else sumText.text.toString().toDouble(),
+                                assetId = selectedTarget!!.assetId,
+                                categoryId = categoryChip.text.toString(),
+                                transactionName = sourceName.toString(),
+                                transactionDate = (dateChip.tag as LocalDate))
+                            transactionOut.linkTo(transactionIn)
+                            transactionIn.submit(dbProvider)
+                            transactionOut.submit(dbProvider)
+                        }
                     }
-                    provider.updateAsset(selectedTarget!!)
+                    parentDialog.updateTransactionsList()
+                    dismiss()
+                } catch (ex: InvalidTransactionException) {
+                    Toast.makeText(requireActivity(), ex.message, Toast.LENGTH_LONG).show()
                 }
-                parentDialog.updateTransactionsList()
             }
-            dismiss()
         }
 
         calendarButton.setOnClickListener {

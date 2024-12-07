@@ -43,11 +43,11 @@ class TransactionDetailRecyclerAdapter(private val transaction: Transaction, pri
         holder.quantityHolder.visibility = if (transactionDetail.quantity==null) View.GONE else View.VISIBLE
         holder.quantity.text = transactionDetail.quantity.toString()
         holder.quantityType.text = transactionDetail.typeOfQuantity.toString()
-        holder.currency.text = AustromApplication.activeCurrencies[transaction.sourceId]?.symbol
+        holder.currency.text = AustromApplication.activeCurrencies[transaction.assetId]?.symbol
         holder.categoryImage.setImageResource(when (transaction.transactionType()) {
-            TransactionType.INCOME -> (AustromApplication.getActiveExpenseCategories().find { entry -> entry.name==categoryName })?.imgReference?.resourceId ?: R.drawable.ic_placeholder_icon
-            TransactionType.TRANSFER -> (AustromApplication.getActiveTransferCategories().find { entry -> entry.name==categoryName })?.imgReference?.resourceId ?: R.drawable.ic_placeholder_icon
-            TransactionType.EXPENSE -> (AustromApplication.getActiveExpenseCategories().find { entry -> entry.name==categoryName })?.imgReference?.resourceId ?: R.drawable.ic_placeholder_icon
+            TransactionType.INCOME -> (AustromApplication.activeIncomeCategories.values.find { entry -> entry.name==categoryName })?.imgReference?.resourceId ?: R.drawable.ic_placeholder_icon
+            TransactionType.TRANSFER -> (AustromApplication.activeTransferCategories.values.find { entry -> entry.name==categoryName })?.imgReference?.resourceId ?: R.drawable.ic_placeholder_icon
+            TransactionType.EXPENSE -> (AustromApplication.activeExpenseCategories.values.find { entry -> entry.name==categoryName })?.imgReference?.resourceId ?: R.drawable.ic_placeholder_icon
         })
     }
 }

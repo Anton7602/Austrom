@@ -5,10 +5,8 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.LinearLayout
@@ -19,11 +17,11 @@ import androidx.fragment.app.DialogFragment
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryArrayAdapter
-import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.models.InvalidTransactionException
 import com.colleagues.austrom.models.Transaction
-import com.colleagues.austrom.models.TransactionType
+import com.colleagues.austrom.models.TransactionValidationType
 
 
 class ImportTransactionDialogFragment(private var transaction: Transaction,
@@ -51,11 +49,7 @@ class ImportTransactionDialogFragment(private var transaction: Transaction,
         if (targetSelectionDialog != null && targetSelectionDialog.window != null) {
             targetSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
-        val activeAsset = if (AustromApplication.activeAssets.values.find { l -> l.assetName==transaction.targetName } != null) {
-            AustromApplication.activeAssets.values.find { l -> l.assetName==transaction.targetName }
-        } else {
-            AustromApplication.activeAssets.values.find { l -> l.assetName==transaction.sourceName }
-        }
+        val activeAsset = AustromApplication.activeAssets[transaction.assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
         val categoriesList = if (transaction.amount>0) {
             AustromApplication.activeIncomeCategories.values.toList()
         } else {
@@ -64,17 +58,17 @@ class ImportTransactionDialogFragment(private var transaction: Transaction,
         knownCategories.adapter = CategoryArrayAdapter(activity, categoriesList)
         knownAssets.adapter = ArrayAdapter(activity, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, AustromApplication.activeAssets.map { it.value.assetName })
         unknownCategory.text = transaction.categoryId
-        unknownAsset.text = transaction.targetName
+        unknownAsset.text = transaction.assetId
 
         acceptButton.setOnClickListener {
+            transaction.categoryId = (knownCategories.selectedItem as Category).categoryId
+            reciever?.receiveValue(transactions.indexOf(transaction).toString(), "UpdatedTransactionIndex")
             transactions.forEach { _transaction ->
-                if (_transaction.categoryId == transaction.categoryId && _transaction.transactionType()==transaction.transactionType()) {
-                    _transaction.categoryId = (knownCategories.selectedItem as Category).id
+                if (_transaction.categoryId == unknownCategory.text.toString() && _transaction.transactionType()==transaction.transactionType()) {
+                    _transaction.categoryId = (knownCategories.selectedItem as Category).categoryId
                     reciever?.receiveValue(transactions.indexOf(_transaction).toString(), "UpdatedTransactionIndex")
                 }
             }
-            transaction.categoryId = (knownCategories.selectedItem as Category).id
-            reciever?.receiveValue(transactions.indexOf(transaction).toString(), "UpdatedTransactionIndex")
             dismiss()
         }
 

@@ -31,7 +31,7 @@ class BudgetJoinDialogFragment : BottomSheetDialogFragment() {
             val budget = provider.getBudgetById(inviteCodeTextView.text.toString())
             val user = AustromApplication.appUser
             if (budget!=null && user!=null) {
-                budget.users!!.add(user.userId!!)
+                budget.users!!.add(user.userId)
                 user.activeBudgetId = budget.budgetId
                 provider.updateUser(user)
                 provider.updateBudget(budget)

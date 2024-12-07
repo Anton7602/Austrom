@@ -56,11 +56,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), IDialogInitiator 
         quickAccessPinSetting.setValueText(if ((requireActivity().application as AustromApplication).getRememberedPin()!=null) {"****"} else {"Disabled"})
         languageSetting.setValueText(resources.configuration.locales.get(0).displayLanguage.startWithUppercase())
         moneyFormatSetting.setValueText("${1234567.89.toMoneyFormat()} ${AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol}")
-        val dbProvider = LocalDatabaseProvider(requireActivity())
         var categoryLine = ""
-        dbProvider.getCategories().forEach{ category ->
-            categoryLine += "$category, "
-        }
+        AustromApplication.activeExpenseCategories.values.forEach{ category -> categoryLine += "${category.name}, "  }
+        AustromApplication.activeIncomeCategories.values.forEach { category -> categoryLine += "${category.name}, "  }
         if (categoryLine.isNotEmpty()) {
             categoryLine = categoryLine.dropLast(2)
             categorySetting.setValueText(categoryLine)

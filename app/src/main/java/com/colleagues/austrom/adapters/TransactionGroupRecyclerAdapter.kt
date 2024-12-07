@@ -31,7 +31,6 @@ class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMa
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionGroupViewHolder, position: Int) {
         val transactionDate = groupedTransactions.keys.elementAt(position)
-        //holder.transactionGroupName.text = "${transactionDate.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()).startWithUppercase()} ${transactionDate.format(DateTimeFormatter.ofPattern("dd.MM"))}"
         holder.transactionGroupName.text = transactionDate.toDayOfWeekAndShortDateFormat()
         holder.transactionHolderRecyclerView.layoutManager = LinearLayoutManager(activity)
         holder.transactionHolderRecyclerView.adapter = TransactionRecyclerAdapter(groupedTransactions.values.elementAt(position), activity)

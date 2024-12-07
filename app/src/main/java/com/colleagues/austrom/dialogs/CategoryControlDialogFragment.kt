@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryRecyclerAdapterNew
 import com.colleagues.austrom.database.LocalDatabaseProvider
@@ -52,19 +53,11 @@ class CategoryControlDialogFragment(private val receiver: IDialogInitiator?) : B
     }
 
     private fun setUpRecyclerViews() {
-        val dbProvider = LocalDatabaseProvider(requireActivity())
-
-        val incomeTransactions = dbProvider.getCategories(TransactionType.INCOME).toMutableList()
-        incomeTransactions.add(0, Category(transactionType = TransactionType.INCOME, name= getString(R.string.add_new_category), imgReference = Icon.I64, type = "Mandatory"))
-
-        val expenseTransactions = (dbProvider.getCategories(TransactionType.EXPENSE)).toMutableList()
-        expenseTransactions.add(0, Category(transactionType = TransactionType.EXPENSE, name= getString(R.string.add_new_category), imgReference = Icon.I64, type = "Mandatory"))
-
         incomeCategoryHolder.layoutManager = LinearLayoutManager(activity)
-        incomeCategoryHolder.adapter = CategoryRecyclerAdapterNew(incomeTransactions, requireActivity() as AppCompatActivity,  receiver)
+        incomeCategoryHolder.adapter = CategoryRecyclerAdapterNew(AustromApplication.activeIncomeCategories.values.toMutableList(), requireActivity() as AppCompatActivity, true,  receiver)
 
         expenseCategoryHolder.layoutManager = LinearLayoutManager(activity)
-        expenseCategoryHolder.adapter = CategoryRecyclerAdapterNew(expenseTransactions, requireActivity() as AppCompatActivity,  receiver)
+        expenseCategoryHolder.adapter = CategoryRecyclerAdapterNew(AustromApplication.activeExpenseCategories.values.toMutableList(), requireActivity() as AppCompatActivity, true,  receiver)
     }
 
     private fun bindViews(view: View) {

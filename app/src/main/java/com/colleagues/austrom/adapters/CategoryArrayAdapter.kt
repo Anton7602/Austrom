@@ -22,9 +22,7 @@ class CategoryArrayAdapter (context: Context, categories: List<Category>) : Arra
         if (category!= null) {
             view?.findViewById<TextView>(R.id.itcatnew_categoryName_txt)?.text = category.name
             view?.findViewById<ImageButton>(R.id.itcatnew_edit_btn)?.visibility = View.GONE
-            if (category.imgReference!=null) {
-                view?.findViewById<ImageView>(R.id.itcatnew_categoryIcon_img)?.setImageResource(category.imgReference!!.resourceId)
-            }
+            view?.findViewById<ImageView>(R.id.itcatnew_categoryIcon_img)?.setImageResource(category.imgReference.resourceId)
         }
         return view ?: throw IllegalArgumentException("View cannot be null")
     }

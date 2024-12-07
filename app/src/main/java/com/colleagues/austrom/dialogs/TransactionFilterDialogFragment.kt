@@ -41,9 +41,9 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background)
-        setUpCategoriesInChips(AustromApplication.getActiveExpenseCategories(), expenseCategories)
-        setUpCategoriesInChips(AustromApplication.getActiveTransferCategories(), transferCategories)
-        setUpCategoriesInChips(AustromApplication.getActiveIncomeCategories(), incomeCategories)
+        setUpCategoriesInChips(AustromApplication.activeExpenseCategories.values.toList(), expenseCategories)
+        setUpCategoriesInChips(AustromApplication.activeTransferCategories.values.toList(), transferCategories)
+        setUpCategoriesInChips(AustromApplication.activeIncomeCategories.values.toList(), incomeCategories)
         matchFilter()
 
         incomeButton.setOnClickListener {

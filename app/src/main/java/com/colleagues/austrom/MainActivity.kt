@@ -188,18 +188,25 @@ class MainActivity : AppCompatActivity() {
     private fun fillInDefaultCategories() {
         val dbProvider = LocalDatabaseProvider(this)
         if (dbProvider.getCategories().isEmpty()) {
-            for (category in Category.defaultExpenseCategories) {
+            for (category in Category.localizeCategoriesNames(Category.defaultTransferCategories, this)) {
                 dbProvider.writeCategory(category)
             }
 
-            for (category in Category.defaultIncomeCategories) {
+            for (category in Category.localizeCategoriesNames(Category.defaultExpenseCategories, this)) {
+                dbProvider.writeCategory(category)
+            }
+
+            for (category in Category.localizeCategoriesNames(Category.defaultIncomeCategories, this)) {
                 dbProvider.writeCategory(category)
             }
         }
         val activeIncomeCategories = dbProvider.getCategories(TransactionType.INCOME)
         val activeExpenseCategories = dbProvider.getCategories(TransactionType.EXPENSE)
-        activeIncomeCategories.forEach { category -> AustromApplication.activeIncomeCategories[category.id] = category }
-        activeExpenseCategories.forEach { category -> AustromApplication.activeExpenseCategories[category.id] = category }
+        val activeTransferCategories = dbProvider.getCategories(TransactionType.TRANSFER)
+        activeIncomeCategories.forEach { category -> AustromApplication.activeIncomeCategories[category.categoryId] = category }
+        activeExpenseCategories.forEach { category -> AustromApplication.activeExpenseCategories[category.categoryId] = category }
+        activeTransferCategories.forEach { category -> AustromApplication.activeExpenseCategories[category.categoryId] = category  }
+
     }
 
     private fun fillInDefaultCurrencies() {

@@ -2,126 +2,97 @@ package com.colleagues.austrom.models
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
-import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import java.time.LocalDate
 import java.util.UUID
 
 @Entity(foreignKeys = [ForeignKey(entity = Asset::class,
     parentColumns = ["assetId"],
-    childColumns = ["sourceId"],
-    onDelete = ForeignKey.NO_ACTION),
-    ForeignKey(entity = Asset::class,
-        parentColumns = ["assetId"],
-        childColumns = ["targetId"],
-        onDelete = ForeignKey.NO_ACTION)])
-class Transaction(
+    childColumns = ["assetId"],
+    onDelete = ForeignKey.RESTRICT),
+    ForeignKey(entity = Category::class,
+        parentColumns = ["categoryId"],
+        childColumns = ["categoryId"],
+        onDelete = ForeignKey.RESTRICT),
+    ForeignKey(entity = User::class,
+        parentColumns = ["userId"],
+        childColumns = ["userId"],
+        onDelete = ForeignKey.RESTRICT)],
+    indices = [Index(value = ["assetId"]), Index(value = ["categoryId"]), Index(value = ["userId"])])
+class Transaction(val assetId: String, val amount: Double, var categoryId: String, val transactionDate: LocalDate, val transactionName: String, var comment: String? = null)  {
     @PrimaryKey(autoGenerate = false)
-    var transactionId: String = "",
-    val userId: String? = null,
-    val sourceId: String? = null,
-    val sourceName: String? = null,
-    val targetId: String? = null,
-    val targetName: String? = null,
-    val amount: Double = 0.0,
-    val secondaryAmount: Double? = null,
-    var categoryId: String? = null,
-    var transactionDate: LocalDate? = null,
-    var transactionDateInt: Int? = null,
-    var comment: String? = null)    {
+    var transactionId: String = generateUniqueTransactionKey()
+    var userId: String = AustromApplication.appUser!!.userId
+    var linkedTransactionId: String? = null
+    var isPrivate: Boolean = false
+    var version: Int = 1
 
-    fun transactionType(): TransactionType {
-        return if (this.sourceId!=null && this.targetId!=null) TransactionType.TRANSFER
-        else if (this.sourceId!=null) TransactionType.EXPENSE else TransactionType.INCOME
+    fun transactionType(): TransactionType { return if (linkedTransactionId!=null) TransactionType.TRANSFER else if (amount<0) TransactionType.EXPENSE else TransactionType.INCOME }
+
+    fun linkTo(transaction: Transaction) {
+        if (transactionId==transaction.transactionId) throw IllegalArgumentException("Link can not be pointing on itself")
+        if (linkedTransactionId!=null || transaction.linkedTransactionId!=null) throw IllegalArgumentException("One of transaction is already in linked state")
+        this.linkTo(transaction.transactionId)
+        transaction.linkTo(this.transactionId)
     }
 
-    fun cancel(dbProvider: LocalDatabaseProvider) {
-        when (this.transactionType()) {
-            TransactionType.INCOME -> {
-                val target = AustromApplication.activeAssets[targetId]
-                if (target != null) {
-                    target.amount-=this.amount
-                    dbProvider.updateAsset(target)
-                    dbProvider.deleteTransaction(this)
-                }
-            }
-            TransactionType.TRANSFER -> {
-                val target = AustromApplication.activeAssets[targetId]
-                val source = AustromApplication.activeAssets[sourceId]
-                if (target != null && source!=null) {
-                    source.amount+=this.amount
-                    target.amount-= if (target.currencyCode == source.currencyCode) this.amount else this.secondaryAmount ?: 0.0
-                    dbProvider.updateAsset(target)
-                    dbProvider.updateAsset(source)
-                    dbProvider.deleteTransaction(this)
-                }
-            }
-            TransactionType.EXPENSE -> {
-                val source = AustromApplication.activeAssets[sourceId]
-                if (source!=null) {
-                    source.amount+=this.amount
-                    dbProvider.updateAsset(source)
-                    dbProvider.deleteTransaction(this)
-                }
-            }
-        }
+    private fun linkTo(transactionId: String?) { this.linkedTransactionId = transactionId }
+    private fun clearLink() { this.linkedTransactionId = null}
+
+    fun breakLink(dbProvider: LocalDatabaseProvider) {
+        if (linkedTransactionId == null) return
+        dbProvider.getTransactionByID(linkedTransactionId!!)?.clearLink()
+        this.clearLink()
     }
 
     fun submit(dbProvider: LocalDatabaseProvider) {
         when (this.validate()) {
             TransactionValidationType.VALID -> {
-                when (this.transactionType()) {
-                    TransactionType.INCOME -> {
-                        val activeAsset = AustromApplication.activeAssets[targetId]
-                        if (activeAsset!=null) {
-                            activeAsset.amount+=amount
-                            dbProvider.updateAsset(activeAsset)
-                            dbProvider.writeNewTransaction(this)
-                        }
-                    }
-                    TransactionType.EXPENSE -> {
-                        val activeAsset = AustromApplication.activeAssets[sourceId]
-                        if (activeAsset!=null) {
-                            activeAsset.amount-=amount
-                            dbProvider.updateAsset(activeAsset)
-                            dbProvider.writeNewTransaction(this)
-                        }
-                    }
-                    TransactionType.TRANSFER -> {
-                        val source = AustromApplication.activeAssets[sourceId]
-                        val target = AustromApplication.activeAssets[targetId]
-                        if (source!=null && target!=null) {
-                            source.amount-=this.amount
-                            target.amount+=this.amount
-                            dbProvider.updateAsset(source)
-                            dbProvider.updateAsset(target)
-                            dbProvider.writeNewTransaction(this)
-                        }
-                    }
-                }
+                val involvedAsset = AustromApplication.activeAssets[assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
+                involvedAsset.amount+=this.amount
+                dbProvider.submitNewTransaction(this, involvedAsset)
             }
-            TransactionValidationType.UNKNOWN_ASSET_INVALID -> throw InvalidTransactionException("Assets used in this transaction not recognized by the App", TransactionValidationType.UNKNOWN_ASSET_INVALID)
-            TransactionValidationType.UNKNOWN_CATEGORY_INVALID -> throw InvalidTransactionException("Category used in this transaction not recognized by the App", TransactionValidationType.UNKNOWN_ASSET_INVALID)
-            TransactionValidationType.NEGATIVE_ASSET_AMOUNT_INVALID -> throw InvalidTransactionException("Assets used in this transaction not recognized by the App", TransactionValidationType.UNKNOWN_ASSET_INVALID)
+            else -> throw InvalidTransactionException(this.validate())
         }
     }
 
-    fun validate(): TransactionValidationType {
-        if (sourceId == null && targetId==null) return TransactionValidationType.UNKNOWN_ASSET_INVALID
-        when (transactionType()) {
-            TransactionType.INCOME -> if (AustromApplication.activeAssets[targetId]==null) return TransactionValidationType.UNKNOWN_ASSET_INVALID
-            TransactionType.EXPENSE -> if (AustromApplication.activeAssets[sourceId]==null) return TransactionValidationType.UNKNOWN_ASSET_INVALID
-            TransactionType.TRANSFER -> if (AustromApplication.activeAssets[sourceId]==null || AustromApplication.activeAssets[targetId]==null) return TransactionValidationType.UNKNOWN_ASSET_INVALID
+    fun cancel(dbProvider: LocalDatabaseProvider) {
+        when (this.transactionType()) {
+            TransactionType.TRANSFER -> {
+                val involvedAsset = AustromApplication.activeAssets[assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
+                if (linkedTransactionId==null) throw InvalidTransactionException(TransactionValidationType.UNKNOWN_LINKED_TRANSACTION)
+                val linkedTransaction = dbProvider.getTransactionByID(this.linkedTransactionId!!) ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_LINKED_TRANSACTION)
+                val involvedAssetOfLinkedTransaction = AustromApplication.activeAssets[linkedTransaction.assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
+                involvedAsset.amount-=this.amount
+                involvedAssetOfLinkedTransaction.amount-=linkedTransaction.amount
+                dbProvider.cancelTransaction(this)
+            }
+            else -> {
+                val involvedAsset = AustromApplication.activeAssets[assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
+                involvedAsset.amount-=this.amount
+                dbProvider.cancelTransaction(this)
+            }
         }
+    }
+
+    fun isValid(): Boolean { return (this.validate()==TransactionValidationType.VALID)  }
+
+    fun validate(): TransactionValidationType {
+        if (amount==0.0) return TransactionValidationType.AMOUNT_INVALID
+        if (AustromApplication.activeAssets[assetId]==null) return TransactionValidationType.UNKNOWN_ASSET_INVALID
         when (transactionType()) {
             TransactionType.INCOME -> if (AustromApplication.activeIncomeCategories[categoryId]==null) return TransactionValidationType.UNKNOWN_CATEGORY_INVALID
             TransactionType.EXPENSE -> if (AustromApplication.activeExpenseCategories[categoryId]==null) return TransactionValidationType.UNKNOWN_CATEGORY_INVALID
-            TransactionType.TRANSFER -> {}
+            else -> {}
         }
-        if (transactionType() == TransactionType.EXPENSE && AustromApplication.activeAssets[sourceId]!!.amount-amount<0) return TransactionValidationType.NEGATIVE_ASSET_AMOUNT_INVALID
         return TransactionValidationType.VALID
+    }
+
+    fun validate(dbProvider: LocalDatabaseProvider) : TransactionValidationType {
+        return if (linkedTransactionId==null || dbProvider.getTransactionByID(linkedTransactionId!!)!=null) this.validate() else TransactionValidationType.UNKNOWN_LINKED_TRANSACTION
     }
 
     companion object{
@@ -130,7 +101,7 @@ class Transaction(
             val groupedTransactions = mutableMapOf<LocalDate, MutableList<Transaction>>()
             for (transaction in transactions){
                 if (!groupedTransactions.containsKey(transaction.transactionDate)) {
-                    groupedTransactions[transaction.transactionDate!!] = mutableListOf()
+                    groupedTransactions[transaction.transactionDate] = mutableListOf()
                 }
                 groupedTransactions[transaction.transactionDate]!!.add(transaction)
             }
@@ -148,7 +119,15 @@ enum class TransactionType {
 }
 
 enum class TransactionValidationType{
-    VALID, UNKNOWN_ASSET_INVALID, UNKNOWN_CATEGORY_INVALID, NEGATIVE_ASSET_AMOUNT_INVALID
+    VALID, UNKNOWN_ASSET_INVALID, UNKNOWN_CATEGORY_INVALID, UNKNOWN_LINKED_TRANSACTION, AMOUNT_INVALID
 }
 
-class InvalidTransactionException(message: String, validationType: TransactionValidationType) : Exception(message)
+class InvalidTransactionException(message: String, validationType: TransactionValidationType) : Exception(message) {
+    constructor(validationType: TransactionValidationType): this(when(validationType) {
+        TransactionValidationType.VALID -> "CRITICAL ERROR!!! Transaction type valid but InvalidTransactionException thrown."
+        TransactionValidationType.UNKNOWN_ASSET_INVALID -> "Asset of provided transaction was not recognized"
+        TransactionValidationType.UNKNOWN_CATEGORY_INVALID -> "Category of provided transaction was not recognized"
+        TransactionValidationType.UNKNOWN_LINKED_TRANSACTION -> "Linked Transaction of provided transaction is not recognized"
+        TransactionValidationType.AMOUNT_INVALID -> "Transaction Amount cannot be equal to zero"
+    }, validationType)
+}

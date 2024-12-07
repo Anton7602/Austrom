@@ -37,9 +37,9 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories), IDialogInitia
     }
 
     private fun setUpRecyclerViews() {
-        setUpRecyclerView(expenseCategoriesRecyclerView, mergeDefaultAndCustomCategoriesLists(Category.defaultExpenseCategories, AustromApplication.getActiveExpenseCategories()))
-        setUpRecyclerView(transferCategoriesRecyclerView, mergeDefaultAndCustomCategoriesLists(Category.defaultTransferCategories, AustromApplication.getActiveTransferCategories()))
-        setUpRecyclerView(incomeCategoriesRecyclerView, mergeDefaultAndCustomCategoriesLists(Category.defaultIncomeCategories, AustromApplication.getActiveIncomeCategories()))
+        setUpRecyclerView(expenseCategoriesRecyclerView, mergeDefaultAndCustomCategoriesLists(Category.defaultExpenseCategories, AustromApplication.activeExpenseCategories.values.toList()))
+        setUpRecyclerView(transferCategoriesRecyclerView, mergeDefaultAndCustomCategoriesLists(Category.defaultTransferCategories, AustromApplication.activeTransferCategories.values.toList()))
+        setUpRecyclerView(incomeCategoriesRecyclerView, mergeDefaultAndCustomCategoriesLists(Category.defaultIncomeCategories, AustromApplication.activeIncomeCategories.values.toList()))
     }
 
     private fun mergeDefaultAndCustomCategoriesLists(defaultCategories: List<Category>, customCategories: List<Category>) : MutableList<Category> {

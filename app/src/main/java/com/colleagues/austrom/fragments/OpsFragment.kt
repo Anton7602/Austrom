@@ -96,13 +96,13 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
         var expenseSum = 0.0
         transactionList.forEach{ transaction ->
             if (transaction.transactionType() == TransactionType.EXPENSE) {
-                val transactionsAsset = provider.getAssetById(transaction.sourceId!!)
+                val transactionsAsset = provider.getAssetById(transaction.assetId)
                 if (transactionsAsset!=null) {
                     expenseSum+= if (transactionsAsset.currencyCode==AustromApplication.appUser!!.baseCurrencyCode) transaction.amount else transaction.amount/(AustromApplication.activeCurrencies[transactionsAsset.currencyCode]?.exchangeRate ?: 1.0)
                 }
             }
             if (transaction.transactionType() == TransactionType.INCOME) {
-                val transactionsAsset = provider.getAssetById(transaction.targetId!!)
+                val transactionsAsset = provider.getAssetById(transaction.assetId)
                 if (transactionsAsset!=null) {
                     incomeSum+= if (transactionsAsset.currencyCode==AustromApplication.appUser!!.baseCurrencyCode) transaction.amount else transaction.amount/(AustromApplication.activeCurrencies[transactionsAsset.currencyCode]?.exchangeRate ?: 1.0)
                 }
@@ -117,17 +117,17 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
         activeFilter = filter
         var filteredTransactions: MutableList<Transaction> = mutableListOf()
         if (filter.transactionTypes.contains(TransactionType.INCOME))
-            filteredTransactions.addAll(transactionList.filter { entry -> entry.sourceId==null })
+            filteredTransactions.addAll(transactionList.filter { entry -> entry.transactionType()==TransactionType.INCOME })
         if (filter.transactionTypes.contains(TransactionType.TRANSFER))
-            filteredTransactions.addAll(transactionList.filter  {entry -> entry.sourceId!=null && entry.targetId!=null })
+            filteredTransactions.addAll(transactionList.filter  {entry -> entry.transactionType()==TransactionType.TRANSFER })
         if (filter.transactionTypes.contains(TransactionType.EXPENSE))
-            filteredTransactions.addAll(transactionList.filter { entry -> entry.targetId==null })
+            filteredTransactions.addAll(transactionList.filter { entry -> entry.transactionType() == TransactionType.EXPENSE})
         filteredTransactions = (filteredTransactions.filter { entry -> filter.categories.contains(entry.categoryId) }).toMutableList()
         if (filter.dateFrom!=null) {
-            filteredTransactions = (filteredTransactions.filter { entry -> entry.transactionDate!! >= filter.dateFrom }).toMutableList()
+            filteredTransactions = (filteredTransactions.filter { entry -> entry.transactionDate >= filter.dateFrom }).toMutableList()
         }
         if (filter.dateTo!=null) {
-            filteredTransactions = (filteredTransactions.filter { entry -> entry.transactionDate!! <= filter.dateTo }).toMutableList()
+            filteredTransactions = (filteredTransactions.filter { entry -> entry.transactionDate <= filter.dateTo }).toMutableList()
         }
         setUpRecyclerView(filteredTransactions)
     }

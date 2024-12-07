@@ -56,8 +56,7 @@ class SignUpActivity : AppCompatActivity() {
             val existingUser = provider.getUserByEmail(emailTextBox.text.toString().lowercase())
             if (existingUser == null) {
                 val newUser = User(
-                    userId = User.generateUniqueAssetKey(),
-                    username = loginTextBox.text.toString().lowercase(),
+                    username = loginTextBox.text.toString(),
                     email =  emailTextBox.text.toString().lowercase(),
                     password = passwordTextBox.text.toString())
                 provider.createNewUser(newUser)

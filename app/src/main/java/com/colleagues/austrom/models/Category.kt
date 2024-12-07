@@ -3,21 +3,24 @@ package com.colleagues.austrom.models
 import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.managers.Icon
 import java.util.UUID
 
 @Entity
-class Category(
-    @PrimaryKey(autoGenerate = false)
-    var id: String = "",
-    var name: String? = null,
-    val type: String? = null,
-    var imgReference: Icon? = null,
-    val transactionType: TransactionType = TransactionType.EXPENSE) {
+class Category(var name: String,
+               var imgReference: Icon,
+               val transactionType: TransactionType,
+               @PrimaryKey(autoGenerate = false)
+               val categoryId: String) {
+    var userId: String = AustromApplication.appUser?.userId.toString()
+    var type: String? = null
+
+    constructor(name: String, imgReference: Icon, transactionType: TransactionType): this(name, imgReference, transactionType, generateCategoryId())
 
     override fun toString(): String {
-        return this.name ?: ""
+        return this.name
     }
 
     override fun equals(other: Any?): Boolean {
@@ -26,7 +29,7 @@ class Category(
     }
 
     override fun hashCode(): Int {
-        var result = name?.hashCode() ?: 0
+        var result = name.hashCode()
         result = 31 * result + (type?.hashCode() ?: 0)
         result = 31 * result + transactionType.hashCode()
         return result
@@ -38,35 +41,35 @@ class Category(
         }
 
         var defaultExpenseCategories : List<Category> = listOf(
-            Category("Food", "Food", "Mandatory", Icon.I7, TransactionType.EXPENSE),
-            Category("Clothes","Clothes", "Mandatory", Icon.I3, TransactionType.EXPENSE),
-            Category("Health","Health", "Mandatory", Icon.I8, TransactionType.EXPENSE),
-            Category("House","House", "Mandatory", Icon.I11, TransactionType.EXPENSE),
-            Category("Transport","Transport", "Mandatory", Icon.I15, TransactionType.EXPENSE),
-            Category("Travel","Travel", "Optional", Icon.I16, TransactionType.EXPENSE),
-            Category("Subscriptions","Subscriptions", "Optional", Icon.I13, TransactionType.EXPENSE),
-            Category("Entertainment","Entertainment", "Optional", Icon.I5, TransactionType.EXPENSE),
-            Category("Sport","Sport", "Optional", Icon.I12, TransactionType.EXPENSE),
-            Category("Beauty","Beauty", "Optional", Icon.I1, TransactionType.EXPENSE),
-            Category("Presents","Presents", "Optional", Icon.I10, TransactionType.EXPENSE),
-            Category("Education","Education", "Optional", Icon.I4, TransactionType.EXPENSE),
-            Category("Equipment","Equipment", "Optional", Icon.I6, TransactionType.EXPENSE),
-            Category("Other","Other", "Optional", Icon.I9, TransactionType.EXPENSE),
+            Category("Food",  Icon.I7, TransactionType.EXPENSE, "FOOD"),
+            Category("Clothes", Icon.I3, TransactionType.EXPENSE, "CLOTHES"),
+            Category("Health", Icon.I8, TransactionType.EXPENSE, "HEALTH"),
+            Category("House", Icon.I11, TransactionType.EXPENSE, "HOUSE"),
+            Category("Transport", Icon.I15, TransactionType.EXPENSE, "TRANSPORT"),
+            Category("Travel", Icon.I16, TransactionType.EXPENSE, "TRAVEL"),
+            Category("Subscriptions", Icon.I13, TransactionType.EXPENSE, "SUBSCRIPTIONS"),
+            Category("Entertainment", Icon.I5, TransactionType.EXPENSE, "ENTERTAINMENT"),
+            Category("Sport", Icon.I12, TransactionType.EXPENSE, "SPORT"),
+            Category("Beauty", Icon.I1, TransactionType.EXPENSE, "BEAUTY"),
+            Category("Presents", Icon.I10, TransactionType.EXPENSE, "PRESENTS"),
+            Category("Education", Icon.I4, TransactionType.EXPENSE, "EDUCATION"),
+            Category("Equipment", Icon.I6, TransactionType.EXPENSE, "EQUIPMENT"),
+            Category("Other", Icon.I9, TransactionType.EXPENSE, "OTHER"),
         )
 
         var defaultIncomeCategories : List<Category> = listOf(
-            Category("Wages","Wages", "Optional", Icon.I62, TransactionType.INCOME),
-            Category("Cashback","Cashback", "Optional", Icon.I2, TransactionType.INCOME),
+            Category("Wages", Icon.I62, TransactionType.INCOME, "WAGES"),
+            Category("Cashback", Icon.I2, TransactionType.INCOME, "CASHBACK"),
         )
 
         var defaultTransferCategories : List<Category> = listOf(
-            Category("Transfer","Transfer", "Optional", Icon.I14, TransactionType.TRANSFER),
+            Category("Transfer", Icon.I14, TransactionType.TRANSFER, "TRANSFER"),
         )
 
         fun localizeCategoriesNames(categories: List<Category>, context: Context) : List<Category> {
             for (category in categories) {
-                if (categoriesNamesResourceMap.containsKey(category.name?.lowercase())) {
-                    category.name = context.getString(categoriesNamesResourceMap[category.name!!.lowercase()]!!)
+                if (categoriesNamesResourceMap.containsKey(category.name.lowercase())) {
+                    category.name = context.getString(categoriesNamesResourceMap[category.name.lowercase()]!!)
                 }
             }
             return categories
@@ -92,4 +95,15 @@ class Category(
             Pair("transfer", R.string.transfer),
         )
     }
+}
+
+enum class CategoryValidationType{
+    VALID, UNKNOWN_ICON_INVALID
+}
+
+class InvalidCategoryException(message: String, validationType: CategoryValidationType) : Exception(message) {
+    constructor(validationType: CategoryValidationType): this(when(validationType) {
+        CategoryValidationType.VALID -> "CRITICAL ERROR!!! Category is valid but InvalidTransactionException thrown."
+        CategoryValidationType.UNKNOWN_ICON_INVALID -> "Invalid Icon Provided"
+    }, validationType)
 }

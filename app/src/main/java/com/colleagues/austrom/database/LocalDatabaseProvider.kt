@@ -1,17 +1,16 @@
 package com.colleagues.austrom.database
 
 import android.content.Context
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
+import com.colleagues.austrom.models.InvalidTransactionException
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
+import com.colleagues.austrom.models.TransactionValidationType
 import com.colleagues.austrom.models.User
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class LocalDatabaseProvider(private val context: Context) {
@@ -19,9 +18,6 @@ class LocalDatabaseProvider(private val context: Context) {
 
     fun writeNewUser(user: User): String {
         val dao = localDatabase.userDao()
-        if (user.userId.isEmpty()) {
-            user.userId = User.generateUniqueAssetKey()
-        }
         runBlocking {
             dao.insertUser(user)
         }
@@ -116,9 +112,8 @@ class LocalDatabaseProvider(private val context: Context) {
     }
 
     fun deleteAsset(asset: Asset) {
-        val dao = localDatabase.assetDao()
         runBlocking {
-            dao.deleteAsset(asset)
+            localDatabase.complexDao().deleteAssetWithTransactions(localDatabase.transactionDao(), localDatabase.assetDao(), asset)
         }
     }
 
@@ -155,29 +150,11 @@ class LocalDatabaseProvider(private val context: Context) {
         return asset
     }
 
-//    override fun createNewBudget(budget: Budget): String? {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun updateBudget(budget: Budget) {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun deleteBudget(budget: Budget) {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun getBudgetById(budgetId: String): Budget? {
-//        TODO("Not yet implemented")
-//    }
 
-    fun writeNewTransaction(transaction: Transaction): String {
-        val dao = localDatabase.transactionDao()
-        transaction.transactionId = Transaction.generateUniqueTransactionKey();
+    fun submitNewTransaction(transaction: Transaction, asset: Asset) {
         runBlocking {
-            dao.insertTransaction(transaction)
+            localDatabase.complexDao().submitTransaction(localDatabase.transactionDao(), localDatabase.assetDao(), transaction, asset)
         }
-        return transaction.transactionId
     }
 
     fun updateTransaction(transaction: Transaction) {
@@ -187,11 +164,27 @@ class LocalDatabaseProvider(private val context: Context) {
         }
     }
 
-    fun deleteTransaction(transaction: Transaction) {
-        val dao = localDatabase.transactionDao()
-        runBlocking {
-            dao.deleteTransaction(transaction)
+    fun cancelTransaction(transaction: Transaction) {
+        val activeAsset = this.getAssetById(transaction.assetId) ?: throw InvalidTransactionException("Transaction cancellation failed. Asset is unknown!", TransactionValidationType.UNKNOWN_ASSET_INVALID)
+        if (transaction.linkedTransactionId!=null) {
+            val linkedTransaction = this.getTransactionByID(transaction.linkedTransactionId!!) ?: throw InvalidTransactionException("Transaction cancellation failed. Linked Transaction can't be found", TransactionValidationType.UNKNOWN_LINKED_TRANSACTION)
+            val activeAssetOfLinkedTransaction = this.getAssetById(linkedTransaction.assetId) ?: throw InvalidTransactionException("Transaction cancellation failed. Asset of linked transaction is unknown!", TransactionValidationType.UNKNOWN_ASSET_INVALID)
+            runBlocking {
+                localDatabase.complexDao().cancelTransfer(localDatabase.transactionDao(), localDatabase.assetDao(), transaction, activeAsset, linkedTransaction, activeAssetOfLinkedTransaction)
+            }
+        } else {
+            runBlocking {
+                localDatabase.complexDao().cancelTransaction(localDatabase.transactionDao(), localDatabase.assetDao(), transaction, activeAsset)
+            }
         }
+    }
+
+    fun getTransactionByID(transactionId: String): Transaction? {
+        var transaction: Transaction?
+        runBlocking {
+            transaction = localDatabase.transactionDao().getTransactionByID(transactionId)
+        }
+        return  transaction
     }
 
     fun getTransactionsOfUser(user: User): MutableList<Transaction> {
@@ -225,7 +218,7 @@ class LocalDatabaseProvider(private val context: Context) {
         val dao = localDatabase.transactionDao()
         var transaction: MutableList<Transaction>
         runBlocking {
-            transaction = dao.getTransactionsByCategoryId(category.id).toMutableList()
+            transaction = dao.getTransactionsByCategoryId(category.categoryId).toMutableList()
         }
         return transaction
     }
@@ -234,9 +227,7 @@ class LocalDatabaseProvider(private val context: Context) {
         var result = false
         val dao = localDatabase.transactionDao()
         runBlocking {
-            if (transaction.transactionDate!=null) {
-                result = (dao.getCollidingTransaction(transaction.transactionDate!!, transaction.amount).isNotEmpty())
-            }
+            result = (dao.getCollidingTransaction(transaction.transactionDate, transaction.amount).isNotEmpty())
         }
         return result
     }

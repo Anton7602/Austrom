@@ -61,6 +61,7 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
                 if (costField.text.toString().isNotEmpty()) {
                     if (parent.updateUnallocatedSum(costField.text.toString().toDouble())>=0) {
                         parent.addTransactionDetail(TransactionDetail(
+                            transactionId = transaction.transactionId,
                             name = detailNameField.text.toString(),
                             quantity = if (quantityField.text.toString().isEmpty()) null else quantityField.text.toString().toDouble(),
                             typeOfQuantity = if (quantityField.text.toString().isEmpty()) null else quantityTypeSpinner.selectedItem as QuantityUnit,
@@ -99,7 +100,7 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
         categorySpinner.visibility = if (stageId==3) View.VISIBLE else View.GONE
         costField.visibility = if (stageId==4) View.VISIBLE else View.GONE
         currencyLabel.visibility = if (stageId==4) View.VISIBLE else View.GONE
-        currencyLabel.text = AustromApplication.activeCurrencies[AustromApplication.activeAssets[transaction.sourceId]?.currencyCode]?.symbol
+        currencyLabel.text = AustromApplication.activeCurrencies[AustromApplication.activeAssets[transaction.assetId]?.currencyCode]?.symbol
         AustromApplication.showKeyboard(requireActivity(), when (stageId) {
             1 -> detailNameField
             2 -> quantityField
@@ -121,9 +122,9 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
         quantityTypeSpinner.setSelection(0)
 
         val availableCategories = when (transaction.transactionType()) {
-            TransactionType.EXPENSE -> AustromApplication.getActiveExpenseCategories()
-            TransactionType.INCOME ->  AustromApplication.getActiveIncomeCategories()
-            TransactionType.TRANSFER ->  AustromApplication.getActiveTransferCategories()
+            TransactionType.EXPENSE -> AustromApplication.activeExpenseCategories.values.toList()
+            TransactionType.INCOME ->  AustromApplication.activeIncomeCategories.values.toList()
+            TransactionType.TRANSFER ->  AustromApplication.activeTransferCategories.values.toList()
         }
         val categoryAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, availableCategories)
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

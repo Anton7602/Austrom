@@ -30,6 +30,7 @@ abstract class LocalDatabase: RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun currencyDao(): CurrencyDao
     abstract fun categoryDao(): CategoryDao
+    abstract fun complexDao(): ComplexDao
 
     companion object {
         @Volatile
@@ -46,6 +47,35 @@ abstract class LocalDatabase: RoomDatabase() {
                 instance
             }
         }
+    }
+}
+
+@Dao
+interface ComplexDao {
+    @androidx.room.Transaction
+    suspend fun submitTransaction(transactionDao: TransactionDao, assetDao: AssetDao, transaction: Transaction, asset: Asset) {
+        transactionDao.insertTransaction(transaction)
+        assetDao.updateAsset(asset)
+    }
+
+    @androidx.room.Transaction
+    suspend fun cancelTransaction(transactionDao: TransactionDao, assetDao: AssetDao, transaction: Transaction, asset: Asset) {
+        transactionDao.deleteTransaction(transaction)
+        assetDao.updateAsset(asset)
+    }
+
+    @androidx.room.Transaction
+    suspend fun cancelTransfer(transactionDao: TransactionDao, assetDao: AssetDao, transaction1: Transaction, asset1: Asset, transaction2: Transaction, asset2: Asset) {
+        transactionDao.deleteTransaction(transaction1)
+        transactionDao.deleteTransaction(transaction2)
+        assetDao.updateAsset(asset1)
+        assetDao.updateAsset(asset2)
+    }
+
+    @androidx.room.Transaction
+    suspend fun deleteAssetWithTransactions(transactionDao: TransactionDao, assetDao: AssetDao, asset: Asset) {
+        transactionDao.deleteTransactionsOfAsset(asset.assetId)
+        assetDao.deleteAsset(asset)
     }
 }
 
@@ -105,17 +135,23 @@ interface TransactionDao {
     @Delete
     suspend fun deleteTransaction(transaction: Transaction)
 
+    @Query("DELETE FROM `Transaction` WHERE assetId = :assetId")
+    suspend fun deleteTransactionsOfAsset(assetId: String)
+
+    @Query ("SELECT * FROM `Transaction` as Trn WHERE Trn.transactionId=:transactionID")
+    suspend fun getTransactionByID(transactionID: String): Transaction?
+
+    @Query("SELECT * FROM `Transaction`")
+    suspend fun getTransactionsOfBudget(): List<Transaction>
+
     @Query("SELECT * FROM `Transaction` as Trn WHERE Trn.userId=:userId")
     suspend fun getTransactionsOfUser(userId: String): List<Transaction>
 
-    @Query("SELECT * FROM `Transaction` as Trn WHERE Trn.sourceId=:assetId OR Trn.targetId=:assetId")
+    @Query("SELECT * FROM `Transaction` as Trn WHERE Trn.assetId=:assetId")
     suspend fun getTransactionsOfAsset(assetId: String): List<Transaction>
 
     @Query ("SELECT * FROM `TRANSACTION` as Trn WHERE Trn.categoryId = :categoryId ")
     suspend fun getTransactionsByCategoryId(categoryId: String): List<Transaction>
-
-    @Query("SELECT * FROM `Transaction`")
-    suspend fun getTransactionsOfBudget(): List<Transaction>
 
     @Query("SELECT * FROM `Transaction` as Trn WHERE transactionDate = :date AND amount = :amount")
     suspend fun getCollidingTransaction(date: LocalDate, amount: Double): List<Transaction>
@@ -171,7 +207,7 @@ interface CategoryDao {
     @Query("SELECT * FROM Category WHERE Category.transactionType = :transactionType")
     suspend fun getCategories(transactionType: TransactionType): List<Category>
 
-    @Query("SELECT * FROM CATEGORY WHERE Category.id = :categoryId")
+    @Query("SELECT * FROM CATEGORY WHERE Category.categoryId = :categoryId")
     suspend fun getCategoryById(categoryId: String): List<Category>
 }
 
