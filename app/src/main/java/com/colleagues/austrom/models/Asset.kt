@@ -10,7 +10,7 @@ import com.google.firebase.database.Exclude
 import java.util.UUID
 
 @Entity
-class Asset(val assetName: String, val assetTypeId: AssetType, val currencyCode: String, var amount: Double = 0.0) {
+class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode: String, var amount: Double = 0.0) {
     @PrimaryKey(autoGenerate = false) @Exclude
     var assetId: String = generateUniqueAssetKey()
     var userId: String = AustromApplication.appUser!!.userId

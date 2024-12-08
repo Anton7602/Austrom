@@ -6,7 +6,12 @@ import com.google.firebase.database.Exclude
 import java.util.UUID
 
 @Entity
-data class User private constructor(var username: String, val email: String, var password: String,var baseCurrencyCode: String = "USD", var activeBudgetId: String?=null, var primaryPaymentMethod: String? = null,
+data class User private constructor(var username: String,
+                                    val email: String,
+                                    var password: String,
+                                    var baseCurrencyCode: String = "USD",
+                                    var activeBudgetId: String?=null,
+                                    var primaryPaymentMethod: String? = null,
                                     @PrimaryKey(autoGenerate = false) @Exclude
                                     var userId: String = generateUniqueUserId()) {
 
