@@ -9,6 +9,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ScrollView
 import android.widget.Spinner
 import android.widget.TextView
@@ -24,7 +25,7 @@ import com.colleagues.austrom.adapters.TransactionExtendedRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.extensions.parseToLocalDate
-import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -35,7 +36,7 @@ import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.time.LocalDate
 
-class ImportParametersActivity : AppCompatActivity() {
+class ImportParametersActivity : AppCompatActivity(), IDialogInitiator {
     private var fileUri : Uri? = null
     private var csvSeparator: Char = ','
     private var charset = "windows-1251"
@@ -64,9 +65,13 @@ class ImportParametersActivity : AppCompatActivity() {
     private lateinit var exampleTransactionHolder: RecyclerView
     private lateinit var fieldMappingHolder: ScrollView
     private lateinit var importControlHolder: CardView
-    private lateinit var importNumberOfTransactionsMessageView: TextView
     private lateinit var topLabel: TextView
-    private lateinit var importAcceptedTransactions: Button
+    private lateinit var invalidCounter: TextView
+    private lateinit var invalidRemoveButton: ImageButton
+    private lateinit var suspiciousCounter: TextView
+    private lateinit var suspiciousImportButton: ImageButton
+    private lateinit var validCounter: TextView
+    private lateinit var validImportButton: ImageButton
     private var importedTransactions: MutableList<Transaction> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,9 +126,9 @@ class ImportParametersActivity : AppCompatActivity() {
             readTransactionDataFromCSV()
         }
 
-        importAcceptedTransactions.setOnClickListener {
-            (exampleTransactionHolder.adapter as TransactionExtendedRecyclerAdapter).submitAllValidTransactions()
-        }
+//        importAcceptedTransactions.setOnClickListener {
+//            (exampleTransactionHolder.adapter as TransactionExtendedRecyclerAdapter).submitAllValidTransactions()
+//        }
     }
 
     private fun readTransactionDataFromCSV() {
@@ -139,10 +144,11 @@ class ImportParametersActivity : AppCompatActivity() {
                 val assetTxt = if (sourceSwitchMaterial.isChecked) line?.get(sourceDynamicSpinner.selectedItemPosition) else sourceStaticSpinner.selectedItem?.toString()
                 val targetTxt = if (targetSwitchMaterial.isChecked) line?.get(targetDynamicSpinner.selectedItemPosition) else targetStaticValue.text.toString()
                 val amountTxt = if (amountSwitchMaterial.isChecked) line?.get(amountDynamicSpinner.selectedItemPosition) else amountStaticValue.text.toString()
-                val categoryTxt = if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else categoryExpenseStaticSpinner.selectedItem?.toString()
+                val amount = amountTxt.parseToDouble() ?: 0.0
+                val categoryTxt = if (categorySwitchMaterial.isChecked) line?.get(categoryDynamicSpinner.selectedItemPosition) else
+                    if (amount<0) categoryExpenseStaticSpinner.selectedItem?.toString() else categoryIncomeStaticSpinner.selectedItem?.toString()
                 val dateTxt = if (dateSwitchMaterial.isChecked) line?.get(dateDynamicSpinner.selectedItemPosition) else dateStaticValue.toString()
                 val commentTxt = if (commentSwitchMaterial.isChecked) line?.get(commentDynamicSpinner.selectedItemPosition) else commentStaticValue.text.toString()
-                val amount = amountTxt.parseToDouble() ?: 0.0
 
                 importedTransactions.add(Transaction(
                     assetId = AustromApplication.activeAssets.values.find { l -> l.assetName == assetTxt }?.assetId ?: assetTxt.toString(),
@@ -154,7 +160,7 @@ class ImportParametersActivity : AppCompatActivity() {
                     comment =  commentTxt.toString()
                 ))
             }
-            exampleTransactionHolder.adapter = TransactionExtendedRecyclerAdapter(importedTransactions, this, true)
+            exampleTransactionHolder.adapter = TransactionExtendedRecyclerAdapter(importedTransactions, this, true, this)
             exampleTransactionHolder.adapter!!.notifyItemRangeChanged(0, importedTransactions.size)
             switchLayoutsVisibilities()
         }
@@ -260,7 +266,28 @@ class ImportParametersActivity : AppCompatActivity() {
         fieldMappingHolder.visibility = View.GONE
         importControlHolder.visibility = View.VISIBLE
         topLabel.text = getString(R.string.transactions_from_file)
-        importNumberOfTransactionsMessageView.text = getString(R.string.transactions_are_read_from_file, importedTransactions.size)
+        updateCounters()
+    }
+
+    private fun updateCounters() {
+        val dbProvider = LocalDatabaseProvider(this)
+        var invalidCount = 0
+        var suspCount = 0
+        var validCount = 0
+        importedTransactions.forEach { transaction ->
+            if (!transaction.isValid()) {
+                invalidCount++
+                return@forEach
+            }
+            if (transaction.isColliding(dbProvider)) {
+                suspCount++
+                return@forEach
+            }
+            validCount++
+        }
+        invalidCounter.text = invalidCount.toString()
+        suspiciousCounter.text = suspCount.toString()
+        validCounter.text = validCount.toString()
     }
 
     private fun bindViews() {
@@ -292,8 +319,19 @@ class ImportParametersActivity : AppCompatActivity() {
         exampleTransactionHolder = findViewById(R.id.imppar_transactionExampleRecycler_rcv)
         fieldMappingHolder = findViewById(R.id.imppar_filedMappingHolder_scv)
         importControlHolder = findViewById(R.id.imppar_importControlPanel_crv)
-        importNumberOfTransactionsMessageView = findViewById(R.id.imppar_numberOfTransactions_txt)
-        importAcceptedTransactions = findViewById(R.id.imppar_importAllTransactions_btn)
+//        importNumberOfTransactionsMessageView = findViewById(R.id.imppar_numberOfTransactions_txt)
+//        importAcceptedTransactions = findViewById(R.id.imppar_importAllTransactions_btn)
         topLabel = findViewById(R.id.imppar_topLabel_txt)
+
+        invalidCounter = findViewById(R.id.imppar_invalidCounter_txt)
+        invalidRemoveButton = findViewById(R.id.imppar_removeInvalid_btn)
+        suspiciousCounter = findViewById(R.id.imppar_suspiciousCounter_txt)
+        suspiciousImportButton = findViewById(R.id.imppar_importSuspicious_btn)
+        validCounter = findViewById(R.id.imppar_validCounter_txt)
+        validImportButton = findViewById(R.id.imppar_importValid_btn)
+    }
+
+    override fun receiveValue(value: String, valueType: String) {
+        updateCounters()
     }
 }

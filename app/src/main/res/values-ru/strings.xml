@@ -373,4 +373,11 @@
     <string name="in_this_date_transaction_of_this_exact_amount_already_exist_are_you_sure_it_isn_t_duplicate">В эту дату уже существует транзакция с данной суммой. Вы уверены что это не дубликат?</string>
     <string name="asset">Актив</string>
     <string name="link_unknown_values">Связать Неизвестные Значения</string>
+    <string name="invalid">Некорретных</string>
+    <string name="remove_invalid">Удалить Некорректные</string>
+    <string name="warning">Внимание</string>
+    <string name="import_suspicious">Импортировать подозрительные</string>
+    <string name="valid">Корректных</string>
+    <string name="import_valid">Импортировать Корректные</string>
+    <string name="suspicious">Подозрительных</string>
 </resources>

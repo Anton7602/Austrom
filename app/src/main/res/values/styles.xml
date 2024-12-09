@@ -12,7 +12,6 @@
     <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
         <item name="android:textColor">@color/primaryTextColor</item>
         <item name="android:background">@color/backgroundColor</item>
-
     </style>
 
     <style name="PrimaryCardText" parent="TextAppearance.AppCompat">

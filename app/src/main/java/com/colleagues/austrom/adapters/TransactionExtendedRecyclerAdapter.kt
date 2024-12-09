@@ -22,7 +22,7 @@ import com.colleagues.austrom.models.TransactionValidationType
 
 class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<Transaction>,
                                          private val activity: AppCompatActivity,
-                                         private val isShowingActionButtons: Boolean = false)  : RecyclerView.Adapter<TransactionExtendedRecyclerAdapter.TransactionExtendedViewHolder>(), IDialogInitiator {
+                                         private val isShowingActionButtons: Boolean = false, private val receiver: IDialogInitiator? = null)  : RecyclerView.Adapter<TransactionExtendedRecyclerAdapter.TransactionExtendedViewHolder>(), IDialogInitiator {
     //var viewHolders: MutableList<TransactionExtendedViewHolder> = mutableListOf()
 
     class TransactionExtendedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -114,7 +114,7 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
             }
         }
 
-        if (!holder.isIssueEncountered && dbProvider.isCollidingTransactionExist(transaction)) {
+        if (!holder.isIssueEncountered && transaction.isColliding(dbProvider)) {
             holder.isWarningEncountered = true
             holder.issueMessage.text = activity.getString(R.string.in_this_date_transaction_of_this_exact_amount_already_exist_are_you_sure_it_isn_t_duplicate)
         }
@@ -139,6 +139,7 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
             val index = transactions.indexOf(transaction)
             transactions.remove(transaction)
             this.notifyItemRemoved(index)
+            receiver?.receiveValue(transaction.transactionId, "Transaction Imported")
         }
         holder.editButton.setOnClickListener {
             ImportTransactionDialogFragment(transaction, transactions, activity, this).show(activity.supportFragmentManager, "Import Linking Dialog" )
@@ -154,6 +155,7 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
             val index = transactions.indexOf(transaction)
             transactions.remove(transaction)
             this.notifyItemRemoved(index)
+            receiver?.receiveValue(transaction.transactionId, "Transaction Removed")
         }
     }
 
@@ -164,5 +166,6 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
 
     override fun receiveValue(value: String, valueType: String) {
         this.notifyItemChanged(value.toInt())
+        receiver?.receiveValue("", "Transaction Changed")
     }
 }

@@ -80,6 +80,8 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
 
     fun isValid(): Boolean { return (this.validate()==TransactionValidationType.VALID)  }
 
+    fun isColliding(dbProvider: LocalDatabaseProvider): Boolean {return dbProvider.isCollidingTransactionExist(this)}
+
     fun validate(): TransactionValidationType {
         if (amount==0.0) return TransactionValidationType.AMOUNT_INVALID
         if (AustromApplication.activeAssets[assetId]==null) return TransactionValidationType.UNKNOWN_ASSET_INVALID

@@ -374,5 +374,12 @@
     <string name="in_this_date_transaction_of_this_exact_amount_already_exist_are_you_sure_it_isn_t_duplicate">In this date transaction of this exact amount already exist. Are you sure it isn\'t duplicate?</string>
     <string name="asset">Asset</string>
     <string name="link_unknown_values">Link Unknown Values</string>
+    <string name="invalid">Invalid</string>
+    <string name="remove_invalid">Remove Invalid</string>
+    <string name="warning">Warning</string>
+    <string name="import_suspicious">Import Suspicious</string>
+    <string name="valid">Valid</string>
+    <string name="import_valid">Import Valid</string>
+    <string name="suspicious">Suspicious</string>
 
 </resources>

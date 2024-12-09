@@ -10,4 +10,19 @@
         <attr name="ExpenseSum" format="float" />
         <attr name="CurrencySymbol" format="string" />
     </declare-styleable>
+    <declare-styleable name="ActionButtonView">
+        <attr name="Icon" format="reference"/>
+        <attr name="ButtonText" format="string"/>
+        <attr name="isCheckable" format="boolean"/>
+        <attr name="isChecked" format="boolean"/>
+        <attr name="isDisabled" format="boolean"/>
+        <attr name="backgroundColor" format="color"/>
+        <attr name="borderColor" format="color"/>
+        <attr name="backgroundColorDisabled" format="color"/>
+        <attr name="borderColorDisabled" format="color"/>
+        <attr name="isBorderVisible" format="boolean"/>
+        <attr name="textColor" format="color"/>
+        <attr name="iconTint" format="color"/>
+        <attr name="iconTintDisabled" format="color"/>
+    </declare-styleable>
 </resources>
