@@ -363,7 +363,7 @@
     <string name="fromAsset">from</string>
     <string name="toAsset">to</string>
     <string name="create_transaction">Create Transaction</string>
-    <string name="empty_name_category_not_allower">Please, specify category name</string>
+    <string name="empty_name_category_not_allower">Please, don\'t leave category name empty</string>
     <string name="import_transactions">Import Transactions</string>
     <string name="transaction_amount_is_zero">"Transaction Amount Is Zero; "</string>
     <string name="asset_does_not_match_any_active_asset">"Asset does not match any active asset; "</string>
@@ -381,5 +381,7 @@
     <string name="valid">Valid</string>
     <string name="import_valid">Import Valid</string>
     <string name="suspicious">Suspicious</string>
+    <string name="new_transaction">New Transaction</string>
+    <string name="transaction_amount">Transaction Amount</string>
 
 </resources>

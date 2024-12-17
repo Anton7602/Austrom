@@ -1,22 +1,22 @@
 package com.colleagues.austrom
 
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.CategoryIconRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.dialogs.CategoryControlDialogFragment
 import com.colleagues.austrom.dialogs.CategoryPullDialogFragment
+import com.colleagues.austrom.dialogs.IconSelectionDialogFragment
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.managers.Icon
-import com.colleagues.austrom.managers.IconManager
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.CategoryValidationType
 import com.colleagues.austrom.models.InvalidCategoryException
@@ -26,24 +26,19 @@ import com.google.android.material.textfield.TextInputEditText
 class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
     private lateinit var categoryName: TextInputEditText
     private lateinit var selectedIconImage: ImageView
-    private lateinit var iconHolder: RecyclerView
-    private lateinit var submitButton: ImageButton
-    private lateinit var declineButton: ImageButton
+    private lateinit var submitButton: Button
+    private lateinit var deleteButton: ImageButton
+    private lateinit var backButton: ImageButton
     private var isExpenseCategoryBeingCreated = false;
     private var category: Category? = null
+    private var selectedIcon: Icon = Icon.I0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_category_creation)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        adjustInsets()
         bindViews()
-        iconHolder.adapter = CategoryIconRecyclerAdapter(IconManager().getAllAvailableIcons(), this)
-        iconHolder.layoutManager = GridLayoutManager(this, 5, LinearLayoutManager.VERTICAL, false)
 
         if (intent.getStringExtra("CategoryId")!=null) {
             val categoryId = intent.getStringExtra("CategoryId")
@@ -51,14 +46,22 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
             if (category!=null) {
                 categoryName.setText(category!!.name)
                 selectedIconImage.setImageResource(category!!.imgReference.resourceId)
-                (iconHolder.adapter as CategoryIconRecyclerAdapter).selectIcon(category!!.imgReference)
-                declineButton.setImageResource(R.drawable.ic_navigation_delete_temp)
+                selectedIcon = category!!.imgReference
+                deleteButton.setImageResource(R.drawable.ic_navigation_delete_temp)
+                submitButton.text = getString(R.string.accept)
             }
         } else {
             if (intent.getBooleanExtra("isExpenseCategory", false)){
                 isExpenseCategoryBeingCreated = true
             }
-            (iconHolder.adapter as CategoryIconRecyclerAdapter).selectIcon(Icon.I0)
+            submitButton.text = getString(R.string.add_new_category)
+            //(iconHolder.adapter as CategoryIconRecyclerAdapter).selectIcon(Icon.I0)
+        }
+
+        backButton.setOnClickListener { finish() }
+
+        selectedIconImage.setOnClickListener {
+            IconSelectionDialogFragment(this, selectedIcon).show(supportFragmentManager, "Category Control Dialog")
         }
 
         submitButton.setOnClickListener {
@@ -70,7 +73,7 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
             if (category==null) {
                 val newCategory = Category(
                     name = categoryName.text.toString(),
-                    imgReference = (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon ?: throw InvalidCategoryException(CategoryValidationType.UNKNOWN_ICON_INVALID),
+                    imgReference = selectedIcon,
                     transactionType = if (isExpenseCategoryBeingCreated) TransactionType.EXPENSE else TransactionType.INCOME)
                 dbProvider.writeCategory(newCategory)
                 if (isExpenseCategoryBeingCreated) {
@@ -78,7 +81,7 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
                 } else AustromApplication.activeIncomeCategories[newCategory.categoryId] = newCategory
             } else {
                 category!!.name = categoryName.text.toString()
-                category!!.imgReference = (iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon ?: throw InvalidCategoryException(CategoryValidationType.UNKNOWN_ICON_INVALID)
+                category!!.imgReference = selectedIcon
                 dbProvider.updateCategory(category!!)
                 if (category!!.transactionType == TransactionType.INCOME) {
                     AustromApplication.activeIncomeCategories[category!!.categoryId] = category!!
@@ -87,11 +90,9 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
             finish()
         }
 
-        declineButton.setOnClickListener {
+        deleteButton.setOnClickListener {
             val dbProvider = LocalDatabaseProvider(this)
-            if (category==null) {
-                finish()
-            } else {
+            if (category!=null) {
                 if (dbProvider.getCategories(category!!.transactionType).size<=1) {
                     Toast.makeText(this, getString(R.string.category_delete_not_allowed), Toast.LENGTH_LONG).show()
                     return@setOnClickListener
@@ -111,21 +112,26 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
             }
         }
 
-        iconHolder.setOnClickListener {
-            if ((iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon?.resourceId != null) {
-                selectedIconImage.setImageResource((iconHolder.adapter as CategoryIconRecyclerAdapter).selectedIcon!!.resourceId)
-            }
-        }
-
         AustromApplication.showKeyboard(this, categoryName)
     }
 
     private fun bindViews() {
-        categoryName = findViewById(R.id.catcr_categoryName_txt)
         selectedIconImage = findViewById(R.id.catcr_categoryIcon_img)
-        submitButton = findViewById(R.id.catcr_positiveResult_btn)
-        declineButton = findViewById(R.id.catcr_negativeResult_btn)
-        iconHolder = findViewById(R.id.catcr_categoryIcon_rcv)
+        categoryName = findViewById(R.id.catcr_categoryName_txt)
+        submitButton = findViewById(R.id.catcr_acceptButton_btn)
+        deleteButton = findViewById(R.id.catcr_negativeResult_btn)
+        backButton = findViewById(R.id.catcr_backButton_btn)
+        //iconHolder = findViewById(R.id.catcr_categoryIcon_rcv)
+    }
+
+    private fun adjustInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
 
     override fun receiveValue(value: String, valueType: String) {
@@ -143,6 +149,7 @@ class CategoryCreationActivity : AppCompatActivity(), IDialogInitiator {
                 val drawableID = value.toIntOrNull()
                 if (drawableID!=null) {
                     selectedIconImage.setImageResource(drawableID)
+                    selectedIcon = Icon.entries.find { l -> l.resourceId == drawableID } ?: Icon.I0
                 }
             }
         }

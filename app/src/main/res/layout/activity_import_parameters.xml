@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
+    android:background="@color/backgroundMain"
     tools:context=".ImportParametersActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -430,7 +430,8 @@
         android:id="@+id/imppar_importControlPanel_crv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/backgroundColor"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/backgroundCard"
         app:cardCornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

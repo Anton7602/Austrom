@@ -9,9 +9,46 @@
         <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
+    <style name="BackButtonStyle" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:backgroundTint">@color/transparent</item>
+        <item name="srcCompat">@drawable/ic_navigation_back_temp</item>
+        <item name="tint">@color/primaryTextColor</item>
+    </style>
+
+    <style name="DefaultSpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
         <item name="android:textColor">@color/primaryTextColor</item>
-        <item name="android:background">@color/backgroundColor</item>
+        <item name="android:background">@color/backgroundMain</item>
+    </style>
+
+    <style name="DefaultTextInputLayout" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="colorControlActivated">@color/primaryTextColor</item>
+        <item name="helperTextTextColor">@color/secondaryTextColor</item>
+        <item name="android:textColorHint">@color/secondaryTextColor</item>
+        <item name="hintTextColor">@color/secondaryTextColor</item>
+        <item name="boxStrokeColor">@color/transparent</item>
+    </style>
+
+    <style name="DefaultEditText" parent="Widget.Material3.TextInputEditText.FilledBox">
+        <item name="colorControlActivated">@color/primaryTextColor</item>
+        <item name="android:backgroundTint">@color/backgroundText</item>
+        <item name="android:background">@drawable/sh_category_deselected</item>
+        <item name="android:textAppearance">@style/PrimaryCardText</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:paddingTop">28dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="android:textCursorDrawable" />
+    </style>
+
+    <style name="MainActionButton" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/backgroundText</item>
+        <item name="android:textAppearance">@style/PrimaryCardText</item>
+        <item name="android:textStyle">bold</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/backgroundText</item>
     </style>
 
     <style name="PrimaryCardText" parent="TextAppearance.AppCompat">

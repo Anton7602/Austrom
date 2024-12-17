@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.PasswordRecoveryActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionCreationActivity
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
@@ -29,9 +30,6 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
     private lateinit var transactionHolder: RecyclerView
     private lateinit var transactionsHeader: TransactionHeaderView
     private lateinit var addNewTransactionButton: FloatingActionButton
-    private lateinit var addIncomeButton: FloatingActionButton
-    private lateinit var addExpenseButton: FloatingActionButton
-    private lateinit var addTransferButton: FloatingActionButton
     private lateinit var createNewTransactionButton: ImageButton
     private var transactionList: MutableList<Transaction> = mutableListOf()
     var activeFilter: TransactionFilter? = null
@@ -42,25 +40,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
         updateTransactionsList()
 
         addNewTransactionButton.setOnClickListener {
-            switchTransactionTypesButtonsVisibility()
-        }
-
-        addIncomeButton.setOnClickListener {
-            switchTransactionTypesButtonsVisibility()
-            //TransactionCreationDialogFragment2(TransactionType.INCOME, this, ).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
-            TransactionCreationDialogFragment(this, TransactionType.INCOME).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
-        }
-
-        addExpenseButton.setOnClickListener {
-            switchTransactionTypesButtonsVisibility()
-            //TransactionCreationDialogFragment2(TransactionType.EXPENSE, this).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
-            TransactionCreationDialogFragment(this, TransactionType.EXPENSE).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
-        }
-
-        addTransferButton.setOnClickListener {
-            switchTransactionTypesButtonsVisibility()
-            //TransactionCreationDialogFragment2(TransactionType.TRANSFER, this).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
-            TransactionCreationDialogFragment(this, TransactionType.TRANSFER).show(requireActivity().supportFragmentManager, "Transaction Creation Dialog")
+            startActivity(Intent(requireActivity(), TransactionCreationActivity::class.java))
         }
 
         createNewTransactionButton.setOnClickListener {
@@ -132,17 +112,6 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
         setUpRecyclerView(filteredTransactions)
     }
 
-    private fun switchTransactionTypesButtonsVisibility() {
-        addIncomeButton.visibility = if (addIncomeButton.visibility==View.VISIBLE) {View.GONE} else {View.VISIBLE}
-        addExpenseButton.visibility = if (addExpenseButton.visibility==View.VISIBLE) {View.GONE} else {View.VISIBLE}
-        addTransferButton.visibility = if (addTransferButton.visibility==View.VISIBLE) {View.GONE} else {View.VISIBLE}
-        if (addIncomeButton.visibility == View.VISIBLE) {
-            addNewTransactionButton.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_navigation_close_temp))
-        } else {
-            addNewTransactionButton.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_navigation_add_temp))
-        }
-    }
-
     private fun setUpRecyclerView(transactionList: MutableList<Transaction>) {
         val groupedTransactions = Transaction.groupTransactionsByDate(transactionList)
         transactionHolder.layoutManager = LinearLayoutManager(activity)
@@ -156,9 +125,6 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
     private fun bindViews(view: View) {
         transactionHolder = view.findViewById(R.id.ops_transactionHolder_rcv)
         addNewTransactionButton = view.findViewById(R.id.ops_addNew_fab)
-        addIncomeButton = view.findViewById(R.id.ops_income_fab)
-        addExpenseButton = view.findViewById(R.id.ops_expense_fab)
-        addTransferButton = view.findViewById(R.id.ops_transfer_fab)
         transactionsHeader = view.findViewById(R.id.ops_transactionsHeader_trhed)
         createNewTransactionButton = view.findViewById(R.id.ops_createNewTransaction_btn)
     }

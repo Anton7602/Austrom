@@ -38,13 +38,7 @@ class AuthorizationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_authorization)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(0, 0, 0, 0)
-            insets
-        }
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=false
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=false
+        adjustInsets()
         bindViews()
         //this.deleteDatabase("local_database")
         runQuickAuthorization()
@@ -101,5 +95,15 @@ class AuthorizationActivity : AppCompatActivity() {
         forgotPasswordButton = findViewById(R.id.auth_forgotPassword_btn)
         loginTextBox = findViewById(R.id.auth_login_txt)
         passwordTextBox = findViewById(R.id.auth_password_txt)
+    }
+
+    private fun adjustInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, 0, 0, 0)
+            insets
+        }
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
 }

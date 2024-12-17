@@ -159,13 +159,37 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun submitAllValidTransactions() {
         val dbProvider = LocalDatabaseProvider(activity)
-        transactions.forEach { transaction -> submitTransaction(transaction, dbProvider) }
+        for (i in 0..<this.transactions.size) if (!transactions[i].isColliding(dbProvider)) transactions[i].submit(dbProvider)
+        transactions.removeIf { transaction -> transaction.isValid() && !transaction.isColliding(dbProvider) }
+        this.notifyDataSetChanged()
+        receiver?.receiveValue("", "All Valid Transactions Submitted")
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun submitAllSuspiciousTransactions() {
+        val dbProvider = LocalDatabaseProvider(activity)
+        for (i in 0..<this.transactions.size)  if (transactions[i].isColliding(dbProvider))  transactions[i].submit(dbProvider)
+        transactions.removeIf { transaction -> transaction.isValid() && transaction.isColliding(dbProvider) }
+        this.notifyDataSetChanged()
+        receiver?.receiveValue("", "All Suspicious Transactions Submitted")
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun removeAllInvalidTransaction() {
+        transactions.removeIf { transaction -> !transaction.isValid() }
+        this.notifyDataSetChanged()
+        receiver?.receiveValue("", "All Invalid Transactions Removed")
     }
 
     override fun receiveValue(value: String, valueType: String) {
-        this.notifyItemChanged(value.toInt())
-        receiver?.receiveValue("", "Transaction Changed")
+        val index = value.toInt()
+        if (index<0|| index>this.transactions.size) {
+            receiver?.receiveValue("", "Transaction Changed")
+        } else {
+            this.notifyItemChanged(index)
+        }
     }
 }

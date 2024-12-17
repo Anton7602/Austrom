@@ -181,8 +181,8 @@ class MainActivity : AppCompatActivity() {
             //v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
             WindowInsetsCompat.CONSUMED
         }
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=false
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=false
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
 
     private fun fillInDefaultCategories() {

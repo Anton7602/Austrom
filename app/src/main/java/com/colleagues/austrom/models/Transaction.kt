@@ -16,10 +16,6 @@ import java.util.UUID
     ForeignKey(entity = Category::class,
         parentColumns = ["categoryId"],
         childColumns = ["categoryId"],
-        onDelete = ForeignKey.RESTRICT),
-    ForeignKey(entity = User::class,
-        parentColumns = ["userId"],
-        childColumns = ["userId"],
         onDelete = ForeignKey.RESTRICT)],
     indices = [Index(value = ["assetId"]), Index(value = ["categoryId"]), Index(value = ["userId"])])
 class Transaction(val assetId: String, val amount: Double, var categoryId: String, val transactionDate: LocalDate, val transactionName: String, var comment: String? = null)  {

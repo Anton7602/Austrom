@@ -362,7 +362,7 @@
     <string name="fromAsset">с</string>
     <string name="toAsset">на</string>
     <string name="create_transaction">Создать Транзакцию</string>
-    <string name="empty_name_category_not_allower">Пожалуйста, укажите название категории</string>
+    <string name="empty_name_category_not_allower">Пожалуйста, не оставляйте имя категории пустым</string>
     <string name="import_transactions">Импортировать Транзакции</string>
     <string name="transaction_amount_is_zero">"Сумма Транзакции Равна Нулю; "</string>
     <string name="asset_does_not_match_any_active_asset">"Актив не соответствует ни одному из известных; "</string>
@@ -380,4 +380,6 @@
     <string name="valid">Корректных</string>
     <string name="import_valid">Импортировать Корректные</string>
     <string name="suspicious">Подозрительных</string>
+    <string name="new_transaction">Новая Транзакция</string>
+    <string name="transaction_amount">Сумма Транзакции</string>
 </resources>

@@ -17,6 +17,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -78,11 +79,7 @@ class ImportParametersActivity : AppCompatActivity(), IDialogInitiator {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_import_parameters)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        adjustInsets()
         bindViews()
         fileUri = intent.getParcelableExtra("FilePath") as Uri?
         if (fileUri!=null) {
@@ -126,9 +123,9 @@ class ImportParametersActivity : AppCompatActivity(), IDialogInitiator {
             readTransactionDataFromCSV()
         }
 
-//        importAcceptedTransactions.setOnClickListener {
-//            (exampleTransactionHolder.adapter as TransactionExtendedRecyclerAdapter).submitAllValidTransactions()
-//        }
+        validImportButton.setOnClickListener { (exampleTransactionHolder.adapter as TransactionExtendedRecyclerAdapter).submitAllValidTransactions()  }
+        suspiciousImportButton.setOnClickListener { (exampleTransactionHolder.adapter as TransactionExtendedRecyclerAdapter).submitAllSuspiciousTransactions() }
+        invalidRemoveButton.setOnClickListener { (exampleTransactionHolder.adapter as TransactionExtendedRecyclerAdapter).removeAllInvalidTransaction() }
     }
 
     private fun readTransactionDataFromCSV() {
@@ -288,6 +285,7 @@ class ImportParametersActivity : AppCompatActivity(), IDialogInitiator {
         invalidCounter.text = invalidCount.toString()
         suspiciousCounter.text = suspCount.toString()
         validCounter.text = validCount.toString()
+        if (invalidCount+suspCount+validCount==0) finish()
     }
 
     private fun bindViews() {
@@ -329,6 +327,16 @@ class ImportParametersActivity : AppCompatActivity(), IDialogInitiator {
         suspiciousImportButton = findViewById(R.id.imppar_importSuspicious_btn)
         validCounter = findViewById(R.id.imppar_validCounter_txt)
         validImportButton = findViewById(R.id.imppar_importValid_btn)
+    }
+
+    private fun adjustInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
 
     override fun receiveValue(value: String, valueType: String) {

@@ -35,6 +35,7 @@ class AustromApplication : Application() {
         var selectedTransaction: Transaction? = null
         var selectedAsset: Asset? = null
         var supportedLanguages: List<Locale> = listOf(Locale("en"), Locale("ru"))
+        var isApplicationThemeLight = false
         private var appLanguageCode: String? = null
 
         fun showKeyboard(activity: Activity, view: View) {

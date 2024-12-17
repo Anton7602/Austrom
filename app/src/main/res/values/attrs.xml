@@ -25,4 +25,8 @@
         <attr name="iconTint" format="color"/>
         <attr name="iconTintDisabled" format="color"/>
     </declare-styleable>
+    <declare-styleable name="SelectorButtonView">
+        <attr name="fieldName" format="string" />
+        <attr name="fieldValue" format="string" />
+    </declare-styleable>
 </resources>

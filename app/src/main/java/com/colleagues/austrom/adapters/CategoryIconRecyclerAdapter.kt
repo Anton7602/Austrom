@@ -1,5 +1,6 @@
 package com.colleagues.austrom.adapters
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +11,11 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.managers.Icon
 
-class CategoryIconRecyclerAdapter(private var drawableIds: List<Icon>, private var parent: IDialogInitiator? = null): RecyclerView.Adapter<CategoryIconRecyclerAdapter.CategoryIconViewHolder>() {
+class CategoryIconRecyclerAdapter(private var drawableIds: List<Icon>,
+                                  private var parent: IDialogInitiator? = null,
+                                  var selectedIcon: Icon = Icon.I0): RecyclerView.Adapter<CategoryIconRecyclerAdapter.CategoryIconViewHolder>() {
     private var selectedViewHolder: CategoryIconViewHolder? = null
     private var allViewHolders: MutableList<CategoryIconViewHolder> = mutableListOf()
-    var selectedIcon: Icon? = selectedViewHolder?.icon
 
     class CategoryIconViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         var iconHolder: ImageView = itemView.findViewById(R.id.caticit_icon_img)
@@ -33,11 +35,11 @@ class CategoryIconRecyclerAdapter(private var drawableIds: List<Icon>, private v
         holder.icon = drawableIds[position]
         holder.iconHolder.setImageResource(holder.icon.resourceId)
         if (holder.icon == selectedIcon) {
-            holder.iconHolder.setBackgroundResource(R.drawable.sh_card_background)
+            holder.iconHolder.backgroundTintList = ColorStateList.valueOf(Color.argb(255, 13,153,255))
             selectedViewHolder = holder
         }
         else {
-            holder.iconHolder.setBackgroundColor(Color.TRANSPARENT)
+            holder.iconHolder.backgroundTintList = ColorStateList.valueOf(Color.argb(255,230,230,230))
         }
         holder.iconHolder.setOnClickListener {
             changeSelectedIcon(holder)
@@ -57,11 +59,11 @@ class CategoryIconRecyclerAdapter(private var drawableIds: List<Icon>, private v
 
     private fun changeSelectedIcon(holder: CategoryIconViewHolder) {
         if (selectedViewHolder!=null) {
-            selectedViewHolder!!.iconHolder.setBackgroundColor(Color.TRANSPARENT)
+            selectedViewHolder!!.iconHolder.backgroundTintList = ColorStateList.valueOf(Color.argb(255,230,230,230))
             selectedViewHolder!!.isSelected=false
         }
         holder.isSelected = true
-        holder.iconHolder.setBackgroundResource(R.drawable.sh_card_background)
+        holder.iconHolder.backgroundTintList = ColorStateList.valueOf(Color.argb(255, 13,153,255))
         selectedViewHolder = holder
         selectedIcon = holder.icon
         if (parent!=null) {

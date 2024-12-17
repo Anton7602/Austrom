@@ -7,8 +7,10 @@
 
     <!--<style name="Theme.Austrom" parent="Base.Theme.Austrom">-->
     <style name="Theme.Austrom" parent="Theme.Material3.Light.NoActionBar">
-        <item name="android:navigationBarColor">@color/backgroundColor</item>
-        <item name="spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>
+        <item name="android:navigationBarColor">@color/backgroundMain</item>
+        <item name="spinnerDropDownItemStyle">@style/DefaultSpinnerItemStyle</item>
+        <item name="textInputStyle">@style/DefaultTextInputLayout</item>
+        <item name="editTextStyle">@style/DefaultEditText</item>
     </style>
 
 </resources>

@@ -5,4 +5,289 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TransactionCreationActivity"/>
+    android:background="@color/backgroundMain"
+    tools:context=".TransactionCreationActivity">
+
+    <ImageButton
+        android:id="@+id/trcreat_backButton_btn"
+        style="@style/BackButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/back_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_navigation_back_temp" />
+
+    <TextView
+        android:id="@+id/textView25"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:autoSizeMaxTextSize="22dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center_vertical|end"
+        android:paddingVertical="8dp"
+        android:text="@string/new_transaction"
+        android:textAppearance="@style/PrimaryCardTextAutoscale"
+        app:layout_constraintBottom_toBottomOf="@+id/trcreat_backButton_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/trcreat_backButton_btn"
+        app:layout_constraintTop_toTopOf="@+id/trcreat_backButton_btn" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroup2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView25"
+        app:singleLine="true"
+        app:singleSelection="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/trcreat_expense_chp"
+                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                android:checkable="true"
+                android:checked="true"
+                android:text="@string/expense"
+                android:textAlignment="center"
+                android:textColor="@color/chip_transaction_type_text_color"
+                app:chipBackgroundColor="@color/chip_expense_background_color"
+                app:chipCornerRadius="12dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/trcreat_income_chp"
+                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                android:text="@string/income"
+                android:textAlignment="center"
+                android:textColor="@color/chip_transaction_type_text_color"
+                app:chipBackgroundColor="@color/chip_income_background_color"
+                app:chipCornerRadius="12dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/trcreat_transfer_chp"
+                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                android:text="@string/transfer"
+                android:textAlignment="center"
+                android:textColor="@color/chip_transaction_type_text_color"
+                app:chipBackgroundColor="@color/chip_transfer_background_color"
+                app:chipCornerRadius="12dp" />
+        </LinearLayout>
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/trcreat_amount_til"
+        style="@style/DefaultTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:hint="@string/transaction_amount"
+        app:layout_constraintEnd_toStartOf="@+id/trcreat_currencySymbol_txt"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chipGroup2">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/trcreat_amount_txt"
+            style="@style/DefaultEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/trcreat_currencySymbol_txt"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
+        android:autoSizeMaxTextSize="18dp"
+        android:autoSizeTextType="uniform"
+        android:background="@drawable/sh_category_deselected"
+        android:backgroundTint="@color/backgroundText"
+        android:gravity="center"
+        android:text="RUB"
+        android:textAppearance="@style/PrimaryCardText"
+        app:layout_constraintBottom_toBottomOf="@+id/trcreat_amount_til"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/trcreat_amount_til" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/trcreat_transactionName_til"
+        style="@style/DefaultTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/to"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trcreat_amount_til">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/trcreat_transactionName_txt"
+            style="@style/DefaultEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/trcreat_sourceHolder_crv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:cardBackgroundColor="@color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trcreat_transactionName_til">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/sh_category_deselected"
+            android:backgroundTint="@color/backgroundText"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/textView29"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="4dp"
+                android:text="@string/fromAsset"
+                android:textAppearance="@style/SecondaryCardText"
+                android:textSize="16sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/trcreat_sourceHolder_rcv"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                tools:listitem="@layout/item_asset_square" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/trcreat_targetHolder_crv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trcreat_sourceHolder_crv">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/sh_category_deselected"
+            android:backgroundTint="@color/backgroundText"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/textView33"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/toAsset"
+                android:textAppearance="@style/SecondaryCardText"
+                android:textSize="16sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/trcreat_targetHolder_rcv"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="8dp"
+                tools:listitem="@layout/item_asset_square" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.colleagues.austrom.views.SelectorButtonView
+        android:id="@+id/trcreat_categorySelector_sbv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:fieldName="@string/category"
+        app:fieldValue="@string/food"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trcreat_targetHolder_crv" />
+
+    <com.colleagues.austrom.views.SelectorButtonView
+        android:id="@+id/trcreat_dateSelector_sbv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:fieldName="@string/date"
+        app:fieldValue="Friday 17.12.2024"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trcreat_categorySelector_sbv" />
+
+    <Button
+        android:id="@+id/trcreat_acceptButton_btn"
+        style="@style/MainActionButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/create_transaction"
+        android:textSize="16sp"
+        app:cornerRadius="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="5:1"
+        app:layout_constraintEnd_toStartOf="@+id/guideline37"
+        app:layout_constraintStart_toStartOf="@+id/guideline36"
+        app:strokeColor="@color/expenseRedBackground" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline36"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline37"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

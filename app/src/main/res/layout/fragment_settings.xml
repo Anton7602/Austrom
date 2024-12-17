@@ -32,7 +32,7 @@
         android:id="@+id/divider16"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey" />
+        android:background="@color/secondaryTextColor" />
 
     <com.colleagues.austrom.views.SettingsButtonView
         android:id="@+id/set_categories_btn"

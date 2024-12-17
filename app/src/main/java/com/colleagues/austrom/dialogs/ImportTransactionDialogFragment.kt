@@ -69,6 +69,7 @@ class ImportTransactionDialogFragment(private var transaction: Transaction,
                     reciever?.receiveValue(transactions.indexOf(_transaction).toString(), "UpdatedTransactionIndex")
                 }
             }
+            reciever?.receiveValue("-1", "UpdatedTransactionIndex")
             dismiss()
         }
 
