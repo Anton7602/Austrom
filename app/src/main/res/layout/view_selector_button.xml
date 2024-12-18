@@ -1,34 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/transparent"
-    android:clickable="true"
-    app:cardBackgroundColor="@color/backgroundMain"
-    app:cardElevation="0dp">
+    app:cardBackgroundColor="@color/backgroundMain">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/selbtnview_selector_til"
-        style="@style/DefaultTextInputLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:clickable="false"
-        android:focusable="false"
-        android:hint="Field Name"
-        app:boxBackgroundColor="@color/transparent">
+        android:background="@drawable/sh_category_deselected"
+        android:backgroundTint="@color/backgroundText">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/selbtnview_selector_txt"
-            style="@style/DefaultEditText"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/selbtnview_fieldName_txt"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:focusable="false"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="9dp"
+            android:text="Field Name"
+            android:textAppearance="@style/SecondaryCardText"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/selbtnview_fieldValue_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="13dp"
             android:text="Field Value"
-            android:textSize="16sp" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:textAppearance="@style/PrimaryCardText"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/selbtnview_fieldName_txt"
+            app:layout_constraintTop_toBottomOf="@+id/selbtnview_fieldName_txt" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

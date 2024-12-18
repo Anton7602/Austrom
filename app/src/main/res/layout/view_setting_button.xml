@@ -16,12 +16,12 @@
             android:layout_height="0dp"
             android:padding="10dp"
             android:src="@drawable/ic_placeholder_icon"
-            android:tint="@color/primaryTextColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_placeholder_icon" />
+            app:srcCompat="@drawable/ic_placeholder_icon"
+            app:tint="@color/primaryTextColor" />
 
         <TextView
             android:id="@+id/setbtnview_primaryText_text"

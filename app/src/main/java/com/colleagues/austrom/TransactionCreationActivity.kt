@@ -71,6 +71,17 @@ class TransactionCreationActivity : AppCompatActivity(), IDialogInitiator {
             TransactionType.INCOME -> R.color.incomeGreenBackground
             TransactionType.TRANSFER -> R.color.transferYellowBackground
         }))
+
+        dateSelector.setFieldValue(selectedDate.toDayOfWeekAndShortDateFormat())
+        dateSelector.setOnClickListener {
+            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Choose Transaction Date").setSelection(
+                MaterialDatePicker.todayInUtcMilliseconds()).build()
+            datePicker.addOnPositiveButtonClickListener { selection ->
+                selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
+                dateSelector.setFieldValue(selectedDate.toDayOfWeekAndShortDateFormat())
+            }
+            datePicker.show(this.supportFragmentManager, "DatePicker Dialog")
+        }
     }
 
     private fun switchChipSelection(chipId: Int) {
@@ -105,17 +116,6 @@ class TransactionCreationActivity : AppCompatActivity(), IDialogInitiator {
             ).submit(dbProvider)
             if (transactionType!=TransactionType.TRANSFER) return@setOnClickListener
 
-        }
-
-        dateSelector.setFieldValue(selectedDate.toDayOfWeekAndShortDateFormat())
-        dateSelector.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Choose Transaction Date").setSelection(
-                MaterialDatePicker.todayInUtcMilliseconds()).build()
-            datePicker.addOnPositiveButtonClickListener { selection ->
-                selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
-                dateSelector.setFieldValue(selectedDate.toDayOfWeekAndShortDateFormat())
-            }
-            datePicker.show(this.supportFragmentManager, "DatePicker Dialog")
         }
     }
 

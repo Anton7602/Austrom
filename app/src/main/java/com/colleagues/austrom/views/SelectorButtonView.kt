@@ -8,11 +8,10 @@ import android.view.View
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.colleagues.austrom.R
-import com.google.android.material.textfield.TextInputLayout
 
 class SelectorButtonView(context: Context, attrs: AttributeSet) : CardView(context, attrs) {
-    private lateinit var selectorTil: TextInputLayout
-    private lateinit var selectorTxt: TextView
+    private lateinit var selectorFieldNameTextView: TextView
+    private lateinit var selectorFieldValueTextView: TextView
 
     init {
         val layoutInflater = LayoutInflater.from(context)
@@ -25,18 +24,18 @@ class SelectorButtonView(context: Context, attrs: AttributeSet) : CardView(conte
         val valueText = attributes.getString(R.styleable.SelectorButtonView_fieldValue)
 
         // Set attributes to views
-        selectorTil.hint = fieldText ?: "Field"
-        selectorTxt.text = valueText ?: "Value"
+        selectorFieldNameTextView.hint = fieldText ?: "Field"
+        selectorFieldValueTextView.text = valueText ?: "Value"
 
         attributes.recycle()
     }
 
     fun setFieldValue(value: String) {
-        selectorTxt.text = value
+        selectorFieldValueTextView.text = value
     }
 
     private fun bindViews(view: View) {
-        selectorTil = view.findViewById(R.id.selbtnview_selector_til)
-        selectorTxt = view.findViewById(R.id.selbtnview_selector_txt)
+        selectorFieldNameTextView = view.findViewById(R.id.selbtnview_fieldName_txt)
+        selectorFieldValueTextView = view.findViewById(R.id.selbtnview_fieldValue_txt)
     }
 }
