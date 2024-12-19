@@ -205,7 +205,7 @@ class MainActivity : AppCompatActivity() {
         val activeTransferCategories = dbProvider.getCategories(TransactionType.TRANSFER)
         activeIncomeCategories.forEach { category -> AustromApplication.activeIncomeCategories[category.categoryId] = category }
         activeExpenseCategories.forEach { category -> AustromApplication.activeExpenseCategories[category.categoryId] = category }
-        activeTransferCategories.forEach { category -> AustromApplication.activeExpenseCategories[category.categoryId] = category  }
+        activeTransferCategories.forEach { category -> AustromApplication.activeTransferCategories[category.categoryId] = category  }
 
     }
 

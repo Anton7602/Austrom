@@ -18,6 +18,7 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
                               private var currencySelector: IDialogInitiator,
                               private var currencyReceiver: IDialogInitiator?,
                               private var activity: AppCompatActivity,
+                              private val isSortingByMyCurrencies: Boolean = true,
                               private val isSortingByBaseCurrencies: Boolean = true): RecyclerView.Adapter<CurrencyRecyclerAdapter.CurrencyViewHolder>() {
     class CurrencyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val currencyHolder: CardView = itemView.findViewById(R.id.curit_currencyHolder_crv)
@@ -30,15 +31,30 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
         val currencyGroupHeader: TextView = itemView.findViewById(R.id.curit_categoryHeader_txt)
     }
 
-    private val baseCurrencyCodes: List<String> = listOf("USD", "EUR","GBP", "JPY", "CNY", "CHF", "AUD", "CAD")
+    private val baseCurrencyCodes: MutableList<String> = mutableListOf("USD", "EUR","GBP", "JPY", "CNY", "CHF", "AUD", "CAD")
     private var baseCurrencyCategoryEndIndex = 0
+    private var myCurrencyCategoryEndIndex = 0
     init {
-        if (isSortingByBaseCurrencies) {
+        if (isSortingByMyCurrencies || isSortingByBaseCurrencies) {
             val resortedCurrencies: MutableMap<String, Currency> = mutableMapOf()
-            for (currencyCode in baseCurrencyCodes) {
-                if (currencies[currencyCode]!=null) {
-                    resortedCurrencies[currencyCode] = currencies[currencyCode]!!
-                    baseCurrencyCategoryEndIndex++
+            if (isSortingByBaseCurrencies) {
+                if (currencies[AustromApplication.appUser?.baseCurrencyCode]!=null) {
+                    resortedCurrencies[AustromApplication.appUser!!.baseCurrencyCode] = currencies[AustromApplication.appUser?.baseCurrencyCode]!!
+                }
+                AustromApplication.activeAssets.values.forEach { asset ->
+                    if (currencies[asset.currencyCode]!=null && !resortedCurrencies.containsKey(asset.currencyCode)) {
+                        resortedCurrencies[asset.currencyCode] = currencies[asset.currencyCode]!!
+                        baseCurrencyCategoryEndIndex++
+                        myCurrencyCategoryEndIndex++
+                    }
+                }
+            }
+            if (isSortingByBaseCurrencies) {
+                for (currencyCode in baseCurrencyCodes) {
+                    if (currencies[currencyCode]!=null && !resortedCurrencies.containsKey(currencyCode)) {
+                        resortedCurrencies[currencyCode] = currencies[currencyCode]!!
+                        baseCurrencyCategoryEndIndex++
+                    }
                 }
             }
             for (currency in currencies) {
@@ -60,9 +76,11 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
 
     override fun onBindViewHolder(holder: CurrencyViewHolder, position: Int) {
         val currency = currencies.values.elementAt(position)
-        if (isSortingByBaseCurrencies) {
-            holder.currencyGroupSeparator.visibility = if(position == 0 || position == baseCurrencyCategoryEndIndex) View.VISIBLE else View.GONE
-            holder.currencyGroupHeader.text = if (position==0 && baseCurrencyCategoryEndIndex!=0) activity.getString( R.string.popular_currencies)
+        if (isSortingByBaseCurrencies || isSortingByMyCurrencies) {
+            holder.currencyGroupSeparator.visibility = if(position == 0 || position == baseCurrencyCategoryEndIndex || position==myCurrencyCategoryEndIndex) View.VISIBLE else View.GONE
+            holder.currencyGroupHeader.text = if (position==0 && myCurrencyCategoryEndIndex!=0) activity.getString( R.string.my_currencies)
+            else if (position==0 && baseCurrencyCategoryEndIndex!=0) activity.getString(R.string.popular_currencies)
+            else if (position==myCurrencyCategoryEndIndex && baseCurrencyCategoryEndIndex>myCurrencyCategoryEndIndex) activity.getString(R.string.popular_currencies)
             else activity.getString(R.string.all_currencies)
         }
         val baseCurrencyCode = AustromApplication.appUser?.baseCurrencyCode

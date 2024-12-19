@@ -286,12 +286,7 @@ class LocalDatabaseProvider(private val context: Context) {
         val dao = localDatabase.categoryDao()
         var categories: List<Category>
         runBlocking {
-            categories = when (transactionType) {
-                TransactionType.INCOME -> dao.getCategories(transactionType)
-                TransactionType.EXPENSE -> dao.getCategories(transactionType)
-                TransactionType.TRANSFER -> listOf()
-                null -> dao.getAllCategories()
-            }
+            categories = if (transactionType!=null) dao.getCategories(transactionType) else dao.getAllCategories()
         }
         return categories
     }

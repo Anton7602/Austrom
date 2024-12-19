@@ -24,7 +24,7 @@ class SelectorButtonView(context: Context, attrs: AttributeSet) : CardView(conte
         val valueText = attributes.getString(R.styleable.SelectorButtonView_fieldValue)
 
         // Set attributes to views
-        selectorFieldNameTextView.hint = fieldText ?: "Field"
+        selectorFieldNameTextView.text = fieldText ?: "Field"
         selectorFieldValueTextView.text = valueText ?: "Value"
 
         attributes.recycle()

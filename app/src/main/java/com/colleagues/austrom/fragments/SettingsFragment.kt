@@ -5,9 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CategoryControlDialogFragment
-import com.colleagues.austrom.dialogs.CategoryCreationDialogFragment
 import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
 import com.colleagues.austrom.dialogs.LanguageSelectionDialogFragment
 import com.colleagues.austrom.dialogs.QuickAccessPinDialogFragment

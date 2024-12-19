@@ -5,6 +5,7 @@
     android:id="@+id/set_mainHolder_lly"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundMain"
     android:orientation="vertical"
     tools:context=".fragments.SettingsFragment">
 
@@ -24,7 +25,7 @@
         android:layout_height="wrap_content"
         app:primaryText="@string/base_currency"
         app:secondaryText="@string/USD"
-        app:settingIcon="@drawable/ic_settings_base_currency_temp" >
+        app:settingIcon="@drawable/ic_settings_base_currency_temp">
 
     </com.colleagues.austrom.views.SettingsButtonView>
 

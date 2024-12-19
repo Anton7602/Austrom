@@ -10,7 +10,6 @@
         <item name="android:navigationBarColor">@color/backgroundMain</item>
         <item name="spinnerDropDownItemStyle">@style/DefaultSpinnerItemStyle</item>
         <item name="textInputStyle">@style/DefaultTextInputLayout</item>
-        <item name="editTextStyle">@style/DefaultEditText</item>
     </style>
 
 </resources>
