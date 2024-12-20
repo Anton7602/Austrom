@@ -27,7 +27,6 @@ import com.colleagues.austrom.dialogs.ImageSelectionDialogFragment
 import com.colleagues.austrom.dialogs.TransactionDetailCreationDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.InvalidTransactionException
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
@@ -39,7 +38,8 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.format.DateTimeFormatter
 
-class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
+class TransactionPropertiesActivity : AppCompatActivity() {
+    //region Binding
     private lateinit var transaction: Transaction
     private lateinit var backButton: ImageButton
     private lateinit var deleteButton: Button
@@ -62,8 +62,32 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     private lateinit var detailConstructorHolder: FragmentContainerView
     private lateinit var detailsLabel: TextView
     private lateinit var addPhoto: ImageView
-    private var transactionDetails = listOf<TransactionDetail>()
+    private fun bindViews() {
+        backButton = findViewById(R.id.trdet_back_btn)
+        deleteButton = findViewById(R.id.trdet_delete_btn)
+        fromLayout = findViewById(R.id.trdet_fromAmount_lly)
+        toLayout = findViewById(R.id.trdet_toAmount_lly)
+        sourceText = findViewById(R.id.trdet_source_txt)
+        targetText = findViewById(R.id.trdet_target_txt)
+        sourceAmount = findViewById(R.id.trdet_primaryAmount_txt)
+        targetAmount = findViewById(R.id.trdet_secondaryAmount_txt)
+        sourceCurrency = findViewById(R.id.trdet_primaryCurrency_txt)
+        targetCurrency = findViewById(R.id.trdet_secondaryCurrency_txt)
+        ownerText = findViewById(R.id.trdet_owner_txt)
+        dateText = findViewById(R.id.trdet_date_txt)
+        categoryText = findViewById(R.id.trdet_category_txt)
+        categoryImage = findViewById(R.id.trdet_category_img)
+        comment = findViewById(R.id.trdet_comments_txt)
+        transactionDetailsRecyclerView = findViewById(R.id.trdet_transactionDetails_rcv)
+        unallocatedSum = findViewById((R.id.trdet_unallocatedSum_txt))
+        unallocatedCurrency = findViewById((R.id.trdet_unallocatedCurrency_txt))
+        detailConstructorHolder = findViewById(R.id.trdet_transactionDetailHolder_frt)
+        detailsLabel = findViewById(R.id.trdet_detLabel_txt)
+        addPhoto = findViewById(R.id.trdet_addPhoto_btn)
+    }
 
+    //endregion
+    //region Localization
     override fun attachBaseContext(newBase: Context?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             super.attachBaseContext(newBase)
@@ -71,6 +95,19 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
             super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
         }
     }
+    // endregion
+    //region Styling
+    private fun adjustInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
+    }
+    // endregion
+    private var transactionDetails = listOf<TransactionDetail>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,24 +115,14 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         setContentView(R.layout.activity_transaction_properties)
         adjustInsets()
         bindViews()
-        retrieveSelectedTransaction()
+        retrieveTransactionFromIntent()
         setUpTransactionProperties()
         setUpRecyclerView()
         setUpFragment()
 
-        backButton.setOnClickListener {
-            this.finish()
-        }
-
-        deleteButton.setOnClickListener {
-            DeletionConfirmationDialogFragment(this).show(supportFragmentManager, "Delete Confirmation Dialog" )
-        }
-
-
-        addPhoto.setOnClickListener {
-            ImageSelectionDialogFragment(transaction, this).show(supportFragmentManager, "ImageSelectionDialog")
-        }
-
+        backButton.setOnClickListener { this.finish() }
+        deleteButton.setOnClickListener { DeletionConfirmationDialogFragment(this).show(supportFragmentManager, "Delete Confirmation Dialog" ) }
+        addPhoto.setOnClickListener {ImageSelectionDialogFragment(transaction, this).show(supportFragmentManager, "ImageSelectionDialog") }
         comment.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 transaction.comment = comment.text.toString()
@@ -207,55 +234,20 @@ class TransactionPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         }
     }
 
-    private fun retrieveSelectedTransaction() {
-        if (AustromApplication.selectedTransaction!=null) {
-            transaction = AustromApplication.selectedTransaction!!
-        } else {
-            finish()
-        }
+    private fun retrieveTransactionFromIntent() {
+        val transactionId = intent.getStringExtra("transactionId")
+        val dbProvider = LocalDatabaseProvider(this)
+        val retrievedTransaction = dbProvider.getTransactionByID(transactionId.toString())
+        if (retrievedTransaction!=null) transaction=retrievedTransaction  else finish()
     }
 
-    private fun adjustInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
-    }
-
-    private fun bindViews() {
-        backButton = findViewById(R.id.trdet_back_btn)
-        deleteButton = findViewById(R.id.trdet_delete_btn)
-        fromLayout = findViewById(R.id.trdet_fromAmount_lly)
-        toLayout = findViewById(R.id.trdet_toAmount_lly)
-        sourceText = findViewById(R.id.trdet_source_txt)
-        targetText = findViewById(R.id.trdet_target_txt)
-        sourceAmount = findViewById(R.id.trdet_primaryAmount_txt)
-        targetAmount = findViewById(R.id.trdet_secondaryAmount_txt)
-        sourceCurrency = findViewById(R.id.trdet_primaryCurrency_txt)
-        targetCurrency = findViewById(R.id.trdet_secondaryCurrency_txt)
-        ownerText = findViewById(R.id.trdet_owner_txt)
-        dateText = findViewById(R.id.trdet_date_txt)
-        categoryText = findViewById(R.id.trdet_category_txt)
-        categoryImage = findViewById(R.id.trdet_category_img)
-        comment = findViewById(R.id.trdet_comments_txt)
-        transactionDetailsRecyclerView = findViewById(R.id.trdet_transactionDetails_rcv)
-        unallocatedSum = findViewById((R.id.trdet_unallocatedSum_txt))
-        unallocatedCurrency = findViewById((R.id.trdet_unallocatedCurrency_txt))
-        detailConstructorHolder = findViewById(R.id.trdet_transactionDetailHolder_frt)
-        detailsLabel = findViewById(R.id.trdet_detLabel_txt)
-        addPhoto = findViewById(R.id.trdet_addPhoto_btn)
-    }
-
-    override fun receiveValue(value: String, valueType: String) {
-        if (valueType=="DialogResult" && value=="true") {
-            transaction.cancel(LocalDatabaseProvider(this))
-            this.finish()
-        }
-        if (valueType=="ImageUpdate" && value=="true") {
-            setUpAttachedImage()
-        }
-    }
+//    override fun receiveValue(value: String, valueType: String) {
+//        if (valueType=="DialogResult" && value=="true") {
+//            transaction.cancel(LocalDatabaseProvider(this))
+//            this.finish()
+//        }
+//        if (valueType=="ImageUpdate" && value=="true") {
+//            setUpAttachedImage()
+//        }
+//    }
 }

@@ -8,28 +8,21 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.R
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.managers.Icon
 
-class CategoryIconRecyclerAdapter(private var drawableIds: List<Icon>,
-                                  private var parent: IDialogInitiator? = null,
-                                  var selectedIcon: Icon = Icon.I0): RecyclerView.Adapter<CategoryIconRecyclerAdapter.CategoryIconViewHolder>() {
-    private var selectedViewHolder: CategoryIconViewHolder? = null
-    private var allViewHolders: MutableList<CategoryIconViewHolder> = mutableListOf()
-
+class CategoryIconRecyclerAdapter(private var drawableIds: List<Icon>, var selectedIcon: Icon = Icon.I0): RecyclerView.Adapter<CategoryIconRecyclerAdapter.CategoryIconViewHolder>() {
     class CategoryIconViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         var iconHolder: ImageView = itemView.findViewById(R.id.caticit_icon_img)
         var icon: Icon = Icon.I0
         var isSelected: Boolean = false
     }
+    private var returnClickedItem: (Icon)->Unit = {}
+    fun setOnItemClickListener(l: ((Icon)->Unit)) { returnClickedItem = l }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryIconViewHolder { return CategoryIconViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_category_icon, parent, false)) }
+    override fun getItemCount(): Int { return drawableIds.size }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryIconViewHolder {
-        return CategoryIconViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_category_icon, parent, false))
-    }
-
-    override fun getItemCount(): Int {
-        return drawableIds.size
-    }
+    private var selectedViewHolder: CategoryIconViewHolder? = null
+    private var allViewHolders: MutableList<CategoryIconViewHolder> = mutableListOf()
 
     override fun onBindViewHolder(holder: CategoryIconViewHolder, position: Int) {
         holder.icon = drawableIds[position]
@@ -66,8 +59,6 @@ class CategoryIconRecyclerAdapter(private var drawableIds: List<Icon>,
         holder.iconHolder.backgroundTintList = ColorStateList.valueOf(Color.argb(255, 13,153,255))
         selectedViewHolder = holder
         selectedIcon = holder.icon
-        if (parent!=null) {
-            parent!!.receiveValue(holder.icon.resourceId.toString(), "SelectedIcon")
-        }
+        returnClickedItem(holder.icon)
     }
 }

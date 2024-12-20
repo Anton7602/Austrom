@@ -14,8 +14,6 @@ import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
-import com.colleagues.austrom.models.Transaction
-import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.User
 import java.util.Locale
 import javax.crypto.SecretKey
@@ -32,8 +30,6 @@ class AustromApplication : Application() {
         var activeExpenseCategories : MutableMap<String, Category> = mutableMapOf()
         var activeTransferCategories: MutableMap<String, Category> = mutableMapOf()
         var knownUsers : MutableMap<String, User> = mutableMapOf()
-        var selectedTransaction: Transaction? = null
-        var selectedAsset: Asset? = null
         var supportedLanguages: List<Locale> = listOf(Locale("en"), Locale("ru"))
         var isApplicationThemeLight = false
         private var appLanguageCode: String? = null

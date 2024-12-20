@@ -11,9 +11,16 @@ import androidx.cardview.widget.CardView
 import com.colleagues.austrom.R
 
 class SettingsButtonView(context: Context, attrs: AttributeSet) : CardView(context, attrs) {
+    //region Binding
     private lateinit var labelTextView: TextView
     private lateinit var valueTextView: TextView
     private lateinit var iconImageView: ImageView
+    private fun bindViews(view: View) {
+        labelTextView = view.findViewById(R.id.setbtnview_primaryText_text)
+        valueTextView = view.findViewById(R.id.setbtnview_secondaryText_txt)
+        iconImageView = view.findViewById(R.id.setbtnview_icon_img)
+    }
+    //endregion
 
     init {
         val layoutInflater = LayoutInflater.from(context)
@@ -32,14 +39,7 @@ class SettingsButtonView(context: Context, attrs: AttributeSet) : CardView(conte
         if (iconResId != 0) {
             iconImageView.setImageResource(iconResId)
         }
-
         attributes.recycle()
-    }
-
-    private fun bindViews(view: View) {
-        labelTextView = view.findViewById(R.id.setbtnview_primaryText_text)
-        valueTextView = view.findViewById(R.id.setbtnview_secondaryText_txt)
-        iconImageView = view.findViewById(R.id.setbtnview_icon_img)
     }
 
     fun setLabelText(text: String) {

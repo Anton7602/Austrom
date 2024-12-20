@@ -13,10 +13,16 @@ import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.models.Budget
 
 class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout.fragment_shared_budget) {
+    //region Binding
     private lateinit var budgetName: TextView
     private lateinit var budgetInviteCode: TextView
     private lateinit var leaveButton: Button
-
+    private fun bindViews(view: View) {
+        budgetName = view.findViewById(R.id.shb_budgetName_txt)
+        budgetInviteCode = view.findViewById(R.id.shb_invitationCode_txt)
+        leaveButton = view.findViewById(R.id.shb_leaveBudget_btn)
+    }
+    //endregion
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -24,26 +30,22 @@ class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout
         budgetName.text = activeBudget.budgetName
         budgetInviteCode.text = activeBudget.budgetId
 
-        leaveButton.setOnClickListener {
-            val provider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
-            val user = AustromApplication.appUser
-            if (user?.userId != null) {
-                user.activeBudgetId = null
-                activeBudget.users!!.remove(user.userId)
-                provider.updateUser(user)
-                if (activeBudget.users.isEmpty()) {
-                    provider.deleteBudget(activeBudget)
-                } else {
-                    provider.updateBudget(activeBudget)
-                }
-                (requireActivity() as MainActivity).switchFragment(SharedBudgetEmptyFragment())
-            }
-        }
+        leaveButton.setOnClickListener { leaveBudget() }
     }
 
-    private fun bindViews(view: View) {
-        budgetName = view.findViewById(R.id.shb_budgetName_txt)
-        budgetInviteCode = view.findViewById(R.id.shb_invitationCode_txt)
-        leaveButton = view.findViewById(R.id.shb_leaveBudget_btn)
+    private fun leaveBudget() {
+        val provider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+        val user = AustromApplication.appUser
+        if (user?.userId != null) {
+            user.activeBudgetId = null
+            activeBudget.users!!.remove(user.userId)
+            provider.updateUser(user)
+            if (activeBudget.users.isEmpty()) {
+                provider.deleteBudget(activeBudget)
+            } else {
+                provider.updateBudget(activeBudget)
+            }
+            (requireActivity() as MainActivity).switchFragment(SharedBudgetEmptyFragment())
+        }
     }
 }

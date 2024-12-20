@@ -18,6 +18,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 class SignUpActivity : AppCompatActivity() {
+    //region Binding
     private lateinit var loginTextBox: TextInputEditText
     private lateinit var emailTextBox: TextInputEditText
     private lateinit var passwordTextBox: TextInputEditText
@@ -28,7 +29,19 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var emailTextLayout: TextInputLayout
     private lateinit var passwordTextLayout: TextInputLayout
     private lateinit var repeatPasswordTextLayout: TextInputLayout
-
+    private fun bindViews() {
+        signUpButton = findViewById(R.id.signUp_signUp_btn)
+        loginTextBox = findViewById(R.id.signUp_login_txt)
+        emailTextBox = findViewById(R.id.signUp_email_txt)
+        passwordTextBox = findViewById(R.id.signUp_password_txt)
+        repeatPasswordTextBox = findViewById(R.id.signUp_repeatPassword_txt)
+        loginTextLayout = findViewById(R.id.signUp_login_til)
+        emailTextLayout = findViewById(R.id.signUp_email_til)
+        passwordTextLayout = findViewById(R.id.signUp_password_til)
+        repeatPasswordTextLayout = findViewById(R.id.signUp_repeatPassword_til)
+    }
+    //endregion
+    //region Localization
     override fun attachBaseContext(newBase: Context?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             super.attachBaseContext(newBase)
@@ -36,6 +49,18 @@ class SignUpActivity : AppCompatActivity() {
             super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
         }
     }
+    //endregion
+    //region Styling
+    private fun adjustInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
+    }
+    // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,10 +91,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        loginTextBox.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus)
-                checkLogin()
-        }
+        loginTextBox.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) checkLogin() }
         loginTextBox.setOnKeyListener { _, keyCode, event ->
             when {
                 //Check if it is the Enter-Key,      Check if the Enter Key was pressed down
@@ -81,10 +103,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        emailTextBox.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus)
-                checkEmail()
-        }
+        emailTextBox.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) checkEmail() }
         emailTextBox.setOnKeyListener { _, keyCode, event ->
             when {
                 //Check if it is the Enter-Key,      Check if the Enter Key was pressed down
@@ -96,10 +115,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        passwordTextBox.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus)
-                checkPassword()
-        }
+        passwordTextBox.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) checkPassword() }
         passwordTextBox.setOnKeyListener { _, keyCode, event ->
             when {
                 //Check if it is the Enter-Key,      Check if the Enter Key was pressed down
@@ -111,10 +127,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        repeatPasswordTextBox.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus)
-                checkRepeatPassword()
-        }
+        repeatPasswordTextBox.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) checkRepeatPassword() }
         repeatPasswordTextBox.setOnKeyListener { _, keyCode, event ->
             when {
                 //Check if it is the Enter-Key,      Check if the Enter Key was pressed down
@@ -125,18 +138,6 @@ class SignUpActivity : AppCompatActivity() {
                 else -> false
             }
         }
-    }
-
-    private fun bindViews() {
-        signUpButton = findViewById(R.id.signUp_signUp_btn)
-        loginTextBox = findViewById(R.id.signUp_login_txt)
-        emailTextBox = findViewById(R.id.signUp_email_txt)
-        passwordTextBox = findViewById(R.id.signUp_password_txt)
-        repeatPasswordTextBox = findViewById(R.id.signUp_repeatPassword_txt)
-        loginTextLayout = findViewById(R.id.signUp_login_til)
-        emailTextLayout = findViewById(R.id.signUp_email_til)
-        passwordTextLayout = findViewById(R.id.signUp_password_til)
-        repeatPasswordTextLayout = findViewById(R.id.signUp_repeatPassword_til)
     }
 
     private fun checkLogin() {
@@ -202,15 +203,5 @@ class SignUpActivity : AppCompatActivity() {
         checkTextFields[fieldName] = true
         repeatPasswordTextLayout.isErrorEnabled = false
         signUpButton.isEnabled = checkTextFields.values.all { it }
-    }
-
-    private fun adjustInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
 }

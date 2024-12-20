@@ -1,6 +1,8 @@
 package com.colleagues.austrom
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -16,16 +18,15 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
-import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Transaction
 
-class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
+class AssetPropertiesActivity : AppCompatActivity(){
+    //region Binding
     private lateinit var asset: Asset
     private lateinit var backButton: ImageButton
     private lateinit var deleteButton: ImageButton
@@ -39,8 +40,22 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
     private lateinit var noTransactionsText: TextView
     private lateinit var assetCard: CardView
     private lateinit var dbProvider: LocalDatabaseProvider
-    private var transactionsOfAsset: MutableList<Transaction> = mutableListOf()
-
+    private fun bindViews() {
+        backButton = findViewById(R.id.asdet_back_btn)
+        deleteButton = findViewById(R.id.asdet_remove_btn)
+        assetName = findViewById(R.id.asdet_assetName_txt)
+        assetOwner = findViewById(R.id.asdet_owner_txt)
+        assetBalance = findViewById(R.id.asdet_balance_txt)
+        assetCurrency = findViewById(R.id.asdet_currency_txt)
+        assetPrimary = findViewById(R.id.asdet_isPrimary_chb)
+        assetPrivate = findViewById(R.id.asdet_isPrivate_chb)
+        transactionHolder = findViewById(R.id.asdet_transactionHolder_rcv)
+        noTransactionsText = findViewById(R.id.asdet_noTransactions_txt)
+        assetCard = findViewById(R.id.asdet_assetCard_crd)
+        dbProvider = LocalDatabaseProvider(this)
+    }
+    //endregion
+    //region Localization
     override fun attachBaseContext(newBase: Context?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             super.attachBaseContext(newBase)
@@ -48,6 +63,19 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
             super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
         }
     }
+    //endregion
+    //region Styling
+    private fun adjustInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.asdet_mainHolder_cly)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
+    }
+    //endregion
+    private var transactionsOfAsset: MutableList<Transaction> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,37 +87,37 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         setUpAssetProperties()
         setUpRecyclerView()
 
-        assetPrimary.setOnClickListener {
-            AustromApplication.appUser?.primaryPaymentMethod = if (assetPrimary.isChecked) {asset.assetId} else {null}
-            dbProvider.updateUser(AustromApplication.appUser!!)
-        }
-
-        assetPrivate.setOnClickListener {
-            asset.isPrivate = assetPrivate.isChecked
-            AustromApplication.activeAssets[asset.assetId]?.isPrivate = asset.isPrivate
-            dbProvider.updateAsset(asset)
-        }
-
-        deleteButton.setOnClickListener {
-            if (transactionsOfAsset.isEmpty()) {
-                dbProvider.deleteAsset(asset)
-                this.finish()
-            } else {
-                DeletionConfirmationDialogFragment(this).show(supportFragmentManager, "AssetDeletion Dialog")
-            }
-        }
-
-        backButton.setOnClickListener {
-            this.finish()
-        }
+        assetPrimary.setOnClickListener { markAssetAsPrimary() }
+        assetPrivate.setOnClickListener { markAssetAsPrivate() }
+        deleteButton.setOnClickListener { tryDeleteAsset() }
+        backButton.setOnClickListener { this.finish() }
     }
 
     private fun retrieveAssetFromIntent() {
-        if (AustromApplication.selectedAsset!=null) {
-            asset = AustromApplication.selectedAsset!!
+        val assetId = intent.getStringExtra("assetId")
+        if (AustromApplication.activeAssets[assetId]!=null) asset=AustromApplication.activeAssets[assetId]!! else finish()
+    }
+
+    private fun tryDeleteAsset() {
+        if (transactionsOfAsset.isEmpty()) {
+            dbProvider.deleteAsset(asset)
+            this.finish()
         } else {
-            finish()
+            val dialog = DeletionConfirmationDialogFragment()
+            dialog.setOnDialogResultListener { isDeletionConfirmed ->  if (isDeletionConfirmed) { asset.delete(LocalDatabaseProvider(this)); this.finish() }}
+            dialog.show(supportFragmentManager, "AssetDeletion Dialog")
         }
+    }
+
+    private fun markAssetAsPrimary() {
+        AustromApplication.appUser?.primaryPaymentMethod = if (assetPrimary.isChecked) {asset.assetId} else {null}
+        dbProvider.updateUser(AustromApplication.appUser!!)
+    }
+
+    private fun markAssetAsPrivate() {
+        asset.isPrivate = assetPrivate.isChecked
+        AustromApplication.activeAssets[asset.assetId]?.isPrivate = asset.isPrivate
+        dbProvider.updateAsset(asset)
     }
 
     private fun setUpAssetProperties() {
@@ -114,38 +142,8 @@ class AssetPropertiesActivity : AppCompatActivity(), IDialogInitiator {
         noTransactionsText.visibility = if (transactionsOfAsset.isEmpty()) {View.VISIBLE} else {View.GONE}
         transactionHolder.layoutManager = LinearLayoutManager(this)
         val groupedTransactions = Transaction.groupTransactionsByDate(transactionsOfAsset)
-        transactionHolder.adapter = TransactionGroupRecyclerAdapter(groupedTransactions, this)
-    }
-
-    private fun adjustInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.asdet_mainHolder_cly)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
-    }
-
-    private fun bindViews() {
-        backButton = findViewById(R.id.asdet_back_btn)
-        deleteButton = findViewById(R.id.asdet_remove_btn)
-        assetName = findViewById(R.id.asdet_assetName_txt)
-        assetOwner = findViewById(R.id.asdet_owner_txt)
-        assetBalance = findViewById(R.id.asdet_balance_txt)
-        assetCurrency = findViewById(R.id.asdet_currency_txt)
-        assetPrimary = findViewById(R.id.asdet_isPrimary_chb)
-        assetPrivate = findViewById(R.id.asdet_isPrivate_chb)
-        transactionHolder = findViewById(R.id.asdet_transactionHolder_rcv)
-        noTransactionsText = findViewById(R.id.asdet_noTransactions_txt)
-        assetCard = findViewById(R.id.asdet_assetCard_crd)
-        dbProvider = LocalDatabaseProvider(this)
-    }
-
-    override fun receiveValue(value: String, valueType: String) {
-        if (valueType=="DialogResult" && value=="true") {
-            asset.delete(LocalDatabaseProvider(this))
-            this.finish()
-        }
+        val adapter = TransactionGroupRecyclerAdapter(groupedTransactions, this)
+        adapter.setOnItemClickListener { transaction -> startActivity(Intent(this, TransactionPropertiesActivity::class.java).putExtra("transactionId", transaction.transactionId)) }
+        transactionHolder.adapter = adapter
     }
 }

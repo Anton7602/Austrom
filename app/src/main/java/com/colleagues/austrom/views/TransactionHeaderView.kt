@@ -11,10 +11,16 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.toMoneyFormat
 
 class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(context, attrs) {
+    //region Binding
     private lateinit var incomeSumTextView: TextView
     private lateinit var expenseSumTextView: TextView
     private lateinit var holderCardView: CardView
-
+    private fun bindViews(view: View) {
+        incomeSumTextView = view.findViewById(R.id.trlistheadview_incomeSum_txt)
+        expenseSumTextView = view.findViewById(R.id.trlistheadview_expenseSum_txt)
+        holderCardView = view.findViewById(R.id.trlistheadview_holder_crd)
+    }
+    //endregion
     private var incomeSum: Double = 0.0
     private var expenseSum: Double = 0.0
     private var currencySymbol: String = "$"
@@ -34,12 +40,6 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         holderCardView.setBackgroundResource(R.drawable.img_transaction_header_card_background)
 
         attributes.recycle()
-    }
-
-    private fun bindViews(view: View) {
-        incomeSumTextView = view.findViewById(R.id.trlistheadview_incomeSum_txt)
-        expenseSumTextView = view.findViewById(R.id.trlistheadview_expenseSum_txt)
-        holderCardView = view.findViewById(R.id.trlistheadview_holder_crd)
     }
 
     fun setIncome(value: Double) {

@@ -20,8 +20,8 @@ import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
 
 
-class TransactionDetailCreationDialogFragment(private var parent: TransactionPropertiesActivity,
-                                              private var transaction: Transaction) : Fragment(R.layout.dialog_fragment_transaction_detail_creation) {
+class TransactionDetailCreationDialogFragment(private var parent: TransactionPropertiesActivity,  private var transaction: Transaction) : Fragment(R.layout.dialog_fragment_transaction_detail_creation) {
+    //region Binding
     private lateinit var addRemoveButton: ImageButton
     private lateinit var forwardButton: ImageButton
     private lateinit var constructorLabel: TextView
@@ -31,8 +31,21 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
     private lateinit var categorySpinner: Spinner
     private lateinit var costField: EditText
     private lateinit var currencyLabel: TextView
-    private var currentStageId = 0
+    private fun bindViews(view: View) {
+        addRemoveButton = view.findViewById(R.id.trdetcr_addRemove_btn)
+        forwardButton = view.findViewById(R.id.trdetcr_forward_btn)
+        constructorLabel = view.findViewById(R.id.trdetcr_buttonLabel_txt)
+        detailNameField = view.findViewById(R.id.trdetcr_detailName_txt)
+        quantityField = view.findViewById(R.id.trdetcr_detailQuantity_txt)
+        quantityTypeSpinner = view.findViewById(R.id.trdetcr_quantityType_spr)
+        detailNameField = view.findViewById(R.id.trdetcr_detailName_txt)
+        costField = view.findViewById(R.id.trdetcr_cost_txt)
+        currencyLabel = view.findViewById(R.id.trdetcr_currency_txt)
+        categorySpinner = view.findViewById(R.id.trdet_category_spr)
+    }
+    //endregion
 
+    private var currentStageId = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,45 +54,13 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
         setStage(0)
 
         addRemoveButton.setOnClickListener { if (currentStageId==0) setStage(1) else setStage(0) }
-
         constructorLabel.setOnClickListener{ setStage(1) }
-
+        forwardButton.setOnClickListener { moveToNextStage() }
         costField.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                if (costField.text.isNotEmpty()) {
-                    parent.updateUnallocatedSum(costField.text.toString().toDouble())
-                } else {
-                    parent.updateUnallocatedSum()
-                }
-            }
+            override fun afterTextChanged(s: Editable?) { updateUnallocatedSum() }
         })
-
-        forwardButton.setOnClickListener {
-            if (currentStageId==4) {
-                if (costField.text.toString().isNotEmpty()) {
-                    if (parent.updateUnallocatedSum(costField.text.toString().toDouble())>=0) {
-                        parent.addTransactionDetail(TransactionDetail(
-                            transactionId = transaction.transactionId,
-                            name = detailNameField.text.toString(),
-                            quantity = if (quantityField.text.toString().isEmpty()) null else quantityField.text.toString().toDouble(),
-                            typeOfQuantity = if (quantityField.text.toString().isEmpty()) null else quantityTypeSpinner.selectedItem as QuantityUnit,
-                            cost = costField.text.toString().toDouble(),
-                            categoryName = if (categorySpinner.selectedItem.toString()!=transaction.categoryId) categorySpinner.selectedItem.toString() else null
-                        ))
-                        setStage(0)
-                        clearValues()
-                    } else {
-                        //Error message. Transaction balance is negative
-                    }
-                } else {
-                    //Error message Cost Field is Empty
-                }
-            } else {
-                setStage(currentStageId+1)
-            }
-        }
     }
 
     //Stages of TransactionDetailConstruction:
@@ -109,6 +90,39 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
         })
     }
 
+    private fun moveToNextStage() {
+        if (currentStageId==4) {
+            if (costField.text.toString().isNotEmpty()) {
+                if (parent.updateUnallocatedSum(costField.text.toString().toDouble())>=0) {
+                    parent.addTransactionDetail(TransactionDetail(
+                        transactionId = transaction.transactionId,
+                        name = detailNameField.text.toString(),
+                        quantity = if (quantityField.text.toString().isEmpty()) null else quantityField.text.toString().toDouble(),
+                        typeOfQuantity = if (quantityField.text.toString().isEmpty()) null else quantityTypeSpinner.selectedItem as QuantityUnit,
+                        cost = costField.text.toString().toDouble(),
+                        categoryName = if (categorySpinner.selectedItem.toString()!=transaction.categoryId) categorySpinner.selectedItem.toString() else null
+                    ))
+                    setStage(0)
+                    clearValues()
+                } else {
+                    //TODO(Error message. Transaction balance is negative)
+                }
+            } else {
+                //TODO(Error message Cost Field is Empty)
+            }
+        } else {
+            setStage(currentStageId+1)
+        }
+    }
+
+    private fun updateUnallocatedSum() {
+        if (costField.text.isNotEmpty()) {
+            parent.updateUnallocatedSum(costField.text.toString().toDouble())
+        } else {
+            parent.updateUnallocatedSum()
+        }
+    }
+
     private fun clearValues() {
         detailNameField.text.clear()
         quantityField.text.clear()
@@ -130,18 +144,5 @@ class TransactionDetailCreationDialogFragment(private var parent: TransactionPro
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = categoryAdapter
         categorySpinner.setSelection(availableCategories.indexOf(availableCategories.find { entry -> entry.name == transaction.categoryId }))
-    }
-
-    private fun bindViews(view: View) {
-        addRemoveButton = view.findViewById(R.id.trdetcr_addRemove_btn)
-        forwardButton = view.findViewById(R.id.trdetcr_forward_btn)
-        constructorLabel = view.findViewById(R.id.trdetcr_buttonLabel_txt)
-        detailNameField = view.findViewById(R.id.trdetcr_detailName_txt)
-        quantityField = view.findViewById(R.id.trdetcr_detailQuantity_txt)
-        quantityTypeSpinner = view.findViewById(R.id.trdetcr_quantityType_spr)
-        detailNameField = view.findViewById(R.id.trdetcr_detailName_txt)
-        costField = view.findViewById(R.id.trdetcr_cost_txt)
-        currencyLabel = view.findViewById(R.id.trdetcr_currency_txt)
-        categorySpinner = view.findViewById(R.id.trdet_category_spr)
     }
 }

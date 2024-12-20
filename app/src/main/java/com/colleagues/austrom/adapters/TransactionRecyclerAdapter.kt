@@ -1,8 +1,6 @@
 package com.colleagues.austrom.adapters
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +11,6 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.TransactionPropertiesActivity
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Category
@@ -22,10 +19,7 @@ import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.TransactionValidationType
 
-class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
-                                 private val activity: AppCompatActivity) : RecyclerView.Adapter<TransactionRecyclerAdapter.TransactionViewHolder>() {
-
-
+class TransactionRecyclerAdapter(private val transactions: List<Transaction>, private val activity: AppCompatActivity) : RecyclerView.Adapter<TransactionRecyclerAdapter.TransactionViewHolder>() {
     class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val categoryName: TextView = itemView.findViewById(R.id.tritem_categoryName_txt)
         val categoryImage: ImageView = itemView.findViewById(R.id.tritem_categoryIcon_img)
@@ -35,14 +29,10 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
         val primaryParticipant: TextView = itemView.findViewById(R.id.tritem_targetName_txt)
         val transactionHolder: CardView = itemView.findViewById(R.id.tritem_transactionHolder_cdv)
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-        return TransactionViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_transaction, parent, false))
-    }
-
-    override fun getItemCount(): Int {
-        return transactions.size
-    }
+    private var returnClickedItem: (Transaction)->Unit = {}
+    fun setOnItemClickListener(l: ((Transaction)->Unit)) { returnClickedItem = l }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder { return TransactionViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_transaction, parent, false)) }
+    override fun getItemCount(): Int { return transactions.size }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
@@ -81,9 +71,9 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>,
         holder.categoryName.text = category.name
         holder.categoryImage.setImageResource(category.imgReference.resourceId)
 
-        holder.transactionHolder.setOnClickListener {
-            AustromApplication.selectedTransaction = transaction
-            activity.startActivity(Intent(activity, TransactionPropertiesActivity::class.java))
+        holder.transactionHolder.setOnClickListener { returnClickedItem(transaction)
+//            AustromApplication.selectedTransaction = transaction
+//            activity.startActivity(Intent(activity, TransactionPropertiesActivity::class.java))
         }
     }
 }

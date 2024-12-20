@@ -13,9 +13,15 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputEditText
 
 class PasswordRecoveryActivity : AppCompatActivity() {
+    //region Binding
     private lateinit var recoverPasswordButton: TextView
     private lateinit var emailTextBox : TextInputEditText
-
+    private fun bindViews() {
+        recoverPasswordButton = findViewById(R.id.pass_recover_btn)
+        emailTextBox = findViewById(R.id.pass_email_txt)
+    }
+    //endregion
+    //region Localization
     override fun attachBaseContext(newBase: Context?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             super.attachBaseContext(newBase)
@@ -23,24 +29,8 @@ class PasswordRecoveryActivity : AppCompatActivity() {
             super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
         }
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_password_recovery)
-        adjustInsets()
-        bindViews()
-
-        recoverPasswordButton.setOnClickListener{
-            Toast.makeText(this, getString(R.string.not_yet_implemented), Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun bindViews() {
-        recoverPasswordButton = findViewById(R.id.pass_recover_btn)
-        emailTextBox = findViewById(R.id.pass_email_txt)
-    }
-
+    //endregion
+    //region Styling
     private fun adjustInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -49,5 +39,15 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         }
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
+    }
+    // endregion
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_password_recovery)
+        adjustInsets()
+        bindViews()
+        recoverPasswordButton.setOnClickListener{ Toast.makeText(this, getString(R.string.not_yet_implemented), Toast.LENGTH_LONG).show() }
     }
 }

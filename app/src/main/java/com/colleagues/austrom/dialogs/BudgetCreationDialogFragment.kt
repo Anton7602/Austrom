@@ -17,42 +17,43 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 
 class BudgetCreationDialogFragment : BottomSheetDialogFragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_budget_creation, container, false) }
+    fun setOnDialogResultListener(l: (()->Unit)) { returnResult = l }
+    private var returnResult: ()->Unit = {}
+    //region Binding
     private lateinit var submitNewBudget: Button
     private lateinit var budgetNameTextView: TextInputEditText
     private lateinit var dialogHolder: CardView
+    private fun bindViews(view: View) {
+        submitNewBudget = view.findViewById(R.id.bcdial_submit_btn)
+        budgetNameTextView = view.findViewById(R.id.bcdial_budgetName_txt)
+        dialogHolder = view.findViewById(R.id.bcdial_holder_crd)
+    }
+    //endregion
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background)
         budgetNameTextView.requestFocus()
+        submitNewBudget.setOnClickListener { submitNewBudget(); this.dismiss() }
+    }
 
-        submitNewBudget.setOnClickListener {
-            val budgetCreator = AustromApplication.appUser
-            if (budgetCreator!=null) {
-                val provider : IRemoteDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
-                val newBudget = Budget(
-                    budgetName =  budgetNameTextView.text.toString(),
-                    users =  arrayListOf(budgetCreator.userId)
-                )
-                newBudget.budgetId = provider.createNewBudget(newBudget)
-                budgetCreator.activeBudgetId = newBudget.budgetId
-                if (budgetCreator.activeBudgetId!=null) {
-                    provider.updateUser(budgetCreator)
-                    (requireActivity() as MainActivity).switchFragment(SharedBudgetFragment(newBudget))
-                }
+    private fun submitNewBudget() {
+        val budgetCreator = AustromApplication.appUser
+        if (budgetCreator!=null) {
+            val provider : IRemoteDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
+            val newBudget = Budget(
+                budgetName =  budgetNameTextView.text.toString(),
+                users =  arrayListOf(budgetCreator.userId)
+            )
+            newBudget.budgetId = provider.createNewBudget(newBudget)
+            budgetCreator.activeBudgetId = newBudget.budgetId
+            if (budgetCreator.activeBudgetId!=null) {
+                provider.updateUser(budgetCreator)
+                (requireActivity() as MainActivity).switchFragment(SharedBudgetFragment(newBudget))
             }
-            this.dismiss()
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_fragment_budget_creation, container, false)
-    }
-
-    private fun bindViews(view: View) {
-        submitNewBudget = view.findViewById(R.id.bcdial_submit_btn)
-        budgetNameTextView = view.findViewById(R.id.bcdial_budgetName_txt)
-        dialogHolder = view.findViewById(R.id.bcdial_holder_crd)
-    }
 }

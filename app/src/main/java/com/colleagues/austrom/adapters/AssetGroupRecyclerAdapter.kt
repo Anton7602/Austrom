@@ -14,8 +14,7 @@ import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 
-class AssetGroupRecyclerAdapter(private var assetTypes: Map<AssetType, MutableList<Asset>>,
-                                private var activity: AppCompatActivity) : RecyclerView.Adapter<AssetGroupRecyclerAdapter.AssetGroupViewHolder>() {
+class AssetGroupRecyclerAdapter(private var assetTypes: Map<AssetType, MutableList<Asset>>, private var activity: AppCompatActivity) : RecyclerView.Adapter<AssetGroupRecyclerAdapter.AssetGroupViewHolder>() {
     class AssetGroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val assetTypeName: TextView = itemView.findViewById(R.id.assgritem_assettype_txt)
         val assetTypeSum: TextView= itemView.findViewById(R.id.assgritem_sumamount_txt)
@@ -23,14 +22,10 @@ class AssetGroupRecyclerAdapter(private var assetTypes: Map<AssetType, MutableLi
         val assetsListHolder: RecyclerView= itemView.findViewById(R.id.assgritem_assetholder_rcv)
         val dropdownButton: ImageButton = itemView.findViewById(R.id.assgritem_dropdown_btn)
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AssetGroupViewHolder {
-        return AssetGroupViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_asset_group, parent, false))
-    }
-
-    override fun getItemCount(): Int {
-        return assetTypes.size
-    }
+    private var returnClickedItem: (Asset)->Unit = {}
+    fun setOnItemClickListener(l: ((Asset)->Unit)) { returnClickedItem = l }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AssetGroupViewHolder { return AssetGroupViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_asset_group, parent, false)) }
+    override fun getItemCount(): Int { return assetTypes.size  }
 
     override fun onBindViewHolder(holder: AssetGroupViewHolder, position: Int) {
         holder.assetTypeName.text = activity.getString(assetTypes.keys.elementAt(position).stringResourceId).uppercase()
@@ -45,7 +40,8 @@ class AssetGroupRecyclerAdapter(private var assetTypes: Map<AssetType, MutableLi
         }
         holder.assetTypeSum.text = sum.toMoneyFormat()
         holder.assetsListHolder.layoutManager = LinearLayoutManager(activity)
-        holder.assetsListHolder.adapter = AssetRecyclerAdapter(assetTypes.values.elementAt(position), activity, null, true)
+        holder.assetsListHolder.adapter = AssetRecyclerAdapter(assetTypes.values.elementAt(position), activity)
+        (holder.assetsListHolder.adapter as AssetRecyclerAdapter).setOnItemClickListener { asset -> returnClickedItem(asset) }
         holder.dropdownButton.setOnClickListener {
             if (holder.assetsListHolder.visibility == View.VISIBLE) {
                 holder.assetsListHolder.visibility = View.GONE

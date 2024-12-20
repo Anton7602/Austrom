@@ -11,15 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.toMoneyFormat
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Currency
 
-class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
-                              private var currencySelector: IDialogInitiator,
-                              private var currencyReceiver: IDialogInitiator?,
-                              private var activity: AppCompatActivity,
-                              private val isSortingByMyCurrencies: Boolean = true,
-                              private val isSortingByBaseCurrencies: Boolean = true): RecyclerView.Adapter<CurrencyRecyclerAdapter.CurrencyViewHolder>() {
+class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>, private var activity: AppCompatActivity, private val isSortingByMyCurrencies: Boolean = true, private val isSortingByBaseCurrencies: Boolean = true): RecyclerView.Adapter<CurrencyRecyclerAdapter.CurrencyViewHolder>() {
     class CurrencyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val currencyHolder: CardView = itemView.findViewById(R.id.curit_currencyHolder_crv)
         val currencySymbol: TextView = itemView.findViewById(R.id.curit_currencySymbol_txt)
@@ -30,10 +24,15 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
         val currencyGroupSeparator: CardView = itemView.findViewById(R.id.curit_categoryDivider_crd)
         val currencyGroupHeader: TextView = itemView.findViewById(R.id.curit_categoryHeader_txt)
     }
+    private var returnClickedItem: (Currency)->Unit = {}
+    fun setOnItemClickListener(l: ((Currency)->Unit)) { returnClickedItem = l }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyViewHolder { return CurrencyViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_currency, parent, false)) }
+    override fun getItemCount(): Int { return currencies.size }
 
     private val baseCurrencyCodes: MutableList<String> = mutableListOf("USD", "EUR","GBP", "JPY", "CNY", "CHF", "AUD", "CAD")
     private var baseCurrencyCategoryEndIndex = 0
     private var myCurrencyCategoryEndIndex = 0
+
     init {
         if (isSortingByMyCurrencies || isSortingByBaseCurrencies) {
             val resortedCurrencies: MutableMap<String, Currency> = mutableMapOf()
@@ -66,14 +65,6 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyViewHolder {
-        return CurrencyViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_currency, parent, false))
-    }
-
-    override fun getItemCount(): Int {
-        return currencies.size
-    }
-
     override fun onBindViewHolder(holder: CurrencyViewHolder, position: Int) {
         val currency = currencies.values.elementAt(position)
         if (isSortingByBaseCurrencies || isSortingByMyCurrencies) {
@@ -91,8 +82,7 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>,
         holder.currencyExchangeRate.text = (1/currency.exchangeRate).toMoneyFormat()
 
         val currencyTapOnClickListener = View.OnClickListener { _ ->
-            currencySelector.receiveValue(currency.code, "CurrencyCode")
-            currencyReceiver?.receiveValue(currency.name, "BaseCurrency")
+            returnClickedItem(currency)
             holder.selectionMarker.isChecked = true
         }
         holder.currencyHolder.setOnClickListener (currencyTapOnClickListener)

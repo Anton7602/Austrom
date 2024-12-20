@@ -42,14 +42,6 @@ class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode:
             }
             return  groupedAssets
         }
-
-        fun toList(assets: MutableMap<String, Asset>): MutableList<Asset> {
-            val assetList = mutableListOf<Asset>()
-            for (asset in assets) {
-                assetList.add(asset.value)
-            }
-            return assetList
-        }
     }
 }
 

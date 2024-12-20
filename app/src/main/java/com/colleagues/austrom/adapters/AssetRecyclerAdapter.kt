@@ -1,6 +1,5 @@
 package com.colleagues.austrom.adapters
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,20 +8,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.colleagues.austrom.AssetPropertiesActivity
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 
-class AssetRecyclerAdapter(private val assets: MutableList<Asset>,
-                           private val activity: AppCompatActivity,
-                           private val receiver: IDialogInitiator? = null,
-                           private val isAllowOpenProperties: Boolean = false) : RecyclerView.Adapter<AssetRecyclerAdapter.AssetViewHolder>()  {
-
+class AssetRecyclerAdapter(private val assets: MutableList<Asset>, private val activity: AppCompatActivity) : RecyclerView.Adapter<AssetRecyclerAdapter.AssetViewHolder>()  {
     class AssetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val assetHolder: CardView = itemView.findViewById(R.id.asitem_assetHolder_crv)
         val assetName: TextView = itemView.findViewById(R.id.asitem_assetName_txt)
@@ -35,14 +28,10 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>,
         val assetOwner: TextView = itemView.findViewById(R.id.asitem_owner_txt)
         val assetOwnerIcon: ImageView = itemView.findViewById(R.id.asitem_ownerIcon_img)
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AssetViewHolder {
-        return AssetViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_asset,parent,false))
-    }
-
-    override fun getItemCount(): Int {
-        return assets.size
-    }
+    private var returnClickedItem: (Asset)->Unit = {}
+    fun setOnItemClickListener(l: ((Asset)->Unit)) { returnClickedItem = l }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AssetViewHolder { return AssetViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_asset,parent,false)) }
+    override fun getItemCount(): Int { return assets.size }
 
     override fun onBindViewHolder(holder: AssetViewHolder, position: Int) {
         val asset = assets.elementAt(position)
@@ -76,11 +65,11 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>,
         )
 
         holder.assetHolder.setOnClickListener {
-            receiver?.receiveValue(asset.assetId!!, "assetID")
-            if (isAllowOpenProperties) {
-                AustromApplication.selectedAsset = asset
-                activity.startActivity(Intent(activity, AssetPropertiesActivity::class.java))
-            }
+            returnClickedItem(asset)
+//            if (isAllowOpenProperties) {
+//                AustromApplication.selectedAsset = asset
+//                activity.startActivity(Intent(activity, AssetPropertiesActivity::class.java))
+//            }
         }
     }
 }

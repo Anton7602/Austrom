@@ -12,13 +12,22 @@ import com.colleagues.austrom.fragments.BalanceFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButtonToggleGroup
 
-
 class AssetFilterDialogFragment(private val filteredFragment: BalanceFragment) : BottomSheetDialogFragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_asset_filter, container, false) }
+    fun setOnDialogResultListener(l: (()->Unit)) { returnResult = l }
+    private var returnResult: ()->Unit = {}
+    //region Binding
     private lateinit var sharingModeGroup: MaterialButtonToggleGroup
     private lateinit var personalButton: Button
     private lateinit var sharedButton: Button
     private lateinit var dialogHolder: CardView
-
+    private fun bindViews(view: View) {
+        sharingModeGroup = view.findViewById(R.id.asfildial_sharingType_tgr)
+        personalButton = view.findViewById(R.id.asfildial_personal_btn)
+        sharedButton = view.findViewById(R.id.asfildial_shared_btn)
+        dialogHolder = view.findViewById(R.id.asfildial_holder_crv)
+    }
+    //endregion
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -26,16 +35,9 @@ class AssetFilterDialogFragment(private val filteredFragment: BalanceFragment) :
         dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background)
         applyFilter()
 
-        val filterChangedListener = OnClickListener{
-            filteredFragment.filterAssets(generateFilter())
-        }
-
+        val filterChangedListener = OnClickListener{ filteredFragment.filterAssets(generateFilter()) }
         personalButton.setOnClickListener(filterChangedListener)
         sharedButton.setOnClickListener(filterChangedListener)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_fragment_asset_filter, container, false)
     }
 
     private fun generateFilter() : AssetFilter {
@@ -49,13 +51,6 @@ class AssetFilterDialogFragment(private val filteredFragment: BalanceFragment) :
         if (!filteredFragment.activeFilter!!.showShared) {
             sharingModeGroup.check(R.id.asfildial_personal_btn)
         }
-    }
-
-    private fun bindViews(view: View) {
-        sharingModeGroup = view.findViewById(R.id.asfildial_sharingType_tgr)
-        personalButton = view.findViewById(R.id.asfildial_personal_btn)
-        sharedButton = view.findViewById(R.id.asfildial_shared_btn)
-        dialogHolder = view.findViewById(R.id.asfildial_holder_crv)
     }
 }
 

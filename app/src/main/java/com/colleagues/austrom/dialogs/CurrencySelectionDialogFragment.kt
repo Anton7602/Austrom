@@ -15,53 +15,57 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CurrencyRecyclerAdapter
 import com.colleagues.austrom.interfaces.IDialogInitiator
+import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.models.Currency
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class CurrencySelectionDialogFragment(private val receiver: IDialogInitiator?) : BottomSheetDialogFragment(), IDialogInitiator {
+class CurrencySelectionDialogFragment: BottomSheetDialogFragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_currency_selection, container, false) }
+    fun setOnDialogResultListener(l: (Currency)->Unit) { returnResult = l }
+    private var returnResult: (Currency)->Unit = {}
+    //region Binding
     private lateinit var currencyHolder: RecyclerView
     private lateinit var declineButton: ImageButton
     private lateinit var searchField: EditText
     private lateinit var dialogHolder: CardView
     private lateinit var searchFieldHolder: CardView
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_fragment_currency_selection, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        bindViews(view)
-        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
-        searchFieldHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
-
-        currencyHolder.layoutManager = LinearLayoutManager(activity)
-        currencyHolder.adapter = CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, this,  receiver, requireActivity() as AppCompatActivity)
-
-        declineButton.setOnClickListener {
-            this.dismiss()
-        }
-
-        searchField.addTextChangedListener {
-            currencyHolder.adapter = if (searchField.text.isNotEmpty()) {
-                CurrencyRecyclerAdapter(AustromApplication.activeCurrencies.filter { entry -> entry.value.name.contains(searchField.text, ignoreCase = true)},
-                    this, receiver, requireActivity() as AppCompatActivity, false, isSortingByBaseCurrencies = false)
-            } else {
-                CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, this, receiver, requireActivity() as AppCompatActivity, true, true)
-            }
-        }
-    }
-
-    override fun receiveValue(value: String, valueType: String) {
-        (requireActivity().application as AustromApplication)
-            .setNewBaseCurrency(AustromApplication.activeCurrencies[value]!!)
-        dismiss()
-    }
-
     private fun bindViews(view: View) {
         currencyHolder = view.findViewById(R.id.csdial_currencyholder_rcv)
         declineButton = view.findViewById(R.id.csdial_decline_btn)
         searchField = view.findViewById(R.id.csdial_search_txt)
         dialogHolder = view.findViewById(R.id.csdial_holder_crv)
         searchFieldHolder = view.findViewById(R.id.csdial_searchHolder_crv)
+    }
+    //endregion
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindViews(view)
+        setDialogStyle()
+        setUpRecyclerView()
+        declineButton.setOnClickListener { this.dismiss() }
+        searchField.addTextChangedListener { filterCurrenciesList(searchField.text.toString()) }
+    }
+
+    private fun filterCurrenciesList(searchText: String) {
+        val adapter = if (searchText.isNotEmpty()) {
+            CurrencyRecyclerAdapter(AustromApplication.activeCurrencies.filter { entry -> entry.value.name.contains(searchText, ignoreCase = true)}, requireActivity() as AppCompatActivity,false, false)
+        } else {
+            CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, requireActivity() as AppCompatActivity, true, true)
+        }
+        adapter.setOnItemClickListener{currency -> returnResult(currency); dismiss() }
+        currencyHolder.adapter = adapter
+    }
+
+    private fun setUpRecyclerView() {
+        currencyHolder.layoutManager = LinearLayoutManager(activity)
+        val adapter = CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, requireActivity() as AppCompatActivity, true, true)
+        adapter.setOnItemClickListener { currency -> returnResult(currency); dismiss() }
+        currencyHolder.adapter = adapter
+    }
+
+    private fun setDialogStyle() {
+        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
+        searchFieldHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
     }
 }

@@ -15,16 +15,11 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.ImportTransactionDialogFragment
 import com.colleagues.austrom.extensions.toMoneyFormat
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionValidationType
 
-class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<Transaction>,
-                                         private val activity: AppCompatActivity,
-                                         private val isShowingActionButtons: Boolean = false, private val receiver: IDialogInitiator? = null)  : RecyclerView.Adapter<TransactionExtendedRecyclerAdapter.TransactionExtendedViewHolder>(), IDialogInitiator {
-    //var viewHolders: MutableList<TransactionExtendedViewHolder> = mutableListOf()
-
+class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<Transaction>, private val activity: AppCompatActivity, private val isShowingActionButtons: Boolean = false)  : RecyclerView.Adapter<TransactionExtendedRecyclerAdapter.TransactionExtendedViewHolder>(), IDialogInitiator {
     class TransactionExtendedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val primaryParticipant: TextView = itemView.findViewById(R.id.tritemext_targetName_txt)
         val amount: TextView = itemView.findViewById(R.id.tritemext_amount_txt)
@@ -58,14 +53,12 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
             }
         }
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionExtendedViewHolder {
-        return TransactionExtendedViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_transaction_extended, parent, false))
-    }
-
-    override fun getItemCount(): Int {
-        return transactions.size
-    }
+    private var returnClickedItem: (Transaction)->Unit = {}
+    fun setOnItemClickListener(l: ((Transaction)->Unit)) { returnClickedItem = l }
+    private var returnOperationResult: ()->Unit = {}
+    fun setOnOperationResultListener(l: (()->Unit)) {returnOperationResult = l}
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionExtendedViewHolder { return TransactionExtendedViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_transaction_extended, parent, false)) }
+    override fun getItemCount(): Int { return transactions.size }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionExtendedViewHolder, position: Int) {
@@ -139,7 +132,7 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
             val index = transactions.indexOf(transaction)
             transactions.remove(transaction)
             this.notifyItemRemoved(index)
-            receiver?.receiveValue(transaction.transactionId, "Transaction Imported")
+            //receiver?.receiveValue(transaction.transactionId, "Transaction Imported")
         }
         holder.editButton.setOnClickListener {
             ImportTransactionDialogFragment(transaction, transactions, activity, this).show(activity.supportFragmentManager, "Import Linking Dialog" )
@@ -155,7 +148,7 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
             val index = transactions.indexOf(transaction)
             transactions.remove(transaction)
             this.notifyItemRemoved(index)
-            receiver?.receiveValue(transaction.transactionId, "Transaction Removed")
+            //receiver?.receiveValue(transaction.transactionId, "Transaction Removed")
         }
     }
 
@@ -165,7 +158,7 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         for (i in 0..<this.transactions.size) if (!transactions[i].isColliding(dbProvider)) transactions[i].submit(dbProvider)
         transactions.removeIf { transaction -> transaction.isValid() && !transaction.isColliding(dbProvider) }
         this.notifyDataSetChanged()
-        receiver?.receiveValue("", "All Valid Transactions Submitted")
+        //receiver?.receiveValue("", "All Valid Transactions Submitted")
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -174,20 +167,20 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         for (i in 0..<this.transactions.size)  if (transactions[i].isColliding(dbProvider))  transactions[i].submit(dbProvider)
         transactions.removeIf { transaction -> transaction.isValid() && transaction.isColliding(dbProvider) }
         this.notifyDataSetChanged()
-        receiver?.receiveValue("", "All Suspicious Transactions Submitted")
+        //receiver?.receiveValue("", "All Suspicious Transactions Submitted")
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun removeAllInvalidTransaction() {
         transactions.removeIf { transaction -> !transaction.isValid() }
         this.notifyDataSetChanged()
-        receiver?.receiveValue("", "All Invalid Transactions Removed")
+        //receiver?.receiveValue("", "All Invalid Transactions Removed")
     }
 
     override fun receiveValue(value: String, valueType: String) {
         val index = value.toInt()
         if (index<0|| index>this.transactions.size) {
-            receiver?.receiveValue("", "Transaction Changed")
+            //receiver?.receiveValue("", "Transaction Changed")
         } else {
             this.notifyItemChanged(index)
         }

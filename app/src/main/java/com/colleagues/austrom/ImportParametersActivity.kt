@@ -26,7 +26,6 @@ import com.colleagues.austrom.adapters.TransactionExtendedRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.extensions.parseToLocalDate
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -37,7 +36,7 @@ import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.time.LocalDate
 
-class ImportParametersActivity : AppCompatActivity(), IDialogInitiator {
+class ImportParametersActivity : AppCompatActivity() {
     private var fileUri : Uri? = null
     private var csvSeparator: Char = ','
     private var charset = "windows-1251"
@@ -157,7 +156,9 @@ class ImportParametersActivity : AppCompatActivity(), IDialogInitiator {
                     comment =  commentTxt.toString()
                 ))
             }
-            exampleTransactionHolder.adapter = TransactionExtendedRecyclerAdapter(importedTransactions, this, true, this)
+            val adapter = TransactionExtendedRecyclerAdapter(importedTransactions, this, true)
+            adapter.setOnItemClickListener { _ -> updateCounters() }
+            exampleTransactionHolder.adapter = adapter
             exampleTransactionHolder.adapter!!.notifyItemRangeChanged(0, importedTransactions.size)
             switchLayoutsVisibilities()
         }
@@ -337,9 +338,5 @@ class ImportParametersActivity : AppCompatActivity(), IDialogInitiator {
         }
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
-    }
-
-    override fun receiveValue(value: String, valueType: String) {
-        updateCounters()
     }
 }

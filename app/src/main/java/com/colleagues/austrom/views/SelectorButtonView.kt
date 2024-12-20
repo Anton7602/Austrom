@@ -10,8 +10,14 @@ import androidx.cardview.widget.CardView
 import com.colleagues.austrom.R
 
 class SelectorButtonView(context: Context, attrs: AttributeSet) : CardView(context, attrs) {
+    //region Binding
     private lateinit var selectorFieldNameTextView: TextView
     private lateinit var selectorFieldValueTextView: TextView
+    private fun bindViews(view: View) {
+        selectorFieldNameTextView = view.findViewById(R.id.selbtnview_fieldName_txt)
+        selectorFieldValueTextView = view.findViewById(R.id.selbtnview_fieldValue_txt)
+    }
+    //endregion
 
     init {
         val layoutInflater = LayoutInflater.from(context)
@@ -32,10 +38,5 @@ class SelectorButtonView(context: Context, attrs: AttributeSet) : CardView(conte
 
     fun setFieldValue(value: String) {
         selectorFieldValueTextView.text = value
-    }
-
-    private fun bindViews(view: View) {
-        selectorFieldNameTextView = view.findViewById(R.id.selbtnview_fieldName_txt)
-        selectorFieldValueTextView = view.findViewById(R.id.selbtnview_fieldValue_txt)
     }
 }

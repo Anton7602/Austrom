@@ -13,55 +13,58 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryRecyclerAdapter
 import com.colleagues.austrom.interfaces.IDialogInitiator
+import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.newFixedThreadPoolContext
 
-class CategoryControlDialogFragment(private val receiver: IDialogInitiator?) : BottomSheetDialogFragment() {
+class CategoryControlDialogFragment : BottomSheetDialogFragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_category_control, container, false) }
+    fun setOnDialogResultListener(l: ((Category)->Unit)) { returnResult = l }
+    private var returnResult: (Category)->Unit = {}
+    //region Binding
     private lateinit var incomeCategoryHolder: RecyclerView
     private lateinit var expenseCategoryHolder: RecyclerView
     private lateinit var dialogHolder: CardView
     private lateinit var incomeSwitchButton: Button
     private lateinit var expenseSwitchButton: Button
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_fragment_category_control, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        bindViews(view)
-        setUpRecyclerViews()
-        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
-
-        incomeSwitchButton.setBackgroundColor(requireActivity().getColor(R.color.transparent))
-        incomeSwitchButton.setOnClickListener {
-            incomeCategoryHolder.visibility = View.VISIBLE
-            expenseCategoryHolder.visibility = View.GONE
-            incomeSwitchButton.compoundDrawablesRelative[3].setTint(requireActivity().getColor(R.color.blue))
-            expenseSwitchButton.compoundDrawablesRelative[3].setTint(requireActivity().getColor(R.color.grey))
-        }
-
-        expenseSwitchButton.setOnClickListener {
-            incomeCategoryHolder.visibility = View.GONE
-            expenseCategoryHolder.visibility = View.VISIBLE
-            incomeSwitchButton.compoundDrawablesRelative[3].setTint(requireActivity().getColor(R.color.grey))
-            expenseSwitchButton.compoundDrawablesRelative[3].setTint(requireActivity().getColor(R.color.blue))
-        }
-    }
-
-    private fun setUpRecyclerViews() {
-        incomeCategoryHolder.layoutManager = LinearLayoutManager(activity)
-        incomeCategoryHolder.adapter = CategoryRecyclerAdapter(AustromApplication.activeIncomeCategories.values.toMutableList(), requireActivity() as AppCompatActivity, true, true,  receiver)
-
-        expenseCategoryHolder.layoutManager = LinearLayoutManager(activity)
-        expenseCategoryHolder.adapter = CategoryRecyclerAdapter(AustromApplication.activeExpenseCategories.values.toMutableList(), requireActivity() as AppCompatActivity, true, true,  receiver)
-    }
-
     private fun bindViews(view: View) {
         incomeCategoryHolder = view.findViewById(R.id.ccdial_incomeCategories_rcv)
         expenseCategoryHolder = view.findViewById(R.id.ccdial_expenseCategories_rcv)
         dialogHolder = view.findViewById(R.id.ccdial_holder_crv)
         incomeSwitchButton = view.findViewById(R.id.ccdial_income_btn)
         expenseSwitchButton = view.findViewById(R.id.ccdial_expence_btn)
+    }
+    //endregion
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindViews(view)
+        setUpRecyclerViews()
+        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
+        //incomeSwitchButton.setBackgroundColor(requireActivity().getColor(R.color.transparent))
+        incomeSwitchButton.setOnClickListener { switchTransactionTypeVisibility(false) }
+        expenseSwitchButton.setOnClickListener { switchTransactionTypeVisibility(true) }
+    }
+
+    private fun switchTransactionTypeVisibility(isExpenseSelected: Boolean) {
+        incomeCategoryHolder.visibility = if (isExpenseSelected) View.GONE else View.VISIBLE
+        expenseCategoryHolder.visibility = if (isExpenseSelected) View.VISIBLE else View.GONE
+        incomeSwitchButton.compoundDrawablesRelative[3].setTint(requireActivity().getColor(if (isExpenseSelected) R.color.grey else R.color.blue))
+        expenseSwitchButton.compoundDrawablesRelative[3].setTint(requireActivity().getColor(if (isExpenseSelected) R.color.blue else R.color.grey))
+    }
+
+    private fun setUpRecyclerViews() {
+        incomeCategoryHolder.layoutManager = LinearLayoutManager(activity)
+        val adapterIncome = CategoryRecyclerAdapter(AustromApplication.activeIncomeCategories.values.toMutableList(), requireActivity() as AppCompatActivity, true, true)
+        adapterIncome.setOnItemClickListener { category -> returnResult(category) }
+        incomeCategoryHolder.adapter = adapterIncome
+
+        expenseCategoryHolder.layoutManager = LinearLayoutManager(activity)
+        val adapterExpense = CategoryRecyclerAdapter(AustromApplication.activeExpenseCategories.values.toMutableList(), requireActivity() as AppCompatActivity, true, true)
+        adapterExpense.setOnItemClickListener { category -> returnResult(category)  }
+        expenseCategoryHolder.adapter = adapterExpense
     }
 
     override fun onResume() {

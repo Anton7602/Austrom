@@ -20,14 +20,23 @@ import java.io.InputStreamReader
 
 
 class ImportFragment : Fragment(R.layout.fragment_import) {
-    private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
+    //region Binding
     private lateinit var importFromCSVFileButton: SettingsButtonView
+    private fun bindViews(view: View) {
+        importFromCSVFileButton = view.findViewById(R.id.imprt_fromCsv_btn)
+    }
+    //endregion
+    private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        filePickerLauncher = initializeActivityForResult()
+        importFromCSVFileButton.setOnClickListener {  pickCsvFile() }
+    }
 
-        filePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private fun initializeActivityForResult(): ActivityResultLauncher<Intent> {
+        return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.data?.let { uri ->
                     startActivity(Intent(requireActivity(), ImportParametersActivity::class.java).putExtra("FilePath", uri))
@@ -35,21 +44,12 @@ class ImportFragment : Fragment(R.layout.fragment_import) {
                 }
             }
         }
-
-        importFromCSVFileButton.setOnClickListener {
-            pickCsvFile()
-        }
     }
 
     private fun pickCsvFile() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+        filePickerLauncher.launch(Intent(Intent.ACTION_GET_CONTENT).apply {
             type = "*/*"
             addCategory(Intent.CATEGORY_OPENABLE)
-        }
-        filePickerLauncher.launch(intent)
-    }
-
-    private fun bindViews(view: View) {
-        importFromCSVFileButton = view.findViewById(R.id.imprt_fromCsv_btn)
+        })
     }
 }

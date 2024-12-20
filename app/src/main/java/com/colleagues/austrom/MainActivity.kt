@@ -3,6 +3,7 @@ package com.colleagues.austrom
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
@@ -40,8 +41,8 @@ import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 
-
 class MainActivity : AppCompatActivity() {
+    //region Binding
     private lateinit var drawerLayout : DrawerLayout
     private lateinit var toolbar : Toolbar
     private lateinit var filterButton: ImageButton
@@ -51,7 +52,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navigationLogOutButton: ImageButton
     private lateinit var bottomNavigationBar: NavigationBarView
     private lateinit var fragmentHolder: FragmentContainerView
-
+    private fun bindViews() {
+        drawerLayout = findViewById(R.id.main_drawerLayout_dly)
+        toolbar = findViewById(R.id.main_toolbar_tbr)
+        filterButton = findViewById(R.id.main_filter_btn)
+        navigationView = findViewById(R.id.main_navigationView_nvw)
+        bottomNavigationBar = findViewById(R.id.main_bottomNav_bnv)
+        fragmentHolder = findViewById(R.id.main_fragmentHolder_frg)
+        val navigationHeader = navigationView.getHeaderView(0)
+        navigationUserNameTextView = navigationHeader.findViewById(R.id.nav_username_txt)
+        navigationLogOutButton = navigationHeader.findViewById(R.id.nav_logout_btn)
+        navigationHeaderLayout = navigationHeader.findViewById(R.id.nav_navHeader_cly)
+    }
+    //endregion
+    //region Localization
     override fun attachBaseContext(newBase: Context?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             super.attachBaseContext(newBase)
@@ -59,117 +73,8 @@ class MainActivity : AppCompatActivity() {
             super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
         }
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        bindViews()
-        setSupportActionBar(toolbar)
-        adjustInsets()
-        fillInDefaultCategories()
-        fillInDefaultCurrencies()
-        fillInKnownUsers()
-        downloadCashedValues()
-        navigationUserNameTextView.text = AustromApplication.appUser?.username!!.startWithUppercase()
-        suggestSettingUpQuickAccessCode()
-        setUpNavigationDrawer()
-
-        filterButton.setOnClickListener {
-            when (fragmentHolder.getFragment<Fragment>()) {
-                is BalanceFragment -> AssetFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
-                is OpsFragment -> TransactionFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
-            }
-        }
-
-        navigationView.setNavigationItemSelectedListener { item ->
-            var status = true
-            when(item.itemId) {
-                R.id.nav_sharedBudget_mit -> {
-                    val provider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(this)
-                    val activeBudgetId = AustromApplication.appUser?.activeBudgetId
-                    if (activeBudgetId!=null) {
-                        val activeBudget = provider.getBudgetById(activeBudgetId)
-                        if (activeBudget!=null) {
-                            switchFragment(SharedBudgetFragment(activeBudget))
-                        }
-                        else {
-                            switchFragment(SharedBudgetEmptyFragment())
-                        }
-                    } else {
-                        switchFragment(SharedBudgetEmptyFragment())
-                    }
-                }
-                R.id.nav_import_export_mit ->  switchFragment(ImportFragment())
-                R.id.nav_settings_mit ->  switchFragment(SettingsFragment())
-                else -> status = false
-            }
-            drawerLayout.closeDrawer(GravityCompat.START)
-            status
-        }
-
-        bottomNavigationBar.setOnItemSelectedListener { item ->
-            var status = true
-            when(item.itemId) {
-                R.id.navbar_balance_mit -> switchFragment(BalanceFragment())
-                R.id.navbar_budget_mit -> switchFragment(BudgetFragment())
-                R.id.navbar_ops_mit -> switchFragment(OpsFragment())
-                else -> status = false
-            }
-            status
-        }
-
-        navigationLogOutButton.setOnClickListener {
-            (application as AustromApplication).forgetRememberedUser()
-            (application as AustromApplication).forgetRememberedPin()
-            AustromApplication.appUser = null
-            AustromApplication.activeAssets = mutableMapOf()
-            AustromApplication.knownUsers = mutableMapOf()
-            val dbProvider = LocalDatabaseProvider(this)
-            dbProvider.deleteAllUsers()
-            this.finish()
-        }
-
-        onBackPressedDispatcher.addCallback(this) {
-        }
-    }
-
-    fun switchFragment(fragment: Fragment) {
-        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.main_fragmentHolder_frg, fragment)
-        when (fragment) {
-            is BalanceFragment -> filterButton.visibility = View.VISIBLE
-            is OpsFragment -> filterButton.visibility = View.GONE
-            else -> filterButton.visibility = View.GONE
-        }
-        transaction.commit()
-    }
-
-    private fun suggestSettingUpQuickAccessCode() {
-        if (intent.getBooleanExtra("newUser",false) && (application as AustromApplication).getRememberedPin()==null) {
-            SuggestQuickAccessDialogFragment().show(supportFragmentManager, "Suggest Quick Access Code Dialog")
-        }
-    }
-
-    private fun downloadCashedValues() {
-        val dbProvider = FirebaseDatabaseProvider(this)
-        dbProvider.setCurrenciesListener()
-//        if (AustromApplication.activeCurrencies.isEmpty()) {
-//            AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(
-//                Currency.localizeCurrencyNames(dbProvider.getCurrenciesAsync(), this), AustromApplication.appUser?.baseCurrencyCode)
-//        }
-//        AustromApplication.activeCurrencies = Currency.localizeCurrencyNames(AustromApplication.activeCurrencies, this)
-//        if (AustromApplication.appUser?.activeBudgetId!=null) {
-//            AustromApplication.knownUsers = dbProvider.getUsersByBudget(AustromApplication.appUser?.activeBudgetId!!)
-//        }
-    }
-
-    private fun setUpNavigationDrawer() {
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-    }
-
+    //endregion
+    //region Styling
     private fun adjustInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_drawerLayout_dly)) { _, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -183,6 +88,113 @@ class MainActivity : AppCompatActivity() {
         }
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
+    }
+    //endregion
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
+        bindViews()
+        setSupportActionBar(toolbar)
+        adjustInsets()
+        fillInDefaultCategories()
+        fillInDefaultCurrencies()
+        fillInKnownUsers()
+        setUpCurrencyListener()
+        suggestSettingUpQuickAccessCode()
+        setUpNavigationDrawer()
+        navigationUserNameTextView.text = AustromApplication.appUser?.username!!.startWithUppercase()
+        filterButton.setOnClickListener { handleFilterButtonClick() }
+        navigationView.setNavigationItemSelectedListener { pressedMenuItem -> handleSideNavigationPanelClick(pressedMenuItem) }
+        bottomNavigationBar.setOnItemSelectedListener { item -> handleBottomNavigationBarClick(item) }
+        navigationLogOutButton.setOnClickListener { logOut() }
+        onBackPressedDispatcher.addCallback(this) {}
+    }
+
+    private fun handleFilterButtonClick() {
+        when (fragmentHolder.getFragment<Fragment>()) {
+            is BalanceFragment -> AssetFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
+            is OpsFragment -> TransactionFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
+        }
+    }
+
+    private fun handleSideNavigationPanelClick(pressedMenuItem: MenuItem): Boolean {
+        when(pressedMenuItem.itemId) {
+            R.id.nav_sharedBudget_mit -> {
+                val provider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(this)
+                val activeBudgetId = AustromApplication.appUser?.activeBudgetId
+                if (activeBudgetId!=null) {
+                    val activeBudget = provider.getBudgetById(activeBudgetId)
+                    if (activeBudget!=null) {
+                        switchFragment(SharedBudgetFragment(activeBudget))
+                    }
+                    else {
+                        switchFragment(SharedBudgetEmptyFragment())
+                    }
+                } else {
+                    switchFragment(SharedBudgetEmptyFragment())
+                }
+            }
+            R.id.nav_import_export_mit ->  switchFragment(ImportFragment())
+            R.id.nav_settings_mit ->  switchFragment(SettingsFragment())
+            else -> return false
+        }
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+    private fun handleBottomNavigationBarClick(pressedButton: MenuItem): Boolean {
+        when(pressedButton.itemId) {
+            R.id.navbar_balance_mit -> switchFragment(BalanceFragment())
+            R.id.navbar_budget_mit -> switchFragment(BudgetFragment())
+            R.id.navbar_ops_mit -> switchFragment(OpsFragment())
+            else -> return false
+        }
+        return true
+    }
+
+    /**
+     * Called when a view has been clicked.
+     * @param fragment The view that was clicked.
+     */
+    fun switchFragment(fragment: Fragment) {
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.main_fragmentHolder_frg, fragment)
+        when (fragment) {
+            is BalanceFragment -> filterButton.visibility = View.VISIBLE
+            is OpsFragment -> filterButton.visibility = View.GONE
+            else -> filterButton.visibility = View.GONE
+        }
+        transaction.commit()
+    }
+
+    private fun logOut() {
+        (application as AustromApplication).forgetRememberedUser()
+        (application as AustromApplication).forgetRememberedPin()
+        AustromApplication.appUser = null
+        AustromApplication.activeAssets = mutableMapOf()
+        AustromApplication.knownUsers = mutableMapOf()
+        val dbProvider = LocalDatabaseProvider(this)
+        dbProvider.deleteAllUsers()
+        this.finish()
+    }
+
+    private fun suggestSettingUpQuickAccessCode() {
+        if (intent.getBooleanExtra("newUser",false) && (application as AustromApplication).getRememberedPin()==null) {
+            SuggestQuickAccessDialogFragment().show(supportFragmentManager, "Suggest Quick Access Code Dialog")
+        }
+    }
+
+    private fun setUpCurrencyListener() {
+        val dbProvider = FirebaseDatabaseProvider(this)
+        dbProvider.setCurrenciesListener()
+    }
+
+    private fun setUpNavigationDrawer() {
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
     }
 
     private fun fillInDefaultCategories() {
@@ -231,18 +243,5 @@ class MainActivity : AppCompatActivity() {
     private fun fillInKnownUsers() {
         val dbProvider = LocalDatabaseProvider(this)
         AustromApplication.knownUsers = dbProvider.getAllUsers()
-    }
-
-    private fun bindViews() {
-        drawerLayout = findViewById(R.id.main_drawerLayout_dly)
-        toolbar = findViewById(R.id.main_toolbar_tbr)
-        filterButton = findViewById(R.id.main_filter_btn)
-        navigationView = findViewById(R.id.main_navigationView_nvw)
-        bottomNavigationBar = findViewById(R.id.main_bottomNav_bnv)
-        fragmentHolder = findViewById(R.id.main_fragmentHolder_frg)
-        val navigationHeader = navigationView.getHeaderView(0)
-        navigationUserNameTextView = navigationHeader.findViewById(R.id.nav_username_txt)
-        navigationLogOutButton = navigationHeader.findViewById(R.id.nav_logout_btn)
-        navigationHeaderLayout = navigationHeader.findViewById(R.id.nav_navHeader_cly)
     }
 }

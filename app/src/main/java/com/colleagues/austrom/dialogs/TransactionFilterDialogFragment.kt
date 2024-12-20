@@ -25,6 +25,8 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment) : BottomSheetDialogFragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_transaction_filter, container, false) }
+    //region Binding
     private lateinit var dialogHolder: CardView
     private lateinit var transactionTypeGroup: MaterialButtonToggleGroup
     private lateinit var incomeButton: Button
@@ -35,6 +37,20 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
     private lateinit var incomeCategories: ChipGroup
     private lateinit var chipFrom: Chip
     private lateinit var chipTo: Chip
+    private fun bindViews(view: View) {
+        transactionTypeGroup = view.findViewById(R.id.trfildial_transactionType_tgr)
+        incomeButton = view.findViewById(R.id.trfildial_income_btn)
+        transferButton = view.findViewById(R.id.trfildial_transfer_btn)
+        expenseButton = view.findViewById(R.id.trfildial_expense_btn)
+        expenseCategories = view.findViewById(R.id.trfildial_expenseCat_cgr)
+        transferCategories = view.findViewById(R.id.trfildial_transferCat_cgr)
+        incomeCategories = view.findViewById(R.id.trfildial_incomeCat_cgr)
+        chipFrom = view.findViewById(R.id.trfildial_dateFrom_chp)
+        chipTo = view.findViewById(R.id.trfildial_dateTo_chp)
+        dialogHolder = view.findViewById(R.id.trfildial_holder_crv)
+    }
+    //endregion
+
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -91,9 +107,7 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
             datePicker.show(requireActivity().supportFragmentManager, "DatePicker Dialog")}
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_fragment_transaction_filter, container, false)
-    }
+
 
     private fun switchChipsEnabledState(chipGroup: ChipGroup) {
         for (child in chipGroup.children) child.isEnabled = chipGroup.isEnabled
@@ -199,19 +213,6 @@ class TransactionFilterDialogFragment(private val filteredFragment: OpsFragment)
             }
             chipGroup.addView(chip)
         }
-    }
-
-    private fun bindViews(view: View) {
-        transactionTypeGroup = view.findViewById(R.id.trfildial_transactionType_tgr)
-        incomeButton = view.findViewById(R.id.trfildial_income_btn)
-        transferButton = view.findViewById(R.id.trfildial_transfer_btn)
-        expenseButton = view.findViewById(R.id.trfildial_expense_btn)
-        expenseCategories = view.findViewById(R.id.trfildial_expenseCat_cgr)
-        transferCategories = view.findViewById(R.id.trfildial_transferCat_cgr)
-        incomeCategories = view.findViewById(R.id.trfildial_incomeCat_cgr)
-        chipFrom = view.findViewById(R.id.trfildial_dateFrom_chp)
-        chipTo = view.findViewById(R.id.trfildial_dateTo_chp)
-        dialogHolder = view.findViewById(R.id.trfildial_holder_crv)
     }
 }
 

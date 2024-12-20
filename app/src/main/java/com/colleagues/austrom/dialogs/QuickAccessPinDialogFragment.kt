@@ -12,10 +12,13 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class QuickAccessPinDialogFragment(private val receiver: IDialogInitiator?=null) : BottomSheetDialogFragment() {
+class QuickAccessPinDialogFragment : BottomSheetDialogFragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_quick_access_pin, container, false) }
+    fun setOnDialogResultListener(l: ((String)->Unit)) { returnResult = l }
+    private var returnResult: (String)->Unit = {}
+    //region Binding
     private lateinit var dialogHolder: CardView
     private lateinit var button1: Button
     private lateinit var button2: Button
@@ -35,93 +38,6 @@ class QuickAccessPinDialogFragment(private val receiver: IDialogInitiator?=null)
     private lateinit var callToAction: TextView
     private lateinit var acceptButton: Button
     private lateinit var cancelButton: Button
-    private var input = ""
-    private var currentCode = ""
-    private var mode = QuickAccessDialogMode.VALIDATE
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_fragment_quick_access_pin, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        currentCode = (requireActivity().application as AustromApplication).getRememberedPin() ?: ""
-        bindViews(view)
-        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
-        applyMode()
-
-        val keyboardButtonClickListener = View.OnClickListener { buttonPressed ->
-            if (input.length == 4) {
-                input = ""
-            }
-            if (input.length < 4) {
-                input += when (buttonPressed.id) {
-                    R.id.qapdial_button1_btn -> "1"
-                    R.id.qapdial_button2_btn -> "2"
-                    R.id.qapdial_button3_btn -> "3"
-                    R.id.qapdial_button4_btn -> "4"
-                    R.id.qapdial_button5_btn -> "5"
-                    R.id.qapdial_button6_btn -> "6"
-                    R.id.qapdial_button7_btn -> "7"
-                    R.id.qapdial_button8_btn -> "8"
-                    R.id.qapdial_button9_btn -> "9"
-                    R.id.qapdial_button0_btn -> "0"
-                    else -> ""
-                }
-            }
-            if (buttonPressed.id == R.id.qapdial_buttonRemove_btn && input.isNotEmpty()) {
-                input = input.substring(0, input.length - 1)
-            }
-            if (input.length == 4) {
-                when (mode) {
-                    QuickAccessDialogMode.VALIDATE -> {
-                        if (input==currentCode) {
-                            currentCode = ""
-                            mode = QuickAccessDialogMode.SETUP
-                            input = ""
-                            applyMode()
-                        } else {
-                            callToAction.text = getString(R.string.wrong_quick_access_code)
-                            input = ""
-                        }
-                    }
-                    QuickAccessDialogMode.SETUP -> {
-                        currentCode = input
-                        mode = QuickAccessDialogMode.REPEAT
-                        input = ""
-                        applyMode()
-                    }
-                    QuickAccessDialogMode.REPEAT -> {
-                        if (input == currentCode) {
-                            (requireActivity().application as AustromApplication).setRememberedPin(input)
-                            receiver?.receiveValue("****", "QuickAccessCode")
-                            dismiss()
-                        } else {
-                            callToAction.text = getString(R.string.quick_access_code_doesn_t_match)
-                            input = ""
-                        }
-                    }
-                }
-            }
-            pinDot1.setColorFilter(ContextCompat.getColor(requireActivity(), if (input.isNotEmpty()) {R.color.blue} else {R.color.dark_grey}))
-            pinDot2.setColorFilter(ContextCompat.getColor(requireActivity(), if (input.length>1) {R.color.blue} else {R.color.dark_grey}))
-            pinDot3.setColorFilter(ContextCompat.getColor(requireActivity(), if (input.length>2) {R.color.blue} else {R.color.dark_grey}))
-            pinDot4.setColorFilter(ContextCompat.getColor(requireActivity(), if (input.length>3) {R.color.blue} else {R.color.dark_grey}))
-        }
-
-        button1.setOnClickListener(keyboardButtonClickListener)
-        button2.setOnClickListener(keyboardButtonClickListener)
-        button3.setOnClickListener(keyboardButtonClickListener)
-        button4.setOnClickListener(keyboardButtonClickListener)
-        button5.setOnClickListener(keyboardButtonClickListener)
-        button6.setOnClickListener(keyboardButtonClickListener)
-        button7.setOnClickListener(keyboardButtonClickListener)
-        button8.setOnClickListener(keyboardButtonClickListener)
-        button9.setOnClickListener(keyboardButtonClickListener)
-        button0.setOnClickListener(keyboardButtonClickListener)
-        buttonRemove.setOnClickListener(keyboardButtonClickListener)
-    }
-
     private fun bindViews(view: View) {
         acceptButton = view.findViewById(R.id.qapdial_accept_btn)
         cancelButton = view.findViewById(R.id.qapdial_cancel_btn)
@@ -143,9 +59,94 @@ class QuickAccessPinDialogFragment(private val receiver: IDialogInitiator?=null)
         callToAction = view.findViewById(R.id.qapdial_ctaText_cta)
         dialogHolder = view.findViewById(R.id.qapdial_holder_crv)
     }
+    // endregion
+
+    private var input = ""
+    private var currentCode = ""
+    private var mode = QuickAccessDialogMode.VALIDATE
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        currentCode = (requireActivity().application as AustromApplication).getRememberedPin() ?: ""
+        bindViews(view)
+        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
+        applyMode()
+
+        val keyboardButtonClickListener = View.OnClickListener { buttonPressed -> handleNewInput(buttonPressed) }
+        button1.setOnClickListener(keyboardButtonClickListener)
+        button2.setOnClickListener(keyboardButtonClickListener)
+        button3.setOnClickListener(keyboardButtonClickListener)
+        button4.setOnClickListener(keyboardButtonClickListener)
+        button5.setOnClickListener(keyboardButtonClickListener)
+        button6.setOnClickListener(keyboardButtonClickListener)
+        button7.setOnClickListener(keyboardButtonClickListener)
+        button8.setOnClickListener(keyboardButtonClickListener)
+        button9.setOnClickListener(keyboardButtonClickListener)
+        button0.setOnClickListener(keyboardButtonClickListener)
+        buttonRemove.setOnClickListener(keyboardButtonClickListener)
+    }
+
+
+    private fun handleNewInput(buttonPressed: View) {
+        if (input.length == 4) {
+            input = ""
+        }
+        if (input.length < 4) {
+            input += when (buttonPressed.id) {
+                R.id.qapdial_button1_btn -> "1"
+                R.id.qapdial_button2_btn -> "2"
+                R.id.qapdial_button3_btn -> "3"
+                R.id.qapdial_button4_btn -> "4"
+                R.id.qapdial_button5_btn -> "5"
+                R.id.qapdial_button6_btn -> "6"
+                R.id.qapdial_button7_btn -> "7"
+                R.id.qapdial_button8_btn -> "8"
+                R.id.qapdial_button9_btn -> "9"
+                R.id.qapdial_button0_btn -> "0"
+                else -> ""
+            }
+        }
+        if (buttonPressed.id == R.id.qapdial_buttonRemove_btn && input.isNotEmpty()) {
+            input = input.substring(0, input.length - 1)
+        }
+        if (input.length == 4) {
+            when (mode) {
+                QuickAccessDialogMode.VALIDATE -> {
+                    if (input==currentCode) {
+                        currentCode = ""
+                        mode = QuickAccessDialogMode.SETUP
+                        input = ""
+                        applyMode()
+                    } else {
+                        callToAction.text = getString(R.string.wrong_quick_access_code)
+                        input = ""
+                    }
+                }
+                QuickAccessDialogMode.SETUP -> {
+                    currentCode = input
+                    mode = QuickAccessDialogMode.REPEAT
+                    input = ""
+                    applyMode()
+                }
+                QuickAccessDialogMode.REPEAT -> {
+                    if (input == currentCode) {
+                        (requireActivity().application as AustromApplication).setRememberedPin(input)
+                        returnResult(input)
+                        dismiss()
+                    } else {
+                        callToAction.text = getString(R.string.quick_access_code_doesn_t_match)
+                        input = ""
+                    }
+                }
+            }
+        }
+        pinDot1.setColorFilter(ContextCompat.getColor(requireActivity(), if (input.isNotEmpty()) {R.color.blue} else {R.color.dark_grey}))
+        pinDot2.setColorFilter(ContextCompat.getColor(requireActivity(), if (input.length>1) {R.color.blue} else {R.color.dark_grey}))
+        pinDot3.setColorFilter(ContextCompat.getColor(requireActivity(), if (input.length>2) {R.color.blue} else {R.color.dark_grey}))
+        pinDot4.setColorFilter(ContextCompat.getColor(requireActivity(), if (input.length>3) {R.color.blue} else {R.color.dark_grey}))
+    }
 
     private fun applyMode() {
-
         if (currentCode.isEmpty()) {
             mode = QuickAccessDialogMode.SETUP
         }

@@ -20,12 +20,21 @@ import com.colleagues.austrom.models.User
 import com.google.android.material.textfield.TextInputEditText
 
 class AuthorizationActivity : AppCompatActivity() {
+    //region Binding
     private lateinit var logInButton: Button
     private lateinit var signUpButton: TextView
     private lateinit var forgotPasswordButton: TextView
     private lateinit var loginTextBox : TextInputEditText
     private lateinit var passwordTextBox : TextInputEditText
-
+    private fun bindViews() {
+        logInButton = findViewById(R.id.auth_login_btn)
+        signUpButton = findViewById(R.id.auth_signUp_btn)
+        forgotPasswordButton = findViewById(R.id.auth_forgotPassword_btn)
+        loginTextBox = findViewById(R.id.auth_login_txt)
+        passwordTextBox = findViewById(R.id.auth_password_txt)
+    }
+    //endregion
+    //region Localization
     override fun attachBaseContext(newBase: Context?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             super.attachBaseContext(newBase)
@@ -33,6 +42,18 @@ class AuthorizationActivity : AppCompatActivity() {
             super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
         }
     }
+    // endregion
+    //region Styling
+    private fun adjustInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, 0, 0, 0)
+            insets
+        }
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
+    }
+    // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,27 +64,9 @@ class AuthorizationActivity : AppCompatActivity() {
         //this.deleteDatabase("local_database")
         runQuickAuthorization()
 
-        logInButton.setOnClickListener{
-            val dbProvider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(this)
-            val encryptionManager = EncryptionManager()
-            val existingUser = dbProvider.getUserByEmail(loginTextBox.text.toString().lowercase())
-            if (existingUser== null  || !encryptionManager.isPasswordFitsHash(passwordTextBox.text.toString(),existingUser.password.toString())) {
-                Toast.makeText(this, "Email or password is incorrect", Toast.LENGTH_LONG).show()
-            } else {
-                existingUser.password = passwordTextBox.text.toString()
-                val localProvider = LocalDatabaseProvider(this)
-                localProvider.writeNewUser(existingUser)
-                launchMainActivity(existingUser)
-            }
-        }
-
-        signUpButton.setOnClickListener{
-            startActivity(Intent(this, SignUpActivity::class.java))
-        }
-
-        forgotPasswordButton.setOnClickListener{
-            startActivity(Intent(this, PasswordRecoveryActivity::class.java))
-        }
+        logInButton.setOnClickListener{ logInUser() }
+        signUpButton.setOnClickListener{ startActivity(Intent(this, SignUpActivity::class.java)) }
+        forgotPasswordButton.setOnClickListener{ startActivity(Intent(this, PasswordRecoveryActivity::class.java)) }
     }
 
     private fun launchMainActivity(user: User) {
@@ -77,6 +80,20 @@ class AuthorizationActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun logInUser() {
+        val dbProvider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(this)
+        val encryptionManager = EncryptionManager()
+        val existingUser = dbProvider.getUserByEmail(loginTextBox.text.toString().lowercase())
+        if (existingUser== null  || !encryptionManager.isPasswordFitsHash(passwordTextBox.text.toString(),existingUser.password)) {
+            Toast.makeText(this, "Email or password is incorrect", Toast.LENGTH_LONG).show()
+        } else {
+            existingUser.password = passwordTextBox.text.toString()
+            val localProvider = LocalDatabaseProvider(this)
+            localProvider.writeNewUser(existingUser)
+            launchMainActivity(existingUser)
+        }
+    }
+
     private fun runQuickAuthorization() {
         val storedUserID = (application as AustromApplication).getRememberedUser()
         val storedPin = (application as AustromApplication).getRememberedPin()
@@ -87,23 +104,5 @@ class AuthorizationActivity : AppCompatActivity() {
                 startActivity(Intent(applicationContext, AuthorizationQuickActivity::class.java))
             }
         }
-    }
-
-    private fun bindViews() {
-        logInButton = findViewById(R.id.auth_login_btn)
-        signUpButton = findViewById(R.id.auth_signUp_btn)
-        forgotPasswordButton = findViewById(R.id.auth_forgotPassword_btn)
-        loginTextBox = findViewById(R.id.auth_login_txt)
-        passwordTextBox = findViewById(R.id.auth_password_txt)
-    }
-
-    private fun adjustInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(0, 0, 0, 0)
-            insets
-        }
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
 }

@@ -1,6 +1,7 @@
 package com.colleagues.austrom.fragments
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -8,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.colleagues.austrom.AssetPropertiesActivity
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.AssetGroupRecyclerAdapter
@@ -21,25 +23,25 @@ import com.colleagues.austrom.models.Budget
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class BalanceFragment : Fragment(R.layout.fragment_balance) {
+    //region Binding
     private lateinit var assetHolderRecyclerView: RecyclerView
     private lateinit var addNewAssetButton: FloatingActionButton
     private lateinit var totalAmountText: TextView
     private lateinit var baseCurrencySymbolText: TextView
+    private fun bindViews(view: View) {
+        assetHolderRecyclerView = view.findViewById(R.id.bal_assetHolder_rcv)
+        addNewAssetButton = view.findViewById(R.id.bal_addNew_fab)
+        totalAmountText = view.findViewById(R.id.bal_totalAmount_txt)
+        baseCurrencySymbolText = view.findViewById(R.id.bal_baseCurrencySymbol_txt)
+    }
+    //endregion
     var activeFilter: AssetFilter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         if (AustromApplication.activeAssets.isEmpty()) { updateAssetsList() }
-
-        addNewAssetButton.setOnClickListener {
-            AssetCreationDialogFragment(this).show(requireActivity().supportFragmentManager, "Asset Creation Dialog")
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        updateAssetsList()
+        addNewAssetButton.setOnClickListener { AssetCreationDialogFragment(this).show(requireActivity().supportFragmentManager, "Asset Creation Dialog") }
     }
 
     fun updateAssetsList() {
@@ -47,7 +49,6 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         val user = AustromApplication.appUser
         if (user!=null) {
             val activeAssets = if (user.activeBudgetId!=null) {
-                //val budget = dbProvider.getBudgetById(user.activeBudgetId!!)
                 val budget = Budget()
                 if (budget!=null) {
                     dbProvider.getAssetsOfBudget(budget)
@@ -98,13 +99,13 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     private fun setUpRecyclerView(assetList: MutableMap<String, Asset>) {
         assetHolderRecyclerView.layoutManager = LinearLayoutManager(activity)
         val groupedAssets = Asset.groupAssetsByType(assetList)
-        assetHolderRecyclerView.adapter = AssetGroupRecyclerAdapter(groupedAssets, (requireActivity() as AppCompatActivity))
+        val adapter = AssetGroupRecyclerAdapter(groupedAssets, (requireActivity() as AppCompatActivity))
+        adapter.setOnItemClickListener { asset -> requireActivity().startActivity(Intent(activity, AssetPropertiesActivity::class.java).putExtra("assetId", asset.assetId)) }
+        assetHolderRecyclerView.adapter = adapter
     }
 
-    private fun bindViews(view: View) {
-        assetHolderRecyclerView = view.findViewById(R.id.bal_assetHolder_rcv)
-        addNewAssetButton = view.findViewById(R.id.bal_addNew_fab)
-        totalAmountText = view.findViewById(R.id.bal_totalAmount_txt)
-        baseCurrencySymbolText = view.findViewById(R.id.bal_baseCurrencySymbol_txt)
+    override fun onResume() {
+        super.onResume()
+        updateAssetsList()
     }
 }

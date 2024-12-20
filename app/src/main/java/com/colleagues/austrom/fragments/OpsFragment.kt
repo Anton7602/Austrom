@@ -5,32 +5,32 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
-import com.colleagues.austrom.PasswordRecoveryActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionCreationActivity
+import com.colleagues.austrom.TransactionPropertiesActivity
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
-import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.TransactionCreationDialogFragment
 import com.colleagues.austrom.dialogs.TransactionFilter
-import com.colleagues.austrom.extensions.toMoneyFormat
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.TransactionHeaderView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
+class OpsFragment : Fragment(R.layout.fragment_ops){
+    //region Binding
     private lateinit var transactionHolder: RecyclerView
     private lateinit var transactionsHeader: TransactionHeaderView
-    private lateinit var addNewTransactionButton: FloatingActionButton
     private lateinit var createNewTransactionButton: ImageButton
+    private fun bindViews(view: View) {
+        transactionHolder = view.findViewById(R.id.ops_transactionHolder_rcv)
+        transactionsHeader = view.findViewById(R.id.ops_transactionsHeader_trhed)
+        createNewTransactionButton = view.findViewById(R.id.ops_createNewTransaction_btn)
+    }
+    //endregion
     private var transactionList: MutableList<Transaction> = mutableListOf()
     var activeFilter: TransactionFilter? = null
 
@@ -38,22 +38,10 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         updateTransactionsList()
-
-        addNewTransactionButton.setOnClickListener {
-            startActivity(Intent(requireActivity(), TransactionCreationActivity::class.java))
-        }
-
-        createNewTransactionButton.setOnClickListener {
-            startActivity(Intent(requireActivity(), TransactionCreationActivity::class.java))
-        }
+        createNewTransactionButton.setOnClickListener { startActivity(Intent(requireActivity(), TransactionCreationActivity::class.java)) }
     }
 
-    override fun onResume() {
-        super.onResume()
-        updateTransactionsList()
-    }
-
-    fun updateTransactionsList() {
+    private fun updateTransactionsList() {
         val provider = LocalDatabaseProvider(requireActivity())
         val user = AustromApplication.appUser
         if (user !=null) {
@@ -72,17 +60,21 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
                 setUpRecyclerView(transactionList)
             }
         }
+        calculateTransactionsAmountSums(provider)
+        transactionsHeader.setCurrencySymbol(AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]!!.symbol)
+    }
+
+    private fun calculateTransactionsAmountSums(dbProvider: LocalDatabaseProvider) {
         var incomeSum = 0.0
         var expenseSum = 0.0
         transactionList.forEach{ transaction ->
+            val transactionsAsset = AustromApplication.activeAssets[transaction.assetId]
             if (transaction.transactionType() == TransactionType.EXPENSE) {
-                val transactionsAsset = provider.getAssetById(transaction.assetId)
                 if (transactionsAsset!=null) {
                     expenseSum+= if (transactionsAsset.currencyCode==AustromApplication.appUser!!.baseCurrencyCode) transaction.amount else transaction.amount/(AustromApplication.activeCurrencies[transactionsAsset.currencyCode]?.exchangeRate ?: 1.0)
                 }
             }
             if (transaction.transactionType() == TransactionType.INCOME) {
-                val transactionsAsset = provider.getAssetById(transaction.assetId)
                 if (transactionsAsset!=null) {
                     incomeSum+= if (transactionsAsset.currencyCode==AustromApplication.appUser!!.baseCurrencyCode) transaction.amount else transaction.amount/(AustromApplication.activeCurrencies[transactionsAsset.currencyCode]?.exchangeRate ?: 1.0)
                 }
@@ -90,7 +82,6 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
         }
         transactionsHeader.setIncome(incomeSum)
         transactionsHeader.setExpense(expenseSum)
-        transactionsHeader.setCurrencySymbol(AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]!!.symbol)
     }
 
     fun filterTransactions(filter: TransactionFilter) {
@@ -115,17 +106,13 @@ class OpsFragment : Fragment(R.layout.fragment_ops), IDialogInitiator {
     private fun setUpRecyclerView(transactionList: MutableList<Transaction>) {
         val groupedTransactions = Transaction.groupTransactionsByDate(transactionList)
         transactionHolder.layoutManager = LinearLayoutManager(activity)
-        transactionHolder.adapter = TransactionGroupRecyclerAdapter(groupedTransactions, (requireActivity() as AppCompatActivity))
+        val adapter = TransactionGroupRecyclerAdapter(groupedTransactions, (requireActivity() as AppCompatActivity))
+        adapter.setOnItemClickListener { transaction -> requireActivity().startActivity(Intent(activity, TransactionPropertiesActivity::class.java).putExtra("transactionId", transaction.transactionId)) }
+        transactionHolder.adapter = adapter
     }
 
-    override fun receiveValue(value: String, valueType: String) {
-        TODO("Not yet implemented")
-    }
-
-    private fun bindViews(view: View) {
-        transactionHolder = view.findViewById(R.id.ops_transactionHolder_rcv)
-        addNewTransactionButton = view.findViewById(R.id.ops_addNew_fab)
-        transactionsHeader = view.findViewById(R.id.ops_transactionsHeader_trhed)
-        createNewTransactionButton = view.findViewById(R.id.ops_createNewTransaction_btn)
+    override fun onResume() {
+        super.onResume()
+        updateTransactionsList()
     }
 }

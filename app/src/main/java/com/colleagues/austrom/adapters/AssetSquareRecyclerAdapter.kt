@@ -13,15 +13,9 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Asset
 
-class AssetSquareRecyclerAdapter (private val assets: MutableList<Asset>,
-                                  private val activity: AppCompatActivity,
-                                  private val receiver: IDialogInitiator? = null) : RecyclerView.Adapter<AssetSquareRecyclerAdapter.AssetSquareViewHolder>(){
-    var selectedAsset: Asset? = null
-    var holderList = mutableListOf<AssetSquareViewHolder>()
-
+class AssetSquareRecyclerAdapter (private val assets: MutableList<Asset>, private val activity: AppCompatActivity) : RecyclerView.Adapter<AssetSquareRecyclerAdapter.AssetSquareViewHolder>(){
     class AssetSquareViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val assetHolder: CardView = itemView.findViewById(R.id.assqitem_assetHolder_crv)
         val assetName: TextView = itemView.findViewById(R.id.assqitem_assetName_txt)
@@ -29,14 +23,13 @@ class AssetSquareRecyclerAdapter (private val assets: MutableList<Asset>,
         val assetOwner: TextView = itemView.findViewById(R.id.assqitem_assetOwner_txt)
         val assetSelectionMarker: ImageView = itemView.findViewById(R.id.assqitem_assetSelectionMarker_btn)
     }
+    private var returnClickedItem: (Asset)->Unit = {}
+    fun setOnItemClickListener(l: ((Asset)->Unit)) { returnClickedItem = l }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AssetSquareViewHolder { return AssetSquareViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_asset_square,parent,false))  }
+    override fun getItemCount(): Int { return assets.size }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AssetSquareViewHolder {
-        return AssetSquareViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_asset_square,parent,false))
-    }
-
-    override fun getItemCount(): Int {
-        return assets.size
-    }
+    var selectedAsset: Asset? = null
+    var holderList = mutableListOf<AssetSquareViewHolder>()
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: AssetSquareViewHolder, position: Int) {
