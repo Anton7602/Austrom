@@ -19,7 +19,7 @@ import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionValidationType
 
-class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<Transaction>, private val activity: AppCompatActivity, private val isShowingActionButtons: Boolean = false)  : RecyclerView.Adapter<TransactionExtendedRecyclerAdapter.TransactionExtendedViewHolder>(), IDialogInitiator {
+class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<Transaction>, private val activity: AppCompatActivity, private val isShowingActionButtons: Boolean = false)  : RecyclerView.Adapter<TransactionExtendedRecyclerAdapter.TransactionExtendedViewHolder>() {
     class TransactionExtendedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val primaryParticipant: TextView = itemView.findViewById(R.id.tritemext_targetName_txt)
         val amount: TextView = itemView.findViewById(R.id.tritemext_amount_txt)
@@ -134,12 +134,21 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
             this.notifyItemRemoved(index)
             //receiver?.receiveValue(transaction.transactionId, "Transaction Imported")
         }
-        holder.editButton.setOnClickListener {
-            ImportTransactionDialogFragment(transaction, transactions, activity, this).show(activity.supportFragmentManager, "Import Linking Dialog" )
-        }
+        holder.editButton.setOnClickListener { launchImportTransactionDialog(transaction) }
         holder.acceptButton.setOnClickListener {
             submitTransaction(transaction, dbProvider)
         }
+    }
+
+    private fun launchImportTransactionDialog(selectedTransaction: Transaction) {
+        val dialog = ImportTransactionDialogFragment(selectedTransaction, transactions, activity)
+        dialog.setOnDialogResultListener { affectedTransactions ->
+            affectedTransactions.forEach { transaction ->
+                val index = transactions.indexOf(transaction)
+                this.notifyItemChanged(index)
+            }
+        }
+        dialog.show(activity.supportFragmentManager, "Import Linking Dialog" )
     }
 
     private fun submitTransaction(transaction: Transaction, dbProvider: LocalDatabaseProvider) {
@@ -175,14 +184,5 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         transactions.removeIf { transaction -> !transaction.isValid() }
         this.notifyDataSetChanged()
         //receiver?.receiveValue("", "All Invalid Transactions Removed")
-    }
-
-    override fun receiveValue(value: String, valueType: String) {
-        val index = value.toInt()
-        if (index<0|| index>this.transactions.size) {
-            //receiver?.receiveValue("", "Transaction Changed")
-        } else {
-            this.notifyItemChanged(index)
-        }
     }
 }

@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.LanguageRecyclerAdapter
-import com.colleagues.austrom.interfaces.IDialogInitiator
-import com.colleagues.austrom.models.Transaction
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.Locale
 

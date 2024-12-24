@@ -7,15 +7,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.cardview.widget.CardView
-import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
-import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 import com.colleagues.austrom.models.AssetValidationType
-import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.InvalidAssetException
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip

@@ -8,11 +8,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
-import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.colleagues.austrom.R
-import com.colleagues.austrom.interfaces.IDialogInitiator
 
 class DeletionConfirmationDialogFragment(private var message: String? = null, private var titleAccept: String? = null,  private var titleDecline: String? = null) : DialogFragment() {
     fun setOnDialogResultListener(l: ((Boolean)->Unit)) { returnResult = l }

@@ -1,23 +1,15 @@
 package com.colleagues.austrom.fragments
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.ImportParametersActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.views.SettingsButtonView
-import com.opencsv.CSVReader
-import java.io.InputStreamReader
-
 
 class ImportFragment : Fragment(R.layout.fragment_import) {
     //region Binding

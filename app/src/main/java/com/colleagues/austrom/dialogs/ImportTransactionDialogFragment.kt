@@ -17,7 +17,6 @@ import androidx.fragment.app.DialogFragment
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryArrayAdapter
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.InvalidTransactionException
 import com.colleagues.austrom.models.Transaction

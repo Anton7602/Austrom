@@ -12,12 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryRecyclerAdapter
-import com.colleagues.austrom.interfaces.IDialogInitiator
-import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
-import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.coroutines.newFixedThreadPoolContext
 
 class CategoryControlDialogFragment : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_category_control, container, false) }

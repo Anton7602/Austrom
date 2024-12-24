@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CurrencyRecyclerAdapter
-import com.colleagues.austrom.interfaces.IDialogInitiator
-import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

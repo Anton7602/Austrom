@@ -121,8 +121,8 @@ class TransactionPropertiesActivity : AppCompatActivity() {
         setUpFragment()
 
         backButton.setOnClickListener { this.finish() }
-        deleteButton.setOnClickListener { DeletionConfirmationDialogFragment(this).show(supportFragmentManager, "Delete Confirmation Dialog" ) }
-        addPhoto.setOnClickListener {ImageSelectionDialogFragment(transaction, this).show(supportFragmentManager, "ImageSelectionDialog") }
+        deleteButton.setOnClickListener { launchDeletionConfirmationDialog() }
+        addPhoto.setOnClickListener { launchImageSelectionDialog() }
         comment.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 transaction.comment = comment.text.toString()
@@ -130,6 +130,23 @@ class TransactionPropertiesActivity : AppCompatActivity() {
                 dbProvider.updateTransaction(transaction)
             }
         }
+    }
+
+    private fun launchImageSelectionDialog() {
+        val dialog = ImageSelectionDialogFragment(transaction)
+        dialog.setOnDialogResultListener { isImageSelected -> if (isImageSelected) { setUpAttachedImage() }}
+        dialog.show(supportFragmentManager, "ImageSelectionDialog")
+    }
+
+    private fun launchDeletionConfirmationDialog() {
+        val dialog = DeletionConfirmationDialogFragment()
+        dialog.setOnDialogResultListener { isConfirmed ->
+            if (isConfirmed) {
+                transaction.cancel(LocalDatabaseProvider(this))
+                this.finish()
+            }
+        }
+        dialog.show(supportFragmentManager, "Delete Confirmation Dialog")
     }
 
     fun updateUnallocatedSum(addedValue: Double = 0.0): Double {

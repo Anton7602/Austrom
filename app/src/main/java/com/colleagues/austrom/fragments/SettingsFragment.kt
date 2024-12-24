@@ -14,6 +14,7 @@ import com.colleagues.austrom.dialogs.LanguageSelectionDialogFragment
 import com.colleagues.austrom.dialogs.QuickAccessPinDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
+import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.SettingsButtonView
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
@@ -73,7 +74,14 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     private fun launchCategoryControlDialog() {
         val dialog = CategoryControlDialogFragment()
-        dialog.setOnDialogResultListener { category -> categorySetting.setValueText(updateCategoriesListLine()) }
+        dialog.setOnDialogResultListener { category ->
+            when (category.transactionType) {
+                TransactionType.INCOME -> AustromApplication.activeIncomeCategories[category.categoryId] = category
+                TransactionType.EXPENSE -> AustromApplication.activeExpenseCategories[category.categoryId] = category
+                else -> {}
+            }
+            categorySetting.setValueText(updateCategoriesListLine())
+        }
         dialog.show(requireActivity().supportFragmentManager, "Category Control Dialog")
     }
 

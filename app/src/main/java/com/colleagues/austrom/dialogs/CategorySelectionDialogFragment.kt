@@ -8,12 +8,13 @@ import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryRecyclerAdapter
-import com.colleagues.austrom.interfaces.IDialogInitiator
+import com.colleagues.austrom.adapters.CurrencyRecyclerAdapter
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -44,17 +45,17 @@ class CategorySelectionDialogFragment(private val transactionType: TransactionTy
         searchFieldHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
         declineButton.setOnClickListener { this.dismiss() }
         setUpRecyclerViews()
+        searchField.addTextChangedListener { filterCurrenciesList(searchField.text.toString()) }
+    }
 
-
-//        searchField.addTextChangedListener {
-//            categoryHolder.adapter = if (searchField.text.isNotEmpty()) {
-//                CategoryRecyclerAdapter(
-//                    AustromApplication.activeCurrencies.filter { entry -> entry.value.name.contains(searchField.text, ignoreCase = true)},
-//                    this, receiver, requireActivity() as AppCompatActivity, false, isSortingByBaseCurrencies = false)
-//            } else {
-//                CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, this, receiver, requireActivity() as AppCompatActivity, true, true)
-//            }
-//        }
+    private fun filterCurrenciesList(searchText: String) {
+        val adapter = if (searchText.isNotEmpty()) {
+            CategoryRecyclerAdapter(AustromApplication.activeExpenseCategories.values.filter { l -> l.name.contains(searchText) }.toMutableList(), requireActivity() as AppCompatActivity,  false, false)
+        } else {
+            CategoryRecyclerAdapter(AustromApplication.activeExpenseCategories.values.toMutableList(), requireActivity() as AppCompatActivity,  false, false)
+        }
+        adapter.setOnItemClickListener{currency -> returnResult(currency); dismiss() }
+        categoryHolder.adapter = adapter
     }
 
     private fun setUpRecyclerViews() {

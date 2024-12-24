@@ -1,30 +1,19 @@
 package com.colleagues.austrom.dialogs
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryIconRecyclerAdapter
-import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IRemoteDatabaseProvider
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.managers.Icon
 import com.colleagues.austrom.managers.IconManager
-import com.colleagues.austrom.models.Currency
-import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 
 class IconSelectionDialogFragment(private var selectedIcon: Icon? = null) : BottomSheetDialogFragment(){
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_icon_selection, container, false) }

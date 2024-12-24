@@ -382,4 +382,6 @@
     <string name="suspicious">Подозрительных</string>
     <string name="new_transaction">Новая Транзакция</string>
     <string name="transaction_amount">Сумма Транзакции</string>
+    <string name="my_currencies">Мои Валюты</string>
+    <string name="category_selection">Выбор Категории</string>
 </resources>

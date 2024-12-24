@@ -44,7 +44,9 @@ class CategoryRecyclerAdapter(private val categories: MutableList<Category>, pri
                 }
             }
         } else {
-            returnClickedItem(category)
+            holder.categoryHolder.setOnClickListener {
+                returnClickedItem(category)
+            }
         }
     }
 }

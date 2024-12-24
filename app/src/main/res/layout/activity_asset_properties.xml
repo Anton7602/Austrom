@@ -5,19 +5,17 @@
     android:id="@+id/asdet_mainHolder_cly"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
+    android:background="@color/backgroundMain"
     tools:context=".AssetPropertiesActivity">
 
     <ImageButton
         android:id="@+id/asdet_back_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
         android:contentDescription="@string/back_button"
-        android:padding="8dp"
+        style="@style/BackButtonStyle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_navigation_back_temp" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageButton
         android:id="@+id/asdet_remove_btn"
@@ -141,6 +139,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/is_primary_payment_method"
+        android:textColor="@color/primaryTextColor"
         app:layout_constraintEnd_toStartOf="@+id/asdet_isPrivate_chb"
         app:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd"
         app:layout_constraintTop_toBottomOf="@+id/asdet_assetCard_crd" />
@@ -150,6 +149,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/privateAsset"
+        android:textColor="@color/primaryTextColor"
         app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
         app:layout_constraintTop_toTopOf="@+id/asdet_isPrimary_chb" />
 
@@ -170,21 +170,12 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView14"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        app:cardBackgroundColor="@color/navigationBarColor"
-        app:cardElevation="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.cardview.widget.CardView
         android:id="@+id/cardView10"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="-20dp"
-        app:cardBackgroundColor="@color/backgroundMain"
+        android:background="@color/backgroundText"
+        app:cardBackgroundColor="@color/transparent"
         app:cardCornerRadius="20dp"
         app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"

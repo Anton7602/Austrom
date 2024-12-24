@@ -24,17 +24,28 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
 import com.colleagues.austrom.R
-import com.colleagues.austrom.interfaces.IDialogInitiator
 import com.colleagues.austrom.models.Transaction
 import java.io.File
 
-class ImageSelectionDialogFragment(private val transaction: Transaction, private val receiver: IDialogInitiator) : DialogFragment() {
+class ImageSelectionDialogFragment(private val transaction: Transaction) : DialogFragment() {
+    fun setOnDialogResultListener(l: (Boolean)->Unit) { returnResult = l }
+    private var returnResult: (Boolean)->Unit = {}
+    //region Binding
     private lateinit var closeButton: ImageButton
     private lateinit var makePhotoButton: Button
     private lateinit var choosePhotoButton: Button
     private lateinit var imageHolder: ImageView
     private lateinit var messageText: TextView
     private lateinit var imageUri: Uri
+    private fun bindViews(view: View) {
+        makePhotoButton = view.findViewById(R.id.imsedial_fromCamera_btn)
+        choosePhotoButton = view.findViewById(R.id.imsedial_fromGallery_btn)
+        imageHolder = view.findViewById(R.id.imsedial_imageHolder_img)
+        messageText = view.findViewById(R.id.imsedial_noImageMessage_txt)
+        closeButton = view.findViewById(R.id.imsedial_close_btn)
+    }
+    //
+
     private val cameraRequestCode = 100
     private val galleryRequestCode = 101
     private val requestPermissionsCustom = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -51,7 +62,7 @@ class ImageSelectionDialogFragment(private val transaction: Transaction, private
             imageHolder.setImageURI(uri)
             messageText.visibility = View.GONE
             imageHolder.visibility = View.VISIBLE
-            receiver.receiveValue("true", "ImageUpdate")
+            returnResult(true)
         }
     }
     private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
@@ -60,7 +71,7 @@ class ImageSelectionDialogFragment(private val transaction: Transaction, private
             imageHolder.setImageURI(imageUri)
             messageText.visibility = View.GONE
             imageHolder.visibility = View.VISIBLE
-            receiver.receiveValue("true", "ImageUpdate")
+            returnResult(true)
         }
     }
 
@@ -159,15 +170,6 @@ class ImageSelectionDialogFragment(private val transaction: Transaction, private
             inputStream?.close()
             outputStream?.close()
         }
-    }
-
-
-    private fun bindViews(view: View) {
-        makePhotoButton = view.findViewById(R.id.imsedial_fromCamera_btn)
-        choosePhotoButton = view.findViewById(R.id.imsedial_fromGallery_btn)
-        imageHolder = view.findViewById(R.id.imsedial_imageHolder_img)
-        messageText = view.findViewById(R.id.imsedial_noImageMessage_txt)
-        closeButton = view.findViewById(R.id.imsedial_close_btn)
     }
 
     @Deprecated("Deprecated in Java")

@@ -52,6 +52,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        style="@style/DefaultTextInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/catcr_categoryIcon_img">
@@ -62,7 +63,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/category_name"
             android:textAppearance="@style/PrimaryCardText"
-            android:textColor="@color/primaryTextColor"/>
+            android:textColor="@color/primaryTextColor"
+            style="@style/DefaultEditText"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 

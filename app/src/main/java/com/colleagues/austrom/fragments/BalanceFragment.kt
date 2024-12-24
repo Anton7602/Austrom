@@ -13,7 +13,6 @@ import com.colleagues.austrom.AssetPropertiesActivity
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.AssetGroupRecyclerAdapter
-import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetCreationDialogFragment
 import com.colleagues.austrom.dialogs.AssetFilter

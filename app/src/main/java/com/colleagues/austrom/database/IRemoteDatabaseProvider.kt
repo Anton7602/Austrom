@@ -1,9 +1,7 @@
 package com.colleagues.austrom.database
 
-import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Currency
-import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.User
 
 interface IRemoteDatabaseProvider {
