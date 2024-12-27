@@ -24,4 +24,11 @@
     <color name="primaryTextColor">#FFFFFFFF</color>
     <color name="secondaryTextColor">#FF6F737E</color>
     <color name="cardBorderStrokeColor">#05FFFFFF</color>
+
+
+    <color name="diagramColor1">#E480F4</color>
+    <color name="diagramColor2">#6CC3F3</color>
+    <color name="diagramColor3">#7167ED</color>
+    <color name="diagramColor4">#D9455F</color>
+    <color name="diagramColor5">#6054EA</color>
 </resources>
