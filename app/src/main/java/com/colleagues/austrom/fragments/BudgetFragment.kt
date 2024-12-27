@@ -13,6 +13,7 @@ import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.views.PieChartDiagramView
 import java.util.Dictionary
+import kotlin.math.absoluteValue
 
 class BudgetFragment : Fragment(R.layout.fragment_budget) {
     private lateinit var budgetHolder: ConstraintLayout
@@ -51,13 +52,15 @@ class BudgetFragment : Fragment(R.layout.fragment_budget) {
         val dataSet = mutableListOf<Pair<Int, String>>()
         transactions.forEach { transaction ->
             if (transactionsByCategories.containsKey(transaction.categoryId)) {
-                transactionsByCategories[transaction.categoryId] = transactionsByCategories[transaction.categoryId]!! +  transaction.amount
+                transactionsByCategories[transaction.categoryId] = transactionsByCategories[transaction.categoryId]!! +  transaction.amount.absoluteValue
             } else {
-                transactionsByCategories[transaction.categoryId] = transaction.amount
+                transactionsByCategories[transaction.categoryId] = transaction.amount.absoluteValue
             }
         }
         transactionsByCategories.forEach { (categoryId, transactionsSum) ->
-            dataSet.add(Pair(transactionsSum.toInt(), AustromApplication.activeExpenseCategories[categoryId]!!.name))
+            if (AustromApplication.activeExpenseCategories.containsKey(categoryId)) {
+                dataSet.add(Pair(transactionsSum.toInt(), AustromApplication.activeExpenseCategories[categoryId]!!.name))
+            }
         }
         return dataSet
     }
