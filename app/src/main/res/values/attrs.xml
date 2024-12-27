@@ -31,7 +31,6 @@
     </declare-styleable>
 
     <declare-styleable name="PieChartDiagramView">
-        <attr name="pieChartColors" format="reference"/>
         <attr name="pieChartMarginTextFirst" format="dimension"/>
         <attr name="pieChartMarginTextSecond" format="dimension"/>
         <attr name="pieChartMarginTextThird" format="dimension"/>

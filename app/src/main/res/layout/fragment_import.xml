@@ -26,6 +26,13 @@
         app:secondaryText=".csv"
         app:settingIcon="@drawable/ic_navigation_importfromfile" />
 
+    <com.colleagues.austrom.views.SettingsButtonView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:primaryText="Operation Log"
+        app:secondaryText="History of imports"
+        app:settingIcon="@drawable/ic_navigation_operation_log" />
+
     <TextView
         android:id="@+id/textView28"
         android:layout_width="match_parent"
@@ -35,4 +42,11 @@
         android:text="@string/export_operations"
         android:textColor="@color/dark_grey"
         android:textSize="16sp" />
+
+    <com.colleagues.austrom.views.SettingsButtonView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:primaryText="Export to CSV file"
+        app:secondaryText=".csv"
+        app:settingIcon="@drawable/ic_navigation_exporttofile" />
 </LinearLayout>

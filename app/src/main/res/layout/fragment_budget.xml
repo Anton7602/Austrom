@@ -6,15 +6,28 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundMain">
 
-
-    <FrameLayout
-        android:id="@+id/bud_chartHolder_fly"
+    <com.colleagues.austrom.views.PieChartDiagramView
+        android:id="@+id/bud_chart_pch"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintBottom_toTopOf="@+id/guideline35"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:pieChartCircleSectionSpace="2"
+        app:pieChartCircleStrokeWidth="6dp"
+        app:pieChartTextAmount="@string/amount"
+        app:pieChartTextAmountColor="@color/primaryTextColor"
+        app:pieChartTextDescriptionColor="@color/secondaryTextColor"
+        app:pieChartTextDescriptionSize="14sp"
+        app:pieChartTextNumberColor="@color/primaryTextColor"
+        app:pieChartTextNumberSize="16sp" />
 
-    </FrameLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline35"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.4" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

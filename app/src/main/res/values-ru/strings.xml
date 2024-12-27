@@ -384,4 +384,5 @@
     <string name="transaction_amount">Сумма Транзакции</string>
     <string name="my_currencies">Мои Валюты</string>
     <string name="category_selection">Выбор Категории</string>
+    <string name="icon_selection">Выбор Иконки</string>
 </resources>

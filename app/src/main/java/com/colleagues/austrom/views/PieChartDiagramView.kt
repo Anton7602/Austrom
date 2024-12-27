@@ -19,10 +19,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.dpToPx
 import com.colleagues.austrom.extensions.draw
 import com.colleagues.austrom.extensions.spToPx
+import com.colleagues.austrom.extensions.toMoneyFormat
 
 class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): View(context, attrs, defStyleAttr) {
     data class PieChartArc(var percentOfCircle: Float = 0F, var percentToStartAt: Float = 0F, var colorOfLine: Int = 0, var stroke: Float = 0F, var paint: Paint = Paint(), var paintRound: Boolean = true) {
@@ -53,9 +55,8 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
         private const val DEFAULT_MARGIN_TEXT_2 = 10
         private const val DEFAULT_MARGIN_TEXT_3 = 2
         private const val DEFAULT_MARGIN_SMALL_CIRCLE = 12
-        private const val ANALYTICAL_PIE_CHART_KEY = "AnalyticalPieChartArrayData"
-        private const val TEXT_WIDTH_PERCENT = 0.40
-        private const val CIRCLE_WIDTH_PERCENT = 0.50
+        private const val TEXT_WIDTH_PERCENT = 0.05
+        private const val CIRCLE_WIDTH_PERCENT = 0.95
         const val DEFAULT_VIEW_SIZE_HEIGHT = 150
         const val DEFAULT_VIEW_SIZE_WIDTH = 250
     }
@@ -85,16 +86,15 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
     private var textAmountXNumber: Float = 0F
     private var textAmountXDescription: Float = 0F
     private var textAmountYDescription: Float = 0F
-    private var totalAmount: Int = 0
+    private var totalAmount: Double = 0.0
     private var pieChartColors: List<Int> = listOf(context.getColor(R.color.diagramColor1), context.getColor(R.color.diagramColor2), context.getColor(R.color.diagramColor3),
         context.getColor(R.color.diagramColor4), context.getColor(R.color.diagramColor5))
     private var percentageCircleList: List<PieChartArc> = listOf()
     private var textRowList: MutableList<StaticLayout> = mutableListOf()
-    private var dataList: List<Pair<Int, String>> = listOf()
+    private var dataList: List<Pair<Double, String>> = listOf()
     private var animationSweepAngle: Int = 0
 
     init {
-        // Задаем базовые значения и конвертируем в px
         var textAmountSize: Float = context.spToPx(22)
         var textNumberSize: Float = context.spToPx(20)
         var textDescriptionSize: Float = context.spToPx(14)
@@ -102,11 +102,9 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
         var textNumberColor: Int = Color.WHITE
         var textDescriptionColor: Int = Color.GRAY
 
-        // Инициализируем поля View, если Attr присутствуют
         if (attrs != null) {
             val typeArray = context.obtainStyledAttributes(attrs, R.styleable.PieChartDiagramView)
 
-            // Секция списка цветов
             //val colorResId = typeArray.getResourceId(R.styleable.PieChartDiagramView_pieChartColors, 0)
             //pieChartColors = typeArray.resources.getStringArray(colorResId).toList()
 
@@ -143,6 +141,11 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
         initPains(descriptionTextPain, textDescriptionSize, textDescriptionColor, true)
     }
 
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        startAnimation()
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
@@ -150,31 +153,50 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
         drawText(canvas)
     }
 
-    fun setChartData(list: List<Pair<Int, String>>) {
+    private fun drawCircle(canvas: Canvas) {
+//        if (animationSweepAngle==0) {
+//            canvas.drawArc(circleRect, 0F, 359F, false ,descriptionTextPain)
+//        }
+        for(percent in percentageCircleList) {
+            if (animationSweepAngle > percent.percentToStartAt + percent.percentOfCircle){
+                canvas.drawArc(circleRect, percent.percentToStartAt, percent.percentOfCircle, false, percent.paint)
+            } else if (animationSweepAngle > percent.percentToStartAt) {
+                canvas.drawArc(circleRect, percent.percentToStartAt, animationSweepAngle - percent.percentToStartAt, false, percent.paint)
+            }
+        }
+    }
+
+    private fun drawText(canvas: Canvas) {
+        canvas.drawText(totalAmount.toMoneyFormat()+" "+AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]?.symbol,
+            textAmountXNumber, textAmountY, amountTextPaint)
+        canvas.drawText(textAmountStr, textAmountXDescription, textAmountYDescription, descriptionTextPain)
+    }
+
+    fun setChartData(list: List<Pair<Double, String>>) {
         dataList = list
         calculatePercentageOfData()
-
     }
 
     /**
      * Метод заполнения поля [percentageCircleList]
      */
     private fun calculatePercentageOfData() {
-        totalAmount = dataList.fold(0) { res, value -> res + value.first}
+        totalAmount = 0.0
+        dataList.forEach { entry -> totalAmount += entry.first }
 
         var startAt = circleSectionSpace
         percentageCircleList = dataList.mapIndexed { index, pair ->
             var percent = pair.first * 100 / totalAmount.toFloat() - circleSectionSpace
-            percent = if (percent < 0F) 0F else percent
+            percent = if (percent < 0.0) 0.0 else percent
 
             val resultModel = PieChartArc(
-                percentOfCircle = percent,
+                percentOfCircle = percent.toFloat(),
                 percentToStartAt = startAt,
                 colorOfLine = pieChartColors[index % pieChartColors.size],
                 stroke = circleStrokeWidth,
                 paintRound = circlePaintRoundSize
             )
-            if (percent != 0F) startAt += percent + circleSectionSpace
+            if (percent != 0.0) startAt += percent.toFloat() + circleSectionSpace
             resultModel
         }
     }
@@ -258,12 +280,13 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
     private fun calculateViewHeight(heightMeasureSpec: Int, textWidth: Int): Int {
         // Получаем высоту, которую нам предлагает parent layout
         val initSizeHeight = resolveDefaultSize(heightMeasureSpec, DEFAULT_VIEW_SIZE_HEIGHT)
-        // Высчитываем высоту текста с учетом отступов
-        textHeight = (dataList.size * marginText + getTextViewHeight(textWidth)).toInt()
-
-        // Добавляем к значению высоты вертикальные padding View
-        val textHeightWithPadding = textHeight + paddingTop + paddingBottom
-        return if (textHeightWithPadding > initSizeHeight) textHeightWithPadding else initSizeHeight
+//        // Высчитываем высоту текста с учетом отступов
+//        textHeight = (dataList.size * marginText + getTextViewHeight(textWidth)).toInt()
+//
+//        // Добавляем к значению высоты вертикальные padding View
+//        val textHeightWithPadding = textHeight + paddingTop + paddingBottom
+        //return if (textHeightWithPadding > initSizeHeight) textHeightWithPadding else initSizeHeight
+        return initSizeHeight
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -285,40 +308,23 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
         textStartY = initSizeHeight.toFloat() / 2 - textHeight / 2
 
         calculateCircleRadius(initSizeWidth, initSizeHeight)
-
         setMeasuredDimension(initSizeWidth, initSizeHeight)
     }
 
     private fun calculateCircleRadius(width: Int, height: Int) {
-
-        // Рассчитываем ширину, которую будет занимать диаграмма
-        val circleViewWidth = (width * CIRCLE_WIDTH_PERCENT)
-        // Высчитываем радиус круга диаграммы
-        circleRadius = if (circleViewWidth > height) {
-            (height.toFloat() - circlePadding) / 2
-        } else {
-            circleViewWidth.toFloat() / 2
-        }
-
-        // Установка расположения круговой диаграммы на View
+        circleRadius = if (width > height) (height.toFloat() - circlePadding) / 2 else (width.toFloat() - circlePadding) / 2
+        circleCenterX = width/2F
+        circleCenterY = height/2F
         with(circleRect) {
-            left = circlePadding
-            top = height / 2 - circleRadius
-            right = circleRadius * 2 + circlePadding
-            bottom = height / 2 + circleRadius
+            left = circleCenterX-circleRadius
+            top = circleCenterY-circleRadius
+            right = circleCenterX+circleRadius
+            bottom = circleCenterY+circleRadius
         }
-
-        // Координаты центра круговой диаграммы
-        circleCenterX = (circleRadius * 2 + circlePadding + circlePadding) / 2
-        circleCenterY = (height / 2 + circleRadius + (height / 2 - circleRadius)) / 2
 
         textAmountY = circleCenterY
-
         // Создаем контейнер для отображения текста в центре круговой диаграммы
-        val sizeTextAmountNumber = getWidthOfAmountText(
-            totalAmount.toString(),
-            amountTextPaint
-        )
+        val sizeTextAmountNumber = getWidthOfAmountText(totalAmount.toMoneyFormat()+" "+AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]?.symbol, amountTextPaint )
 
         // Расчет координат для отображения текста в центре круговой диаграммы
         textAmountXNumber = circleCenterX -  sizeTextAmountNumber.width() / 2
@@ -330,46 +336,5 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
         val bounds = Rect()
         textPaint.getTextBounds(text, 0, text.length, bounds)
         return bounds
-    }
-
-    private fun drawCircle(canvas: Canvas) {
-        // Проходимся по дугам круга
-        for(percent in percentageCircleList) {
-            // Если процент дуги попадает под угол отрисовки (animationSweepAngle)
-            // Отображаем эту дугу на Canvas
-            if (animationSweepAngle > percent.percentToStartAt + percent.percentOfCircle){
-                canvas.drawArc(circleRect, percent.percentToStartAt, percent.percentOfCircle, false, percent.paint)
-            } else if (animationSweepAngle > percent.percentToStartAt) {
-                canvas.drawArc(circleRect, percent.percentToStartAt, animationSweepAngle - percent.percentToStartAt, false, percent.paint)
-            }
-        }
-    }
-
-    private fun drawText(canvas: Canvas) {
-        // Отслеживаем Y координату при отображении текста
-        var textBuffY = textStartY
-        // Проходимся по каждой строке
-        textRowList.forEachIndexed { index, staticLayout ->
-            // Если это у нас значение данных, то отображаем заполненный круг и текст значения
-            if (index % 2 == 0) {
-                staticLayout.draw(canvas, textStartX + marginSmallCircle + textCircleRadius, textBuffY)
-                canvas.drawCircle(
-                    textStartX + marginSmallCircle / 2,
-                    textBuffY + staticLayout.height / 2 + textCircleRadius / 2,
-                    textCircleRadius,
-                    Paint().apply { color = pieChartColors[(index / 2) % pieChartColors.size] }
-                )
-                // Прибавляем высоту и отступ к координате Y
-                textBuffY += staticLayout.height + marginTextFirst
-            } else {
-                // Отображаем описание значения
-                staticLayout.draw(canvas, textStartX, textBuffY)
-                textBuffY += staticLayout.height + marginTextSecond
-            }
-        }
-
-        // Отображаем текстовый результат в центре круговой диаграммы
-        canvas.drawText(totalAmount.toString(), textAmountXNumber, textAmountY, amountTextPaint)
-        canvas.drawText(textAmountStr, textAmountXDescription, textAmountYDescription, descriptionTextPain)
     }
 }

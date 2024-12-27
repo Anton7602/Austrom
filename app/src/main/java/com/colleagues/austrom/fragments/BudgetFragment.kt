@@ -16,11 +16,9 @@ import java.util.Dictionary
 import kotlin.math.absoluteValue
 
 class BudgetFragment : Fragment(R.layout.fragment_budget) {
-    private lateinit var budgetHolder: ConstraintLayout
-    private lateinit var budgetChartHolder: FrameLayout
+    private lateinit var chart: PieChartDiagramView
     private fun bindViews(view: View) {
-        budgetHolder = view.findViewById(R.id.bud_holder_cly)
-        budgetChartHolder = view.findViewById(R.id.bud_chartHolder_fly)
+        chart = view.findViewById(R.id.bud_chart_pch)
     }
 
 
@@ -32,24 +30,12 @@ class BudgetFragment : Fragment(R.layout.fragment_budget) {
     override fun onStart() {
         super.onStart()
         val dbProvider = LocalDatabaseProvider(requireActivity())
-
-
-        val pieChartView = PieChartDiagramView(requireActivity())
-        val layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        pieChartView.layoutParams = layoutParams
-
-        budgetChartHolder.addView(pieChartView)
-        //requireActivity().setContentView(pieChartView)
-        pieChartView.setChartData(calculateTransactionsSums(dbProvider.getTransactionsOfUser(AustromApplication.appUser!!)))
-        pieChartView.startAnimation()
+        chart.setChartData(calculateTransactionsSums(dbProvider.getTransactionsOfUser(AustromApplication.appUser!!)))
     }
 
-    private fun calculateTransactionsSums(transactions: List<Transaction>) : List<Pair<Int, String>> {
+    private fun calculateTransactionsSums(transactions: List<Transaction>) : List<Pair<Double, String>> {
         val transactionsByCategories = mutableMapOf<String, Double>()
-        val dataSet = mutableListOf<Pair<Int, String>>()
+        val dataSet = mutableListOf<Pair<Double, String>>()
         transactions.forEach { transaction ->
             if (transactionsByCategories.containsKey(transaction.categoryId)) {
                 transactionsByCategories[transaction.categoryId] = transactionsByCategories[transaction.categoryId]!! +  transaction.amount.absoluteValue
@@ -59,7 +45,7 @@ class BudgetFragment : Fragment(R.layout.fragment_budget) {
         }
         transactionsByCategories.forEach { (categoryId, transactionsSum) ->
             if (AustromApplication.activeExpenseCategories.containsKey(categoryId)) {
-                dataSet.add(Pair(transactionsSum.toInt(), AustromApplication.activeExpenseCategories[categoryId]!!.name))
+                dataSet.add(Pair(transactionsSum, AustromApplication.activeExpenseCategories[categoryId]!!.name))
             }
         }
         return dataSet

@@ -45,7 +45,7 @@
                         android:autoSizeTextType="uniform"
                         android:gravity="center_vertical"
                         android:padding="12dp"
-                        android:text="Icon Selection"
+                        android:text="@string/icon_selection"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/icseldial_decline_btn"
                         app:layout_constraintStart_toStartOf="parent"
@@ -79,17 +79,17 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/divider"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/dark_grey"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
-
-            <View
-                android:id="@+id/divider"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:background="@color/dark_grey"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/icseldial_searchHolder_crv" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/icseldial_currencyholder_rcv"

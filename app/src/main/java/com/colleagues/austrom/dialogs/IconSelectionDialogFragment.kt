@@ -23,8 +23,10 @@ class IconSelectionDialogFragment(private var selectedIcon: Icon? = null) : Bott
     private lateinit var dialogHolder: CardView
     private lateinit var closeButton: ImageButton
     private lateinit var iconHolder: RecyclerView
+    private lateinit var searchField: CardView
     private fun bindViews(view: View) {
         dialogHolder = view.findViewById(R.id.icseldial_holder_crv)
+        searchField = view.findViewById(R.id.icseldial_searchHolder_crv)
         closeButton = view.findViewById(R.id.icseldial_decline_btn)
         iconHolder = view.findViewById(R.id.icseldial_currencyholder_rcv)
     }
@@ -35,11 +37,12 @@ class IconSelectionDialogFragment(private var selectedIcon: Icon? = null) : Bott
         bindViews(view)
         setUpRecyclerView()
         closeButton.setOnClickListener { dismiss() }
-        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background)
+        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
+        searchField.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
     }
 
     private fun setUpRecyclerView() {
-        iconHolder.layoutManager = GridLayoutManager(activity, 5, LinearLayoutManager.VERTICAL, false)
+        iconHolder.layoutManager = GridLayoutManager(activity, 6, LinearLayoutManager.VERTICAL, false)
         val adapter = CategoryIconRecyclerAdapter(IconManager().getAllAvailableIcons(),selectedIcon ?: Icon.I0)
         adapter.setOnItemClickListener { icon -> returnResult(icon); }
         iconHolder.adapter = adapter

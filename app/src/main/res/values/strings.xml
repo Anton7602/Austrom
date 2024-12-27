@@ -385,5 +385,6 @@
     <string name="transaction_amount">Transaction Amount</string>
     <string name="my_currencies">My Currencies</string>
     <string name="category_selection">Category Selection</string>
+    <string name="icon_selection">Icon Selection</string>
 
 </resources>
