@@ -26,7 +26,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/decline_red" />
+                app:tint="@color/expenseRed" />
 
             <TextView
                 android:id="@+id/wardial_title_txt"
@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:text="@string/delete"
-                android:textColor="@color/decline_red"
+                android:textColor="@color/expenseRed"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/wardial_cancel_btn" />
 

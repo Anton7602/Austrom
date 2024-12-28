@@ -7,9 +7,6 @@
     <color name="grey">#FFE6E6E6</color>
     <color name="dark_grey">#929191</color>
     <color name="navigationBarColor">#FFF2ECf4</color>
-    <color name="accept_green">#FF00FF00</color>
-    <color name="dark_green">#FF006400</color>
-    <color name="decline_red">#FFFF0000</color>
 
     <color name="backgroundMain">#FF0C0C0C</color>
     <color name="backgroundCard">#FF121212</color>
@@ -24,6 +21,8 @@
     <color name="primaryTextColor">#FFFFFFFF</color>
     <color name="secondaryTextColor">#FF6F737E</color>
     <color name="cardBorderStrokeColor">#05FFFFFF</color>
+    <color name="selectionColor">#FF0d99ff</color>
+    <color name="confirmationColor">#FF0d99ff</color>
 
 
     <color name="diagramColor1">#E480F4</color>

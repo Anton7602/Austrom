@@ -162,6 +162,7 @@
                         android:layout_height="wrap_content"
                         android:text="RUB"
                         android:textSize="10sp"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/asitem_owner_txt"
                         app:layout_constraintEnd_toEndOf="@+id/asitem_currencySymbol_txt"
                         app:layout_constraintTop_toTopOf="@+id/asitem_owner_txt"
@@ -174,10 +175,28 @@
                         android:layout_marginEnd="4dp"
                         android:text="100 000.00"
                         android:textSize="10sp"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/asitem_baseCurrencySymbol_txt"
                         app:layout_constraintEnd_toStartOf="@+id/asitem_baseCurrencySymbol_txt"
                         app:layout_constraintTop_toTopOf="@+id/asitem_baseCurrencySymbol_txt"
                         tools:ignore="HardcodedText" />
+
+                    <com.colleagues.austrom.views.MoneyFormatTextView
+                        android:id="@+id/moneyFormatTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginEnd="8dp"
+                        app:amountColor="@color/black"
+                        app:currencyColor="@color/secondaryTextColor"
+                        app:currencyMargin="4dp"
+                        app:currencyTextSizePercent="1"
+                        app:defaultAmount="1111"
+                        app:horizontalAlignment="right"
+                        app:layout_constraintBottom_toBottomOf="@+id/asitem_owner_txt"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/asitem_owner_txt"
+                        app:layout_constraintTop_toTopOf="@+id/asitem_owner_txt"
+                        app:moneyPadding="0dp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 

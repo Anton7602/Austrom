@@ -27,7 +27,7 @@
         android:src="@drawable/ic_navigation_delete_temp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/decline_red" />
+        app:tint="@color/expenseRed" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/asdet_assetCard_crd"

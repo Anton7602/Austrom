@@ -48,4 +48,25 @@
         <attr name="pieChartTextDescriptionColor" format="color"/>
         <attr name="pieChartTextAmount" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="MoneyFormatTextView">
+        <attr name="moneyPadding" format="dimension"/>
+        <attr name="amountSize" format="dimension"/>
+        <attr name="currencySize" format="dimension"/>
+        <attr name="currencyMargin" format="dimension"/>
+        <attr name="amountColor" format="color"/>
+        <attr name="currencyColor" format="color"/>
+        <attr name="defaultAmount" format="float"/>
+        <attr name="currencyTextSizePercent" format="float"/>
+        <attr name="horizontalAlignment" format="enum">
+            <enum name="left" value="0"/>
+            <enum name="center" value="1"/>
+            <enum name="right" value="2"/>
+        </attr>
+        <attr name="verticalAlignment" format="enum">
+            <enum name="top" value="0"/>
+            <enum name="center" value="1"/>
+            <enum name="bottom" value="2"/>
+        </attr>
+    </declare-styleable>
 </resources>

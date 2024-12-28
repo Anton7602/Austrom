@@ -19,19 +19,18 @@ import com.colleagues.austrom.dialogs.AssetFilter
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
+import com.colleagues.austrom.views.MoneyFormatTextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class BalanceFragment : Fragment(R.layout.fragment_balance) {
     //region Binding
     private lateinit var assetHolderRecyclerView: RecyclerView
     private lateinit var addNewAssetButton: FloatingActionButton
-    private lateinit var totalAmountText: TextView
-    private lateinit var baseCurrencySymbolText: TextView
+    private lateinit var totalAmountText: MoneyFormatTextView
     private fun bindViews(view: View) {
         assetHolderRecyclerView = view.findViewById(R.id.bal_assetHolder_rcv)
         addNewAssetButton = view.findViewById(R.id.bal_addNew_fab)
-        totalAmountText = view.findViewById(R.id.bal_totalAmount_txt)
-        baseCurrencySymbolText = view.findViewById(R.id.bal_baseCurrencySymbol_txt)
+        totalAmountText = view.findViewById(R.id.bal_totalAmout_mtxt)
     }
     //endregion
     var activeFilter: AssetFilter? = null
@@ -81,7 +80,6 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
 
     @SuppressLint("SetTextI18n")
     private fun calculateTotalAmount(assetList: MutableMap<String, Asset>) {
-        baseCurrencySymbolText.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         var totalAmount = 0.0
         for (asset in assetList) {
             totalAmount += if (asset.value.currencyCode==AustromApplication.appUser?.baseCurrencyCode) {
@@ -90,8 +88,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
                 asset.value.amount/(AustromApplication.activeCurrencies[asset.value.currencyCode]?.exchangeRate ?: 1.0)
             }
         }
-        //Temporary fix - both sum and currency are baked into one string to properly autoscale font. Split it in free time
-        totalAmountText.text = "${totalAmount.toMoneyFormat()} ${AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol}"
+        totalAmountText.setValue(totalAmount)
     }
 
     @SuppressLint("NotifyDataSetChanged")

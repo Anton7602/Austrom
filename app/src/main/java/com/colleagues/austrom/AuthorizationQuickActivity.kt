@@ -153,17 +153,17 @@ class AuthorizationQuickActivity : AppCompatActivity() {
         if (buttonPressed.id == R.id.qauth_keyboard_bio_btn) { initializeBiometricAuthentication()  }
         if (input.length==4) {
             if (input == pin) {
-                pinDot1.setColorFilter(ContextCompat.getColor(this, R.color.dark_green))
-                pinDot2.setColorFilter(ContextCompat.getColor(this, R.color.dark_green))
-                pinDot3.setColorFilter(ContextCompat.getColor(this, R.color.dark_green))
-                pinDot4.setColorFilter(ContextCompat.getColor(this, R.color.dark_green))
+                pinDot1.setColorFilter(ContextCompat.getColor(this, R.color.incomeGreen))
+                pinDot2.setColorFilter(ContextCompat.getColor(this, R.color.incomeGreen))
+                pinDot3.setColorFilter(ContextCompat.getColor(this, R.color.incomeGreen))
+                pinDot4.setColorFilter(ContextCompat.getColor(this, R.color.incomeGreen))
                 launchMainActivity()
                 this.finish()
             } else {
-                pinDot1.setColorFilter(ContextCompat.getColor(this, R.color.decline_red))
-                pinDot2.setColorFilter(ContextCompat.getColor(this, R.color.decline_red))
-                pinDot3.setColorFilter(ContextCompat.getColor(this, R.color.decline_red))
-                pinDot4.setColorFilter(ContextCompat.getColor(this, R.color.decline_red))
+                pinDot1.setColorFilter(ContextCompat.getColor(this, R.color.expenseRed))
+                pinDot2.setColorFilter(ContextCompat.getColor(this, R.color.expenseRed))
+                pinDot3.setColorFilter(ContextCompat.getColor(this, R.color.expenseRed))
+                pinDot4.setColorFilter(ContextCompat.getColor(this, R.color.expenseRed))
             }
         } else {
             pinDot1.setColorFilter(ContextCompat.getColor(this, if (input.isNotEmpty()) {R.color.blue} else {R.color.dark_grey}))
