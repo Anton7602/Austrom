@@ -386,5 +386,9 @@
     <string name="my_currencies">My Currencies</string>
     <string name="category_selection">Category Selection</string>
     <string name="icon_selection">Icon Selection</string>
+    <string name="new_asset">New Asset</string>
+    <string name="bank">Bank</string>
+    <string name="current_amount">Current Amount</string>
+    <string name="percent">Percent</string>
 
 </resources>

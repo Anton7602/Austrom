@@ -15,14 +15,14 @@ import com.colleagues.austrom.models.Currency
 
 class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): View(context, attrs, defStyleAttr) {
     companion object {
-        const val DEFAULT_VIEW_SIZE_HEIGHT = 20
+        const val DEFAULT_VIEW_SIZE_HEIGHT = 50
     }
 
     private var amountTextSize: Float = 0F
     private var currencyTextSize: Float = 0F
     private var amountMinTextSize: Float = context.spToPx(9)
     private var currencyMinTextSize: Float = context.spToPx(6)
-    private var textPadding: Float = context.dpToPx(8)
+    private var textPadding: Float = context.dpToPx(4)
     private var amountToCurrencyMargin: Float = 0F
     private var percentOfCurrencyTextSize: Float = 0.5F
     private var moneyAmount: Double = 0.0
@@ -153,12 +153,10 @@ class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: Att
         return getTextBounds(moneyAmount.toMoneyFormat(), amountTextPaint).height()
     }
 
-    fun setValue(value: Double) {
-        setValue(value, AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode] ?: Currency("USD", "United States Dollar", "$", 0.0))
-    }
-
-    fun setValue(value: Double, currency: Currency) {
+    fun setValue(value: Double) { setValue(value, AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]?.symbol ?: "$") }
+    fun setValue(value: Double, currency: Currency) { setValue(value, currency.symbol) }
+    fun setValue(value:Double, currencySymbol: String) {
         moneyAmount = value
-        currencyCode = currency.symbol
+        currencyCode = currencySymbol
     }
 }

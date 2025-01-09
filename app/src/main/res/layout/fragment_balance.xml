@@ -29,7 +29,8 @@
         app:layout_constraintBottom_toTopOf="@+id/bal_assetHolder_rcv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:moneyPadding="8dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bal_assetHolder_rcv"
@@ -43,18 +44,19 @@
         app:layout_constraintVertical_weight="4"
         tools:listitem="@layout/item_asset_group" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/bal_addNew_fab"
+    <ImageButton
+        android:id="@+id/bal_createNewAsset_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        android:contentDescription="@string/add_new_asset"
-        android:focusable="true"
+        android:layout_height="0dp"
+        android:layout_marginEnd="-2dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/img_add_new_button_background"
+        android:contentDescription="@string/create_transaction"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_navigation_add_temp" />
+        app:srcCompat="@drawable/ic_navigation_add_temp"
+        app:tint="@color/primaryTextColor" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline41"

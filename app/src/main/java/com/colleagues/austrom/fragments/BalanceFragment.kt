@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.colleagues.austrom.AssetCreationActivity
 import com.colleagues.austrom.AssetPropertiesActivity
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
@@ -25,11 +27,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class BalanceFragment : Fragment(R.layout.fragment_balance) {
     //region Binding
     private lateinit var assetHolderRecyclerView: RecyclerView
-    private lateinit var addNewAssetButton: FloatingActionButton
+    private lateinit var addNewAssetButton: ImageButton
     private lateinit var totalAmountText: MoneyFormatTextView
     private fun bindViews(view: View) {
         assetHolderRecyclerView = view.findViewById(R.id.bal_assetHolder_rcv)
-        addNewAssetButton = view.findViewById(R.id.bal_addNew_fab)
+        addNewAssetButton = view.findViewById(R.id.bal_createNewAsset_btn)
         totalAmountText = view.findViewById(R.id.bal_totalAmout_mtxt)
     }
     //endregion
@@ -39,7 +41,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         if (AustromApplication.activeAssets.isEmpty()) { updateAssetsList() }
-        addNewAssetButton.setOnClickListener { AssetCreationDialogFragment(this).show(requireActivity().supportFragmentManager, "Asset Creation Dialog") }
+        addNewAssetButton.setOnClickListener { startActivity(Intent(requireActivity(), AssetCreationActivity::class.java)) }
     }
 
     fun updateAssetsList() {

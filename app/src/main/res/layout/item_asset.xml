@@ -96,17 +96,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline42"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.65" />
+
                     <TextView
                         android:id="@+id/asitem_assetName_txt"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="24dp"
                         android:text="assetName"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@+id/asitem_amount_txt"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline42"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="HardcodedText" />
@@ -118,6 +124,7 @@
                         android:layout_marginEnd="4dp"
                         android:text="1 000.00"
                         android:textAlignment="viewEnd"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/asitem_currencySymbol_txt"
                         app:layout_constraintEnd_toStartOf="@+id/asitem_currencySymbol_txt"
                         app:layout_constraintTop_toTopOf="@+id/asitem_currencySymbol_txt"
@@ -130,6 +137,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:text="$"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="HardcodedText" />
@@ -142,7 +150,7 @@
                         android:layout_marginTop="4dp"
                         android:text="Owner"
                         android:textSize="10sp"
-                        app:layout_constraintEnd_toEndOf="@+id/asitem_assetName_txt"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline42"
                         app:layout_constraintStart_toEndOf="@+id/asitem_ownerIcon_img"
                         app:layout_constraintTop_toBottomOf="@+id/asitem_assetName_txt"
                         tools:ignore="HardcodedText" />
@@ -182,21 +190,38 @@
                         tools:ignore="HardcodedText" />
 
                     <com.colleagues.austrom.views.MoneyFormatTextView
-                        android:id="@+id/moneyFormatTextView"
+                        android:id="@+id/asitem_assetAmount_mtxt"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_marginEnd="8dp"
                         app:amountColor="@color/black"
+                        app:currencyColor="@color/black"
+                        app:currencyTextSizePercent="0.85"
+                        app:defaultAmount="1000000"
+                        app:horizontalAlignment="right"
+                        app:layout_constraintBottom_toBottomOf="@+id/asitem_assetName_txt"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/guideline42"
+                        app:layout_constraintTop_toTopOf="@+id/asitem_assetName_txt"
+                        app:moneyPadding="4dp" />
+
+                    <com.colleagues.austrom.views.MoneyFormatTextView
+                        android:id="@+id/asitem_baseCurrencyAmount_mtxt"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginEnd="8dp"
+                        app:amountColor="@color/secondaryTextColor"
                         app:currencyColor="@color/secondaryTextColor"
                         app:currencyMargin="4dp"
                         app:currencyTextSizePercent="1"
-                        app:defaultAmount="1111"
+                        app:defaultAmount="1234.56"
                         app:horizontalAlignment="right"
                         app:layout_constraintBottom_toBottomOf="@+id/asitem_owner_txt"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/asitem_owner_txt"
+                        app:layout_constraintStart_toStartOf="@+id/guideline42"
                         app:layout_constraintTop_toTopOf="@+id/asitem_owner_txt"
-                        app:moneyPadding="0dp" />
+                        app:moneyPadding="1dp" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 

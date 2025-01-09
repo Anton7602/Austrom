@@ -14,16 +14,15 @@ import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
+import com.colleagues.austrom.views.MoneyFormatTextView
 
 class AssetRecyclerAdapter(private val assets: MutableList<Asset>, private val activity: AppCompatActivity) : RecyclerView.Adapter<AssetRecyclerAdapter.AssetViewHolder>()  {
     class AssetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val assetAmount: MoneyFormatTextView = itemView.findViewById(R.id.asitem_assetAmount_mtxt)
+        val baseAssetAmount: MoneyFormatTextView = itemView.findViewById(R.id.asitem_baseCurrencyAmount_mtxt)
         val assetHolder: CardView = itemView.findViewById(R.id.asitem_assetHolder_crv)
         val assetName: TextView = itemView.findViewById(R.id.asitem_assetName_txt)
         val assetType: TextView = itemView.findViewById(R.id.asitem_assetType_txt)
-        val assetAmount: TextView = itemView.findViewById(R.id.asitem_amount_txt)
-        val currencySymbol: TextView = itemView.findViewById(R.id.asitem_currencySymbol_txt)
-        val assetBaseAmount: TextView = itemView.findViewById(R.id.asitem_baseCurrencyAmount_txt)
-        val assetBaseSymbol: TextView = itemView.findViewById(R.id.asitem_baseCurrencySymbol_txt)
         val assetTypeImg: ImageView = itemView.findViewById(R.id.asitem_assetType_img)
         val assetOwner: TextView = itemView.findViewById(R.id.asitem_owner_txt)
         val assetOwnerIcon: ImageView = itemView.findViewById(R.id.asitem_ownerIcon_img)
@@ -37,14 +36,11 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>, private val a
         val asset = assets.elementAt(position)
         holder.assetName.text = asset.assetName
         holder.assetType.text = asset.assetTypeId.toString()
-        holder.assetAmount.text = asset.amount.toMoneyFormat()
-        holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
+        holder.assetAmount.setValue(asset.amount, AustromApplication.activeCurrencies[asset.currencyCode]?.symbol ?: throw Exception())
         if (asset.currencyCode!=AustromApplication.appUser?.baseCurrencyCode) {
-            holder.assetBaseSymbol.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
-            holder.assetBaseAmount.text = (asset.amount/(AustromApplication.activeCurrencies[asset.currencyCode]?.exchangeRate ?: 0.0)).toMoneyFormat()
+            holder.baseAssetAmount.setValue((asset.amount/(AustromApplication.activeCurrencies[asset.currencyCode]?.exchangeRate ?: 0.0)), AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol ?: throw Exception())
         } else {
-            holder.assetBaseSymbol.visibility = View.GONE
-            holder.assetBaseAmount.visibility = View.GONE
+            holder.baseAssetAmount.visibility = View.GONE
         }
         if (AustromApplication.appUser?.activeBudgetId==null) {
             holder.assetOwnerIcon.visibility = View.GONE
