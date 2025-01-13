@@ -22,6 +22,7 @@ import com.colleagues.austrom.dialogs.CategorySelectionDialogFragment
 import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
+import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
@@ -93,6 +94,8 @@ class TransactionCreationActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
     //endregion
+    private var primarySelectedAsset: Asset? = null
+    private var secondarySelectedAsset: Asset? = null
     private var transactionType: TransactionType = TransactionType.EXPENSE
     private var selectedDate: LocalDate = LocalDate.now()
     private var selectedCategory: Category = AustromApplication.activeExpenseCategories.values.first()
@@ -120,7 +123,7 @@ class TransactionCreationActivity : AppCompatActivity() {
 
         dateSelector.setFieldValue(selectedDate.toDayOfWeekAndShortDateFormat())
         dateSelector.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Choose Transaction Date").setSelection(
+            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.choose_transaction_date)).setSelection(
                 MaterialDatePicker.todayInUtcMilliseconds()).build()
             datePicker.addOnPositiveButtonClickListener { selection ->
                 selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
@@ -136,26 +139,26 @@ class TransactionCreationActivity : AppCompatActivity() {
 
     private fun submitTransaction() {
         val dbProvider = LocalDatabaseProvider(this)
-        if ((sourceHolderRecycler.adapter as AssetSquareRecyclerAdapter).selectedAsset==null) return
+        if (primarySelectedAsset==null) return
         val amount = amountTxt.text.toString().parseToDouble()?.absoluteValue
         if (amount==null || amount==0.0) {
             Toast.makeText(this, "Invalid transaction amount provided", Toast.LENGTH_LONG).show()
             return
         }
         Transaction(
-            assetId = (sourceHolderRecycler.adapter as AssetSquareRecyclerAdapter).selectedAsset!!.assetId,
+            assetId = primarySelectedAsset!!.assetId,
             amount = if (transactionType==TransactionType.INCOME) amount else -amount,
             categoryId = selectedCategory.categoryId,
             transactionDate = selectedDate,
-            transactionName = if (transactionType==TransactionType.TRANSFER) (targetHolderRecycler.adapter as AssetSquareRecyclerAdapter).selectedAsset!!.assetName else transactionNameTxt.text.toString()
+            transactionName = if (transactionType==TransactionType.TRANSFER) secondarySelectedAsset!!.assetName else transactionNameTxt.text.toString()
         ).submit(dbProvider)
         if (transactionType!=TransactionType.TRANSFER) return
         Transaction(
-            assetId = (targetHolderRecycler.adapter as AssetSquareRecyclerAdapter).selectedAsset!!.assetId,
+            assetId = secondarySelectedAsset!!.assetId,
             amount = amount,
             categoryId = selectedCategory.categoryId,
             transactionDate = selectedDate,
-            transactionName = (sourceHolderRecycler.adapter as AssetSquareRecyclerAdapter).selectedAsset!!.assetName
+            transactionName = primarySelectedAsset!!.assetName
         )
     }
 
@@ -201,14 +204,23 @@ class TransactionCreationActivity : AppCompatActivity() {
     }
 
     private fun setUpRecyclerViews() {
+        if (primarySelectedAsset==null) primarySelectedAsset = AustromApplication.activeAssets[AustromApplication.appUser!!.primaryPaymentMethod] ?: AustromApplication.activeAssets.values.toList()[0]
         sourceHolderRecycler.layoutManager = LinearLayoutManager(this, HORIZONTAL,false)
-        val adapterSource = AssetSquareRecyclerAdapter(AustromApplication.activeAssets.values.toMutableList(), this)
-        adapterSource.setOnItemClickListener { asset ->  }
+        val adapterSource = AssetSquareRecyclerAdapter(AustromApplication.activeAssets.values.toMutableList(), this, primarySelectedAsset)
+        adapterSource.setOnItemClickListener { asset ->
+            primarySelectedAsset = asset
+            setUpRecyclerViews()
+        }
+        currencyTxt.text = primarySelectedAsset?.currencyCode
         sourceHolderRecycler.adapter = adapterSource
-
+        val assetList = AustromApplication.activeAssets.values.toMutableList()
+        assetList.remove(primarySelectedAsset)
+        if (secondarySelectedAsset==null || secondarySelectedAsset?.assetId==primarySelectedAsset?.assetId) secondarySelectedAsset = assetList[0]
         targetHolderRecycler.layoutManager = LinearLayoutManager(this, HORIZONTAL, true)
-        val adapterTarget = AssetSquareRecyclerAdapter(AustromApplication.activeAssets.values.toMutableList(), this)
-        adapterTarget.setOnItemClickListener { asset -> }
+        val adapterTarget = AssetSquareRecyclerAdapter(assetList, this, secondarySelectedAsset)
+        adapterTarget.setOnItemClickListener { asset ->
+            secondarySelectedAsset = asset
+        }
         targetHolderRecycler.adapter = adapterTarget
     }
 }

@@ -13,7 +13,7 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Currency
 
-class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>, private var activity: AppCompatActivity, private val isSortingByMyCurrencies: Boolean = true, private val isSortingByBaseCurrencies: Boolean = true): RecyclerView.Adapter<CurrencyRecyclerAdapter.CurrencyViewHolder>() {
+class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>, private var activity: AppCompatActivity, private var selectedCurrency: Currency? = null, private val isSortingByMyCurrencies: Boolean = true, private val isSortingByBaseCurrencies: Boolean = true): RecyclerView.Adapter<CurrencyRecyclerAdapter.CurrencyViewHolder>() {
     class CurrencyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val currencyHolder: CardView = itemView.findViewById(R.id.curit_currencyHolder_crv)
         val currencySymbol: TextView = itemView.findViewById(R.id.curit_currencySymbol_txt)
@@ -33,12 +33,15 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>, pri
     private var baseCurrencyCategoryEndIndex = 0
     private var myCurrencyCategoryEndIndex = 0
 
+
     init {
         if (isSortingByMyCurrencies || isSortingByBaseCurrencies) {
             val resortedCurrencies: MutableMap<String, Currency> = mutableMapOf()
             if (isSortingByBaseCurrencies) {
                 if (currencies[AustromApplication.appUser?.baseCurrencyCode]!=null) {
                     resortedCurrencies[AustromApplication.appUser!!.baseCurrencyCode] = currencies[AustromApplication.appUser?.baseCurrencyCode]!!
+                    baseCurrencyCategoryEndIndex++
+                    myCurrencyCategoryEndIndex++
                 }
                 AustromApplication.activeAssets.values.forEach { asset ->
                     if (currencies[asset.currencyCode]!=null && !resortedCurrencies.containsKey(asset.currencyCode)) {
@@ -77,11 +80,12 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>, pri
         val baseCurrencyCode = AustromApplication.appUser?.baseCurrencyCode
         holder.currencyName.text = currency.name
         holder.currencyCode.text = currency.code
-        holder.selectionMarker.isChecked = (currency.code == baseCurrencyCode)
+        holder.selectionMarker.isChecked = (currency.code == selectedCurrency?.code)
         holder.currencySymbol.text = baseCurrencyCode
         holder.currencyExchangeRate.text = (1/currency.exchangeRate).toMoneyFormat()
 
         val currencyTapOnClickListener = View.OnClickListener { _ ->
+            selectedCurrency = currency
             returnClickedItem(currency)
             holder.selectionMarker.isChecked = true
         }

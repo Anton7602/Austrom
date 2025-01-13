@@ -45,7 +45,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun launchCurrencyDialog() {
-        val dialog = CurrencySelectionDialogFragment()
+        val dialog = CurrencySelectionDialogFragment(AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode])
         dialog.setOnDialogResultListener { currency ->
             (requireActivity().application as AustromApplication).setNewBaseCurrency(currency)
             baseCurrencySetting.setValueText(currency.name)

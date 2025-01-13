@@ -3,24 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/backgroundText">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/assqitem_assetHolder_crv"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_marginHorizontal="8dp"
+        app:cardBackgroundColor="@color/transparent"
         app:cardCornerRadius="20dp"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="w,1.391:1"
+        app:layout_constraintDimensionRatio="w,1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/sh_card_background">
+            android:background="@color/transparent">
 
             <TextView
                 android:id="@+id/assqitem_assetName_txt"
@@ -31,75 +33,58 @@
                 android:fontFamily="@font/dm_sans"
                 android:maxLines="1"
                 android:text="Asset Name"
+                android:textAlignment="center"
                 android:textAppearance="@style/PrimaryCardText"
-                android:textColor="@color/black"
+                android:textColor="@color/primaryTextColor"
                 app:layout_constraintBottom_toTopOf="@+id/guideline26"
                 app:layout_constraintEnd_toStartOf="@+id/guideline27"
                 app:layout_constraintStart_toStartOf="@+id/guideline28"
                 app:layout_constraintTop_toTopOf="@+id/guideline25" />
 
-            <TextView
-                android:id="@+id/assqitem_assetAmount_txt"
+            <com.colleagues.austrom.views.MoneyFormatTextView
+                android:id="@+id/assqitem_assetAmount_mont"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:autoSizeMinTextSize="1sp"
-                android:autoSizeTextType="uniform"
-                android:maxLines="1"
-                android:text="153 829.00 RUB"
-                android:textAppearance="@style/SecondaryCardText"
-                android:textColor="@color/dark_grey"
+                app:amountColor="@color/secondaryTextColor"
+                app:currencyMargin="4dp"
+                app:currencyTextSizePercent="0.9"
+                app:horizontalAlignment="center"
                 app:layout_constraintBottom_toTopOf="@+id/guideline31"
                 app:layout_constraintEnd_toStartOf="@+id/guideline27"
                 app:layout_constraintStart_toStartOf="@+id/guideline28"
                 app:layout_constraintTop_toTopOf="@+id/guideline32" />
 
-            <TextView
-                android:id="@+id/assqitem_assetOwner_txt"
+            <ImageView
+                android:id="@+id/imageView10"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:autoSizeMinTextSize="1sp"
-                android:autoSizeTextType="uniform"
-                android:maxLines="1"
-                android:text="Owner"
-                android:textAppearance="@style/SecondaryCardText"
-                android:textColor="@color/dark_grey"
-                app:layout_constraintBottom_toTopOf="@+id/guideline34"
+                app:layout_constraintBottom_toTopOf="@+id/guideline30"
+                app:layout_constraintDimensionRatio="1.586:1"
                 app:layout_constraintEnd_toStartOf="@+id/guideline27"
                 app:layout_constraintStart_toStartOf="@+id/guideline28"
-                app:layout_constraintTop_toTopOf="@+id/guideline33" />
-
-            <ImageButton
-                android:id="@+id/assqitem_assetSelectionMarker_btn"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@color/transparent"
-                android:padding="2dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline30"
-                app:layout_constraintDimensionRatio="h,1:1"
-                app:layout_constraintStart_toStartOf="@+id/guideline28"
                 app:layout_constraintTop_toTopOf="@+id/guideline29"
-                app:srcCompat="@android:drawable/radiobutton_off_background" />
+                app:srcCompat="@drawable/sh_card_background" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline25"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.4" />
+                app:layout_constraintGuide_percent="0.5" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline26"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.57" />
+                app:layout_constraintGuide_percent="0.72" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline27"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.75" />
+                app:layout_constraintGuide_percent="0.95" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline28"
@@ -113,42 +98,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.10" />
+                app:layout_constraintGuide_percent="0.03" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline30"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.25" />
+                app:layout_constraintGuide_percent="0.42" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline32"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.64" />
+                app:layout_constraintGuide_percent="0.75" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline31"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.77" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline33"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.79" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline34"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.9" />
+                app:layout_constraintGuide_percent="0.97" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

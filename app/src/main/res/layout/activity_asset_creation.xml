@@ -36,13 +36,85 @@
         app:layout_constraintStart_toEndOf="@+id/ascreat_backButton_btn"
         app:layout_constraintTop_toTopOf="@+id/ascreat_backButton_btn" />
 
+    <HorizontalScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView25">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/ascreat_card_chp"
+                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:checkable="true"
+                android:checked="true"
+                android:text="@string/card"
+                android:textAlignment="center"
+                android:textColor="@color/chip_transaction_type_text_color"
+                app:chipBackgroundColor="@color/chip_income_background_color"
+                app:chipCornerRadius="12dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/ascreat_cash_chp"
+                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:checkable="true"
+                android:checked="false"
+                android:text="@string/cash"
+                android:textAlignment="center"
+                android:textColor="@color/chip_transaction_type_text_color"
+                app:chipBackgroundColor="@color/chip_income_background_color"
+                app:chipCornerRadius="12dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/ascreat_deposit_chp"
+                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:checkable="true"
+                android:checked="false"
+                android:text="@string/deposit"
+                android:textAlignment="center"
+                android:textColor="@color/chip_transaction_type_text_color"
+                app:chipBackgroundColor="@color/chip_income_background_color"
+                app:chipCornerRadius="12dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/ascreat_investment_chp"
+                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:checkable="true"
+                android:checked="false"
+                android:text="@string/investment"
+                android:textAlignment="center"
+                android:textColor="@color/chip_transaction_type_text_color"
+                app:chipBackgroundColor="@color/chip_income_background_color"
+                app:chipCornerRadius="12dp" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/ascreat_acceptButton_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView25">
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,26 +123,71 @@
             android:paddingHorizontal="16dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout2"
+                android:id="@+id/ascreat_assetName_til"
                 style="@style/DefaultTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/asset_name">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ascreat_assetName_txt"
                     style="@style/DefaultEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ascreat_currentAmount_til"
+                    style="@style/DefaultTextInputLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="6"
+                    android:hint="@string/current_amount">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ascreat_currentAmount_txt"
+                        style="@style/DefaultEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number|numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/ascreat_currencySymbol_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:autoSizeMaxTextSize="18dp"
+                    android:autoSizeTextType="uniform"
+                    android:background="@drawable/sh_category_deselected"
+                    android:backgroundTint="@color/backgroundText"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="RUB"
+                    android:textAppearance="@style/PrimaryCardText"
+                    app:layout_constraintBottom_toBottomOf="@+id/trcreat_amount_til"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/trcreat_amount_til" />
+            </LinearLayout>
+
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ascreat_percent_til"
                 style="@style/DefaultTextInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="8dp"
-                android:hint="@string/current_amount">
+                android:hint="@string/percent">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ascreat_percent_txt"
                     style="@style/DefaultEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -78,32 +195,51 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ascreat_bank_til"
                 style="@style/DefaultTextInputLayout"
-                android:hint="@string/bank"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginTop="8dp"
-                android:layout_height="match_parent">
+                android:hint="@string/bank">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    style="@style/DefaultEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/DefaultTextInputLayout"
-                android:layout_marginTop="8dp"
-                android:hint="@string/percent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ascreat_bank_txt"
                     style="@style/DefaultEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/ascreat_acceptButton_btn"
+        style="@style/MainActionButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/add_asset"
+        android:textSize="16sp"
+        app:cornerRadius="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="5:1"
+        app:layout_constraintEnd_toStartOf="@+id/guideline44"
+        app:layout_constraintStart_toStartOf="@+id/guideline43"
+        app:strokeColor="@color/incomeGreenBackground" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline43"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline44"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,7 +17,7 @@ import com.colleagues.austrom.adapters.CurrencyRecyclerAdapter
 import com.colleagues.austrom.models.Currency
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class CurrencySelectionDialogFragment: BottomSheetDialogFragment() {
+class CurrencySelectionDialogFragment(private val selectedCurrency: Currency?): BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_currency_selection, container, false) }
     fun setOnDialogResultListener(l: (Currency)->Unit) { returnResult = l }
     private var returnResult: (Currency)->Unit = {}
@@ -47,9 +47,10 @@ class CurrencySelectionDialogFragment: BottomSheetDialogFragment() {
 
     private fun filterCurrenciesList(searchText: String) {
         val adapter = if (searchText.isNotEmpty()) {
-            CurrencyRecyclerAdapter(AustromApplication.activeCurrencies.filter { entry -> entry.value.name.contains(searchText, ignoreCase = true)}, requireActivity() as AppCompatActivity,false, false)
+            CurrencyRecyclerAdapter(AustromApplication.activeCurrencies.filter { entry -> entry.value.name.contains(searchText, ignoreCase = true)}, requireActivity() as AppCompatActivity,
+                selectedCurrency, isSortingByMyCurrencies = false, isSortingByBaseCurrencies = false)
         } else {
-            CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, requireActivity() as AppCompatActivity, true, true)
+            CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, requireActivity() as AppCompatActivity, selectedCurrency)
         }
         adapter.setOnItemClickListener{currency -> returnResult(currency); dismiss() }
         currencyHolder.adapter = adapter
@@ -57,7 +58,7 @@ class CurrencySelectionDialogFragment: BottomSheetDialogFragment() {
 
     private fun setUpRecyclerView() {
         currencyHolder.layoutManager = LinearLayoutManager(activity)
-        val adapter = CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, requireActivity() as AppCompatActivity, true, true)
+        val adapter = CurrencyRecyclerAdapter(AustromApplication.activeCurrencies, requireActivity() as AppCompatActivity, selectedCurrency)
         adapter.setOnItemClickListener { currency -> returnResult(currency); dismiss() }
         currencyHolder.adapter = adapter
     }

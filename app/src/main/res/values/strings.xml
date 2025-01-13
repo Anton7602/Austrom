@@ -390,5 +390,8 @@
     <string name="bank">Bank</string>
     <string name="current_amount">Current Amount</string>
     <string name="percent">Percent</string>
+    <string name="add_asset">Add Asset</string>
+    <string name="deposit">Deposit</string>
+    <string name="choose_transaction_date">Choose Transaction Date</string>
 
 </resources>

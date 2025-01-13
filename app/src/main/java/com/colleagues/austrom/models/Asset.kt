@@ -45,7 +45,7 @@ class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode:
 }
 
 enum class AssetType(val stringResourceId: Int = R.string.unresolved){
-    CARD(R.string.card), CASH(R.string.cash), INVESTMENT(R.string.investment)
+    CARD(R.string.card), CASH(R.string.cash), DEPOSIT(R.string.deposit), INVESTMENT(R.string.investment)
 }
 
 enum class AssetValidationType{
