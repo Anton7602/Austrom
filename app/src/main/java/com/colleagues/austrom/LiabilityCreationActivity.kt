@@ -4,19 +4,15 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
-import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 import com.colleagues.austrom.models.Currency
@@ -24,7 +20,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class AssetCreationActivity : AppCompatActivity() {
+class LiabilityCreationActivity : AppCompatActivity() {
     //region Binding
     private lateinit var backButton: ImageButton
     private lateinit var addAssetButton: Button
@@ -38,25 +34,23 @@ class AssetCreationActivity : AppCompatActivity() {
     private lateinit var percentNameTextView: TextInputEditText
     private lateinit var percentNameTextLayout: TextInputLayout
     private lateinit var cardChip: Chip
-    private lateinit var cashChip: Chip
-    private lateinit var depositChip: Chip
-    private lateinit var investmentChip: Chip
+    private lateinit var loanChip: Chip
+    private lateinit var mortageChip: Chip
     private fun bindViews() {
-        backButton = findViewById(R.id.ascreat_backButton_btn)
-        addAssetButton = findViewById(R.id.ascreat_acceptButton_btn)
-        currencyTextView = findViewById(R.id.ascreat_currencySymbol_txt)
-        assetNameTextView = findViewById(R.id.ascreat_assetName_txt)
-        assetNameTextLayout = findViewById(R.id.ascreat_assetName_til)
-        currentBalanceTextView = findViewById(R.id.ascreat_currentAmount_txt)
-        currentBalanceTextLayout = findViewById(R.id.ascreat_currentAmount_til)
-        bankTextView = findViewById(R.id.ascreat_bank_txt)
-        bankTextLayout = findViewById(R.id.ascreat_bank_til)
-        percentNameTextView = findViewById(R.id.ascreat_percent_txt)
-        percentNameTextLayout = findViewById(R.id.ascreat_percent_til)
-        cardChip = findViewById(R.id.ascreat_card_chp)
-        cashChip = findViewById(R.id.ascreat_cash_chp)
-        depositChip = findViewById(R.id.ascreat_deposit_chp)
-        investmentChip = findViewById(R.id.ascreat_investment_chp)
+        backButton = findViewById(R.id.liabcreat_backButton_btn)
+        addAssetButton = findViewById(R.id.liabcreat_acceptButton_btn)
+        currencyTextView = findViewById(R.id.liabcreat_currencySymbol_txt)
+        assetNameTextView = findViewById(R.id.liabcreat_assetName_txt)
+        assetNameTextLayout = findViewById(R.id.liabcreat_assetName_til)
+        currentBalanceTextView = findViewById(R.id.liabcreat_currentAmount_txt)
+        currentBalanceTextLayout = findViewById(R.id.liabcreat_currentAmount_til)
+        bankTextView = findViewById(R.id.liabcreat_bank_txt)
+        bankTextLayout = findViewById(R.id.liabcreat_bank_til)
+        percentNameTextView = findViewById(R.id.liabcreat_percent_txt)
+        percentNameTextLayout = findViewById(R.id.liabcreat_percent_til)
+        cardChip = findViewById(R.id.liabcreat_card_chp)
+        loanChip = findViewById(R.id.liabcreat_loan_chp)
+        mortageChip = findViewById(R.id.liabcreat_mortage_chp)
     }
     //endregion
     //region Styling
@@ -79,22 +73,20 @@ class AssetCreationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_asset_creation)
+        setContentView(R.layout.activity_liability_creation)
         adjustInsets()
         bindViews()
         readDataFromIntent()
 
         selectedCurrency = AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode] ?: AustromApplication.activeCurrencies.values.toList()[0]
 
-
         switchFieldVisibilities(selectedAssetType)
         backButton.setOnClickListener { finish() }
         currencyTextView.setOnClickListener { launchCurrencyDialog() }
-        addAssetButton.setOnClickListener { addAsset() }
-        cardChip.setOnClickListener { switchFieldVisibilities(AssetType.CARD) }
-        cashChip.setOnClickListener { switchFieldVisibilities(AssetType.CASH) }
-        depositChip.setOnClickListener { switchFieldVisibilities(AssetType.DEPOSIT) }
-        investmentChip.setOnClickListener { switchFieldVisibilities(AssetType.INVESTMENT) }
+        addAssetButton.setOnClickListener { addLiability() }
+        cardChip.setOnClickListener { switchFieldVisibilities(AssetType.CREDIT_CARD) }
+        loanChip.setOnClickListener { switchFieldVisibilities(AssetType.LOAN) }
+        mortageChip.setOnClickListener { switchFieldVisibilities(AssetType.MORTAGE) }
 
         AustromApplication.showKeyboard(this, assetNameTextView)
     }
@@ -106,33 +98,31 @@ class AssetCreationActivity : AppCompatActivity() {
             intent.getSerializableExtra("AssetType")
         }
         when (assetType) {
-            AssetType.CARD -> {switchFieldVisibilities(AssetType.CARD)}
-            AssetType.CASH -> {switchFieldVisibilities(AssetType.CASH)}
-            AssetType.DEPOSIT -> {switchFieldVisibilities(AssetType.DEPOSIT)}
-            AssetType.INVESTMENT -> {switchFieldVisibilities(AssetType.INVESTMENT)}
-            else -> {switchFieldVisibilities(AssetType.CARD)}
+            AssetType.CREDIT_CARD -> {switchFieldVisibilities(AssetType.CREDIT_CARD)}
+            AssetType.LOAN -> {switchFieldVisibilities(AssetType.LOAN)}
+            AssetType.MORTAGE -> {switchFieldVisibilities(AssetType.MORTAGE)}
+            else -> {switchFieldVisibilities(AssetType.CREDIT_CARD)}
         }
     }
 
     private fun switchFieldVisibilities(assetType: AssetType) {
         selectedAssetType = assetType
-        cardChip.isChecked = assetType==AssetType.CARD
-        cashChip.isChecked = assetType==AssetType.CASH
-        depositChip.isChecked = assetType==AssetType.DEPOSIT
-        investmentChip.isChecked = assetType==AssetType.INVESTMENT
+        cardChip.isChecked = assetType==AssetType.CREDIT_CARD
+        loanChip.isChecked = assetType==AssetType.LOAN
+        mortageChip.isChecked = assetType==AssetType.MORTAGE
 
         bankTextLayout.visibility = if (assetType!=AssetType.CASH) View.VISIBLE else View.GONE
         percentNameTextLayout.visibility = if (assetType==AssetType.DEPOSIT) View.VISIBLE else View.GONE
     }
 
-    private fun addAsset() {
+    private fun addLiability() {
         if (isAssetValid()) {
             val dbProvider = LocalDatabaseProvider(this)
             val newAsset = Asset(
                 assetName = assetNameTextView.text.toString(),
                 assetTypeId = selectedAssetType,
                 currencyCode = selectedCurrency!!.code,
-                amount = currentBalanceTextView.text.toString().toDouble()
+                amount = -currentBalanceTextView.text.toString().toDouble()
             )
             when (selectedAssetType) {
                 AssetType.DEPOSIT -> newAsset.isPrivate //TODO("Update later")

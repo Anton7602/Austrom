@@ -32,12 +32,15 @@
         android:theme="@style/Theme.Austrom"
         tools:targetApi="34">
         <activity
+            android:name=".LiabilityCreationActivity"
+            android:exported="false" />
+        <activity
             android:name=".TransactionCreationActivity"
             android:exported="false" />
         <activity
             android:name=".AssetCreationActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".CategoryCreationActivity"
             android:exported="false" />

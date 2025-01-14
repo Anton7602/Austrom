@@ -44,8 +44,15 @@ class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode:
     }
 }
 
-enum class AssetType(val stringResourceId: Int = R.string.unresolved){
-    CARD(R.string.card), CASH(R.string.cash), DEPOSIT(R.string.deposit), INVESTMENT(R.string.investment)
+enum class AssetType(val stringResourceId: Int = R.string.unresolved, val stringDescriptionResourceId: Int = R.string.unresolved, val iconResourceId: Int = R.drawable.ic_placeholder_icon, val isLiability: Boolean = false){
+    CARD(R.string.debit_card, R.string.card_desc, R.drawable.ic_assettype_card_temp),
+    CASH(R.string.cash, R.string.cash_desc, R.drawable.ic_assettype_cash_temp),
+    DEPOSIT(R.string.deposit, R.string.deposit_desc, R.drawable.ic_assettype_deposit_temp),
+    INVESTMENT(R.string.investment, R.string.investment_desc, R.drawable.ic_assettype_investment_temp),
+
+    CREDIT_CARD(R.string.credit_card, R.string.credit_card_desc, R.drawable.ic_assettype_card_temp, true),
+    LOAN(R.string.loan, R.string.loan_desc, R.drawable.ic_assettype_loan_temp, true),
+    MORTAGE(R.string.mortage, R.string.mortage_desc, R.drawable.ic_assettype_mortage_temp, true)
 }
 
 enum class AssetValidationType{

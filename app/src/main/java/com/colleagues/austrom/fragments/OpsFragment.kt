@@ -8,13 +8,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.colleagues.austrom.AssetCreationActivity
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.LiabilityCreationActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionCreationActivity
 import com.colleagues.austrom.TransactionPropertiesActivity
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.dialogs.AssetTypeSelectionDialogFragment
 import com.colleagues.austrom.dialogs.TransactionFilter
+import com.colleagues.austrom.dialogs.TransactionTypeSelectionDialogFragment
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
@@ -38,7 +42,14 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         updateTransactionsList()
-        createNewTransactionButton.setOnClickListener { startActivity(Intent(requireActivity(), TransactionCreationActivity::class.java)) }
+        //createNewTransactionButton.setOnClickListener { startActivity(Intent(requireActivity(), TransactionCreationActivity::class.java)) }
+        createNewTransactionButton.setOnClickListener { launchNewTransactionCreationDialog() }
+    }
+
+    private fun launchNewTransactionCreationDialog() {
+        val dialog = TransactionTypeSelectionDialogFragment()
+        dialog.setOnDialogResultListener { transactionType -> startActivity(Intent(requireActivity(), TransactionCreationActivity::class.java).putExtra("TransactionType", transactionType)) }
+        dialog.show(requireActivity().supportFragmentManager, "AssetTypeSelectionDialog")
     }
 
     private fun updateTransactionsList() {
@@ -107,7 +118,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         val groupedTransactions = Transaction.groupTransactionsByDate(transactionList)
         transactionHolder.layoutManager = LinearLayoutManager(activity)
         val adapter = TransactionGroupRecyclerAdapter(groupedTransactions, (requireActivity() as AppCompatActivity))
-        adapter.setOnItemClickListener { transaction -> requireActivity().startActivity(Intent(activity, TransactionPropertiesActivity::class.java).putExtra("transactionId", transaction.transactionId)) }
+        adapter.setOnItemClickListener { transaction -> requireActivity().startActivity(Intent(requireActivity(), TransactionPropertiesActivity::class.java).putExtra("transactionId", transaction.transactionId)) }
         transactionHolder.adapter = adapter
     }
 

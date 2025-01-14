@@ -68,9 +68,4 @@ class CategorySelectionDialogFragment(private val transactionType: TransactionTy
         adapter.setOnItemClickListener { category -> returnResult(category); dismiss() }
         categoryHolder.adapter = adapter
     }
-
-
-
-
-
 }

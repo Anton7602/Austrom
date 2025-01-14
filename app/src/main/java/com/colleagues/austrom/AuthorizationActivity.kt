@@ -89,7 +89,9 @@ class AuthorizationActivity : AppCompatActivity() {
         } else {
             existingUser.password = passwordTextBox.text.toString()
             val localProvider = LocalDatabaseProvider(this)
-            localProvider.writeNewUser(existingUser)
+            if (localProvider.getUserByUserId(existingUser.userId)==null) {
+                localProvider.writeNewUser(existingUser)
+            }
             launchMainActivity(existingUser)
         }
     }

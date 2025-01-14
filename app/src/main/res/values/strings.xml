@@ -393,5 +393,24 @@
     <string name="add_asset">Add Asset</string>
     <string name="deposit">Deposit</string>
     <string name="choose_transaction_date">Choose Transaction Date</string>
-
+    <string name="liability">Liability</string>
+    <string name="cash_desc">Physical currency, providing immediate liquidity for transactions</string>
+    <string name="card_desc">Payment card that allows to access funds directly from bank account for everyday purchases</string>
+    <string name="deposit_desc">Money placed in a financial institution, earning interest over time while providing safekeeping</string>
+    <string name="investment_desc">Money, allocated into financial assets like stocks or bonds, aimed at generating returns over time</string>
+    <string name="credit_card">Credit Card</string>
+    <string name="credit_card_desc">Payment card that allows to borrow funds up to a specified limit for purchases, requiring repayment with interest if not settled within a grace period</string>
+    <string name="loan">Loan</string>
+    <string name="loan_desc">This is a sum of money borrowed from a financial institution, which must be repaid over time with interest</string>
+    <string name="mortage">Mortage</string>
+    <string name="mortage_desc">Type of loan specifically used to purchase real estate</string>
+    <string name="debit_card">Debit Card</string>
+    <string name="add_liability">Add Liability</string>
+    <string name="current_debt">Current Debt</string>
+    <string name="liability_name">Liability Name</string>
+    <string name="new_liability">New Liability</string>
+    <string name="recieved_amount">Recieved Amount</string>
+    <string name="income_desc">Money received from various sources, such as salaries, investments, or business activities</string>
+    <string name="expense_desc">Money spent on goods and services, including bills, purchases, and other costs</string>
+    <string name="transfer_desc">Money moving from one account to another, between assets held by you</string>
 </resources>

@@ -51,21 +51,7 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>, private val a
                 holder.assetOwner.text = username.startWithUppercase()
             }
         }
-        holder.assetTypeImg.setImageResource(
-            when(asset.assetTypeId) {
-                AssetType.CASH -> R.drawable.ic_assettype_cash_temp
-                AssetType.CARD -> R.drawable.ic_assettype_card_temp
-                AssetType.INVESTMENT -> R.drawable.ic_placeholder_icon
-                else -> R.drawable.ic_placeholder_icon
-            }
-        )
-
-        holder.assetHolder.setOnClickListener {
-            returnClickedItem(asset)
-//            if (isAllowOpenProperties) {
-//                AustromApplication.selectedAsset = asset
-//                activity.startActivity(Intent(activity, AssetPropertiesActivity::class.java))
-//            }
-        }
+        holder.assetTypeImg.setImageResource(asset.assetTypeId.iconResourceId)
+        holder.assetHolder.setOnClickListener { returnClickedItem(asset) }
     }
 }

@@ -13,11 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AssetCreationActivity
 import com.colleagues.austrom.AssetPropertiesActivity
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.LiabilityCreationActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.AssetGroupRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.AssetCreationDialogFragment
 import com.colleagues.austrom.dialogs.AssetFilter
+import com.colleagues.austrom.dialogs.AssetTypeSelectionDialogFragment
+import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
@@ -41,7 +43,18 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         if (AustromApplication.activeAssets.isEmpty()) { updateAssetsList() }
-        addNewAssetButton.setOnClickListener { startActivity(Intent(requireActivity(), AssetCreationActivity::class.java)) }
+        addNewAssetButton.setOnClickListener { launchNewAssetCreationDialog()  }
+    }
+
+    private fun launchNewAssetCreationDialog() {
+        val dialog = AssetTypeSelectionDialogFragment()
+        dialog.setOnDialogResultListener { assetType ->
+            if (assetType.isLiability)
+                startActivity(Intent(requireActivity(), LiabilityCreationActivity::class.java).putExtra("AssetType", assetType))
+            else
+                startActivity(Intent(requireActivity(), AssetCreationActivity::class.java).putExtra("AssetType", assetType))
+        }
+        dialog.show(requireActivity().supportFragmentManager, "AssetTypeSelectionDialog")
     }
 
     fun updateAssetsList() {

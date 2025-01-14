@@ -25,6 +25,7 @@
         android:contentDescription="@string/delete"
         android:padding="8dp"
         android:src="@drawable/ic_navigation_delete_temp"
+        app:layout_constraintBottom_toBottomOf="@+id/asdet_back_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/expenseRed" />

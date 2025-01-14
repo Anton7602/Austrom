@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.R
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import java.time.LocalDate
 import java.util.UUID
@@ -112,8 +113,10 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
     }
 }
 
-enum class TransactionType {
-    INCOME, EXPENSE, TRANSFER
+enum class TransactionType(val transactionTypeNameId: Int = R.string.unresolved, val transactionTypeDescriptionResourceId: Int = R.string.unresolved, val transactionTypeIconResource: Int = R.drawable.ic_placeholder_icon) {
+    INCOME(R.string.income, R.string.income_desc, R.drawable.ic_transactiontype_income_temp),
+    EXPENSE(R.string.expense, R.string.expense_desc, R.drawable.ic_transactiontype_expense_temp),
+    TRANSFER(R.string.transfer, R.string.transfer_desc, R.drawable.ic_transactiontype_transfer_temp)
 }
 
 enum class TransactionValidationType{

@@ -12,12 +12,12 @@ import com.colleagues.austrom.extensions.toMoneyFormat
 
 class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(context, attrs) {
     //region Binding
-    private lateinit var incomeSumTextView: TextView
-    private lateinit var expenseSumTextView: TextView
+    private lateinit var incomeSumMoneyFormatTextView: MoneyFormatTextView
+    private lateinit var expenseSumMoneyFormatTextView: MoneyFormatTextView
     private lateinit var holderCardView: CardView
     private fun bindViews(view: View) {
-        incomeSumTextView = view.findViewById(R.id.trlistheadview_incomeSum_txt)
-        expenseSumTextView = view.findViewById(R.id.trlistheadview_expenseSum_txt)
+        incomeSumMoneyFormatTextView = view.findViewById(R.id.trlistheadview_income_monf)
+        expenseSumMoneyFormatTextView = view.findViewById(R.id.trlistheadview_expense_monf)
         holderCardView = view.findViewById(R.id.trlistheadview_holder_crd)
     }
     //endregion
@@ -35,8 +35,9 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         expenseSum = attributes.getFloat(R.styleable.TransactionHeaderView_ExpenseSum, 0f).toDouble()
         currencySymbol = attributes.getString(R.styleable.TransactionHeaderView_CurrencySymbol) ?: "$"
 
-        incomeSumTextView.text = "${incomeSum.toMoneyFormat()} $currencySymbol"
-        expenseSumTextView.text = "${expenseSum.toMoneyFormat()} $currencySymbol"
+        incomeSumMoneyFormatTextView.setValue(incomeSum, currencySymbol)
+        expenseSumMoneyFormatTextView.setValue(expenseSum, currencySymbol)
+
         holderCardView.setBackgroundResource(R.drawable.img_transaction_header_card_background)
 
         attributes.recycle()
@@ -44,17 +45,17 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
 
     fun setIncome(value: Double) {
         incomeSum = value
-        incomeSumTextView.text = "${incomeSum.toMoneyFormat()} $currencySymbol"
+        incomeSumMoneyFormatTextView.setValue(incomeSum, currencySymbol)
     }
 
     fun setExpense(value: Double) {
         expenseSum = value
-        expenseSumTextView.text = "${expenseSum.toMoneyFormat()} $currencySymbol"
+        expenseSumMoneyFormatTextView.setValue(expenseSum, currencySymbol)
     }
 
     fun setCurrencySymbol(value: String) {
         currencySymbol = value
-        incomeSumTextView.text = "${incomeSum.toMoneyFormat()} $currencySymbol"
-        expenseSumTextView.text = "${expenseSum.toMoneyFormat()} $currencySymbol"
+        incomeSumMoneyFormatTextView.setValue(incomeSum, currencySymbol)
+        expenseSumMoneyFormatTextView.setValue(expenseSum, currencySymbol)
     }
 }

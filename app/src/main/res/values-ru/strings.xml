@@ -392,4 +392,24 @@
     <string name="add_asset">Добавить Актив</string>
     <string name="deposit">Депозит</string>
     <string name="choose_transaction_date">Выберите Дату Транзакции</string>
+    <string name="liability">Пассив</string>
+    <string name="cash_desc">Физическая валюта, обеспечивающая немедленную ликвидность для транзакций</string>
+    <string name="card_desc">Платежная карта, которая позволяет получать доступ к средствам напрямую с банковского счета для повседневных покупок</string>
+    <string name="deposit_desc">Деньги, размещенные в финансовом учреждении, приносящие проценты с течением времени и обеспечивающие сохранность</string>
+    <string name="investment_desc">Деньги, размещенные в финансовых активах, таких как акции или облигации, нацеленные на получение прибыли с течением времени</string>
+    <string name="credit_card">Кредитная Карта</string>
+    <string name="credit_card_desc">Платежная карта, которая позволяет занимать средства до определенного лимита для покупок, требуя погашения с процентами</string>
+    <string name="loan">Кредит</string>
+    <string name="loan_desc">Сумма денег, взятая в долг у финансового учреждения, которая должна быть погашена с течением времени с процентами</string>
+    <string name="mortage">Ипотека</string>
+    <string name="mortage_desc">Тип кредита, специально используемый для покупки недвижимости</string>
+    <string name="debit_card">Дебетовая Карта</string>
+    <string name="add_liability">Добавить Пассив</string>
+    <string name="current_debt">Текущий Долг</string>
+    <string name="liability_name">Имя Пассива</string>
+    <string name="new_liability">Ноывй Пассив</string>
+    <string name="recieved_amount">Полученный Объём</string>
+    <string name="income_desc">Деньги, полученные из различных источников, таких как зарплаты, инвестиции или деловая деятельность</string>
+    <string name="expense_desc">Деньги, потраченные на товары и услуги, включая счета, покупки и другие расходы</string>
+    <string name="transfer_desc">Деньги, перемещаемые с одного счета на другой, между активами, которыми вы владеете</string>
 </resources>

@@ -12,13 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginVertical="5dp"
+        android:background="@drawable/img_transaction_header_card_background"
         app:cardCornerRadius="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="5.5:2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/img_transaction_header_card_background">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -68,30 +68,6 @@
 
             </com.google.android.material.chip.ChipGroup>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView6"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:cardBackgroundColor="#6A62FD"
-                app:cardCornerRadius="7dp"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toStartOf="@+id/guideline"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toTopOf="@+id/guideline2" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView7"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:cardBackgroundColor="#6A62FD"
-                app:cardCornerRadius="7dp"
-                app:layout_constraintBottom_toBottomOf="@+id/cardView6"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintStart_toStartOf="@+id/guideline3"
-                app:layout_constraintTop_toTopOf="@+id/cardView6">
-
-            </androidx.cardview.widget.CardView>
-
             <TextView
                 android:id="@+id/textView26"
                 android:layout_width="wrap_content"
@@ -103,28 +79,22 @@
                 android:textAlignment="center"
                 android:textColor="@color/transactionGrey"
                 android:textSize="11sp"
-                app:layout_constraintBottom_toBottomOf="@+id/cardView6"
+                app:layout_constraintBottom_toTopOf="@+id/guideline34"
                 app:layout_constraintEnd_toStartOf="@+id/guideline4"
                 app:layout_constraintStart_toStartOf="@+id/guideline" />
 
-            <TextView
-                android:id="@+id/trlistheadview_expenseSum_txt"
+            <com.colleagues.austrom.views.MoneyFormatTextView
+                android:id="@+id/trlistheadview_expense_monf"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/dm_sans"
-                android:gravity="center"
-                android:lines="1"
-                android:maxLines="1"
-                android:paddingVertical="2dp"
-                android:text="97.5 $"
-                android:textColor="@color/expenseRed"
+                android:layout_marginStart="4dp"
+                app:amountColor="@color/expenseRed"
+                app:currencyColor="@color/expenseRed"
+                app:defaultAmount="97.5"
                 app:layout_constraintBottom_toTopOf="@+id/textView26"
                 app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintStart_toEndOf="@+id/cardView6"
-                app:layout_constraintTop_toTopOf="@+id/cardView6"
-                tools:ignore="HardcodedText" />
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
             <TextView
                 android:id="@+id/textView30"
@@ -137,90 +107,36 @@
                 android:textAlignment="center"
                 android:textColor="@color/transactionGrey"
                 android:textSize="11sp"
-                app:layout_constraintBottom_toBottomOf="@+id/cardView6"
+                app:layout_constraintBottom_toTopOf="@+id/guideline34"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toEndOf="@+id/cardView7" />
+                app:layout_constraintStart_toStartOf="@+id/guideline33" />
 
-            <TextView
-                android:id="@+id/trlistheadview_incomeSum_txt"
+            <com.colleagues.austrom.views.MoneyFormatTextView
+                android:id="@+id/trlistheadview_income_monf"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/dm_sans"
-                android:gravity="center"
-                android:paddingVertical="2dp"
-                android:text="185 650.5 RUB"
-                android:textColor="@color/incomeGreen"
+                app:amountColor="@color/incomeGreen"
+                app:currencyColor="@color/incomeGreen"
+                app:defaultAmount="185593.15"
                 app:layout_constraintBottom_toTopOf="@+id/textView30"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toEndOf="@+id/cardView7"
-                app:layout_constraintTop_toTopOf="@+id/cardView7"
-                tools:ignore="HardcodedText" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                app:layout_constraintDimensionRatio="w,2:15"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="17dp">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView5"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:cardBackgroundColor="@color/transparent"
-                    app:cardElevation="0dp">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <Space
-                    android:id="@+id/space2"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView8"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:cardBackgroundColor="@color/transparent"
-                    app:cardElevation="0dp">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
-
-                <Space
-                    android:id="@+id/space6"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp" />
-            </LinearLayout>
+                app:layout_constraintStart_toStartOf="@+id/guideline33"
+                app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.186" />
+                app:layout_constraintGuide_percent="0.15" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.4786" />
+                app:layout_constraintGuide_percent="0.5" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline3"
@@ -230,11 +146,18 @@
                 app:layout_constraintGuide_percent="0.511" />
 
             <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline33"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.61" />
+
+            <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.45" />
+                app:layout_constraintGuide_percent="0.49" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline5"
@@ -264,16 +187,45 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.3" />
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline34"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.88" />
+
             <ImageButton
                 android:id="@+id/imageButton2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
-                android:tint="@color/primaryTextColor"
                 app:layout_constraintBottom_toBottomOf="@+id/chipGroup"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintTop_toTopOf="@+id/chipGroup"
-                app:srcCompat="@drawable/ic_navigation_filter_temp" />
+                app:srcCompat="@drawable/ic_navigation_filter_temp"
+                app:tint="@color/primaryTextColor" />
+
+            <ImageView
+                android:id="@+id/imageView11"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="4dp"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toTopOf="@+id/guideline2"
+                app:srcCompat="@drawable/img_expense_img" />
+
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="4dp"
+                app:layout_constraintDimensionRatio="w,1:1"
+                app:layout_constraintEnd_toStartOf="@+id/guideline33"
+                app:layout_constraintStart_toStartOf="@+id/guideline3"
+                app:layout_constraintTop_toTopOf="@+id/guideline2"
+                app:srcCompat="@drawable/img_income_icon" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

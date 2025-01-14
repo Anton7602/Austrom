@@ -33,11 +33,10 @@ class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: Att
     private var textVerticalAlignment: Int = 1
     private var xStartPos: Float = 0F
     private var yStartPos: Float= 0F
+    private var moneyAmountColor: Int = context.getColor(R.color.primaryTextColor)
+    private var currencyColor: Int = context.getColor(R.color.secondaryTextColor)
 
     init {
-        var moneyAmountColor: Int = context.getColor(R.color.primaryTextColor)
-        var currencyColor: Int = context.getColor(R.color.secondaryTextColor)
-
         if (attrs != null) {
             val typeArray = context.obtainStyledAttributes(attrs, R.styleable.MoneyFormatTextView)
 
@@ -115,7 +114,7 @@ class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: Att
                 currencyTextPaint.textSize -= 1
             }
         }
-        if (amountToCurrencyMargin == 0F) amountToCurrencyMargin = getTextBounds(currencyCode.first().toString(), currencyTextPaint).width()/2F
+        if (amountToCurrencyMargin == 0F) amountToCurrencyMargin = getTextBounds("$", currencyTextPaint).width()/2F
     }
 
     private fun calculateTextPosition() {
@@ -158,5 +157,8 @@ class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: Att
     fun setValue(value:Double, currencySymbol: String) {
         moneyAmount = value
         currencyCode = currencySymbol
+        initPaints(amountTextPaint, amountTextSize, moneyAmountColor)
+        initPaints(currencyTextPaint, currencyTextSize, currencyColor)
+        calculateTextSizes()
     }
 }

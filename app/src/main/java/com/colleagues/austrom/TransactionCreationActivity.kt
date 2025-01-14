@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -30,6 +31,7 @@ import com.colleagues.austrom.views.SelectorButtonView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.time.Instant
 import java.time.LocalDate
@@ -55,6 +57,9 @@ class TransactionCreationActivity : AppCompatActivity() {
     private lateinit var createTransactionButton: MaterialButton
     private lateinit var categorySelector: SelectorButtonView
     private lateinit var dateSelector: SelectorButtonView
+    private lateinit var secondaryAmountHolder: LinearLayout
+    private lateinit var secondaryAmountTxt: TextInputEditText
+    private lateinit var secondaryCurrencyTxt: TextView
     private fun bindViews() {
         sourceHolderRecycler = findViewById(R.id.trcreat_sourceHolder_rcv)
         targetHolderRecycler = findViewById(R.id.trcreat_targetHolder_rcv)
@@ -73,6 +78,9 @@ class TransactionCreationActivity : AppCompatActivity() {
         createTransactionButton = findViewById(R.id.trcreat_acceptButton_btn)
         categorySelector = findViewById(R.id.trcreat_categorySelector_sbv)
         dateSelector = findViewById(R.id.trcreat_dateSelector_sbv)
+        secondaryAmountHolder = findViewById(R.id.trcreat_secondaryAmountHolder_lly)
+        secondaryAmountTxt = findViewById(R.id.trcreat_amount_secondary_txt)
+        secondaryCurrencyTxt = findViewById(R.id.trcreat_currencySymbol_secondary_txt)
     }
     //endregion
     //region Localizing
@@ -155,11 +163,12 @@ class TransactionCreationActivity : AppCompatActivity() {
         if (transactionType!=TransactionType.TRANSFER) return
         Transaction(
             assetId = secondarySelectedAsset!!.assetId,
-            amount = amount,
+            amount = if (secondaryAmountHolder.visibility==View.VISIBLE) secondaryAmountTxt.text.toString().parseToDouble()?.absoluteValue ?: amount else amount,
             categoryId = selectedCategory.categoryId,
             transactionDate = selectedDate,
             transactionName = primarySelectedAsset!!.assetName
-        )
+        ).submit(dbProvider)
+        this.finish()
     }
 
     private fun launchCategorySelectionDialog() {
@@ -201,6 +210,8 @@ class TransactionCreationActivity : AppCompatActivity() {
             TransactionType.INCOME -> R.color.incomeGreenBackground
             TransactionType.TRANSFER -> R.color.transferYellowBackground
         }))
+
+        secondaryAmountHolder.visibility = if (transactionType==TransactionType.TRANSFER && primarySelectedAsset?.currencyCode!=secondarySelectedAsset?.currencyCode) View.VISIBLE else View.GONE
     }
 
     private fun setUpRecyclerViews() {
@@ -220,7 +231,11 @@ class TransactionCreationActivity : AppCompatActivity() {
         val adapterTarget = AssetSquareRecyclerAdapter(assetList, this, secondarySelectedAsset)
         adapterTarget.setOnItemClickListener { asset ->
             secondarySelectedAsset = asset
+            setUpRecyclerViews()
         }
+        secondaryCurrencyTxt.text = secondarySelectedAsset?.currencyCode
         targetHolderRecycler.adapter = adapterTarget
+
+        secondaryAmountHolder.visibility = if (transactionType==TransactionType.TRANSFER && primarySelectedAsset?.currencyCode!=secondarySelectedAsset?.currencyCode) View.VISIBLE else View.GONE
     }
 }

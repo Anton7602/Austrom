@@ -29,7 +29,7 @@ class CategoryControlDialogFragment : BottomSheetDialogFragment() {
         incomeCategoryHolder = view.findViewById(R.id.ccdial_incomeCategories_rcv)
         expenseCategoryHolder = view.findViewById(R.id.ccdial_expenseCategories_rcv)
         dialogHolder = view.findViewById(R.id.ccdial_holder_crv)
-        incomeSwitchButton = view.findViewById(R.id.ccdial_income_btn)
+        incomeSwitchButton = view.findViewById(R.id.astypeseldial_liability_btn)
         expenseSwitchButton = view.findViewById(R.id.ccdial_expence_btn)
     }
     //endregion
