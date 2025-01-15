@@ -194,11 +194,12 @@ class TransactionCreationActivity : AppCompatActivity() {
         transferChip.isChecked = (chipId==R.id.trcreat_transfer_chp)
 
         transactionNameTil.hint = if (transactionType==TransactionType.EXPENSE) getString(R.string.toAsset).startWithUppercase() else getString(R.string.fromAsset).startWithUppercase()
-        transactionNameTxt.visibility = if (transactionType==TransactionType.TRANSFER) View.GONE else View.VISIBLE
-        targetHolder.visibility = if (transactionType==TransactionType.TRANSFER) View.VISIBLE else View.GONE
         sourceHolderLabel.text = (if (transactionType==TransactionType.INCOME) getString(R.string.toAsset) else getString(R.string.fromAsset)).startWithUppercase()
         targetHolderLabel.text = getString(R.string.toAsset).startWithUppercase()
 
+        transactionNameTxt.visibility = if (transactionType!=TransactionType.TRANSFER) View.VISIBLE else View.GONE
+        categorySelector.visibility = if (transactionType!=TransactionType.TRANSFER) View.VISIBLE else View.GONE
+        targetHolder.visibility = if (transactionType==TransactionType.TRANSFER) View.VISIBLE else View.GONE
         categorySelector.setFieldValue(when(transactionType) {
             TransactionType.EXPENSE -> AustromApplication.activeExpenseCategories.values.first().name
             TransactionType.INCOME -> AustromApplication.activeIncomeCategories.values.first().name

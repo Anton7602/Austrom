@@ -4,25 +4,26 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.view.children
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
-import com.colleagues.austrom.extensions.toMoneyFormat
+import com.colleagues.austrom.extensions.dpToPx
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 import com.colleagues.austrom.models.Currency
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.shape.ShapeAppearanceModel
 
 class AssetCreationActivity : AppCompatActivity() {
     //region Binding
@@ -37,6 +38,7 @@ class AssetCreationActivity : AppCompatActivity() {
     private lateinit var bankTextLayout: TextInputLayout
     private lateinit var percentNameTextView: TextInputEditText
     private lateinit var percentNameTextLayout: TextInputLayout
+    private lateinit var assetTypesHolder: LinearLayout
     private lateinit var cardChip: Chip
     private lateinit var cashChip: Chip
     private lateinit var depositChip: Chip
@@ -53,6 +55,7 @@ class AssetCreationActivity : AppCompatActivity() {
         bankTextLayout = findViewById(R.id.ascreat_bank_til)
         percentNameTextView = findViewById(R.id.ascreat_percent_txt)
         percentNameTextLayout = findViewById(R.id.ascreat_percent_til)
+        assetTypesHolder = findViewById(R.id.ascreat_assetTypesHolder_lly)
         cardChip = findViewById(R.id.ascreat_card_chp)
         cashChip = findViewById(R.id.ascreat_cash_chp)
         depositChip = findViewById(R.id.ascreat_deposit_chp)
@@ -73,6 +76,7 @@ class AssetCreationActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
     //endregion
+    private var visibleAssetTypes: MutableList<AssetType> = mutableListOf()
     private var selectedCurrency: Currency? = null
     private var selectedAssetType: AssetType = AssetType.CARD
 
@@ -99,11 +103,44 @@ class AssetCreationActivity : AppCompatActivity() {
         AustromApplication.showKeyboard(this, assetNameTextView)
     }
 
+    private fun createChipForAssetType(assetType: AssetType) {
+        val chip = Chip(this, null, com.google.android.material.R.style.Widget_Material3_Chip_Suggestion_Elevated).apply {
+            id = View.generateViewId()
+            setChipBackgroundColorResource(if (assetType.isLiability) R.color.chip_expense_background_color else R.color.chip_income_background_color)
+            setText(assetType.stringResourceId)
+            isEnabled = true
+            isCheckable = true
+            isChecked = false
+            chipIcon = null
+            tag = assetType.ordinal
+            textAlignment = View.TEXT_ALIGNMENT_CENTER
+            setTextColor(getColorStateList(R.color.chip_transaction_type_text_color))
+            shapeAppearanceModel = ShapeAppearanceModel.builder().setAllCornerSizes(context.dpToPx(12)).build()
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                setMargins(context.dpToPx(8).toInt(),0, context.dpToPx(8).toInt(),0)
+            }
+        }
+        chip.setOnClickListener { switchFieldVisibilities(assetType) }
+        assetTypesHolder.addView(chip)
+    }
+
     private fun readDataFromIntent() {
-        val assetType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val presentedAssetTypes = intent.getIntegerArrayListExtra("listOfAvailableAssetType")
+        if (presentedAssetTypes==null) { visibleAssetTypes=AssetType.entries.toMutableList() } else {
+            visibleAssetTypes = mutableListOf()
+            AssetType.entries.forEach { assetType ->
+                if (presentedAssetTypes.contains(assetType.ordinal)) visibleAssetTypes.add(assetType)
+            }
+        }
+        visibleAssetTypes.forEach { assetType -> createChipForAssetType(assetType)}
+
+        var assetType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("AssetType", AssetType::class.java)
         } else {
             intent.getSerializableExtra("AssetType")
+        }
+        if (!visibleAssetTypes.contains(assetType)) {
+            assetType=visibleAssetTypes[0]
         }
         when (assetType) {
             AssetType.CARD -> {switchFieldVisibilities(AssetType.CARD)}
@@ -116,6 +153,7 @@ class AssetCreationActivity : AppCompatActivity() {
 
     private fun switchFieldVisibilities(assetType: AssetType) {
         selectedAssetType = assetType
+        assetTypesHolder.children.forEach { child -> if (child is Chip) { child.isChecked = assetType.ordinal==child.tag; child.chipIcon=null }}
         cardChip.isChecked = assetType==AssetType.CARD
         cashChip.isChecked = assetType==AssetType.CASH
         depositChip.isChecked = assetType==AssetType.DEPOSIT
