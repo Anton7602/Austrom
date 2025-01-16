@@ -1,7 +1,11 @@
 package com.colleagues.austrom
 
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
@@ -16,19 +20,21 @@ import androidx.core.view.children
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
 import com.colleagues.austrom.extensions.dpToPx
+import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 import com.colleagues.austrom.models.Currency
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.google.android.material.shape.ShapeAppearanceModel
+import kotlin.math.absoluteValue
 
 class AssetCreationActivity : AppCompatActivity() {
     //region Binding
     private lateinit var backButton: ImageButton
-    private lateinit var addAssetButton: Button
+    private lateinit var addAssetButton: MaterialButton
     private lateinit var currencyTextView: TextView
     private lateinit var assetNameTextView: TextInputEditText
     private lateinit var assetNameTextLayout: TextInputLayout
@@ -39,10 +45,7 @@ class AssetCreationActivity : AppCompatActivity() {
     private lateinit var percentNameTextView: TextInputEditText
     private lateinit var percentNameTextLayout: TextInputLayout
     private lateinit var assetTypesHolder: LinearLayout
-    private lateinit var cardChip: Chip
-    private lateinit var cashChip: Chip
-    private lateinit var depositChip: Chip
-    private lateinit var investmentChip: Chip
+    private lateinit var headerText: TextView
     private fun bindViews() {
         backButton = findViewById(R.id.ascreat_backButton_btn)
         addAssetButton = findViewById(R.id.ascreat_acceptButton_btn)
@@ -56,10 +59,7 @@ class AssetCreationActivity : AppCompatActivity() {
         percentNameTextView = findViewById(R.id.ascreat_percent_txt)
         percentNameTextLayout = findViewById(R.id.ascreat_percent_til)
         assetTypesHolder = findViewById(R.id.ascreat_assetTypesHolder_lly)
-        cardChip = findViewById(R.id.ascreat_card_chp)
-        cashChip = findViewById(R.id.ascreat_cash_chp)
-        depositChip = findViewById(R.id.ascreat_deposit_chp)
-        investmentChip = findViewById(R.id.ascreat_investment_chp)
+        headerText = findViewById(R.id.ascreat_header_txt)
     }
     //endregion
     //region Styling
@@ -76,6 +76,7 @@ class AssetCreationActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
     //endregion
+    private var assetNameTextListener: TextWatcher? = null
     private var visibleAssetTypes: MutableList<AssetType> = mutableListOf()
     private var selectedCurrency: Currency? = null
     private var selectedAssetType: AssetType = AssetType.CARD
@@ -90,15 +91,10 @@ class AssetCreationActivity : AppCompatActivity() {
 
         selectedCurrency = AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode] ?: AustromApplication.activeCurrencies.values.toList()[0]
 
-
         switchFieldVisibilities(selectedAssetType)
         backButton.setOnClickListener { finish() }
         currencyTextView.setOnClickListener { launchCurrencyDialog() }
         addAssetButton.setOnClickListener { addAsset() }
-        cardChip.setOnClickListener { switchFieldVisibilities(AssetType.CARD) }
-        cashChip.setOnClickListener { switchFieldVisibilities(AssetType.CASH) }
-        depositChip.setOnClickListener { switchFieldVisibilities(AssetType.DEPOSIT) }
-        investmentChip.setOnClickListener { switchFieldVisibilities(AssetType.INVESTMENT) }
 
         AustromApplication.showKeyboard(this, assetNameTextView)
     }
@@ -112,6 +108,7 @@ class AssetCreationActivity : AppCompatActivity() {
             isCheckable = true
             isChecked = false
             chipIcon = null
+            isCheckedIconVisible = false
             tag = assetType.ordinal
             textAlignment = View.TEXT_ALIGNMENT_CENTER
             setTextColor(getColorStateList(R.color.chip_transaction_type_text_color))
@@ -125,7 +122,7 @@ class AssetCreationActivity : AppCompatActivity() {
     }
 
     private fun readDataFromIntent() {
-        val presentedAssetTypes = intent.getIntegerArrayListExtra("listOfAvailableAssetType")
+        val presentedAssetTypes = intent.getIntegerArrayListExtra("ListOfAvailableAssetTypes")
         if (presentedAssetTypes==null) { visibleAssetTypes=AssetType.entries.toMutableList() } else {
             visibleAssetTypes = mutableListOf()
             AssetType.entries.forEach { assetType ->
@@ -142,35 +139,35 @@ class AssetCreationActivity : AppCompatActivity() {
         if (!visibleAssetTypes.contains(assetType)) {
             assetType=visibleAssetTypes[0]
         }
-        when (assetType) {
-            AssetType.CARD -> {switchFieldVisibilities(AssetType.CARD)}
-            AssetType.CASH -> {switchFieldVisibilities(AssetType.CASH)}
-            AssetType.DEPOSIT -> {switchFieldVisibilities(AssetType.DEPOSIT)}
-            AssetType.INVESTMENT -> {switchFieldVisibilities(AssetType.INVESTMENT)}
-            else -> {switchFieldVisibilities(AssetType.CARD)}
-        }
+        switchFieldVisibilities(assetType as AssetType)
     }
 
     private fun switchFieldVisibilities(assetType: AssetType) {
         selectedAssetType = assetType
         assetTypesHolder.children.forEach { child -> if (child is Chip) { child.isChecked = assetType.ordinal==child.tag; child.chipIcon=null }}
-        cardChip.isChecked = assetType==AssetType.CARD
-        cashChip.isChecked = assetType==AssetType.CASH
-        depositChip.isChecked = assetType==AssetType.DEPOSIT
-        investmentChip.isChecked = assetType==AssetType.INVESTMENT
-
         bankTextLayout.visibility = if (assetType!=AssetType.CASH) View.VISIBLE else View.GONE
         percentNameTextLayout.visibility = if (assetType==AssetType.DEPOSIT) View.VISIBLE else View.GONE
+        switchAssetAndLiabilityMode(assetType.isLiability)
+
+    }
+
+    private fun switchAssetAndLiabilityMode(isLiability: Boolean) {
+        headerText.text = if (isLiability) getString(R.string.new_liability) else getString(R.string.new_asset)
+        assetNameTextLayout.setHint(if (isLiability) R.string.liability_name else R.string.asset_name)
+        addAssetButton.setText(if (isLiability) R.string.add_liability else R.string.add_asset)
+        addAssetButton.setStrokeColorResource(if (isLiability) R.color.expenseRedBackground else R.color.incomeGreenBackground)
     }
 
     private fun addAsset() {
         if (isAssetValid()) {
             val dbProvider = LocalDatabaseProvider(this)
+            val amount = currentBalanceTextView.text.toString().parseToDouble() ?: return
+
             val newAsset = Asset(
                 assetName = assetNameTextView.text.toString(),
                 assetTypeId = selectedAssetType,
                 currencyCode = selectedCurrency!!.code,
-                amount = currentBalanceTextView.text.toString().toDouble()
+                amount = if (selectedAssetType.isLiability) -amount.absoluteValue else amount.absoluteValue
             )
             when (selectedAssetType) {
                 AssetType.DEPOSIT -> newAsset.isPrivate //TODO("Update later")
@@ -182,7 +179,41 @@ class AssetCreationActivity : AppCompatActivity() {
     }
 
     private fun isAssetValid(): Boolean {
+        if (!isAssetNameValid()) return false
+        if (!isAssetAmountValid()) return false
         return true
+    }
+
+    private fun isAssetNameValid(): Boolean {
+        if (assetNameTextListener==null)
+            assetNameTextListener = object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {isAssetNameValid()}
+                override fun afterTextChanged(s: Editable?) {}
+            }
+        val assetName = assetNameTextView.text.toString()
+        if (assetName.isEmpty()) {
+            assetNameTextLayout.error = getString(R.string.asset_s_title_cannot_be_empty)
+            assetNameTextView.addTextChangedListener(assetNameTextListener)
+            return false
+        } else {
+            assetNameTextLayout.error = null
+            assetNameTextView.removeTextChangedListener(assetNameTextListener)
+            return true
+        }
+    }
+
+    private fun isAssetAmountValid(): Boolean {
+        val amount = currentBalanceTextView.text.toString().parseToDouble()
+        if (amount == null) {
+            currentBalanceTextLayout.error = "Amount Value is invalid"
+
+            return false
+        }
+        else {
+            currentBalanceTextLayout.error = null
+            return true
+        }
     }
 
     private fun launchCurrencyDialog() {

@@ -50,7 +50,7 @@ class TransactionTypeSelectionDialogFragment : BottomSheetDialogFragment() {
         }
 
 
-        createNewAssetButton.setOnClickListener { requireActivity().startActivity(Intent(requireActivity(), AssetCreationActivity::class.java).putExtra("listOfAvailableAssetType", arrayListOf(AssetType.CARD.ordinal, AssetType.CREDIT_CARD.ordinal))); dismiss() }
+        createNewAssetButton.setOnClickListener { requireActivity().startActivity(Intent(requireActivity(), AssetCreationActivity::class.java).putExtra("ListOfAvailableAssetTypes", arrayListOf(AssetType.CARD.ordinal, AssetType.CREDIT_CARD.ordinal, AssetType.CASH.ordinal))); dismiss() }
     }
 
 

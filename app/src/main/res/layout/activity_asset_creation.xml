@@ -20,7 +20,7 @@
 
 
     <TextView
-        android:id="@+id/textView25"
+        android:id="@+id/ascreat_header_txt"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -41,70 +41,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView25">
+        app:layout_constraintTop_toBottomOf="@+id/ascreat_header_txt">
 
         <LinearLayout
             android:id="@+id/ascreat_assetTypesHolder_lly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/ascreat_card_chp"
-                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:checkable="true"
-                android:checked="true"
-                android:text="@string/card"
-                android:textAlignment="center"
-                android:textColor="@color/chip_transaction_type_text_color"
-                app:chipBackgroundColor="@color/chip_income_background_color"
-                app:chipCornerRadius="12dp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/ascreat_cash_chp"
-                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:checkable="true"
-                android:checked="false"
-                android:text="@string/cash"
-                android:textAlignment="center"
-                android:textColor="@color/chip_transaction_type_text_color"
-                app:chipBackgroundColor="@color/chip_income_background_color"
-                app:chipCornerRadius="12dp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/ascreat_deposit_chp"
-                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:checkable="true"
-                android:checked="false"
-                android:text="@string/deposit"
-                android:textAlignment="center"
-                android:textColor="@color/chip_transaction_type_text_color"
-                app:chipBackgroundColor="@color/chip_income_background_color"
-                app:chipCornerRadius="12dp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/ascreat_investment_chp"
-                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:checkable="true"
-                android:checked="false"
-                android:text="@string/investment"
-                android:textAlignment="center"
-                android:textColor="@color/chip_transaction_type_text_color"
-                app:chipBackgroundColor="@color/chip_income_background_color"
-                app:chipCornerRadius="12dp" />
-        </LinearLayout>
+            android:orientation="horizontal"/>
     </HorizontalScrollView>
 
     <ScrollView

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,18 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AssetCreationActivity
 import com.colleagues.austrom.AssetPropertiesActivity
 import com.colleagues.austrom.AustromApplication
-import com.colleagues.austrom.LiabilityCreationActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.AssetGroupRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetFilter
 import com.colleagues.austrom.dialogs.AssetTypeSelectionDialogFragment
-import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
-import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.AssetType
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.views.MoneyFormatTextView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class BalanceFragment : Fragment(R.layout.fragment_balance) {
     //region Binding
@@ -50,9 +46,9 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         val dialog = AssetTypeSelectionDialogFragment()
         dialog.setOnDialogResultListener { assetType ->
             if (assetType.isLiability)
-                startActivity(Intent(requireActivity(), LiabilityCreationActivity::class.java).putExtra("AssetType", assetType))
+                startAssetCreationActivity(assetType, arrayListOf(AssetType.CREDIT_CARD.ordinal, AssetType.LOAN.ordinal, AssetType.MORTAGE.ordinal))
             else
-                startActivity(Intent(requireActivity(), AssetCreationActivity::class.java).putExtra("AssetType", assetType))
+                startAssetCreationActivity(assetType, arrayListOf(AssetType.CARD.ordinal, AssetType.CASH.ordinal, AssetType.DEPOSIT.ordinal, AssetType.INVESTMENT.ordinal,))
         }
         dialog.show(requireActivity().supportFragmentManager, "AssetTypeSelectionDialog")
     }
@@ -113,6 +109,13 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         val adapter = AssetGroupRecyclerAdapter(groupedAssets, (requireActivity() as AppCompatActivity))
         adapter.setOnItemClickListener { asset -> requireActivity().startActivity(Intent(activity, AssetPropertiesActivity::class.java).putExtra("assetId", asset.assetId)) }
         assetHolderRecyclerView.adapter = adapter
+    }
+
+    private fun startAssetCreationActivity(selectedAssetType: AssetType , assetTypes: ArrayList<Int>) {
+        val intent = Intent(requireActivity(), AssetCreationActivity::class.java)
+        intent.putExtra("AssetType", selectedAssetType)
+        intent.putExtra("ListOfAvailableAssetTypes", assetTypes)
+        startActivity(intent)
     }
 
     override fun onResume() {

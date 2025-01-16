@@ -227,8 +227,8 @@ class TransactionCreationActivity : AppCompatActivity() {
         sourceHolderRecycler.adapter = adapterSource
         val assetList = AustromApplication.activeAssets.values.toMutableList()
         assetList.remove(primarySelectedAsset)
-        if (secondarySelectedAsset==null || secondarySelectedAsset?.assetId==primarySelectedAsset?.assetId) secondarySelectedAsset = assetList[0]
-        targetHolderRecycler.layoutManager = LinearLayoutManager(this, HORIZONTAL, true)
+        if (transactionType==TransactionType.TRANSFER && (secondarySelectedAsset==null || secondarySelectedAsset?.assetId==primarySelectedAsset?.assetId)) secondarySelectedAsset = assetList[0]
+        targetHolderRecycler.layoutManager = LinearLayoutManager(this, HORIZONTAL, true) // TODO("What if not enough assets for transfer?")
         val adapterTarget = AssetSquareRecyclerAdapter(assetList, this, secondarySelectedAsset)
         adapterTarget.setOnItemClickListener { asset ->
             secondarySelectedAsset = asset

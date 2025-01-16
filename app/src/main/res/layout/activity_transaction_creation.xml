@@ -19,7 +19,7 @@
         app:srcCompat="@drawable/ic_navigation_back_temp" />
 
     <TextView
-        android:id="@+id/textView25"
+        android:id="@+id/ascreat_header_txt"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -45,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView25"
+        app:layout_constraintTop_toBottomOf="@+id/ascreat_header_txt"
         app:singleLine="true"
         app:singleSelection="true">
 

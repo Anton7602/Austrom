@@ -29,6 +29,7 @@
         <item name="android:textColorHint">@color/secondaryTextColor</item>
         <item name="hintTextColor">@color/secondaryTextColor</item>
         <item name="boxStrokeColor">@color/transparent</item>
+        <item name="boxStrokeErrorColor">@color/transparent</item>
     </style>
 
     <style name="DefaultEditText" parent="Widget.Material3.TextInputEditText.FilledBox">
