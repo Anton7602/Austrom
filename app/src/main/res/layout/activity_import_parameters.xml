@@ -16,17 +16,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageButton
+            android:id="@+id/ascreat_backButton_btn"
+            style="@style/BackButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/back_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_navigation_back_temp" />
+
+
         <TextView
             android:id="@+id/imppar_topLabel_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_margin="8dp"
-            android:fontFamily="@font/dm_sans"
+            android:layout_marginBottom="9dp"
+            android:autoSizeMaxTextSize="22dp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center_vertical|end"
             android:text="@string/transaction_example"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textAppearance="@style/PrimaryCardTextAutoscale"
             android:textColor="@color/primaryTextColor"
+            app:layout_constraintBottom_toBottomOf="@+id/ascreat_backButton_btn"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ascreat_backButton_btn"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -35,7 +50,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imppar_topLabel_txt"
+            app:layout_constraintTop_toBottomOf="@+id/ascreat_backButton_btn"
             tools:listitem="@layout/item_transaction_extended" />
 
         <ScrollView
