@@ -14,6 +14,7 @@ import com.colleagues.austrom.LiabilityCreationActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionCreationActivity
 import com.colleagues.austrom.TransactionPropertiesActivity
+import com.colleagues.austrom.TransactionPropertiesActivityNew
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetTypeSelectionDialogFragment
@@ -118,7 +119,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         val groupedTransactions = Transaction.groupTransactionsByDate(transactionList)
         transactionHolder.layoutManager = LinearLayoutManager(activity)
         val adapter = TransactionGroupRecyclerAdapter(groupedTransactions, (requireActivity() as AppCompatActivity))
-        adapter.setOnItemClickListener { transaction -> requireActivity().startActivity(Intent(requireActivity(), TransactionPropertiesActivity::class.java).putExtra("transactionId", transaction.transactionId)) }
+        adapter.setOnItemClickListener { transaction -> requireActivity().startActivity(Intent(requireActivity(), TransactionPropertiesActivityNew::class.java).putExtra("transactionId", transaction.transactionId)) }
         transactionHolder.adapter = adapter
     }
 

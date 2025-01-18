@@ -16,6 +16,9 @@ class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode:
     var isPrivate: Boolean = false
     var isArchived: Boolean = false
 
+    //isLiquid?
+    //isRefillable??
+
     fun delete(dbProvider: LocalDatabaseProvider) {
         dbProvider.deleteAsset(this)
         AustromApplication.activeAssets.remove(assetId)

@@ -26,7 +26,6 @@ import com.colleagues.austrom.models.Transaction
 
 class AssetPropertiesActivity : AppCompatActivity(){
     //region Binding
-    private lateinit var asset: Asset
     private lateinit var backButton: ImageButton
     private lateinit var deleteButton: ImageButton
     private lateinit var assetName: TextView
@@ -74,6 +73,7 @@ class AssetPropertiesActivity : AppCompatActivity(){
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
     //endregion
+    private lateinit var asset: Asset
     private var transactionsOfAsset: MutableList<Transaction> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {

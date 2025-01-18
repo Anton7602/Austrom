@@ -27,7 +27,7 @@ class TransactionDetailRecyclerAdapter(private val transaction: Transaction, pri
     }
     private var returnClickedItem: (TransactionDetail)->Unit = {}
     fun setOnItemClickListener(l: ((TransactionDetail)->Unit)) { returnClickedItem = l }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionDetailViewHolder { return TransactionDetailViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_transaction_detail, parent, false)) }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionDetailViewHolder { return TransactionDetailViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_transaction_detail_new, parent, false)) }
     override fun getItemCount(): Int { return transactionDetails.size  }
 
     override fun onBindViewHolder(holder: TransactionDetailViewHolder, position: Int) {

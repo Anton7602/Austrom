@@ -32,6 +32,9 @@
         android:theme="@style/Theme.Austrom"
         tools:targetApi="34">
         <activity
+            android:name=".TransactionPropertiesActivityNew"
+            android:exported="false" />
+        <activity
             android:name=".LiabilityCreationActivity"
             android:exported="false" />
         <activity

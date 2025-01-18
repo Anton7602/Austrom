@@ -153,21 +153,25 @@ class TransactionCreationActivity : AppCompatActivity() {
             Toast.makeText(this, "Invalid transaction amount provided", Toast.LENGTH_LONG).show()
             return
         }
-        Transaction(
+        val primaryTransaction = Transaction(
             assetId = primarySelectedAsset!!.assetId,
             amount = if (transactionType==TransactionType.INCOME) amount else -amount,
             categoryId = selectedCategory.categoryId,
             transactionDate = selectedDate,
             transactionName = if (transactionType==TransactionType.TRANSFER) secondarySelectedAsset!!.assetName else transactionNameTxt.text.toString()
-        ).submit(dbProvider)
-        if (transactionType!=TransactionType.TRANSFER) return
-        Transaction(
-            assetId = secondarySelectedAsset!!.assetId,
-            amount = if (secondaryAmountHolder.visibility==View.VISIBLE) secondaryAmountTxt.text.toString().parseToDouble()?.absoluteValue ?: amount else amount,
-            categoryId = selectedCategory.categoryId,
-            transactionDate = selectedDate,
-            transactionName = primarySelectedAsset!!.assetName
-        ).submit(dbProvider)
+        )
+        if (transactionType==TransactionType.TRANSFER) {
+            val secondaryTransaction =  Transaction(
+                assetId = secondarySelectedAsset!!.assetId,
+                amount = if (secondaryAmountHolder.visibility==View.VISIBLE) secondaryAmountTxt.text.toString().parseToDouble()?.absoluteValue ?: amount else amount,
+                categoryId = selectedCategory.categoryId,
+                transactionDate = selectedDate,
+                transactionName = primarySelectedAsset!!.assetName
+            )
+            secondaryTransaction.linkTo(primaryTransaction)
+            secondaryTransaction.submit(dbProvider)
+        }
+        primaryTransaction.submit(dbProvider)
         this.finish()
     }
 

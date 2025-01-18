@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundMain"
+    tools:context=".TransactionPropertiesActivityNew">
+
+    <ImageButton
+        android:id="@+id/trdet2_backButton_btn"
+        style="@style/BackButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/back_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_navigation_back_temp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trdet2_backButton_btn">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp">
+
+            <com.colleagues.austrom.views.TransactionReceiptView
+                android:id="@+id/trdet_TransactionReceipt_trec"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <com.colleagues.austrom.views.ActionButtonView
+                    android:id="@+id/actionButtonView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_weight="1"
+                    app:backgroundColor="@color/backgroundText"
+                    app:iconDrawable="@drawable/nc_navigation_add_new_entry_temp"
+                    app:text="New Detail" />
+
+                <com.colleagues.austrom.views.ActionButtonView
+                    android:id="@+id/actionButtonView2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_weight="1"
+                    app:backgroundColor="@color/backgroundText"
+                    app:iconDrawable="@drawable/ic_navigation_image_temp"
+                    app:iconTint="@color/primaryTextColor"
+                    app:text="Photo" />
+
+                <com.colleagues.austrom.views.ActionButtonView
+                    android:id="@+id/actionButtonView3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_weight="1"
+                    app:backgroundColor="@color/backgroundText"
+                    app:iconDrawable="@drawable/ic_navigation_split_temp"
+                    app:text="Split" />
+
+                <com.colleagues.austrom.views.ActionButtonView
+                    android:id="@+id/actionButtonView4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_weight="1"
+                    app:backgroundColor="@color/backgroundText"
+                    app:iconDrawable="@drawable/ic_navigation_copy_temp"
+                    app:text="Duplicate" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,3 +9,8 @@ fun LocalDate.toDayOfWeekAndShortDateFormat(): String {
     val chipDayOfWeek = this.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()).startWithUppercase()
     return "$chipDayOfWeek ${this.format(DateTimeFormatter.ofPattern("dd.MM"))}"
 }
+
+fun LocalDate.toDayOfWeekAndLongDateFormat(): String {
+    val chipDayOfWeek = this.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()).startWithUppercase()
+    return "$chipDayOfWeek ${this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}"
+}

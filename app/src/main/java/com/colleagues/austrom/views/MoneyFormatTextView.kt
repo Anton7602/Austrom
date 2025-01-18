@@ -5,15 +5,15 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.view.View
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.extensions.BaseView
 import com.colleagues.austrom.extensions.dpToPx
 import com.colleagues.austrom.extensions.spToPx
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Currency
 
-class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): View(context, attrs, defStyleAttr) {
+class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): BaseView(context, attrs, defStyleAttr) {
     companion object {
         const val DEFAULT_VIEW_SIZE_HEIGHT = 50
     }
@@ -132,25 +132,8 @@ class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: Att
         }
     }
 
-    private fun initPaints(textPaint: TextPaint, textSize: Float, textColor: Int) {
-        textPaint.color = textColor
-        textPaint.isAntiAlias = true
-        textPaint.textSize = textSize
-    }
-
-    private fun getTextBounds(text: String, textPaint: TextPaint): Rect {
-        val bounds = Rect()
-        textPaint.getTextBounds(text, 0, text.length, bounds)
-        return bounds
-    }
-
-    private fun getMoneyTextWidth(): Int {
-        return getTextBounds(moneyAmount.toMoneyFormat(), amountTextPaint).width() + getTextBounds(currencyCode, currencyTextPaint).width()+amountToCurrencyMargin.toInt()
-    }
-
-    private fun getMoneyTextHeight(): Int {
-        return getTextBounds(moneyAmount.toMoneyFormat(), amountTextPaint).height()
-    }
+    private fun getMoneyTextWidth(): Int { return  getTextWidth(moneyAmount.toMoneyFormat(), amountTextPaint) + getTextWidth(currencyCode, currencyTextPaint)+amountToCurrencyMargin.toInt() }
+    private fun getMoneyTextHeight(): Int { return getTextHeight(moneyAmount.toMoneyFormat(), amountTextPaint) }
 
     fun setValue(value: Double) { setValue(value, AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]?.symbol ?: "$") }
     fun setValue(value: Double, currency: Currency) { setValue(value, currency.symbol) }
@@ -160,5 +143,6 @@ class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: Att
         initPaints(amountTextPaint, amountTextSize, moneyAmountColor)
         initPaints(currencyTextPaint, currencyTextSize, currencyColor)
         calculateTextSizes()
+        invalidate()
     }
 }

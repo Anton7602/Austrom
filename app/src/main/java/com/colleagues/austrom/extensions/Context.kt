@@ -1,6 +1,8 @@
 package com.colleagues.austrom.extensions
 
 import android.content.Context
+import android.graphics.Paint
+import android.text.TextPaint
 import android.util.TypedValue
 
 /**
@@ -20,3 +22,4 @@ fun Context.dpToPx(dp: Int): Float {
 fun Context.spToPx(sp: Int): Float {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp.toFloat(), this.resources.displayMetrics);
 }
+

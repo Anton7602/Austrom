@@ -412,4 +412,8 @@
     <string name="income_desc">Деньги, полученные из различных источников, таких как зарплаты, инвестиции или деловая деятельность</string>
     <string name="expense_desc">Деньги, потраченные на товары и услуги, включая счета, покупки и другие расходы</string>
     <string name="transfer_desc">Деньги, перемещаемые с одного счета на другой, между активами, которыми вы владеете</string>
+    <string name="item">Наименование</string>
+    <string name="qty">К-во</string>
+    <string name="price">Цена</string>
+    <string name="total_amount">Общая Сумма</string>
 </resources>

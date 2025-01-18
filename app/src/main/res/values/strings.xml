@@ -413,4 +413,8 @@
     <string name="income_desc">Money received from various sources, such as salaries, investments, or business activities</string>
     <string name="expense_desc">Money spent on goods and services, including bills, purchases, and other costs</string>
     <string name="transfer_desc">Money moving from one account to another, between assets held by you</string>
+    <string name="item">Item</string>
+    <string name="qty">Qty</string>
+    <string name="price">Price</string>
+    <string name="total_amount">Total Amount</string>
 </resources>
