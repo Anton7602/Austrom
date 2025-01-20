@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity() {
         adjustInsets()
         fillInDefaultCategories()
         fillInDefaultCurrencies()
+        fetchAssetsFromCloud()
         fillInKnownUsers()
         setUpCurrencyListener()
         suggestSettingUpQuickAccessCode()
@@ -110,6 +111,11 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationBar.setOnItemSelectedListener { item -> handleBottomNavigationBarClick(item) }
         navigationLogOutButton.setOnClickListener { logOut() }
         onBackPressedDispatcher.addCallback(this) {}
+    }
+
+    private fun fetchAssetsFromCloud() {
+        val remoteDBProvider = FirebaseDatabaseProvider(this)
+        remoteDBProvider.setAssetListener(remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)!!, LocalDatabaseProvider(this))
     }
 
     private fun handleFilterButtonClick() {

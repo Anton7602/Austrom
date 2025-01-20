@@ -74,7 +74,7 @@ class AuthorizationActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         val rememberedUser = (application as AustromApplication).getRememberedUser()
         if (rememberedUser== null || rememberedUser!=user.userId) {
-            (application as AustromApplication).setRememberedUser(user.userId!!)
+            (application as AustromApplication).setRememberedUser(user.userId)
             intent.putExtra("newUser", true)
         }
         startActivity(intent)
@@ -88,6 +88,9 @@ class AuthorizationActivity : AppCompatActivity() {
             Toast.makeText(this, "Email or password is incorrect", Toast.LENGTH_LONG).show()
         } else {
             existingUser.password = passwordTextBox.text.toString()
+            if (existingUser.tokenId!=null) {
+                existingUser.tokenId = encryptionManager.decrypt(existingUser.tokenId!!, encryptionManager.generateEncryptionKey(existingUser.password, existingUser.userId.toByteArray()))
+            }
             val localProvider = LocalDatabaseProvider(this)
             if (localProvider.getUserByUserId(existingUser.userId)==null) {
                 localProvider.writeNewUser(existingUser)

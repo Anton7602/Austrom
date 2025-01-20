@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.google.firebase.database.Exclude
 import java.util.UUID
@@ -19,14 +20,20 @@ class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode:
     //isLiquid?
     //isRefillable??
 
-    fun delete(dbProvider: LocalDatabaseProvider) {
-        dbProvider.deleteAsset(this)
+    fun delete(localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider? = null) {
+        localDBProvider.deleteAsset(this)
         AustromApplication.activeAssets.remove(assetId)
+        if (remoteDBProvider!=null && AustromApplication.appUser!!.activeBudgetId!=null) {
+            remoteDBProvider.deleteAsset(this, remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)!!)
+        }
     }
 
-    fun add(dbProvider: LocalDatabaseProvider) {
-        dbProvider.createNewAsset(this)
+    fun add(localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider? = null) {
+        localDBProvider.createNewAsset(this)
         AustromApplication.activeAssets[this.assetId] = this
+        if (remoteDBProvider!=null && AustromApplication.appUser!!.activeBudgetId!=null) {
+            remoteDBProvider.createNewAsset(this, remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)!!)
+        }
     }
 
     companion object{

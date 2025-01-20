@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
@@ -103,7 +104,7 @@ class AssetPropertiesActivity : AppCompatActivity(){
             this.finish()
         } else {
             val dialog = DeletionConfirmationDialogFragment()
-            dialog.setOnDialogResultListener { isDeletionConfirmed ->  if (isDeletionConfirmed) { asset.delete(LocalDatabaseProvider(this)); this.finish() }}
+            dialog.setOnDialogResultListener { isDeletionConfirmed ->  if (isDeletionConfirmed) { asset.delete(LocalDatabaseProvider(this), FirebaseDatabaseProvider(this)); this.finish() }}
             dialog.show(supportFragmentManager, "AssetDeletion Dialog")
         }
     }

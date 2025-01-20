@@ -13,7 +13,7 @@ import com.colleagues.austrom.models.TransactionValidationType
 import com.colleagues.austrom.models.User
 import kotlinx.coroutines.runBlocking
 
-class LocalDatabaseProvider(private val context: Context) {
+class LocalDatabaseProvider(context: Context) {
     private val localDatabase = LocalDatabase.getDatabase(context)
 
     fun writeNewUser(user: User): String {
@@ -88,7 +88,7 @@ class LocalDatabaseProvider(private val context: Context) {
 
     fun createNewAsset(asset: Asset): String {
         val dao = localDatabase.assetDao()
-        asset.assetId = Asset.generateUniqueAssetKey();
+        //asset.assetId = Asset.generateUniqueAssetKey();
         runBlocking {
             dao.insertAsset(asset)
         }
@@ -129,7 +129,7 @@ class LocalDatabaseProvider(private val context: Context) {
         return assetMap
     }
 
-    fun getAssetsOfBudget(budget: Budget): MutableMap<String, Asset> {
+    fun getAssetsOfBudget(): MutableMap<String, Asset> {
         val assetMap = mutableMapOf<String, Asset>()
         val dao = localDatabase.assetDao()
         runBlocking {
@@ -145,7 +145,10 @@ class LocalDatabaseProvider(private val context: Context) {
         var asset: Asset? = null
         val dao = localDatabase.assetDao()
         runBlocking {
-            asset = dao.getAssetById(assetId).first()
+            val assets = dao.getAssetById(assetId)
+            if (assets.isNotEmpty()) {
+                asset = assets.first()
+            }
         }
         return asset
     }

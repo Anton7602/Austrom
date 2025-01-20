@@ -22,10 +22,12 @@ class BudgetJoinDialogFragment : BottomSheetDialogFragment() {
     //region Binding
     private lateinit var joinNewBudget: Button
     private lateinit var inviteCodeTextView: TextInputEditText
+    private lateinit var budgetNameTextView: TextInputEditText
     private lateinit var dialogHolder: CardView
     private fun bindViews(view: View) {
         joinNewBudget = view.findViewById(R.id.bjdial_submit_btn)
         inviteCodeTextView = view.findViewById(R.id.bjdial_InvitationCode_txt)
+        budgetNameTextView = view.findViewById(R.id.bjdial_budgetName_txt)
         dialogHolder = view.findViewById(R.id.bjdial_holder_crd)
     }
     //endregion
@@ -37,7 +39,6 @@ class BudgetJoinDialogFragment : BottomSheetDialogFragment() {
         inviteCodeTextView.requestFocus()
         joinNewBudget.setOnClickListener { joinNewBudget(); this.dismiss() }
     }
-
     private fun joinNewBudget() {
         val provider : IRemoteDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
         val budget = provider.getBudgetById(inviteCodeTextView.text.toString())

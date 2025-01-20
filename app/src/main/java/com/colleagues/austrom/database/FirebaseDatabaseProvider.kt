@@ -23,36 +23,37 @@ import java.time.format.DateTimeFormatter
 class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemoteDatabaseProvider{
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
-    override fun createNewUser(user: User): String? {
+    private fun syncAssets() {
+
+    }
+
+    private fun syncTransactions() {
+
+    }
+
+    override fun createNewUser(user: User) {
         val reference = database.getReference("users")
         val encryptionManager = EncryptionManager()
-        user.password = encryptionManager.hashPassword(user.password.toString())
-        val key = user.userId
-        user.userId = ""
-        reference.child(key).setValue(user)
-        user.userId =key
+        val password = user.password
+        user.password = encryptionManager.hashPassword(user.password)
+        reference.child(user.userId).setValue(user)
+        user.password = password
         Log.w("Debug", "New user added to DB with key: $user.userId")
-        return  user.userId
     }
 
     override fun updateUser(user: User) {
-        val userKey = user.userId
-        if (userKey.isNotEmpty()) {
-            database.getReference("users").child(userKey).setValue(user)
-            Log.w("Debug", "User entry with key ${user.userId} updated")
-        } else {
-            Log.w("Debug", "Provided user without id. Update canceled")
+        val password = user.password
+        user.password = EncryptionManager().hashPassword(user.password)
+        val token = user.tokenId
+        if (token!=null) {
+            val encryptionManager = EncryptionManager()
+            user.tokenId = encryptionManager.encrypt(token, encryptionManager.generateEncryptionKey(user.password, user.userId.toByteArray()))
         }
+        database.getReference("users").child(user.userId).setValue(user)
+        user.password = password
+        user.tokenId = token
     }
-
-    override fun deleteUser(user: User) {
-        if (user.userId!=null) {
-            database.getReference("users").child(user.userId).setValue(null)
-            Log.w("Debug", "User entry with key ${user.userId} deleted")
-        } else {
-            Log.w("Debug", "Provided user without id. Delete canceled")
-        }
-    }
+    override fun deleteUser(user: User) { database.getReference("users").child(user.userId).setValue(null) }
 
     override fun getUserByUserId(userId: String) : User? {
         var user : User? = null
@@ -69,9 +70,6 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
             try {
                 val snapshot = databaseQuery.get().await()
                 val user = snapshot.getValue(User::class.java)
-                if (user !=null) {
-                    user.userId = snapshot.key.toString()
-                }
                 user
             } catch (e: Exception) {
                 null
@@ -95,9 +93,6 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
                 val snapshot = databaseQuery.get().await()
                 if (snapshot.childrenCount>0) {
                     val user = snapshot.children.elementAt(0).getValue(User::class.java)
-                    if (user != null) {
-                        user.userId = snapshot.children.elementAt(0).key.toString()
-                    }
                     user
                 } else {
                     null
@@ -124,15 +119,11 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
                 val snapshot = databaseQuery.get().await()
                 if (snapshot.childrenCount>0) {
                     val user = snapshot.children.elementAt(0).getValue(User::class.java)
-                    if (user != null) {
-                        user.userId = snapshot.children.elementAt(0).key.toString()
-                    }
                     user
                 } else {
                     null
                 }
             } catch (e: Exception) {
-                var test = e.message
                 null
             }
         }
@@ -156,7 +147,6 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
                 for (child in snapshot.children) {
                     val user = child.getValue(User::class.java)
                     if (user!=null) {
-                        user.userId = child.key.toString()
                         usersList[child.key.toString()] = user
                     }
                 }
@@ -168,38 +158,9 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         }
     }
 
-    override fun createNewBudget(budget: Budget) : String? {
-        val reference = database.getReference("budgets")
-        val key = reference.push().key
-        if (key == null) {
-            Log.w("Debug", "Couldn't get push key for the budget")
-            return null
-        }
-        reference.child(key).setValue(budget)
-        Log.w("Debug", "New budget added to DB with key: $key")
-        return  key
-    }
-
-    override fun updateBudget(budget: Budget) {
-        val budgetKey = budget.budgetId
-        if (!budgetKey.isNullOrEmpty()) {
-            budget.budgetId = null
-            database.getReference("budgets").child(budgetKey).setValue(budget)
-            budget.budgetId = budgetKey
-            Log.w("Debug", "Budget entry with key ${budget.budgetId} updated")
-        } else {
-            Log.w("Debug", "Provided budget without id. Update canceled")
-        }
-    }
-
-    override fun deleteBudget(budget: Budget) {
-        if (budget.budgetId!=null) {
-            database.getReference("budgets").child(budget.budgetId!!).setValue(null)
-            Log.w("Debug", "Budget entry with key ${budget.budgetId} deleted")
-        } else {
-            Log.w("Debug", "Provided budget without id. Delete canceled")
-        }
-    }
+    override fun createNewBudget(budget: Budget) { database.getReference("budgets").child(budget.budgetId).setValue(budget) }
+    override fun updateBudget(budget: Budget) { database.getReference("budgets").child(budget.budgetId).setValue(budget) }
+    override fun deleteBudget(budget: Budget) { database.getReference("budgets").child(budget.budgetId).setValue(null)  }
 
 
     override fun getBudgetById(budgetId: String) : Budget? {
@@ -218,9 +179,6 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
                 val snapshot = databaseQuery.get().await()
                 if (snapshot.childrenCount>0) {
                     val budget = snapshot.getValue(Budget::class.java)
-                    if (budget!=null) {
-                        budget.budgetId = snapshot.key
-                    }
                     budget
                 } else {
                     null
@@ -231,33 +189,118 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         }
     }
 
-    override fun getCurrencies(): MutableMap<String, Currency> {
-        var currencies : MutableMap<String, Currency> = mutableMapOf()
-        activity?.lifecycleScope?.launch {
-            currencies = getCurrenciesAsyncOld()
+    override fun createNewAsset(asset: Asset, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("assets").child(budget.budgetId).child(asset.assetId)
+                .setValue(encryptionManager.encrypt(asset, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
         }
-        return currencies
     }
 
-    fun getCurrenciesAsyncOld(): MutableMap<String, Currency> {
-        val databaseQuery = database.getReference("currencies")
-        val currenciesList = mutableMapOf<String, Currency>()
-        return runBlocking {
-            try {
-                val snapshot = databaseQuery.get().await()
-                for (child in snapshot.children) {
-                    val currency = child.getValue(Currency::class.java)
-                    if (currency!=null) {
-                        currenciesList[child.key.toString()] = currency
-                    }
-                }
-                currenciesList
-            }
-            catch (e: Exception) {
-                mutableMapOf()
-            }
+    override fun updateAsset(asset: Asset, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("assets").child(budget.budgetId).child(asset.assetId)
+                .setValue(encryptionManager.encrypt(asset, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
         }
     }
+
+    override fun deleteAsset(asset: Asset, budget: Budget) {
+        database.getReference("assets").child(budget.budgetId).child(asset.assetId).setValue(null)
+    }
+
+    fun setAssetListener(budget: Budget, localDBProvider: LocalDatabaseProvider) {
+        val databaseReference = database.getReference("assets").child(budget.budgetId)
+        val assetListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val encryptionManager = EncryptionManager()
+                for (snapshotItem in dataSnapshot.children) {
+                    val localAsset = localDBProvider.getAssetById(snapshotItem.key.toString())
+                    if (localAsset==null) {
+                        val asset = encryptionManager.decryptAsset(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                        localDBProvider.createNewAsset(asset)
+                    }
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("Debug", "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        databaseReference.addValueEventListener(assetListener)
+    }
+
+    override fun createNewTransaction(transaction: Transaction, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
+                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+
+    override fun updateTransaction(transaction: Transaction, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
+                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+
+    override fun deleteTransaction(transaction: Transaction, budget: Budget) {
+        database.getReference("transactions").child(budget.budgetId).child(transaction.assetId).setValue(null)
+    }
+
+    fun setTransactionListener(budget: Budget, localDBProvider: LocalDatabaseProvider) {
+        val databaseReference = database.getReference("transactions").child(budget.budgetId)
+        val transactionListener =  object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val encryptionManager = EncryptionManager()
+                for (snapshotItem in dataSnapshot.children) {
+                    val localTransaction = localDBProvider.getTransactionByID(snapshotItem.key.toString())
+                    if (localTransaction==null) {
+                        val transaction = encryptionManager.decryptTransaction(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                        val asset = AustromApplication.activeAssets[transaction.assetId]
+                        if (asset!=null) {
+                            localDBProvider.submitNewTransaction(transaction, asset)
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("Debug", "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        databaseReference.addValueEventListener(transactionListener)
+    }
+
+//    override fun getCurrencies(): MutableMap<String, Currency> {
+//        var currencies : MutableMap<String, Currency> = mutableMapOf()
+//        activity?.lifecycleScope?.launch {
+//            currencies = getCurrenciesAsyncOld()
+//        }
+//        return currencies
+//    }
+//
+//    fun getCurrenciesAsyncOld(): MutableMap<String, Currency> {
+//        val databaseQuery = database.getReference("currencies")
+//        val currenciesList = mutableMapOf<String, Currency>()
+//        return runBlocking {
+//            try {
+//                val snapshot = databaseQuery.get().await()
+//                for (child in snapshot.children) {
+//                    val currency = child.getValue(Currency::class.java)
+//                    if (currency!=null) {
+//                        currenciesList[child.key.toString()] = currency
+//                    }
+//                }
+//                currenciesList
+//            }
+//            catch (e: Exception) {
+//                mutableMapOf()
+//            }
+//        }
+//    }
 
     fun setCurrenciesListener() {
         val databaseReference = database.getReference("currencies")
@@ -279,12 +322,8 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
                         dbProvider.writeCurrency(currency.value)
                     }
                 }
-
             }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.w("Debug", "loadPost:onCancelled", databaseError.toException())
-            }
+            override fun onCancelled(databaseError: DatabaseError) { Log.w("Debug", "loadPost:onCancelled", databaseError.toException()) }
         }
         databaseReference.addValueEventListener(currencyListener)
     }

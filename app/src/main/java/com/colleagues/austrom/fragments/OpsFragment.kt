@@ -8,16 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.colleagues.austrom.AssetCreationActivity
 import com.colleagues.austrom.AustromApplication
-import com.colleagues.austrom.LiabilityCreationActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionCreationActivity
-import com.colleagues.austrom.TransactionPropertiesActivity
 import com.colleagues.austrom.TransactionPropertiesActivityNew
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.AssetTypeSelectionDialogFragment
 import com.colleagues.austrom.dialogs.TransactionFilter
 import com.colleagues.austrom.dialogs.TransactionTypeSelectionDialogFragment
 import com.colleagues.austrom.models.Budget

@@ -28,24 +28,13 @@ class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         budgetName.text = activeBudget.budgetName
-        budgetInviteCode.text = activeBudget.budgetId
+        budgetInviteCode.text = AustromApplication.appUser!!.tokenId
 
         leaveButton.setOnClickListener { leaveBudget() }
     }
 
     private fun leaveBudget() {
-        val provider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
-        val user = AustromApplication.appUser
-        if (user?.userId != null) {
-            user.activeBudgetId = null
-            activeBudget.users!!.remove(user.userId)
-            provider.updateUser(user)
-            if (activeBudget.users.isEmpty()) {
-                provider.deleteBudget(activeBudget)
-            } else {
-                provider.updateBudget(activeBudget)
-            }
-            (requireActivity() as MainActivity).switchFragment(SharedBudgetEmptyFragment())
-        }
+        activeBudget.leave(FirebaseDatabaseProvider(requireActivity()))
+        (requireActivity() as MainActivity).switchFragment(SharedBudgetEmptyFragment())
     }
 }

@@ -35,9 +35,6 @@
             android:name=".TransactionPropertiesActivityNew"
             android:exported="false" />
         <activity
-            android:name=".LiabilityCreationActivity"
-            android:exported="false" />
-        <activity
             android:name=".TransactionCreationActivity"
             android:exported="false" />
         <activity

@@ -57,16 +57,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         val dbProvider = LocalDatabaseProvider(requireActivity())
         val user = AustromApplication.appUser
         if (user!=null) {
-            val activeAssets = if (user.activeBudgetId!=null) {
-                val budget = Budget()
-                if (budget!=null) {
-                    dbProvider.getAssetsOfBudget(budget)
-                } else {
-                    dbProvider.getAssetsOfUser(user)
-                }
-            } else {
-                dbProvider.getAssetsOfUser(user)
-            }
+            val activeAssets =  dbProvider.getAssetsOfBudget()
             if (activeAssets.isNotEmpty()) {
                 val filteredAssets = (activeAssets.filter { entry ->
                     !entry.value.isPrivate || entry.value.userId==AustromApplication.appUser?.userId }).toMutableMap()

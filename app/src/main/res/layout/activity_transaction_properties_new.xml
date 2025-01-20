@@ -18,6 +18,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_navigation_back_temp" />
 
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="4dp"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/trdet2_backButton_btn"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/trdet2_backButton_btn"
+        app:srcCompat="@drawable/ic_navigation_more_temp" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"

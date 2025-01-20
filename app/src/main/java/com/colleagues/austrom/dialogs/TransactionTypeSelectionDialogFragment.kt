@@ -2,7 +2,6 @@ package com.colleagues.austrom.dialogs
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AssetCreationActivity
 import com.colleagues.austrom.AustromApplication
-import com.colleagues.austrom.LiabilityCreationActivity
 import com.colleagues.austrom.R
-import com.colleagues.austrom.adapters.AssetTypeRecyclerAdapter
 import com.colleagues.austrom.adapters.TransactionTypeRecyclerAdapter
 import com.colleagues.austrom.models.AssetType
 import com.colleagues.austrom.models.TransactionType

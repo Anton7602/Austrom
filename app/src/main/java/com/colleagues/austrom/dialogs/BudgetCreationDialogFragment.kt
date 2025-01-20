@@ -11,6 +11,7 @@ import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.fragments.SharedBudgetFragment
 import com.colleagues.austrom.models.Budget
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -40,18 +41,13 @@ class BudgetCreationDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun submitNewBudget() {
-        val budgetCreator = AustromApplication.appUser
-        if (budgetCreator!=null) {
-            val provider : IRemoteDatabaseProvider = FirebaseDatabaseProvider(requireActivity())
-            val newBudget = Budget(
-                budgetName =  budgetNameTextView.text.toString(),
-                users =  arrayListOf(budgetCreator.userId)
-            )
-            newBudget.budgetId = provider.createNewBudget(newBudget)
-            budgetCreator.activeBudgetId = newBudget.budgetId
-            if (budgetCreator.activeBudgetId!=null) {
-                provider.updateUser(budgetCreator)
+        val budgetOwner = AustromApplication.appUser
+        if (budgetOwner!=null) {
+            val newBudget = Budget.createNewBudget(budgetOwner, budgetNameTextView.text.toString(), LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity()))
+            if (budgetOwner.activeBudgetId!=null) {
                 (requireActivity() as MainActivity).switchFragment(SharedBudgetFragment(newBudget))
+            } else {
+                //TODO("Something Went Horribly Wrong. React to it!!")
             }
         }
     }

@@ -17,6 +17,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
 import com.colleagues.austrom.extensions.dpToPx
@@ -160,7 +161,6 @@ class AssetCreationActivity : AppCompatActivity() {
 
     private fun addAsset() {
         if (isAssetValid()) {
-            val dbProvider = LocalDatabaseProvider(this)
             val amount = currentBalanceTextView.text.toString().parseToDouble() ?: return
 
             val newAsset = Asset(
@@ -173,7 +173,7 @@ class AssetCreationActivity : AppCompatActivity() {
                 AssetType.DEPOSIT -> newAsset.isPrivate //TODO("Update later")
                 else -> {}
             }
-            newAsset.add(dbProvider)
+            newAsset.add(LocalDatabaseProvider(this), FirebaseDatabaseProvider(this))
             this.finish()
         }
     }
