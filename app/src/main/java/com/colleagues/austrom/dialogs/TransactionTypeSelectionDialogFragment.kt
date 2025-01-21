@@ -53,7 +53,8 @@ class TransactionTypeSelectionDialogFragment : BottomSheetDialogFragment() {
 
     private fun setUpRecyclerViews() {
         transactionTypeHolder.layoutManager = LinearLayoutManager(activity)
-        val adapterTransactionType = TransactionTypeRecyclerAdapter(TransactionType.entries, requireActivity() as AppCompatActivity)
+        val transactionTypes = if (AustromApplication.activeAssets.size<2) listOf(TransactionType.EXPENSE, TransactionType.INCOME) else TransactionType.entries
+        val adapterTransactionType = TransactionTypeRecyclerAdapter(transactionTypes, requireActivity() as AppCompatActivity)
         adapterTransactionType.setOnItemClickListener { transactionType -> returnResult(transactionType)}
         transactionTypeHolder.adapter = adapterTransactionType
     }

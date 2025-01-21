@@ -29,16 +29,11 @@
 
     </com.colleagues.austrom.views.SettingsButtonView>
 
-    <View
-        android:id="@+id/divider16"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/secondaryTextColor" />
-
     <com.colleagues.austrom.views.SettingsButtonView
         android:id="@+id/set_categories_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
         app:primaryText="@string/categories"
         app:secondaryText="No Categories Present"
         app:settingIcon="@drawable/ic_navigation_categories_temp" />

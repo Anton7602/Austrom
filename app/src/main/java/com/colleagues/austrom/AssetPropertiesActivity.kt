@@ -4,11 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
@@ -28,7 +31,7 @@ import com.colleagues.austrom.models.Transaction
 class AssetPropertiesActivity : AppCompatActivity(){
     //region Binding
     private lateinit var backButton: ImageButton
-    private lateinit var deleteButton: ImageButton
+    private lateinit var moreButton: ImageButton
     private lateinit var assetName: TextView
     private lateinit var assetOwner: TextView
     private lateinit var assetBalance: TextView
@@ -41,7 +44,7 @@ class AssetPropertiesActivity : AppCompatActivity(){
     private lateinit var dbProvider: LocalDatabaseProvider
     private fun bindViews() {
         backButton = findViewById(R.id.asdet_back_btn)
-        deleteButton = findViewById(R.id.asdet_remove_btn)
+        moreButton = findViewById(R.id.asdet_remove_btn)
         assetName = findViewById(R.id.asdet_assetName_txt)
         assetOwner = findViewById(R.id.asdet_owner_txt)
         assetBalance = findViewById(R.id.asdet_balance_txt)
@@ -89,8 +92,22 @@ class AssetPropertiesActivity : AppCompatActivity(){
 
         assetPrimary.setOnClickListener { markAssetAsPrimary() }
         assetPrivate.setOnClickListener { markAssetAsPrivate() }
-        deleteButton.setOnClickListener { tryDeleteAsset() }
+        moreButton.setOnClickListener { showMenu(moreButton, R.menu.asset_context_menu) }
         backButton.setOnClickListener { this.finish() }
+    }
+
+    private fun showMenu(v: View, @MenuRes menuRes: Int) {
+        val popup = PopupMenu(this, v)
+        popup.menuInflater.inflate(menuRes, popup.menu)
+        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+            when (menuItem.itemId) {
+                R.id.asconmenu_delete -> { tryDeleteAsset()}
+                R.id.asconmenu_edit -> {  } //TODO("Edit Section")
+            }
+            true
+        }
+        popup.setOnDismissListener { }
+        popup.show()
     }
 
     private fun retrieveAssetFromIntent() {
@@ -100,7 +117,7 @@ class AssetPropertiesActivity : AppCompatActivity(){
 
     private fun tryDeleteAsset() {
         if (transactionsOfAsset.isEmpty()) {
-            dbProvider.deleteAsset(asset)
+            asset.delete(LocalDatabaseProvider(this), FirebaseDatabaseProvider(this))
             this.finish()
         } else {
             val dialog = DeletionConfirmationDialogFragment()
@@ -133,8 +150,8 @@ class AssetPropertiesActivity : AppCompatActivity(){
         assetPrimary.isChecked = (asset.assetId == AustromApplication.appUser?.primaryPaymentMethod)
         assetPrivate.isChecked = asset.isPrivate
         assetPrivate.isEnabled = AustromApplication.appUser?.userId == asset.userId
-        deleteButton.isEnabled = AustromApplication.appUser?.userId == asset.userId
-        if (!deleteButton.isEnabled) deleteButton.setColorFilter(R.color.dark_grey)
+        moreButton.isEnabled = AustromApplication.appUser?.userId == asset.userId
+        if (!moreButton.isEnabled) moreButton.setColorFilter(R.color.dark_grey)
     }
 
     private fun setUpRecyclerView() {

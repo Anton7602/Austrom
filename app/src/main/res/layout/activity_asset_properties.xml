@@ -19,16 +19,16 @@
 
     <ImageButton
         android:id="@+id/asdet_remove_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@color/transparent"
         android:contentDescription="@string/delete"
         android:padding="8dp"
-        android:src="@drawable/ic_navigation_delete_temp"
+        android:src="@drawable/ic_navigation_more_temp"
         app:layout_constraintBottom_toBottomOf="@+id/asdet_back_btn"
+        app:layout_constraintDimensionRatio="w,1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/expenseRed" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/asdet_assetCard_crd"

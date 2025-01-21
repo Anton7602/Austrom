@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.colleagues.austrom.adapters.AssetSquareRecyclerAdapter
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CategorySelectionDialogFragment
 import com.colleagues.austrom.extensions.parseToDouble
@@ -116,6 +117,8 @@ class TransactionCreationActivity : AppCompatActivity() {
         bindViews()
         setUpRecyclerViews()
 
+        if (AustromApplication.activeAssets.size<2) { transferChip.visibility = View.GONE }
+
         backButton.setOnClickListener { finish() }
 
         incomeChip.setOnClickListener { switchChipSelection(incomeChip.id) }
@@ -126,8 +129,8 @@ class TransactionCreationActivity : AppCompatActivity() {
             TransactionType.INCOME -> R.color.incomeGreenBackground
             TransactionType.TRANSFER -> R.color.transferYellowBackground
         }))
-        sourceHolderLabel.text = (if (transactionType==TransactionType.INCOME) getString(R.string.toAsset) else getString(R.string.fromAsset)).startWithUppercase()
-        targetHolderLabel.text = getString(R.string.toAsset).startWithUppercase()
+        sourceHolderLabel.text = (if (transactionType==TransactionType.INCOME) getString(R.string.payee) else getString(R.string.payer)).startWithUppercase()
+        targetHolderLabel.text = getString(R.string.payee).startWithUppercase()
 
         dateSelector.setFieldValue(selectedDate.toDayOfWeekAndShortDateFormat())
         dateSelector.setOnClickListener {
@@ -169,9 +172,9 @@ class TransactionCreationActivity : AppCompatActivity() {
                 transactionName = primarySelectedAsset!!.assetName
             )
             secondaryTransaction.linkTo(primaryTransaction)
-            secondaryTransaction.submit(dbProvider)
+            secondaryTransaction.submit(dbProvider, FirebaseDatabaseProvider(this))
         }
-        primaryTransaction.submit(dbProvider)
+        primaryTransaction.submit(dbProvider, FirebaseDatabaseProvider(this))
         this.finish()
     }
 
@@ -180,6 +183,7 @@ class TransactionCreationActivity : AppCompatActivity() {
             val categorySelectionDialog = CategorySelectionDialogFragment(transactionType)
             categorySelectionDialog.setOnDialogResultListener{ category ->
                 categorySelector.setFieldValue(category.name)
+                selectedCategory = category
             }
             categorySelectionDialog.show(supportFragmentManager, "CategorySelectionDialog")
         }
@@ -197,9 +201,9 @@ class TransactionCreationActivity : AppCompatActivity() {
         expenseChip.isChecked = (chipId==R.id.trcreat_expense_chp)
         transferChip.isChecked = (chipId==R.id.trcreat_transfer_chp)
 
-        transactionNameTil.hint = if (transactionType==TransactionType.EXPENSE) getString(R.string.toAsset).startWithUppercase() else getString(R.string.fromAsset).startWithUppercase()
-        sourceHolderLabel.text = (if (transactionType==TransactionType.INCOME) getString(R.string.toAsset) else getString(R.string.fromAsset)).startWithUppercase()
-        targetHolderLabel.text = getString(R.string.toAsset).startWithUppercase()
+        transactionNameTil.hint = if (transactionType==TransactionType.EXPENSE) getString(R.string.payee).startWithUppercase() else getString(R.string.payer).startWithUppercase()
+        sourceHolderLabel.text = (if (transactionType==TransactionType.INCOME) getString(R.string.payee).startWithUppercase() else getString(R.string.payer)).startWithUppercase()
+        targetHolderLabel.text = getString(R.string.payee).startWithUppercase()
 
         transactionNameTxt.visibility = if (transactionType!=TransactionType.TRANSFER) View.VISIBLE else View.GONE
         categorySelector.visibility = if (transactionType!=TransactionType.TRANSFER) View.VISIBLE else View.GONE

@@ -1,13 +1,10 @@
 package com.colleagues.austrom
 
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -68,8 +65,6 @@ class AssetCreationActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val softKeyboardHeightInset = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
-            //val bottomInset = insets.systemWindowInsetBottom
-            //v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, if (softKeyboardHeightInset==0) systemBars.bottom else softKeyboardHeightInset)
             insets
         }

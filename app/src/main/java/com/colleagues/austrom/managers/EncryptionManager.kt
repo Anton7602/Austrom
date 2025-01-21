@@ -7,6 +7,8 @@ import com.colleagues.austrom.models.Transaction
 import com.google.gson.Gson
 import org.mindrot.jbcrypt.BCrypt
 import java.security.NoSuchAlgorithmException
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -39,7 +41,8 @@ class EncryptionManager {
         return Base64.encodeToString(encryptedBytes, Base64.DEFAULT)
     }
     fun encrypt(asset: Asset, secretKey: SecretKey): String { return encrypt(Gson().toJson(asset), secretKey) }
-    fun encrypt(transaction: Transaction, secretKey: SecretKey): String { return encrypt(Gson().toJson(transaction), secretKey)  }
+    //fun encrypt(transaction: Transaction, secretKey: SecretKey): String { return encrypt(Gson().toJson(transaction), secretKey) }
+    fun encrypt(transaction: Transaction, secretKey: SecretKey): String { return encrypt(transaction.serialize(), secretKey) }
 
     fun decrypt(encryptedData: String, encryptionKey: SecretKey): String {
         val encryptedBytes = Base64.decode(encryptedData, Base64.DEFAULT)
@@ -49,7 +52,8 @@ class EncryptionManager {
         return String(decryptedBytes, Charsets.UTF_8)
     }
     fun decryptAsset(encryptedData: String, secretKey: SecretKey): Asset { return Gson().fromJson(decrypt(encryptedData, secretKey), Asset::class.java) }
-    fun decryptTransaction(encryptedData: String, secretKey: SecretKey): Transaction { return Gson().fromJson(decrypt(encryptedData, secretKey), Transaction::class.java) }
+    //fun decryptTransaction(encryptedData: String, secretKey: SecretKey): Transaction { return Gson().fromJson(decrypt(encryptedData, secretKey), Transaction::class.java) }
+    fun decryptTransaction(encryptedData: String, secretKey: SecretKey): Transaction { return Transaction.deserialize(decrypt(encryptedData, secretKey))  }
 
     fun generateEncryptionKey(): SecretKey {
         val keyGenerator = KeyGenerator.getInstance("AES")
@@ -75,5 +79,17 @@ class EncryptionManager {
     fun convertStringToSecretKey(encodedKey: String?): SecretKey {
         val keyBytes = Base64.decode(encodedKey, Base64.DEFAULT)
         return SecretKeySpec(keyBytes, 0, keyBytes.size, "AES")
+    }
+
+    private fun parseDateToIntDate(date: LocalDate) : Int {
+        return (date.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).toInt()
+    }
+
+    private fun parseIntDateToDate(intDate: Int?) : LocalDate {
+        if (intDate==null || intDate.toString().length!=8) return LocalDate.now()
+        val year = intDate.toString().substring(0,4).toInt()
+        val month = intDate.toString().substring(4,6).toInt()
+        val day = intDate.toString().substring(6).toInt()
+        return LocalDate.of(year, month, day)
     }
 }

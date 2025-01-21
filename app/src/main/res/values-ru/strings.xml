@@ -416,4 +416,10 @@
     <string name="qty">К-во</string>
     <string name="price">Цена</string>
     <string name="total_amount">Общая Сумма</string>
+    <string name="edit">Редактировать</string>
+    <string name="payee">Получатель Платежа</string>
+    <string name="payer">Отправитель Платежа</string>
+    <string name="export_to_csv_file">Экспортировать в CSV файл</string>
+    <string name="operation_log">Журнал Операций</string>
+    <string name="history_of_imports">История Импорта</string>
 </resources>

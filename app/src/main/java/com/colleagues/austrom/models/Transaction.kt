@@ -6,8 +6,11 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.extensions.serialize
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @Entity(foreignKeys = [ForeignKey(entity = Asset::class,
@@ -29,6 +32,10 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
 
     fun transactionType(): TransactionType { return if (linkedTransactionId!=null) TransactionType.TRANSFER else if (amount<0) TransactionType.EXPENSE else TransactionType.INCOME }
 
+    fun serialize(): String {
+        return "$assetId,$amount,$categoryId,${transactionDate.serialize()},$transactionName,$comment,$transactionId,$userId,$linkedTransactionId,$isPrivate"
+    }
+
     fun linkTo(transaction: Transaction) {
         if (transactionId==transaction.transactionId) throw IllegalArgumentException("Link can not be pointing on itself")
         if (linkedTransactionId!=null || transaction.linkedTransactionId!=null) throw IllegalArgumentException("One of transaction is already in linked state")
@@ -45,18 +52,21 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
         this.clearLink()
     }
 
-    fun submit(dbProvider: LocalDatabaseProvider) {
-        when (this.validate()) {
-            TransactionValidationType.VALID -> {
-                val involvedAsset = AustromApplication.activeAssets[assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
-                involvedAsset.amount+=this.amount
-                dbProvider.submitNewTransaction(this, involvedAsset)
+    fun submit(localDBProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider? = null) {
+        if (this.validate()==TransactionValidationType.VALID) {
+            val involvedAsset = AustromApplication.activeAssets[assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID )
+            involvedAsset.amount += this.amount
+            localDBProvider.submitNewTransaction(this, involvedAsset)
+            if (remoteDBProvider != null && AustromApplication.appUser?.activeBudgetId != null) {
+                val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+                if (currentBudget != null) {
+                    remoteDBProvider.createNewTransaction(this, currentBudget)
+                }
             }
-            else -> throw InvalidTransactionException(this.validate())
-        }
+        } else throw InvalidTransactionException(this.validate())
     }
 
-    fun cancel(dbProvider: LocalDatabaseProvider) {
+    fun cancel(dbProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider? = null) {
         when (this.transactionType()) {
             TransactionType.TRANSFER -> {
                 val involvedAsset = AustromApplication.activeAssets[assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
@@ -66,11 +76,24 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
                 involvedAsset.amount-=this.amount
                 involvedAssetOfLinkedTransaction.amount-=linkedTransaction.amount
                 dbProvider.cancelTransaction(this)
+                if (remoteDBProvider!= null && AustromApplication.appUser?.activeBudgetId!=null) {
+                    val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+                    if (currentBudget!=null) {
+                        remoteDBProvider.deleteTransaction(this, currentBudget)
+                        remoteDBProvider.deleteTransaction(linkedTransaction, currentBudget)
+                    }
+                }
             }
             else -> {
                 val involvedAsset = AustromApplication.activeAssets[assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
                 involvedAsset.amount-=this.amount
                 dbProvider.cancelTransaction(this)
+                if (remoteDBProvider!= null && AustromApplication.appUser?.activeBudgetId!=null) {
+                    val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+                    if (currentBudget!=null) {
+                        remoteDBProvider.deleteTransaction(this, currentBudget)
+                    }
+                }
             }
         }
     }
@@ -109,6 +132,23 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
 
         fun generateUniqueTransactionKey() : String {
             return UUID.randomUUID().toString()
+        }
+
+        fun deserialize(serializedTransaction: String): Transaction {
+            val dataParts = serializedTransaction.split(",")
+            val transaction = Transaction(
+                assetId = dataParts[0],
+                amount = dataParts[1].toDouble(),
+                categoryId = dataParts[2],
+                transactionDate = LocalDate.parse(dataParts[3], DateTimeFormatter.ISO_LOCAL_DATE) ,
+                transactionName = dataParts[4],
+                comment = if (dataParts[5]=="null") null else dataParts[5],
+            )
+            transaction.transactionId = dataParts[6]
+            transaction.userId = dataParts[7]
+            transaction.linkedTransactionId = if (dataParts[8]=="null") null else dataParts[8]
+            transaction.isPrivate=dataParts[9].toBoolean()
+            return transaction
         }
     }
 }

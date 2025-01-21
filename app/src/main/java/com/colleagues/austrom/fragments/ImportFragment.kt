@@ -7,6 +7,7 @@ import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import com.colleagues.austrom.ExportActivity
 import com.colleagues.austrom.ImportParametersActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.views.SettingsButtonView
@@ -14,8 +15,10 @@ import com.colleagues.austrom.views.SettingsButtonView
 class ImportFragment : Fragment(R.layout.fragment_import) {
     //region Binding
     private lateinit var importFromCSVFileButton: SettingsButtonView
+    private lateinit var exportToCSVFileButton: SettingsButtonView
     private fun bindViews(view: View) {
         importFromCSVFileButton = view.findViewById(R.id.imprt_fromCsv_btn)
+        exportToCSVFileButton = view.findViewById(R.id.imprt_toCsv_btn)
     }
     //endregion
     private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
@@ -24,7 +27,8 @@ class ImportFragment : Fragment(R.layout.fragment_import) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         filePickerLauncher = initializeActivityForResult()
-        importFromCSVFileButton.setOnClickListener {  pickCsvFile() }
+        importFromCSVFileButton.setOnClickListener { pickCsvFile() }
+        exportToCSVFileButton.setOnClickListener { startActivity(Intent(requireActivity(), ExportActivity::class.java)) }
     }
 
     private fun initializeActivityForResult(): ActivityResultLauncher<Intent> {

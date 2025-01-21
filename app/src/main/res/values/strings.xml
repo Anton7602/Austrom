@@ -417,4 +417,10 @@
     <string name="qty">Qty</string>
     <string name="price">Price</string>
     <string name="total_amount">Total Amount</string>
+    <string name="edit">Edit</string>
+    <string name="payee">Payee</string>
+    <string name="payer">Payer</string>
+    <string name="export_to_csv_file">Export to CSV file</string>
+    <string name="operation_log">Operation Log</string>
+    <string name="history_of_imports">History of Imports</string>
 </resources>

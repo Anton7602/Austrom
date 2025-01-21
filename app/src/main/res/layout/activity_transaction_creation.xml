@@ -204,7 +204,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:hint="@string/to">
+                android:hint="@string/payee">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/trcreat_transactionName_txt"
@@ -236,7 +236,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingStart="4dp"
-                        android:text="@string/fromAsset"
+                        android:text="@string/payer"
                         android:textAppearance="@style/SecondaryCardText"
                         android:textSize="16sp" />
 

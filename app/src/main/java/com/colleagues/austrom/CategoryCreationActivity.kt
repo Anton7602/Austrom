@@ -1,20 +1,30 @@
 package com.colleagues.austrom
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CategoryPullDialogFragment
 import com.colleagues.austrom.dialogs.IconSelectionDialogFragment
 import com.colleagues.austrom.managers.Icon
 import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.textfield.TextInputEditText
 
@@ -23,14 +33,16 @@ class CategoryCreationActivity : AppCompatActivity() {
     private lateinit var categoryName: TextInputEditText
     private lateinit var selectedIconImage: ImageView
     private lateinit var submitButton: Button
-    private lateinit var deleteButton: ImageButton
+    private lateinit var moreButton: ImageButton
     private lateinit var backButton: ImageButton
+    private lateinit var transactionHolder: RecyclerView
     private fun bindViews() {
         selectedIconImage = findViewById(R.id.catcr_categoryIcon_img)
         categoryName = findViewById(R.id.catcr_categoryName_txt)
         submitButton = findViewById(R.id.catcr_acceptButton_btn)
-        deleteButton = findViewById(R.id.catcr_negativeResult_btn)
+        moreButton = findViewById(R.id.catcr_negativeResult_btn)
         backButton = findViewById(R.id.catcr_backButton_btn)
+        transactionHolder = findViewById(R.id.catcr_transactionHolder_rcv)
         //iconHolder = findViewById(R.id.catcr_categoryIcon_rcv)
     }
     //endregion
@@ -38,14 +50,16 @@ class CategoryCreationActivity : AppCompatActivity() {
     private fun adjustInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            val softKeyboardHeightInset = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, if (softKeyboardHeightInset==0) systemBars.bottom else softKeyboardHeightInset)
             insets
         }
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
     // endregion
-    private var isExpenseCategoryBeingCreated = false;
+    private var isExpenseCategoryBeingCreated = false
+    private var transactionsOfCategory = mutableListOf<Transaction>()
     private var category: Category? = null
     private var selectedIcon: Icon = Icon.I0
 
@@ -56,11 +70,38 @@ class CategoryCreationActivity : AppCompatActivity() {
         adjustInsets()
         bindViews()
         getCategoryFromIntent()
+        setUpRecyclerView()
         backButton.setOnClickListener { finish() }
         selectedIconImage.setOnClickListener { launchIconSelectionDialog() }
         submitButton.setOnClickListener { commitCategory() }
-        deleteButton.setOnClickListener { tryDeleteCategory() }
+        moreButton.setOnClickListener { showMenu(moreButton, R.menu.category_context_menu) }
         AustromApplication.showKeyboard(this, categoryName)
+    }
+
+    private fun setUpRecyclerView() {
+        if (category!=null) {
+            val dbProvider = LocalDatabaseProvider(this)
+            transactionsOfCategory = dbProvider.getTransactionOfCategory(category!!)
+            //noTransactionsText.visibility = if (transactionsOfAsset.isEmpty()) {View.VISIBLE} else {View.GONE}
+            transactionHolder.layoutManager = LinearLayoutManager(this)
+            val groupedTransactions = Transaction.groupTransactionsByDate(transactionsOfCategory)
+            val adapter = TransactionGroupRecyclerAdapter(groupedTransactions, this)
+            adapter.setOnItemClickListener { transaction -> startActivity(Intent(this, TransactionPropertiesActivity::class.java).putExtra("transactionId", transaction.transactionId)) }
+            transactionHolder.adapter = adapter
+        }
+    }
+
+    private fun showMenu(v: View, @MenuRes menuRes: Int) {
+        val popup = PopupMenu(this, v)
+        popup.menuInflater.inflate(menuRes, popup.menu)
+        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+            when (menuItem.itemId) {
+                R.id.catconmenu_delete -> {tryDeleteCategory()}
+            }
+            true
+        }
+        popup.setOnDismissListener { }
+        popup.show()
     }
 
     private fun getCategoryFromIntent() {
@@ -71,13 +112,14 @@ class CategoryCreationActivity : AppCompatActivity() {
                 categoryName.setText(category!!.name)
                 selectedIconImage.setImageResource(category!!.imgReference.resourceId)
                 selectedIcon = category!!.imgReference
-                deleteButton.setImageResource(R.drawable.ic_navigation_delete_temp)
+                moreButton.setImageResource(R.drawable.ic_navigation_more_temp)
                 submitButton.text = getString(R.string.accept)
             }
         } else {
             if (intent.getBooleanExtra("isExpenseCategory", false)){
                 isExpenseCategoryBeingCreated = true
             }
+            moreButton.visibility = View.GONE
             submitButton.text = getString(R.string.add_new_category)
         }
     }

@@ -16,6 +16,8 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
 
@@ -31,6 +33,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Austrom"
         tools:targetApi="34">
+        <activity
+            android:name=".ExportActivity"
+            android:exported="false" />
         <activity
             android:name=".TransactionPropertiesActivityNew"
             android:exported="false" />

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,21 +9,45 @@
     android:orientation="vertical"
     tools:context=".fragments.SharedBudgetEmptyFragment">
 
-    <Button
-        android:id="@+id/shbe_createBudget_btn"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:text="@string/create_budget" />
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        app:cardBackgroundColor="@color/backgroundText"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/shbe_joinBudget_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:text="@string/join_budget" />
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="100dp">
+
+            <Button
+                android:id="@+id/shbe_createBudget_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:backgroundTint="@color/confirmationColor"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:text="@string/create_budget" />
+
+            <Button
+                android:id="@+id/shbe_joinBudget_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:backgroundTint="@color/confirmationColor"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:text="@string/join_budget" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

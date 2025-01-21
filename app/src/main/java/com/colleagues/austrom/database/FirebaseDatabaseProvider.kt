@@ -43,12 +43,12 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
 
     override fun updateUser(user: User) {
         val password = user.password
-        user.password = EncryptionManager().hashPassword(user.password)
         val token = user.tokenId
         if (token!=null) {
             val encryptionManager = EncryptionManager()
             user.tokenId = encryptionManager.encrypt(token, encryptionManager.generateEncryptionKey(user.password, user.userId.toByteArray()))
         }
+        user.password = EncryptionManager().hashPassword(user.password)
         database.getReference("users").child(user.userId).setValue(user)
         user.password = password
         user.tokenId = token
@@ -206,7 +206,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
     }
 
     override fun deleteAsset(asset: Asset, budget: Budget) {
-        database.getReference("assets").child(budget.budgetId).child(asset.assetId).setValue(null)
+        database.getReference("assets").child(budget.budgetId).child(asset.assetId).setValue("-")
     }
 
     fun setAssetListener(budget: Budget, localDBProvider: LocalDatabaseProvider) {
@@ -217,8 +217,14 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
                 for (snapshotItem in dataSnapshot.children) {
                     val localAsset = localDBProvider.getAssetById(snapshotItem.key.toString())
                     if (localAsset==null) {
-                        val asset = encryptionManager.decryptAsset(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
-                        localDBProvider.createNewAsset(asset)
+                        if (snapshotItem.value!="-") {
+                            val asset = encryptionManager.decryptAsset(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                            localDBProvider.createNewAsset(asset)
+                        }
+                    } else {
+                        if (snapshotItem.value=="-") {
+                            localAsset.delete(localDBProvider)
+                        }
                     }
                 }
             }
@@ -247,7 +253,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
     }
 
     override fun deleteTransaction(transaction: Transaction, budget: Budget) {
-        database.getReference("transactions").child(budget.budgetId).child(transaction.assetId).setValue(null)
+        database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId).setValue("-")
     }
 
     fun setTransactionListener(budget: Budget, localDBProvider: LocalDatabaseProvider) {
@@ -258,10 +264,17 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
                 for (snapshotItem in dataSnapshot.children) {
                     val localTransaction = localDBProvider.getTransactionByID(snapshotItem.key.toString())
                     if (localTransaction==null) {
-                        val transaction = encryptionManager.decryptTransaction(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
-                        val asset = AustromApplication.activeAssets[transaction.assetId]
-                        if (asset!=null) {
-                            localDBProvider.submitNewTransaction(transaction, asset)
+                        if (snapshotItem.value!="-") {
+                            val transaction = encryptionManager.decryptTransaction(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                            val asset = AustromApplication.activeAssets[transaction.assetId]
+                            if (asset!=null) {
+                                localDBProvider.submitNewTransaction(transaction, asset)
+                            }
+                            //TODO("What if asset of this transaction doesn't exist?")
+                        }
+                    } else {
+                        if (snapshotItem.value =="-") {
+                            localTransaction.cancel(localDBProvider)
                         }
                     }
                 }
@@ -326,17 +339,5 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
             override fun onCancelled(databaseError: DatabaseError) { Log.w("Debug", "loadPost:onCancelled", databaseError.toException()) }
         }
         databaseReference.addValueEventListener(currencyListener)
-    }
-
-    private fun parseDateToIntDate(date: LocalDate) : Int {
-        return (date.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).toInt()
-    }
-
-    private fun parseIntDateToDate(intDate: Int?) : LocalDate {
-        if (intDate==null || intDate.toString().length!=8) return LocalDate.now()
-        val year = intDate.toString().substring(0,4).toInt()
-        val month = intDate.toString().substring(4,6).toInt()
-        val day = intDate.toString().substring(6).toInt()
-        return LocalDate.of(year, month, day)
     }
 }

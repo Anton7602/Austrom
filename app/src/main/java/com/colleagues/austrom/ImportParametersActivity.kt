@@ -37,9 +37,6 @@ import java.nio.charset.Charset
 import java.time.LocalDate
 
 class ImportParametersActivity : AppCompatActivity() {
-    private var fileUri : Uri? = null
-    private var csvSeparator: Char = ','
-    private var charset = "windows-1251"
     private lateinit var sourceDynamicSpinner: Spinner
     private lateinit var sourceStaticSpinner: Spinner
     private lateinit var sourceSwitchMaterial: SwitchMaterial
@@ -73,6 +70,9 @@ class ImportParametersActivity : AppCompatActivity() {
     private lateinit var validCounter: TextView
     private lateinit var validImportButton: ImageButton
     private var importedTransactions: MutableList<Transaction> = mutableListOf()
+    private var fileUri : Uri? = null
+    private var csvSeparator: Char = ','
+    private var charset = "windows-1251"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

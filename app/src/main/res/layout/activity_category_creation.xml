@@ -20,16 +20,17 @@
     <ImageButton
         android:id="@+id/catcr_negativeResult_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:backgroundTint="@color/transparent"
         android:contentDescription="@string/delete"
+        app:layout_constraintBottom_toBottomOf="@+id/catcr_backButton_btn"
         app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_navigation_delete_temp"
-        app:tint="@color/expenseRed" />
+        app:layout_constraintTop_toTopOf="@+id/catcr_backButton_btn"
+        app:srcCompat="@drawable/ic_navigation_more_temp"
+        app:tint="@color/primaryTextColor" />
 
     <ImageButton
         android:id="@+id/catcr_categoryIcon_img"
@@ -37,13 +38,15 @@
         android:layout_height="0dp"
         android:background="@drawable/sh_category_deselected"
         android:backgroundTint="@color/navigationBarColor"
+        android:contentDescription="Category Icon"
         android:padding="16dp"
         android:scaleType="fitXY"
         app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintEnd_toStartOf="@+id/guideline23"
         app:layout_constraintStart_toStartOf="@+id/guideline22"
         app:layout_constraintTop_toBottomOf="@+id/catcr_backButton_btn"
-        app:srcCompat="@drawable/ic_placeholder_icon" />
+        app:srcCompat="@drawable/ic_placeholder_icon"
+        tools:ignore="HardcodedText" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/catcr_categoryName_til"
@@ -69,38 +72,16 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/catcr_categoryIcon_rcv"
+        android:id="@+id/catcr_transactionHolder_rcv"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="4dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
-        android:clickable="true"
-        android:contentDescription="Icon Holder"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/catcr_acceptButton_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/catcr_categoryName_til"
-        tools:ignore="HardcodedText"
-        tools:listitem="@layout/item_category_icon">
-
-    </androidx.recyclerview.widget.RecyclerView>
-
-    <ImageButton
-        android:id="@+id/catcr_positiveResult_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/sh_icon_background"
-        android:backgroundTint="@color/incomeGreen"
-        android:elevation="4dp"
-        android:visibility="gone"
-        app:layout_constraintDimensionRatio="h,1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_navigation_done_temp" />
+        tools:listitem="@layout/item_transaction_group" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline22"
@@ -120,12 +101,12 @@
         android:id="@+id/catcr_acceptButton_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="@color/blue"
         android:paddingVertical="8dp"
         android:text="@string/accept"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/catcr_categoryName_til"
-        app:layout_constraintStart_toStartOf="@+id/catcr_categoryName_til"
-        app:layout_constraintTop_toBottomOf="@+id/catcr_categoryName_til" />
+        app:layout_constraintStart_toStartOf="@+id/catcr_categoryName_til" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

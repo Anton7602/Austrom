@@ -14,3 +14,7 @@ fun LocalDate.toDayOfWeekAndLongDateFormat(): String {
     val chipDayOfWeek = this.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()).startWithUppercase()
     return "$chipDayOfWeek ${this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}"
 }
+
+fun LocalDate.serialize() : String {
+    return this.format(DateTimeFormatter.ISO_LOCAL_DATE)
+}

@@ -111,11 +111,10 @@ class LocalDatabaseProvider(context: Context) {
         }
     }
 
-    fun deleteAsset(asset: Asset) {
-        runBlocking {
-            localDatabase.complexDao().deleteAssetWithTransactions(localDatabase.transactionDao(), localDatabase.assetDao(), asset)
-        }
-    }
+    suspend fun deleteAssetAsync(asset: Asset) { localDatabase.complexDao().deleteAssetWithTransactions(localDatabase.transactionDao(), localDatabase.assetDao(), asset) }
+    fun deleteAsset(asset: Asset) {runBlocking { localDatabase.complexDao().deleteAssetWithTransactions(localDatabase.transactionDao(), localDatabase.assetDao(), asset) } }
+    
+
 
     fun getAssetsOfUser(user: User): MutableMap<String, Asset> {
         val assetMap = mutableMapOf<String, Asset>()

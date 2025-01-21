@@ -71,10 +71,7 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>, pr
         holder.categoryName.text = category.name
         holder.categoryImage.setImageResource(category.imgReference.resourceId)
 
-        holder.transactionHolder.setOnClickListener { returnClickedItem(transaction)
-//            AustromApplication.selectedTransaction = transaction
-//            activity.startActivity(Intent(activity, TransactionPropertiesActivity::class.java))
-        }
+        holder.transactionHolder.setOnClickListener { returnClickedItem(transaction) }
     }
 }
 

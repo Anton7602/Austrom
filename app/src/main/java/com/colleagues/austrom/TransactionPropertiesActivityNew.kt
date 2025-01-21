@@ -3,12 +3,17 @@ package com.colleagues.austrom
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
+import android.view.View
 import android.widget.ImageButton
+import android.widget.PopupMenu
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.views.TransactionReceiptView
@@ -16,9 +21,11 @@ import com.colleagues.austrom.views.TransactionReceiptView
 class TransactionPropertiesActivityNew : AppCompatActivity() {
     //region Binding
     private lateinit var backButton: ImageButton
+    private lateinit var moreButton: ImageButton
     private lateinit var transactionHolder: TransactionReceiptView
     private fun bindViews() {
         backButton = findViewById(R.id.trdet2_backButton_btn)
+        moreButton = findViewById(R.id.trdet_moreButton_btn)
         transactionHolder = findViewById(R.id.trdet_TransactionReceipt_trec)
     }
     //endregion
@@ -56,7 +63,22 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
         transactionHolder.fillInTransaction(transaction)
 
         backButton.setOnClickListener { this.finish() }
+        moreButton.setOnClickListener { showMenu(moreButton, R.menu.transaction_context_menu) }
 
+    }
+
+    private fun showMenu(v: View, @MenuRes menuRes: Int) {
+        val popup = PopupMenu(this, v)
+        popup.menuInflater.inflate(menuRes, popup.menu)
+        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+            when (menuItem.itemId) {
+                R.id.transconmenu_edit -> {}  //TODO("Edit Section")
+                R.id.transconmenu_delete -> { transaction.cancel(LocalDatabaseProvider(this), FirebaseDatabaseProvider(this)); this.finish() }
+            }
+            true
+        }
+        popup.setOnDismissListener { }
+        popup.show()
     }
 
     private fun retrieveTransactionFromIntent() {
