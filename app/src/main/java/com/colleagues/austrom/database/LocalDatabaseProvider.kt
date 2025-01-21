@@ -16,33 +16,17 @@ import kotlinx.coroutines.runBlocking
 class LocalDatabaseProvider(context: Context) {
     private val localDatabase = LocalDatabase.getDatabase(context)
 
-    fun writeNewUser(user: User): String {
-        val dao = localDatabase.userDao()
-        runBlocking {
-            dao.insertUser(user)
-        }
-        return user.userId
-    }
+    fun writeNewUser(user: User) { runBlocking {localDatabase.userDao().insertUser(user) }}
+    suspend fun writeNewUserAsync(user: User) { localDatabase.userDao().insertUser(user) }
 
-    fun updateUser(user: User) {
-        val dao = localDatabase.userDao()
-        runBlocking {
-            dao.updateUser(user)
-        }
-    }
+    fun updateUser(user: User) { runBlocking { localDatabase.userDao().updateUser(user) }}
+    suspend fun updateUserAsync(user: User) {  localDatabase.userDao().updateUser(user) }
 
-    fun deleteUser(user: User) {
-        val dao = localDatabase.userDao()
-        runBlocking {
-            dao.deleteUser(user)
-        }
-    }
+    fun deleteUser(user: User) { runBlocking { localDatabase.userDao().deleteUser(user) }}
+    suspend fun deleteUserAsync(user: User) { runBlocking { localDatabase.userDao().deleteUser(user) }}
 
-    fun deleteAllUsers() {
-        runBlocking {
-            localDatabase.userDao().clearAllUsers()
-        }
-    }
+    fun deleteAllUsers() { runBlocking { localDatabase.userDao().clearAllUsers() }}
+    suspend fun deleteAllUsersAsync() { localDatabase.userDao().clearAllUsers() }
 
     fun getAllUsers(): MutableMap<String, User> {
         val dao = localDatabase.userDao()

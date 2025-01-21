@@ -23,14 +23,6 @@ import java.time.format.DateTimeFormatter
 class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemoteDatabaseProvider{
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
-    private fun syncAssets() {
-
-    }
-
-    private fun syncTransactions() {
-
-    }
-
     override fun createNewUser(user: User) {
         val reference = database.getReference("users")
         val encryptionManager = EncryptionManager()
@@ -38,17 +30,17 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         user.password = encryptionManager.hashPassword(user.password)
         reference.child(user.userId).setValue(user)
         user.password = password
-        Log.w("Debug", "New user added to DB with key: $user.userId")
     }
 
     override fun updateUser(user: User) {
         val password = user.password
         val token = user.tokenId
+        val encryptionManager = EncryptionManager()
         if (token!=null) {
-            val encryptionManager = EncryptionManager()
+
             user.tokenId = encryptionManager.encrypt(token, encryptionManager.generateEncryptionKey(user.password, user.userId.toByteArray()))
         }
-        user.password = EncryptionManager().hashPassword(user.password)
+        user.password = encryptionManager.hashPassword(user.password)
         database.getReference("users").child(user.userId).setValue(user)
         user.password = password
         user.tokenId = token
