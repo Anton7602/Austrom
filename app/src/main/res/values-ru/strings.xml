@@ -422,4 +422,8 @@
     <string name="export_to_csv_file">Экспортировать в CSV файл</string>
     <string name="operation_log">Журнал Операций</string>
     <string name="history_of_imports">История Импорта</string>
+    <string name="new_detail">Добавить Детализацию</string>
+    <string name="add_image">Прикрепить Изображение</string>
+    <string name="add_comment">Добавить Комментарий</string>
+    <string name="split">Разделить</string>
 </resources>

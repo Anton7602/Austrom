@@ -24,11 +24,13 @@
         android:layout_height="0dp"
         android:layout_marginEnd="4dp"
         android:background="@color/transparent"
+        android:contentDescription="More"
         app:layout_constraintBottom_toBottomOf="@+id/trdet2_backButton_btn"
         app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/trdet2_backButton_btn"
-        app:srcCompat="@drawable/ic_navigation_more_temp" />
+        app:srcCompat="@drawable/ic_navigation_more_temp"
+        tools:ignore="HardcodedText" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -58,17 +60,17 @@
                 android:orientation="horizontal">
 
                 <com.colleagues.austrom.views.ActionButtonView
-                    android:id="@+id/actionButtonView"
+                    android:id="@+id/trdet_newDetail_abtn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="12dp"
                     android:layout_weight="1"
                     app:backgroundColor="@color/backgroundText"
                     app:iconDrawable="@drawable/nc_navigation_add_new_entry_temp"
-                    app:text="New Detail" />
+                    app:text="@string/new_detail" />
 
                 <com.colleagues.austrom.views.ActionButtonView
-                    android:id="@+id/actionButtonView2"
+                    android:id="@+id/trdet_newImage_abtn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="12dp"
@@ -76,27 +78,27 @@
                     app:backgroundColor="@color/backgroundText"
                     app:iconDrawable="@drawable/ic_navigation_image_temp"
                     app:iconTint="@color/primaryTextColor"
-                    app:text="Photo" />
+                    app:text="@string/add_image" />
 
                 <com.colleagues.austrom.views.ActionButtonView
-                    android:id="@+id/actionButtonView3"
+                    android:id="@+id/trdet_comment_abtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_weight="1"
+                    app:backgroundColor="@color/backgroundText"
+                    app:iconDrawable="@drawable/ic_navigation_comment_temp"
+                    app:text="@string/add_comment" />
+
+                <com.colleagues.austrom.views.ActionButtonView
+                    android:id="@+id/trdet_split_abtn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="12dp"
                     android:layout_weight="1"
                     app:backgroundColor="@color/backgroundText"
                     app:iconDrawable="@drawable/ic_navigation_split_temp"
-                    app:text="Split" />
-
-                <com.colleagues.austrom.views.ActionButtonView
-                    android:id="@+id/actionButtonView4"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="12dp"
-                    android:layout_weight="1"
-                    app:backgroundColor="@color/backgroundText"
-                    app:iconDrawable="@drawable/ic_navigation_copy_temp"
-                    app:text="Duplicate" />
+                    app:text="@string/split" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

@@ -31,6 +31,7 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
     var version: Int = 1
 
     fun transactionType(): TransactionType { return if (linkedTransactionId!=null) TransactionType.TRANSFER else if (amount<0) TransactionType.EXPENSE else TransactionType.INCOME }
+    fun sumOfTransactionDetailsAmounts(localDBProvider: LocalDatabaseProvider): Double { return localDBProvider.getTransactionDetailsOfTransaction(this).sumOf {it.cost} }
 
     fun serialize(): String {
         return "$assetId,$amount,$categoryId,${transactionDate.serialize()},$transactionName,$comment,$transactionId,$userId,$linkedTransactionId,$isPrivate"
@@ -50,6 +51,15 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
         if (linkedTransactionId == null) return
         dbProvider.getTransactionByID(linkedTransactionId!!)?.clearLink()
         this.clearLink()
+    }
+
+    fun update(localDBProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider? = null) {
+        // TODO("Validate Changes To Transaction")
+        localDBProvider.updateTransaction(this)
+        if (remoteDBProvider != null && AustromApplication.appUser?.activeBudgetId != null) {
+            val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+            if (currentBudget != null) remoteDBProvider.updateTransaction(this, currentBudget)
+        }
     }
 
     fun submit(localDBProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider? = null) {
@@ -96,6 +106,11 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
                 }
             }
         }
+    }
+
+    fun addDetail(transactionDetail: TransactionDetail, dbProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider? = null) {
+        dbProvider.writeNewTransactionDetail(transactionDetail)
+        //TODO("Validate and finish")
     }
 
     fun isValid(): Boolean { return (this.validate()==TransactionValidationType.VALID)  }

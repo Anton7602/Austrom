@@ -64,8 +64,6 @@ class AustromApplication : Application() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         sharedPreferences = getSharedPreferences("AustromPreferences", Context.MODE_PRIVATE)
         appLanguageCode = sharedPreferences.getString("language", null)
-        EncryptionManager.encryptionKey = getEncryptionKey()
-        EncryptionManager.activeApplication = this
     }
 
     fun setRememberedUser(newUserId: String) {
@@ -92,37 +90,12 @@ class AustromApplication : Application() {
         sharedPreferences.edit().remove("appQuickPin").apply()
     }
 
-    fun setEncryptionKey(encryptionKey: SecretKey) {
-        sharedPreferences.edit().putString("encryptionKey", Base64.encodeToString(encryptionKey.encoded, Base64.DEFAULT)).apply()
-    }
-
-    fun getEncryptionKey(): SecretKey? {
-        val keyString = sharedPreferences.getString("encryptionKey", null) ?: return null
-        val keyBytes = Base64.decode(keyString, Base64.DEFAULT)
-        return SecretKeySpec(keyBytes, 0, keyBytes.size, "AES")
-    }
-
-    fun forgetEncryptionKey() {
-        sharedPreferences.edit().remove("encryptionKey").apply()
-    }
-
     fun setNewBaseCurrency(currency: Currency) {
         if (appUser!=null) {
             val dbProvider = LocalDatabaseProvider(this)
             appUser!!.baseCurrencyCode = currency.code
             dbProvider.updateUser(appUser!!)
             Currency.switchRatesToNewBaseCurrency(activeCurrencies, currency.code)
-        }
-    }
-
-    @SuppressLint("MutatingSharedPrefs")
-    fun setRememberedTarget(newTarget: String) {
-        val existingTargets = sharedPreferences.getStringSet("targetList", null) ?: mutableSetOf()
-        if (!existingTargets.contains(newTarget)) {
-            val editor = sharedPreferences.edit()
-            existingTargets.add(newTarget)
-            editor.putStringSet("targetList",existingTargets)
-            editor.apply()
         }
     }
 

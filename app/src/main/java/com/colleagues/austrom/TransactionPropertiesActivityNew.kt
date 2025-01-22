@@ -15,7 +15,10 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.dialogs.TextEditDialogFragment
+import com.colleagues.austrom.dialogs.TransactionDetailCreationNewDialogFragment
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.views.ActionButtonView
 import com.colleagues.austrom.views.TransactionReceiptView
 
 class TransactionPropertiesActivityNew : AppCompatActivity() {
@@ -23,10 +26,21 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
     private lateinit var backButton: ImageButton
     private lateinit var moreButton: ImageButton
     private lateinit var transactionHolder: TransactionReceiptView
+
+    private lateinit var newDetailActionButton: ActionButtonView
+    private lateinit var newImageActionButton: ActionButtonView
+    private lateinit var commentActionButton: ActionButtonView
+    private lateinit var splitActionButton: ActionButtonView
     private fun bindViews() {
         backButton = findViewById(R.id.trdet2_backButton_btn)
         moreButton = findViewById(R.id.trdet_moreButton_btn)
         transactionHolder = findViewById(R.id.trdet_TransactionReceipt_trec)
+
+        newDetailActionButton = findViewById(R.id.trdet_newDetail_abtn)
+        newImageActionButton = findViewById(R.id.trdet_newImage_abtn)
+        commentActionButton = findViewById(R.id.trdet_comment_abtn)
+        splitActionButton = findViewById(R.id.trdet_split_abtn)
+
     }
     //endregion
     //region Localization
@@ -42,7 +56,8 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
     private fun adjustInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            val softKeyboardHeightInset = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, if (softKeyboardHeightInset==0) systemBars.bottom else softKeyboardHeightInset)
             insets
         }
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
@@ -50,7 +65,6 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
     }
     //endregion
     private lateinit var transaction: Transaction
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +78,32 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
 
         backButton.setOnClickListener { this.finish() }
         moreButton.setOnClickListener { showMenu(moreButton, R.menu.transaction_context_menu) }
+        commentActionButton.setText(if (transaction.comment.isNullOrEmpty()) getString(R.string.add_comment) else getString(R.string.edit_comment))
 
+        commentActionButton.setOnClickListener { launchEditCommentDialog() }
+        newDetailActionButton.setOnClickListener { launchNewDetailDialog() }
+    }
+
+    private fun launchNewDetailDialog() {
+        val dialog = TransactionDetailCreationNewDialogFragment(transaction, LocalDatabaseProvider(this).getTransactionDetailsOfTransaction(transaction))
+        dialog.setOnDialogResultListener { _ -> transactionHolder.fillInTransaction(transaction) }
+        dialog.setOnDetailChangedListener { detailName, quantity, unit, amount -> transactionHolder.updateEditedTransactionDetail(detailName, quantity, unit, amount) }
+
+        dialog.show(supportFragmentManager, "TransactionDetailCreation")
+    }
+
+    private fun launchEditCommentDialog() {
+        val dialog = TextEditDialogFragment(transaction.comment, getString(R.string.comment))
+        dialog.setOnTextChangedListener { editedText ->
+            transaction.comment = editedText.ifEmpty { null }
+            transactionHolder.fillInTransaction(transaction) }
+        dialog.setOnDialogResultListener { editedText ->
+            transaction.comment = editedText.ifEmpty { null }
+            transactionHolder.fillInTransaction(transaction)
+            commentActionButton.setText(if (transaction.comment.isNullOrEmpty()) getString(R.string.add_comment) else getString(R.string.edit_comment))
+            transaction.update(LocalDatabaseProvider(this), FirebaseDatabaseProvider(this))
+        }
+        dialog.show(supportFragmentManager, "TextEditDialog")
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {

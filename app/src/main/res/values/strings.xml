@@ -423,4 +423,9 @@
     <string name="export_to_csv_file">Export to CSV file</string>
     <string name="operation_log">Operation Log</string>
     <string name="history_of_imports">History of Imports</string>
+    <string name="new_detail">New Detail</string>
+    <string name="add_image">Add Image</string>
+    <string name="add_comment">Add Comment</string>
+    <string name="split">Split</string>
+    <string name="edit_comment">Edit Comment</string>
 </resources>

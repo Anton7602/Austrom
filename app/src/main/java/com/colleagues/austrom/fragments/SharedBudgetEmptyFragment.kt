@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.colleagues.austrom.R
 import com.colleagues.austrom.dialogs.BudgetCreationDialogFragment
 import com.colleagues.austrom.dialogs.BudgetJoinDialogFragment
+import com.colleagues.austrom.dialogs.TextEditDialogFragment
 
 class SharedBudgetEmptyFragment : Fragment(R.layout.fragment_shared_budget_empty) {
     //region Binding
@@ -23,5 +24,13 @@ class SharedBudgetEmptyFragment : Fragment(R.layout.fragment_shared_budget_empty
         bindViews(view)
         createNewBudgetButton.setOnClickListener { BudgetCreationDialogFragment().show(requireActivity().supportFragmentManager, "Budget Creation Dialog") }
         joinNewBudgetButton.setOnClickListener { BudgetJoinDialogFragment().show(requireActivity().supportFragmentManager, "Budget Join Dialog") }
+    }
+
+    private fun launchBudgetCreationDialog() {
+        val dialog = TextEditDialogFragment(null, getString(R.string.budget_name), )
+    }
+
+    private fun createNewDialog() {
+
     }
 }

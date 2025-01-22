@@ -260,6 +260,65 @@
 
                 </androidx.recyclerview.widget.RecyclerView>
 
+                <LinearLayout
+                    android:id="@+id/tranrecview_editedDetailHolder_lly"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tranrecview_itemName_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:maxLines="1"
+                        android:paddingVertical="2dp"
+                        android:text="@string/unallocated_balance"
+                        android:textAppearance="@style/SecondaryCardTextAutoscale"
+                        android:textSize="12sp"
+                        tools:ignore="HardcodedText" />
+
+                    <LinearLayout
+                        android:id="@+id/tranrecview_quantityHolder_lly"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tranrecview_quantity_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="@color/dark_grey"
+                            android:textSize="12sp"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/tranrecview_quantityType_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:textColor="@color/dark_grey"
+                            android:textSize="12sp"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+
+                    <com.colleagues.austrom.views.MoneyFormatTextView
+                        android:id="@+id/tranrecview_cost_monf"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        app:amountColor="@color/secondaryTextColor"
+                        app:currencyColor="@color/secondaryTextColor"
+                        app:currencyTextSizePercent="0.9"
+                        app:defaultAmount="1234.56"
+                        app:horizontalAlignment="right" />
+
+                </LinearLayout>
+
                 <ImageView
                     android:id="@+id/tranrecview_secondaryDivider_img"
                     android:layout_width="match_parent"
@@ -290,7 +349,7 @@
                     android:textAppearance="@style/SecondaryCardTextAutoscale" />
 
                 <com.colleagues.austrom.views.MoneyFormatTextView
-                    android:id="@+id/tranrecview_totalAmount_monv"
+                    android:id="@+id/tranrecview_totalAmount_monf"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="5"

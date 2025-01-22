@@ -11,28 +11,17 @@
     android:paddingEnd="1dp"
     android:paddingBottom="1dp">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/trdetit_itemName_txt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="top"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/trdetit_itemName_txt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:text="ItemName"
-                android:textAppearance="@style/SecondaryCardTextAutoscale"
-                tools:ignore="HardcodedText" />
+        android:layout_weight="4"
+        android:maxLines="1"
+        android:paddingVertical="2dp"
+        android:text="ItemName"
+        android:textAppearance="@style/SecondaryCardTextAutoscale"
+        android:textSize="12sp"
+        tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:id="@+id/trdetit_quantityHolder_lly"
@@ -48,7 +37,7 @@
                     android:gravity="center"
                     android:text="0.15"
                     android:textColor="@color/dark_grey"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     android:visibility="visible"
                     tools:ignore="HardcodedText" />
 
@@ -61,24 +50,19 @@
                     android:gravity="center"
                     android:text="KG"
                     android:textColor="@color/dark_grey"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     android:visibility="visible"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
 
-            <com.colleagues.austrom.views.MoneyFormatTextView
-                android:id="@+id/moneyFormatTextView2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                app:amountColor="@color/secondaryTextColor"
-                app:currencyColor="@color/secondaryTextColor"
-                app:currencyTextSizePercent="0.9"
-                app:defaultAmount="1234.56"
-                app:horizontalAlignment="right" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
+    <com.colleagues.austrom.views.MoneyFormatTextView
+        android:id="@+id/trdetit_cost_monf"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        app:amountColor="@color/secondaryTextColor"
+        app:currencyColor="@color/secondaryTextColor"
+        app:currencyTextSizePercent="0.9"
+        app:defaultAmount="1234.56"
+        app:horizontalAlignment="right" />
 </LinearLayout>

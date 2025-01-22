@@ -31,7 +31,8 @@
                     android:layout_height="match_parent"
                     android:background="@color/transparent"
                     android:paddingHorizontal="12dp"
-                    android:src="@drawable/ic_navigation_add_temp" />
+                    android:src="@drawable/ic_navigation_add_temp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/trdetcr_buttonLabel_txt"
@@ -43,7 +44,8 @@
                     android:text="@string/add_new_entry"
                     android:textAlignment="center"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/trdetcr_detailName_txt"
@@ -76,14 +78,12 @@
                     android:paddingRight="0dp"
                     android:paddingBottom="14dp"
                     android:textAlignment="viewEnd"
-                    android:textColor="@color/dark_grey"
-                    android:visibility="gone" />
+                    android:textColor="@color/dark_grey" />
 
                 <Spinner
                     android:id="@+id/trdetcr_quantityType_spr"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:visibility="gone" />
+                    android:layout_height="match_parent" />
 
                 <Spinner
                     android:id="@+id/trdet_category_spr"
