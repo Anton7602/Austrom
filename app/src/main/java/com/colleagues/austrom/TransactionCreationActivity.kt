@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -44,7 +46,7 @@ class TransactionCreationActivity : AppCompatActivity() {
     private lateinit var amountTxt: TextView
     private lateinit var currencyTxt: TextView
     private lateinit var transactionNameTil: TextInputLayout
-    private lateinit var transactionNameTxt: TextView
+    private lateinit var transactionNameTxt: AutoCompleteTextView
     private lateinit var sourceHolderRecycler: RecyclerView
     private lateinit var targetHolderRecycler: RecyclerView
     private lateinit var sourceHolderLabel: TextView
@@ -116,6 +118,7 @@ class TransactionCreationActivity : AppCompatActivity() {
         adjustInsets()
         bindViews()
         setUpRecyclerViews()
+        setUpAutofill()
 
         if (AustromApplication.activeAssets.size<2) { transferChip.visibility = View.GONE }
 
@@ -221,6 +224,7 @@ class TransactionCreationActivity : AppCompatActivity() {
         }))
 
         secondaryAmountHolder.visibility = if (transactionType==TransactionType.TRANSFER && primarySelectedAsset?.currencyCode!=secondarySelectedAsset?.currencyCode) View.VISIBLE else View.GONE
+        setUpAutofill()
     }
 
     private fun setUpRecyclerViews() {
@@ -246,5 +250,13 @@ class TransactionCreationActivity : AppCompatActivity() {
         targetHolderRecycler.adapter = adapterTarget
 
         secondaryAmountHolder.visibility = if (transactionType==TransactionType.TRANSFER && primarySelectedAsset?.currencyCode!=secondarySelectedAsset?.currencyCode) View.VISIBLE else View.GONE
+    }
+
+    private fun setUpAutofill() {
+        LocalDatabaseProvider(this).getUniqueTransactionNamesAsync(transactionType).observe(this) { names ->
+            val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, names)
+            transactionNameTxt.setAdapter(adapter)
+            transactionNameTxt.threshold = 2
+        }
     }
 }

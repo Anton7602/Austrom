@@ -95,7 +95,7 @@
     <string name="notes">Заметки</string>
     <string name="cancel_transaction">Отменить Транзакцию</string>
     <string name="transaction_details">Детали Транзакции</string>
-    <string name="unallocated_balance">Нераспределёно:</string>
+    <string name="unallocated_balance">Нераспределёно</string>
     <string name="total">Итого:</string>
     <string name="not_yet_implemented">Функция ещё не реализована</string>
     <string name="user_successfully_added">Пользователь успешно добавлен</string>
@@ -422,8 +422,21 @@
     <string name="export_to_csv_file">Экспортировать в CSV файл</string>
     <string name="operation_log">Журнал Операций</string>
     <string name="history_of_imports">История Импорта</string>
-    <string name="new_detail">Добавить Детализацию</string>
-    <string name="add_image">Прикрепить Изображение</string>
-    <string name="add_comment">Добавить Комментарий</string>
+    <string name="new_detail">Новый Товар</string>
+    <string name="add_image">Добавить Фото</string>
+    <string name="add_comment">Добавить Коммент</string>
     <string name="split">Разделить</string>
+    <string name="edit_comment">Изменить Коммент</string>
+    <string name="kilogramm">Килограмм</string>
+    <string name="kg">кг</string>
+    <string name="piece">Штука</string>
+    <string name="pc">шт</string>
+    <string name="litre">Литр</string>
+    <string name="l">Л</string>
+    <string name="meter">Метр</string>
+    <string name="m">м</string>
+    <string name="show_image">Смотреть Фото</string>
+    <string name="detail_name">Имя Товара</string>
+    <string name="detail_quantity">Количество Товара</string>
+    <string name="detail_amount">Цена Товара</string>
 </resources>

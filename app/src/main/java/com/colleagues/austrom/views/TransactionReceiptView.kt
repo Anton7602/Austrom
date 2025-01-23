@@ -1,9 +1,11 @@
 package com.colleagues.austrom.views
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -84,7 +86,7 @@ class TransactionReceiptView(context: Context, attrs: AttributeSet): CardView(co
 
         if (transactionDetails.isNotEmpty()) {
             transactionDetailsRecyclerView.layoutManager = LinearLayoutManager(context)
-            transactionDetailsRecyclerView.adapter = TransactionDetailRecyclerAdapter(newTransaction, transactionDetails)
+            transactionDetailsRecyclerView.adapter = TransactionDetailRecyclerAdapter(newTransaction, transactionDetails, context)
         }
 
         val unallocatedBalance = newTransaction.amount.absoluteValue-transactionDetails.sumOf { it.cost }

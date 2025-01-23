@@ -65,18 +65,18 @@ class TransactionDetailCreationNewDialogFragment(private val transaction: Transa
         dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
         setUpSpinners()
         amountTextView.setHint((transaction.amount.absoluteValue-transaction.sumOfTransactionDetailsAmounts(LocalDatabaseProvider(requireActivity()))).absoluteValue.toMoneyFormat())
-        detailNameTextView.addTextChangedListener { _ -> returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), (quantityTypeSpinner.selectedItem as QuantityUnit).name, getValidatedAmount()) }
-        quantityTextView.addTextChangedListener { _ -> returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), (quantityTypeSpinner.selectedItem as QuantityUnit).name, getValidatedAmount())  }
-        amountTextView.addTextChangedListener { _ -> returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), (quantityTypeSpinner.selectedItem as QuantityUnit).name, getValidatedAmount())  }
+        detailNameTextView.addTextChangedListener { _ -> returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), quantityTypeSpinner.selectedItem.toString(), getValidatedAmount()) }
+        quantityTextView.addTextChangedListener { _ -> returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), quantityTypeSpinner.selectedItem.toString(), getValidatedAmount())  }
+        amountTextView.addTextChangedListener { _ -> returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), quantityTypeSpinner.selectedItem.toString(), getValidatedAmount())  }
         quantityTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) { returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), (quantityTypeSpinner.selectedItem as QuantityUnit).name, getValidatedAmount())  }
-            override fun onNothingSelected(parent: AdapterView<*>) { returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), (quantityTypeSpinner.selectedItem as QuantityUnit).name, getValidatedAmount()) }
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) { returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), quantityTypeSpinner.selectedItem.toString(), getValidatedAmount())  }
+            override fun onNothingSelected(parent: AdapterView<*>) { returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), quantityTypeSpinner.selectedItem.toString(), getValidatedAmount()) }
         }
         detailNameTextView.setOnKeyListener { _, keyCode, event -> if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.action == KeyEvent.ACTION_DOWN)) { moveToNextStage(); true} else false }
         quantityTextView.setOnKeyListener { _, keyCode, event -> if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.action == KeyEvent.ACTION_DOWN)) { moveToNextStage(); true} else false }
         amountTextView.setOnKeyListener { _, keyCode, event ->if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.action == KeyEvent.ACTION_DOWN)) { moveToNextStage(); true} else false }
         nextButton.setOnClickListener { moveToNextStage() }
-        returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), (quantityTypeSpinner.selectedItem as QuantityUnit).name, getValidatedAmount())
+        returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), quantityTypeSpinner.selectedItem.toString(), getValidatedAmount())
         setStage(0)
     }
 
@@ -132,20 +132,24 @@ class TransactionDetailCreationNewDialogFragment(private val transaction: Transa
     private fun createTransactionDetail() {
         transaction.addDetail(TransactionDetail(
             transactionId = transaction.transactionId,
-            name = detailNameTextView.text.toString(),
-            quantity = if (quantityTextView.text.toString().isEmpty()) null else quantityTextView.text.toString().toDouble(),
-            typeOfQuantity = if (quantityTextView.text.toString().isEmpty()) null else quantityTypeSpinner.selectedItem as QuantityUnit,
-            cost = amountTextView.text.toString().toDouble(),
+            name = getValidatedDetailName(),
+            quantity = if (getValidatedQuantity() == 0.0) null else getValidatedQuantity(),
+            typeOfQuantity = if (quantityTextView.text.toString().isEmpty()) null else QuantityUnit.entries[quantityTypeSpinner.selectedItemPosition],
+            cost = getValidatedAmount(),
             categoryName = transaction.categoryId
         ), LocalDatabaseProvider(requireActivity()))
         this.dismiss()
     }
 
     private fun setUpSpinners() {
-        val quantityAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, QuantityUnit.entries.toTypedArray())
+        val quantityAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, QuantityUnit.entries.toList().map {it -> getString(it.shortNameResourceId)})
         quantityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         quantityTypeSpinner.adapter = quantityAdapter
-        quantityTypeSpinner.setSelection(transactionDetails.last().typeOfQuantity?.ordinal ?: 0)
+        if (transactionDetails.isNotEmpty()) {
+            quantityTypeSpinner.setSelection(transactionDetails.last().typeOfQuantity?.ordinal ?: 0)
+        } else {
+            quantityTypeSpinner.setSelection(0)
+        }
 
 //        val availableCategories = when (transaction.transactionType()) {
 //            TransactionType.EXPENSE -> AustromApplication.activeExpenseCategories.values.toList()

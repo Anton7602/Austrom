@@ -29,8 +29,7 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Detail Name"
-                    android:visibility="gone">
+                    android:hint="@string/detail_name">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/trdetcreat2_detailName_txt"
@@ -43,14 +42,15 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/trdetcreat2_quantityLayout_cly"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/trdetcreat2_quantity_til"
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Detail Quantity"
+                        android:hint="@string/detail_quantity"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -81,7 +81,7 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Detail Amount"
+                    android:hint="@string/detail_amount"
                     android:visibility="gone">
 
                     <com.google.android.material.textfield.TextInputEditText

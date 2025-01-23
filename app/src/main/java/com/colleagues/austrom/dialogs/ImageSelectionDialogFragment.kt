@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -25,9 +26,11 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
 import com.colleagues.austrom.R
 import com.colleagues.austrom.models.Transaction
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.io.File
 
-class ImageSelectionDialogFragment(private val transaction: Transaction) : DialogFragment() {
+class ImageSelectionDialogFragment(private val transaction: Transaction) : BottomSheetDialogFragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_image_selection, container, false) }
     fun setOnDialogResultListener(l: (Boolean)->Unit) { returnResult = l }
     private var returnResult: (Boolean)->Unit = {}
     //region Binding
@@ -44,7 +47,7 @@ class ImageSelectionDialogFragment(private val transaction: Transaction) : Dialo
         messageText = view.findViewById(R.id.imsedial_noImageMessage_txt)
         closeButton = view.findViewById(R.id.imsedial_close_btn)
     }
-    //
+    // endregion
 
     private val cameraRequestCode = 100
     private val galleryRequestCode = 101
@@ -75,15 +78,50 @@ class ImageSelectionDialogFragment(private val transaction: Transaction) : Dialo
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val i: LayoutInflater = requireActivity().layoutInflater
-        val view = i.inflate(R.layout.dialog_fragment_image_selection, null)
+//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+//        val i: LayoutInflater = requireActivity().layoutInflater
+//        val view = i.inflate(R.layout.dialog_fragment_image_selection, null)
+//        bindViews(view)
+//        val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity()).setView(view)
+//        val imageSelectionDialog = adb.create()
+//        if (imageSelectionDialog != null && imageSelectionDialog.window != null) {
+//            imageSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//        }
+//
+//        val imageFile = File(requireActivity().externalCacheDir, "${transaction.transactionId}.jpg")
+//        if (imageFile.exists()) {
+//            imageHolder.setImageURI(FileProvider.getUriForFile(requireActivity(), "${requireActivity().applicationContext.packageName}.provider", imageFile))
+//            messageText.visibility = View.GONE
+//            imageHolder.visibility = View.VISIBLE
+//        } else {
+//            messageText.visibility = View.VISIBLE
+//            imageHolder.visibility = View.GONE
+//        }
+//
+//        imageHolder.setOnClickListener {
+//            closeButton.visibility= if (closeButton.visibility==View.VISIBLE) View.GONE else View.VISIBLE
+//            makePhotoButton.visibility= if (makePhotoButton.visibility==View.VISIBLE) View.GONE else View.VISIBLE
+//            choosePhotoButton.visibility= if (choosePhotoButton.visibility==View.VISIBLE) View.GONE else View.VISIBLE
+//        }
+//
+//        makePhotoButton.setOnClickListener {
+//            requestCameraPermission()
+//        }
+//
+//        choosePhotoButton.setOnClickListener {
+//            requestGalleryPermission()
+//        }
+//
+//        closeButton.setOnClickListener {
+//            dismiss()
+//        }
+//
+//        return imageSelectionDialog
+//    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity()).setView(view)
-        val imageSelectionDialog = adb.create()
-        if (imageSelectionDialog != null && imageSelectionDialog.window != null) {
-            imageSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
 
         val imageFile = File(requireActivity().externalCacheDir, "${transaction.transactionId}.jpg")
         if (imageFile.exists()) {
@@ -112,8 +150,6 @@ class ImageSelectionDialogFragment(private val transaction: Transaction) : Dialo
         closeButton.setOnClickListener {
             dismiss()
         }
-
-        return imageSelectionDialog
     }
 
     private fun requestGalleryPermission() {

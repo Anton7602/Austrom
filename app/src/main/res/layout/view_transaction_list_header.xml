@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,225 +10,348 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/trlistheadview_holder_crd"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginVertical="5dp"
-        android:background="@drawable/img_transaction_header_card_background"
-        app:cardCornerRadius="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="5.5:2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/trlistheadview_mainLayout_cly"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroup"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:backgroundTint="@color/white"
-                android:paddingEnd="8dp"
-                app:chipSpacingVertical="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline8"
-                app:layout_constraintEnd_toStartOf="@+id/imageButton2"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toTopOf="@+id/guideline7">
 
-                <com.google.android.material.chip.Chip
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:backgroundTint="@color/white"
-                    android:fontFamily="@font/dm_sans_light"
-                    android:text="13 Nov - 13 Dec"
-                    app:chipCornerRadius="10dp"
-                    app:chipMinHeight="0dp"
-                    app:chipMinTouchTargetSize="0dp" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/trlistheadview_mainHolder_cdv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:background="@drawable/sh_transaction_header_background"
+                app:cardBackgroundColor="@color/transparent"
+                app:cardCornerRadius="24dp"
+                app:layout_constraintDimensionRatio="5.5:2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:backgroundTint="@color/white"
-                    android:fontFamily="@font/dm_sans_light"
-                    android:text="Income"
-                    app:chipMinHeight="0dp"
-                    app:chipMinTouchTargetSize="0dp" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:backgroundTint="@color/white"
-                    android:fontFamily="@font/dm_sans_light"
-                    android:text="Eating Out"
-                    app:chipMinHeight="0dp"
-                    app:chipMinTouchTargetSize="0dp" />
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chipGroup"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:backgroundTint="@color/white"
+                        android:paddingEnd="8dp"
+                        app:chipSpacingVertical="0dp"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline8"
+                        app:layout_constraintEnd_toStartOf="@+id/trlistheadview_filterButton_btn"
+                        app:layout_constraintStart_toStartOf="@+id/guideline5"
+                        app:layout_constraintTop_toTopOf="@+id/guideline7">
 
-            </com.google.android.material.chip.ChipGroup>
+                        <com.google.android.material.chip.Chip
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:backgroundTint="@color/white"
+                            android:fontFamily="@font/dm_sans_light"
+                            android:text="13 Nov - 13 Dec"
+                            app:chipCornerRadius="10dp"
+                            app:chipMinHeight="0dp"
+                            app:chipMinTouchTargetSize="0dp" />
 
-            <TextView
-                android:id="@+id/textView26"
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:backgroundTint="@color/white"
+                            android:fontFamily="@font/dm_sans_light"
+                            android:text="Income"
+                            app:chipMinHeight="0dp"
+                            app:chipMinTouchTargetSize="0dp" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:backgroundTint="@color/white"
+                            android:fontFamily="@font/dm_sans_light"
+                            android:text="Eating Out"
+                            app:chipMinHeight="0dp"
+                            app:chipMinTouchTargetSize="0dp" />
+
+                    </com.google.android.material.chip.ChipGroup>
+
+                    <TextView
+                        android:id="@+id/textView26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/dm_sans"
+                        android:letterSpacing="0.2"
+                        android:paddingHorizontal="8dp"
+                        android:text="@string/expense"
+                        android:textAlignment="center"
+                        android:textColor="@color/transactionGrey"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline34"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                        app:layout_constraintStart_toStartOf="@+id/guideline" />
+
+                    <com.colleagues.austrom.views.MoneyFormatTextView
+                        android:id="@+id/trlistheadview_expense_monf"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="4dp"
+                        app:amountColor="@color/expenseRed"
+                        app:currencyColor="@color/expenseRed"
+                        app:defaultAmount="97.5"
+                        app:layout_constraintBottom_toTopOf="@+id/textView26"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                        app:layout_constraintStart_toStartOf="@+id/guideline"
+                        app:layout_constraintTop_toTopOf="@+id/guideline2" />
+
+                    <TextView
+                        android:id="@+id/textView30"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/dm_sans_light"
+                        android:letterSpacing="0.2"
+                        android:paddingHorizontal="8dp"
+                        android:text="@string/income"
+                        android:textAlignment="center"
+                        android:textColor="@color/transactionGrey"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline34"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                        app:layout_constraintStart_toStartOf="@+id/guideline33" />
+
+                    <com.colleagues.austrom.views.MoneyFormatTextView
+                        android:id="@+id/trlistheadview_income_monf"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
+                        app:amountColor="@color/incomeGreen"
+                        app:currencyColor="@color/incomeGreen"
+                        app:defaultAmount="185593.15"
+                        app:layout_constraintBottom_toTopOf="@+id/textView30"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                        app:layout_constraintStart_toStartOf="@+id/guideline33"
+                        app:layout_constraintTop_toTopOf="@+id/guideline2" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.15" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.5" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.511" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline33"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.61" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.49" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.05" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.95" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.13" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.3" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline34"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.88" />
+
+                    <ImageButton
+                        android:id="@+id/trlistheadview_filterButton_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        app:layout_constraintBottom_toBottomOf="@+id/chipGroup"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                        app:layout_constraintTop_toTopOf="@+id/chipGroup"
+                        app:srcCompat="@drawable/ic_navigation_filter_temp"
+                        app:tint="@color/primaryTextColor" />
+
+                    <ImageView
+                        android:id="@+id/imageView11"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="4dp"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline"
+                        app:layout_constraintStart_toStartOf="@+id/guideline5"
+                        app:layout_constraintTop_toTopOf="@+id/guideline2"
+                        app:srcCompat="@drawable/img_expense_img" />
+
+                    <ImageView
+                        android:id="@+id/imageView12"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="4dp"
+                        app:layout_constraintDimensionRatio="w,1:1"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline33"
+                        app:layout_constraintStart_toStartOf="@+id/guideline3"
+                        app:layout_constraintTop_toTopOf="@+id/guideline2"
+                        app:srcCompat="@drawable/img_income_icon" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/trlistheadview_filterLayout_cly"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/trcreat_expense_chp"
+                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/dm_sans"
-                android:letterSpacing="0.2"
-                android:paddingHorizontal="8dp"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_weight="1"
+                android:checkable="true"
+                android:checked="false"
+                android:paddingVertical="4dp"
                 android:text="@string/expense"
                 android:textAlignment="center"
-                android:textColor="@color/transactionGrey"
-                android:textSize="11sp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline34"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintStart_toStartOf="@+id/guideline" />
+                android:textColor="@color/chip_filter_text_color"
+                app:chipBackgroundColor="@color/chip_filter_background_color"
+                app:chipCornerRadius="8dp"
+                app:chipMinHeight="0dp"
+                app:chipMinTouchTargetSize="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:textEndPadding="8dp" />
 
-            <com.colleagues.austrom.views.MoneyFormatTextView
-                android:id="@+id/trlistheadview_expense_monf"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="4dp"
-                app:amountColor="@color/expenseRed"
-                app:currencyColor="@color/expenseRed"
-                app:defaultAmount="97.5"
-                app:layout_constraintBottom_toTopOf="@+id/textView26"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintStart_toStartOf="@+id/guideline"
-                app:layout_constraintTop_toTopOf="@+id/guideline2" />
-
-            <TextView
-                android:id="@+id/textView30"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/trcreat_expense_chp2"
+                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/dm_sans_light"
-                android:letterSpacing="0.2"
-                android:paddingHorizontal="8dp"
-                android:text="@string/income"
-                android:textAlignment="center"
-                android:textColor="@color/transactionGrey"
-                android:textSize="11sp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline34"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toStartOf="@+id/guideline33" />
-
-            <com.colleagues.austrom.views.MoneyFormatTextView
-                android:id="@+id/trlistheadview_income_monf"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_marginHorizontal="8dp"
                 android:layout_marginStart="8dp"
-                app:amountColor="@color/incomeGreen"
-                app:currencyColor="@color/incomeGreen"
-                app:defaultAmount="185593.15"
-                app:layout_constraintBottom_toTopOf="@+id/textView30"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toStartOf="@+id/guideline33"
-                app:layout_constraintTop_toTopOf="@+id/guideline2" />
+                android:layout_marginTop="24dp"
+                android:layout_weight="1"
+                android:checkable="true"
+                android:checked="false"
+                android:paddingVertical="4dp"
+                android:text="@string/expense"
+                android:textAlignment="center"
+                android:textColor="@color/chip_filter_text_color"
+                app:chipBackgroundColor="@color/chip_filter_background_color"
+                app:chipCornerRadius="8dp"
+                app:chipMinHeight="0dp"
+                app:chipMinTouchTargetSize="0dp"
+                app:layout_constraintStart_toEndOf="@+id/trcreat_expense_chp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:textEndPadding="8dp" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/trcreat_expense_chp3"
+                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.15" />
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_weight="1"
+                android:checkable="true"
+                android:checked="false"
+                android:paddingVertical="4dp"
+                android:text="@string/expense"
+                android:textAlignment="center"
+                android:textColor="@color/chip_filter_text_color"
+                app:chipBackgroundColor="@color/chip_filter_background_color"
+                app:chipCornerRadius="8dp"
+                app:chipMinHeight="0dp"
+                app:chipMinTouchTargetSize="0dp"
+                app:layout_constraintStart_toEndOf="@+id/trcreat_expense_chp4"
+                app:layout_constraintTop_toTopOf="parent"
+                app:textEndPadding="8dp" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline2"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/trcreat_expense_chp4"
+                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.5" />
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_weight="1"
+                android:checkable="true"
+                android:checked="false"
+                android:paddingVertical="4dp"
+                android:text="@string/expense"
+                android:textAlignment="center"
+                android:textColor="@color/chip_filter_text_color"
+                app:chipBackgroundColor="@color/chip_filter_background_color"
+                app:chipCornerRadius="8dp"
+                app:chipMinHeight="0dp"
+                app:chipMinTouchTargetSize="0dp"
+                app:layout_constraintStart_toEndOf="@+id/trcreat_expense_chp2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:textEndPadding="8dp" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline3"
+            <com.colleagues.austrom.views.ActionButtonView
+                android:id="@+id/trlistheadview_confirmFilter_abtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.511" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline33"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.61" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.49" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.05" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.95" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.13" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.3" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline34"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.88" />
-
-            <ImageButton
-                android:id="@+id/imageButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                app:layout_constraintBottom_toBottomOf="@+id/chipGroup"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintTop_toTopOf="@+id/chipGroup"
-                app:srcCompat="@drawable/ic_navigation_filter_temp"
-                app:tint="@color/primaryTextColor" />
-
-            <ImageView
-                android:id="@+id/imageView11"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toStartOf="@+id/guideline"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toTopOf="@+id/guideline2"
-                app:srcCompat="@drawable/img_expense_img" />
-
-            <ImageView
-                android:id="@+id/imageView12"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="4dp"
-                app:layout_constraintDimensionRatio="w,1:1"
-                app:layout_constraintEnd_toStartOf="@+id/guideline33"
-                app:layout_constraintStart_toStartOf="@+id/guideline3"
-                app:layout_constraintTop_toTopOf="@+id/guideline2"
-                app:srcCompat="@drawable/img_income_icon" />
-
+                app:backgroundColor="@color/backgroundMain"
+                app:iconDrawable="@drawable/ic_navigation_done_temp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:text=" " />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

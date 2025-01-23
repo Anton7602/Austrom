@@ -99,7 +99,7 @@
     <string name="notes">Notes</string>
     <string name="cancel_transaction">Cancel Transaction</string>
     <string name="transaction_details">Transaction Details</string>
-    <string name="unallocated_balance">Unallocated balance</string>
+    <string name="unallocated_balance">Unallocated</string>
     <string name="total">Total:</string>
     <string name="not_yet_implemented">Feature is not yet implemented</string>
     <string name="user_successfully_added">User successfully added</string>
@@ -428,4 +428,16 @@
     <string name="add_comment">Add Comment</string>
     <string name="split">Split</string>
     <string name="edit_comment">Edit Comment</string>
+    <string name="kilogramm">Kilogramm</string>
+    <string name="kg">kg</string>
+    <string name="piece">Piece</string>
+    <string name="pc">pc</string>
+    <string name="litre">Litre</string>
+    <string name="l">L</string>
+    <string name="meter">Meter</string>
+    <string name="m">m</string>
+    <string name="show_image">Show Image</string>
+    <string name="detail_name">Detail Name</string>
+    <string name="detail_quantity">Detail Quantity</string>
+    <string name="detail_amount">Detail Amount</string>
 </resources>

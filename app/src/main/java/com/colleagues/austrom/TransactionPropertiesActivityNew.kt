@@ -1,6 +1,7 @@
 package com.colleagues.austrom
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -10,16 +11,19 @@ import android.widget.PopupMenu
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.dialogs.ImageSelectionDialogFragment
 import com.colleagues.austrom.dialogs.TextEditDialogFragment
 import com.colleagues.austrom.dialogs.TransactionDetailCreationNewDialogFragment
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.views.ActionButtonView
 import com.colleagues.austrom.views.TransactionReceiptView
+import java.io.File
 
 class TransactionPropertiesActivityNew : AppCompatActivity() {
     //region Binding
@@ -79,9 +83,20 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
         backButton.setOnClickListener { this.finish() }
         moreButton.setOnClickListener { showMenu(moreButton, R.menu.transaction_context_menu) }
         commentActionButton.setText(if (transaction.comment.isNullOrEmpty()) getString(R.string.add_comment) else getString(R.string.edit_comment))
+        val imageFile = File(externalCacheDir, "${transaction.transactionId}.jpg")
+
+        newImageActionButton.setText(if (imageFile.exists()) getString(R.string.show_image) else getString(R.string.add_image))
+
 
         commentActionButton.setOnClickListener { launchEditCommentDialog() }
+        newImageActionButton.setOnClickListener { launchImageSelectionDialog() }
         newDetailActionButton.setOnClickListener { launchNewDetailDialog() }
+    }
+
+    private fun launchImageSelectionDialog() {
+        val dialog = ImageSelectionDialogFragment(transaction)
+        dialog.setOnDialogResultListener { isImageSelected -> }
+        dialog.show(supportFragmentManager, "ImageSelectionDialog")
     }
 
     private fun launchNewDetailDialog() {

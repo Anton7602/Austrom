@@ -1,17 +1,17 @@
 package com.colleagues.austrom.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.R
 import com.colleagues.austrom.models.AssetType
 
-class AssetTypeRecyclerAdapter(private val assetTypes: List<AssetType>, private val activity: AppCompatActivity): RecyclerView.Adapter<AssetTypeRecyclerAdapter.AssetTypeViewHolder>() {
+class AssetTypeRecyclerAdapter(private val assetTypes: List<AssetType>, private val context: Context): RecyclerView.Adapter<AssetTypeRecyclerAdapter.AssetTypeViewHolder>() {
     class AssetTypeViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val assetTypeHolder: LinearLayout = itemView.findViewById(R.id.itasstype_assetTypeHolder_lly)
         val assetTypeName: TextView = itemView.findViewById(R.id.itasstype_assetTypeName_txt)
@@ -25,8 +25,8 @@ class AssetTypeRecyclerAdapter(private val assetTypes: List<AssetType>, private 
 
     override fun onBindViewHolder(holder: AssetTypeViewHolder, position: Int) {
         val assetType = assetTypes[position]
-        holder.assetTypeName.text = activity.getString(assetType.stringResourceId)
-        holder.assetTypeDesc.text = activity.getString(assetType.stringDescriptionResourceId)
+        holder.assetTypeName.text = context.getString(assetType.stringResourceId)
+        holder.assetTypeDesc.text = context.getString(assetType.stringDescriptionResourceId)
         holder.assetTypeIcon.setImageResource(assetType.iconResourceId)
 
         holder.assetTypeHolder.setOnClickListener { returnClickedItem(assetType) }

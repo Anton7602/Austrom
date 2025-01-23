@@ -1,11 +1,11 @@
 package com.colleagues.austrom.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
@@ -13,7 +13,7 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Currency
 
-class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>, private var activity: AppCompatActivity, private var selectedCurrency: Currency? = null, private val isSortingByMyCurrencies: Boolean = true, private val isSortingByBaseCurrencies: Boolean = true): RecyclerView.Adapter<CurrencyRecyclerAdapter.CurrencyViewHolder>() {
+class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>, private val context: Context, private var selectedCurrency: Currency? = null, private val isSortingByMyCurrencies: Boolean = true, private val isSortingByBaseCurrencies: Boolean = true): RecyclerView.Adapter<CurrencyRecyclerAdapter.CurrencyViewHolder>() {
     class CurrencyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val currencyHolder: CardView = itemView.findViewById(R.id.curit_currencyHolder_crv)
         val currencySymbol: TextView = itemView.findViewById(R.id.curit_currencySymbol_txt)
@@ -72,10 +72,10 @@ class CurrencyRecyclerAdapter(private var currencies: Map<String, Currency>, pri
         val currency = currencies.values.elementAt(position)
         if (isSortingByBaseCurrencies || isSortingByMyCurrencies) {
             holder.currencyGroupSeparator.visibility = if(position == 0 || position == baseCurrencyCategoryEndIndex || position==myCurrencyCategoryEndIndex) View.VISIBLE else View.GONE
-            holder.currencyGroupHeader.text = if (position==0 && myCurrencyCategoryEndIndex!=0) activity.getString( R.string.my_currencies)
-            else if (position==0 && baseCurrencyCategoryEndIndex!=0) activity.getString(R.string.popular_currencies)
-            else if (position==myCurrencyCategoryEndIndex && baseCurrencyCategoryEndIndex>myCurrencyCategoryEndIndex) activity.getString(R.string.popular_currencies)
-            else activity.getString(R.string.all_currencies)
+            holder.currencyGroupHeader.text = if (position==0 && myCurrencyCategoryEndIndex!=0) context.getString( R.string.my_currencies)
+            else if (position==0 && baseCurrencyCategoryEndIndex!=0) context.getString(R.string.popular_currencies)
+            else if (position==myCurrencyCategoryEndIndex && baseCurrencyCategoryEndIndex>myCurrencyCategoryEndIndex) context.getString(R.string.popular_currencies)
+            else context.getString(R.string.all_currencies)
         }
         val baseCurrencyCode = AustromApplication.appUser?.baseCurrencyCode
         holder.currencyName.text = currency.name

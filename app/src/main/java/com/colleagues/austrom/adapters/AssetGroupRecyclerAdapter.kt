@@ -1,11 +1,11 @@
 package com.colleagues.austrom.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
@@ -14,7 +14,7 @@ import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 
-class AssetGroupRecyclerAdapter(private var assetTypes: Map<AssetType, MutableList<Asset>>, private var activity: AppCompatActivity) : RecyclerView.Adapter<AssetGroupRecyclerAdapter.AssetGroupViewHolder>() {
+class AssetGroupRecyclerAdapter(private var assetTypes: Map<AssetType, MutableList<Asset>>, private val context: Context) : RecyclerView.Adapter<AssetGroupRecyclerAdapter.AssetGroupViewHolder>() {
     class AssetGroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val assetTypeName: TextView = itemView.findViewById(R.id.assgritem_assettype_txt)
         val assetTypeSum: TextView= itemView.findViewById(R.id.assgritem_sumamount_txt)
@@ -28,19 +28,19 @@ class AssetGroupRecyclerAdapter(private var assetTypes: Map<AssetType, MutableLi
     override fun getItemCount(): Int { return assetTypes.size  }
 
     override fun onBindViewHolder(holder: AssetGroupViewHolder, position: Int) {
-        holder.assetTypeName.text = activity.getString(assetTypes.keys.elementAt(position).stringResourceId).uppercase()
+        holder.assetTypeName.text = context.getString(assetTypes.keys.elementAt(position).stringResourceId).uppercase()
         holder.assetTypeCurrencySymbol.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         var sum = 0.0
         for (asset in assetTypes.values.elementAt(position)) {
-            sum += if (asset.currencyCode.equals(AustromApplication.appUser?.baseCurrencyCode)) {
+            sum += if (asset.currencyCode == AustromApplication.appUser?.baseCurrencyCode) {
                 asset.amount
             } else {
                 asset.amount/AustromApplication.activeCurrencies[asset.currencyCode]!!.exchangeRate
             }
         }
         holder.assetTypeSum.text = sum.toMoneyFormat()
-        holder.assetsListHolder.layoutManager = LinearLayoutManager(activity)
-        holder.assetsListHolder.adapter = AssetRecyclerAdapter(assetTypes.values.elementAt(position), activity)
+        holder.assetsListHolder.layoutManager = LinearLayoutManager(context)
+        holder.assetsListHolder.adapter = AssetRecyclerAdapter(assetTypes.values.elementAt(position), context)
         (holder.assetsListHolder.adapter as AssetRecyclerAdapter).setOnItemClickListener { asset -> returnClickedItem(asset) }
         holder.dropdownButton.setOnClickListener {
             if (holder.assetsListHolder.visibility == View.VISIBLE) {

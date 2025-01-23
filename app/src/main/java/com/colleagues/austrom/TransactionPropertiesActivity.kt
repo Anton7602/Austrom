@@ -181,7 +181,7 @@ class TransactionPropertiesActivity : AppCompatActivity() {
 
     private fun setUpRecyclerView() {
         transactionDetailsRecyclerView.layoutManager = LinearLayoutManager(this)
-        transactionDetailsRecyclerView.adapter = TransactionDetailRecyclerAdapter(transaction, transactionDetails)
+        transactionDetailsRecyclerView.adapter = TransactionDetailRecyclerAdapter(transaction, transactionDetails, this)
     }
 
     private fun setUpFragment() {

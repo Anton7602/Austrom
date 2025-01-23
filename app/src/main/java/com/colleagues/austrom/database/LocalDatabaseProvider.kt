@@ -1,6 +1,7 @@
 package com.colleagues.austrom.database
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
@@ -225,6 +226,15 @@ class LocalDatabaseProvider(context: Context) {
             dao.insertTransactionDetail(transactionDetail)
         }
         return transactionDetail.transactionDetailId
+    }
+
+    fun getUniqueTransactionNamesAsync(transactionType: TransactionType? = null): LiveData<List<String>> {
+        return when (transactionType) {
+            TransactionType.INCOME -> localDatabase.transactionDao().getUniqueIncomeNames()
+            TransactionType.EXPENSE -> localDatabase.transactionDao().getUniqueExpenseNames()
+            TransactionType.TRANSFER -> localDatabase.transactionDao().getUniqueTransactionNames()
+            else -> localDatabase.transactionDao().getUniqueTransactionNames()
+        }
     }
 
     fun getTransactionDetailsOfTransaction(transaction: Transaction) : List<TransactionDetail> {

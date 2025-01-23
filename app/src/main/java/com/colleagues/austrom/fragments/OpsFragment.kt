@@ -1,10 +1,13 @@
 package com.colleagues.austrom.fragments
 
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +19,7 @@ import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.TransactionFilter
 import com.colleagues.austrom.dialogs.TransactionTypeSelectionDialogFragment
+import com.colleagues.austrom.extensions.dpToPx
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
@@ -39,7 +43,6 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         updateTransactionsList()
-        //createNewTransactionButton.setOnClickListener { startActivity(Intent(requireActivity(), TransactionCreationActivity::class.java)) }
         createNewTransactionButton.setOnClickListener { launchNewTransactionCreationDialog() }
     }
 
@@ -48,6 +51,8 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         dialog.setOnDialogResultListener { transactionType -> startActivity(Intent(requireActivity(), TransactionCreationActivity::class.java).putExtra("TransactionType", transactionType)) }
         dialog.show(requireActivity().supportFragmentManager, "AssetTypeSelectionDialog")
     }
+
+
 
     private fun updateTransactionsList() {
         val provider = LocalDatabaseProvider(requireActivity())

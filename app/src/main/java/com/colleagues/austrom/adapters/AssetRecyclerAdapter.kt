@@ -1,22 +1,20 @@
 package com.colleagues.austrom.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.startWithUppercase
-import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
-import com.colleagues.austrom.models.AssetType
 import com.colleagues.austrom.views.MoneyFormatTextView
 
-class AssetRecyclerAdapter(private val assets: MutableList<Asset>, private val activity: AppCompatActivity) : RecyclerView.Adapter<AssetRecyclerAdapter.AssetViewHolder>()  {
+class AssetRecyclerAdapter(private val assets: MutableList<Asset>, private val context: Context) : RecyclerView.Adapter<AssetRecyclerAdapter.AssetViewHolder>()  {
     class AssetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val assetAmount: MoneyFormatTextView = itemView.findViewById(R.id.asitem_assetAmount_mtxt)
         val baseAssetAmount: MoneyFormatTextView = itemView.findViewById(R.id.asitem_baseCurrencyAmount_mtxt)

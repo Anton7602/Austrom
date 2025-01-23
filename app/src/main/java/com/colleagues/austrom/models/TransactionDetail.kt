@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.colleagues.austrom.R
 import java.util.UUID
 
 @Entity(foreignKeys = [ForeignKey(entity = Transaction::class,
@@ -22,6 +23,6 @@ class TransactionDetail(val transactionId: String, val name: String, val cost: D
     }
 }
 
-enum class QuantityUnit {
-    KG, PC, L, M
+enum class QuantityUnit(val fullNameResourceId: Int, val shortNameResourceId: Int) {
+    KG(R.string.kilogramm, R.string.kg), PC(R.string.piece, R.string.pc), L(R.string.litre, R.string.l), M(R.string.meter, R.string.m)
 }

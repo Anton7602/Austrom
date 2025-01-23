@@ -1,6 +1,7 @@
 package com.colleagues.austrom.database
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Delete
@@ -155,6 +156,32 @@ interface TransactionDao {
 
     @Query("SELECT * FROM `Transaction` as Trn WHERE transactionDate = :date AND amount = :amount")
     suspend fun getCollidingTransaction(date: LocalDate, amount: Double): List<Transaction>
+
+    @Query("""
+        SELECT transactionName
+        FROM `Transaction`
+        GROUP BY transactionName
+        ORDER BY COUNT(transactionName) DESC
+    """)
+    fun getUniqueTransactionNames(): LiveData<List<String>>
+
+    @Query("""
+        SELECT transactionName
+        FROM `Transaction`
+        WHERE linkedTransactionId IS NULL AND amount < 0
+        GROUP BY transactionName
+        ORDER BY COUNT(transactionName) DESC
+    """)
+    fun getUniqueExpenseNames(): LiveData<List<String>>
+
+    @Query("""
+        SELECT transactionName
+        FROM `Transaction`
+        WHERE linkedTransactionId IS NULL AND amount > 0
+        GROUP BY transactionName
+        ORDER BY COUNT(transactionName) DESC
+    """)
+    fun getUniqueIncomeNames(): LiveData<List<String>>
 }
 
 @Dao
