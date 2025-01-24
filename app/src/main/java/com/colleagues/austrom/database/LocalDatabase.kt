@@ -182,6 +182,21 @@ interface TransactionDao {
         ORDER BY COUNT(transactionName) DESC
     """)
     fun getUniqueIncomeNames(): LiveData<List<String>>
+
+//    @Query("""
+//        SELECT * FROM `Transaction`
+//        WHERE categoryId IN (:categoryIds)
+//        AND transactionDate BETWEEN :startDate AND :endDate
+//    """)
+    @Query("""
+        SELECT * FROM `Transaction`
+        WHERE categoryId IN (:categoryIds)
+    """)
+    fun getTransactionsByCategoryAndDate(
+        categoryIds: List<String>,
+//        startDate: LocalDate,
+//        endDate: LocalDate
+    ): LiveData<List<Transaction>>
 }
 
 @Dao

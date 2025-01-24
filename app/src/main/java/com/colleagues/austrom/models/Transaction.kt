@@ -187,3 +187,5 @@ class InvalidTransactionException(message: String, validationType: TransactionVa
         TransactionValidationType.AMOUNT_INVALID -> "Transaction Amount cannot be equal to zero"
     }, validationType)
 }
+
+class TransactionFilter(val categories: MutableList<String>, val dateFrom: LocalDate?, val dateTo: LocalDate?)

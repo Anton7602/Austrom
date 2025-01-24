@@ -43,6 +43,18 @@
         <item name="android:textCursorDrawable" />
     </style>
 
+    <style name="ChipTransactionFilter" parent="Widget.Material3.Chip.Assist">
+        <item name="android:paddingVertical">4dp</item>
+        <item name="android:checkable">true</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/chip_filter_text_color</item>
+        <item name="chipBackgroundColor">@color/chip_filter_background_color</item>
+        <item name="chipCornerRadius">8dp</item>
+        <item name="chipMinHeight">0dp</item>
+        <item name="chipMinTouchTargetSize">0dp</item>
+        <item name="textEndPadding">8dp</item>
+    </style>
+
     <style name="MainActionButton" parent="Widget.Material3.Button">
         <item name="android:backgroundTint">@color/backgroundText</item>
         <item name="android:textAppearance">@style/PrimaryCardText</item>

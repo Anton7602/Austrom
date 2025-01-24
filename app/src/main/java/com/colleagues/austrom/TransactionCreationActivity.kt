@@ -123,7 +123,6 @@ class TransactionCreationActivity : AppCompatActivity() {
         if (AustromApplication.activeAssets.size<2) { transferChip.visibility = View.GONE }
 
         backButton.setOnClickListener { finish() }
-
         incomeChip.setOnClickListener { switchChipSelection(incomeChip.id) }
         expenseChip.setOnClickListener { switchChipSelection(expenseChip.id) }
         transferChip.setOnClickListener { switchChipSelection(transferChip.id) }

@@ -1,13 +1,10 @@
 package com.colleagues.austrom.fragments
 
-import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,11 +14,9 @@ import com.colleagues.austrom.TransactionCreationActivity
 import com.colleagues.austrom.TransactionPropertiesActivityNew
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.TransactionFilter
 import com.colleagues.austrom.dialogs.TransactionTypeSelectionDialogFragment
-import com.colleagues.austrom.extensions.dpToPx
-import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.TransactionHeaderView
 
@@ -36,13 +31,10 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         createNewTransactionButton = view.findViewById(R.id.ops_createNewTransaction_btn)
     }
     //endregion
-    private var transactionList: MutableList<Transaction> = mutableListOf()
-    var activeFilter: TransactionFilter? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        updateTransactionsList()
+        setUpTransactionHeader()
         createNewTransactionButton.setOnClickListener { launchNewTransactionCreationDialog() }
     }
 
@@ -52,32 +44,23 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         dialog.show(requireActivity().supportFragmentManager, "AssetTypeSelectionDialog")
     }
 
-
-
-    private fun updateTransactionsList() {
-        val provider = LocalDatabaseProvider(requireActivity())
-        val user = AustromApplication.appUser
-        if (user !=null) {
-            transactionList = if (user.activeBudgetId != null) {
-                //val budget = provider.getBudgetById(user.activeBudgetId!!)
-                val budget: Budget? = null
-                if (budget!=null) {
-                    provider.getTransactionsOfBudget(budget)
-                } else {
-                    provider.getTransactionsOfUser(user)
-                }
-            } else {
-                provider.getTransactionsOfUser(user)
-            }
-            if (transactionList.isNotEmpty()) {
-                setUpRecyclerView(transactionList)
-            }
-        }
-        calculateTransactionsAmountSums(provider)
+    private fun setUpTransactionHeader() {
+        transactionsHeader.setOnFilterChangedListener { transactionFilter ->applyTransactionFilter(transactionFilter) }
         transactionsHeader.setCurrencySymbol(AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]!!.symbol)
+        applyTransactionFilter(transactionsHeader.getTransactionFilter())
     }
 
-    private fun calculateTransactionsAmountSums(dbProvider: LocalDatabaseProvider) {
+    private fun applyTransactionFilter(transactionFilter: TransactionFilter) {
+        val localDBProvider = LocalDatabaseProvider(requireActivity())
+        localDBProvider.getTransactionsByTransactionFilterAsync(transactionFilter).observe(requireActivity()) {transactionList ->
+            if (transactionList.isNotEmpty()) {
+                setUpRecyclerView(transactionList.toMutableList())
+                calculateTransactionsAmountSums(transactionList)
+            }
+        }
+    }
+
+    private fun calculateTransactionsAmountSums(transactionList: List<Transaction>) {
         var incomeSum = 0.0
         var expenseSum = 0.0
         transactionList.forEach{ transaction ->
@@ -97,25 +80,6 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         transactionsHeader.setExpense(expenseSum)
     }
 
-    fun filterTransactions(filter: TransactionFilter) {
-        activeFilter = filter
-        var filteredTransactions: MutableList<Transaction> = mutableListOf()
-        if (filter.transactionTypes.contains(TransactionType.INCOME))
-            filteredTransactions.addAll(transactionList.filter { entry -> entry.transactionType()==TransactionType.INCOME })
-        if (filter.transactionTypes.contains(TransactionType.TRANSFER))
-            filteredTransactions.addAll(transactionList.filter  {entry -> entry.transactionType()==TransactionType.TRANSFER })
-        if (filter.transactionTypes.contains(TransactionType.EXPENSE))
-            filteredTransactions.addAll(transactionList.filter { entry -> entry.transactionType() == TransactionType.EXPENSE})
-        filteredTransactions = (filteredTransactions.filter { entry -> filter.categories.contains(entry.categoryId) }).toMutableList()
-        if (filter.dateFrom!=null) {
-            filteredTransactions = (filteredTransactions.filter { entry -> entry.transactionDate >= filter.dateFrom }).toMutableList()
-        }
-        if (filter.dateTo!=null) {
-            filteredTransactions = (filteredTransactions.filter { entry -> entry.transactionDate <= filter.dateTo }).toMutableList()
-        }
-        setUpRecyclerView(filteredTransactions)
-    }
-
     private fun setUpRecyclerView(transactionList: MutableList<Transaction>) {
         val groupedTransactions = Transaction.groupTransactionsByDate(transactionList)
         transactionHolder.layoutManager = LinearLayoutManager(activity)
@@ -126,6 +90,6 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
 
     override fun onResume() {
         super.onResume()
-        updateTransactionsList()
+        setUpTransactionHeader()
     }
 }

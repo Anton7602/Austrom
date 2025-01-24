@@ -9,6 +9,7 @@ import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.InvalidTransactionException
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
+import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.TransactionValidationType
 import com.colleagues.austrom.models.User
@@ -210,6 +211,20 @@ class LocalDatabaseProvider(context: Context) {
         return transaction
     }
 
+//    fun getTransactionsByTransactionFilter(transactionFilter: TransactionFilter): MutableList<Transaction> {
+//        val dao = localDatabase.transactionDao()
+//        var transactions: MutableList<Transaction>
+//        runBlocking {
+//            transactions = dao.getTransactionsByCategoryAndDate(transactionFilter.categories, transactionFilter.dateFrom!!, transactionFilter.dateTo!!)
+//        }
+//        return transactions
+//    }
+
+    fun getTransactionsByTransactionFilterAsync(transactionFilter: TransactionFilter): LiveData<List<Transaction>> {
+        return localDatabase.transactionDao().getTransactionsByCategoryAndDate(transactionFilter.categories)
+           // , transactionFilter.dateFrom!!, transactionFilter.dateTo!!)
+    }
+
     fun isCollidingTransactionExist(transaction: Transaction): Boolean {
         var result = false
         val dao = localDatabase.transactionDao()
@@ -219,15 +234,6 @@ class LocalDatabaseProvider(context: Context) {
         return result
     }
 
-    fun writeNewTransactionDetail(transactionDetail: TransactionDetail): String {
-        val dao = localDatabase.transactionDetailDao()
-        transactionDetail.transactionDetailId = TransactionDetail.generateUniqueTransactionKey();
-        runBlocking {
-            dao.insertTransactionDetail(transactionDetail)
-        }
-        return transactionDetail.transactionDetailId
-    }
-
     fun getUniqueTransactionNamesAsync(transactionType: TransactionType? = null): LiveData<List<String>> {
         return when (transactionType) {
             TransactionType.INCOME -> localDatabase.transactionDao().getUniqueIncomeNames()
@@ -235,6 +241,15 @@ class LocalDatabaseProvider(context: Context) {
             TransactionType.TRANSFER -> localDatabase.transactionDao().getUniqueTransactionNames()
             else -> localDatabase.transactionDao().getUniqueTransactionNames()
         }
+    }
+
+    fun writeNewTransactionDetail(transactionDetail: TransactionDetail): String {
+        val dao = localDatabase.transactionDetailDao()
+        transactionDetail.transactionDetailId = TransactionDetail.generateUniqueTransactionKey();
+        runBlocking {
+            dao.insertTransactionDetail(transactionDetail)
+        }
+        return transactionDetail.transactionDetailId
     }
 
     fun getTransactionDetailsOfTransaction(transaction: Transaction) : List<TransactionDetail> {

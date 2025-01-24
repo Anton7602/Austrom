@@ -25,7 +25,7 @@ class ActionButtonView@JvmOverloads constructor(context: Context, attrs: Attribu
     private var iconDrawable: Drawable? = AppCompatResources.getDrawable(context, R.drawable.ic_placeholder_icon)
     private var iconTint: Int = Color.WHITE
     private var descriptionMargin: Float = context.dpToPx(12)
-    private var text: String = "Action"
+    private var text: String = ""
     private var textColor: Int = context.getColor(R.color.secondaryTextColor)
     private var textSize: Float = context.spToPx(12)
     private var iconSizePercent = 0.5f
@@ -70,7 +70,9 @@ class ActionButtonView@JvmOverloads constructor(context: Context, attrs: Attribu
             it.draw(canvas)
         }
 
-        drawText(canvas,radius*2 + getTextHeight(text, textPaint)+descriptionMargin)
+        if (text.isNotEmpty()) {
+            drawText(canvas,radius*2 + getTextHeight(text, textPaint)+descriptionMargin)
+        }
 //        val textWidth = textPaint.measureText(text)
 //        canvas.drawText(text, (width - textWidth) / 2, radius*2 + getTextHeight(text, textPaint)+descriptionMargin, textPaint)
     }
@@ -110,7 +112,12 @@ class ActionButtonView@JvmOverloads constructor(context: Context, attrs: Attribu
     private fun resolveDefaultHeight(spec: Int, sizeWidth: Int): Int {
         return when(MeasureSpec.getMode(spec)) {
             MeasureSpec.EXACTLY -> MeasureSpec.getSize(spec)
-            MeasureSpec.AT_MOST -> minOf((context.dpToPx(DEFAULT_VIEW_SIZE_WIDTH)+descriptionMargin+calculateWrappedTextHeight(text,textPaint,sizeWidth)).toInt(), MeasureSpec.getSize(spec))
+            MeasureSpec.AT_MOST -> {
+                if (text.isNotEmpty())
+                    minOf((context.dpToPx(DEFAULT_VIEW_SIZE_WIDTH)+descriptionMargin+calculateWrappedTextHeight(text,textPaint,sizeWidth)).toInt(), MeasureSpec.getSize(spec))
+                else
+                    minOf(context.dpToPx(DEFAULT_VIEW_SIZE_WIDTH).toInt(), MeasureSpec.getSize(spec))
+            }
             MeasureSpec.UNSPECIFIED -> (context.dpToPx(DEFAULT_VIEW_SIZE_WIDTH)+descriptionMargin+calculateWrappedTextHeight(text,textPaint,sizeWidth)).toInt()
             else -> MeasureSpec.getSize(spec)
         }

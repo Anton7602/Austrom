@@ -26,7 +26,6 @@ import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetFilterDialogFragment
 import com.colleagues.austrom.dialogs.SuggestQuickAccessDialogFragment
-import com.colleagues.austrom.dialogs.TransactionFilterDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.fragments.BudgetFragment
@@ -137,7 +136,6 @@ class MainActivity : AppCompatActivity() {
     private fun handleFilterButtonClick() {
         when (fragmentHolder.getFragment<Fragment>()) {
             is BalanceFragment -> AssetFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
-            is OpsFragment -> TransactionFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
         }
     }
 
