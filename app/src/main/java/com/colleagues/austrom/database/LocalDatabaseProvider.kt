@@ -18,6 +18,7 @@ import kotlinx.coroutines.runBlocking
 class LocalDatabaseProvider(context: Context) {
     private val localDatabase = LocalDatabase.getDatabase(context)
 
+    //region User
     fun writeNewUser(user: User) { runBlocking {localDatabase.userDao().insertUser(user) }}
     suspend fun writeNewUserAsync(user: User) { localDatabase.userDao().insertUser(user) }
 
@@ -67,11 +68,9 @@ class LocalDatabaseProvider(context: Context) {
         }
         return user
     }
+    //endregion
 
-//    fun getUserByEmail(email: String): User? {
-//        TODO("Not yet implemented")
-//    }
-
+    //region Asset
     fun createNewAsset(asset: Asset): String {
         val dao = localDatabase.assetDao()
         //asset.assetId = Asset.generateUniqueAssetKey();
@@ -137,8 +136,9 @@ class LocalDatabaseProvider(context: Context) {
         }
         return asset
     }
+    //endregion
 
-
+    //region Transaction
     fun submitNewTransaction(transaction: Transaction, asset: Asset) {
         runBlocking {
             localDatabase.complexDao().submitTransaction(localDatabase.transactionDao(), localDatabase.assetDao(), transaction, asset)
@@ -242,14 +242,25 @@ class LocalDatabaseProvider(context: Context) {
             else -> localDatabase.transactionDao().getUniqueTransactionNames()
         }
     }
+    //endregion
 
-    fun writeNewTransactionDetail(transactionDetail: TransactionDetail): String {
-        val dao = localDatabase.transactionDetailDao()
-        transactionDetail.transactionDetailId = TransactionDetail.generateUniqueTransactionKey();
+    //region TransactionDetail
+
+    fun writeNewTransactionDetail(transactionDetail: TransactionDetail) {
+        //val dao = localDatabase.transactionDetailDao()
+        //transactionDetail.transactionDetailId = TransactionDetail.generateUniqueTransactionKey();
         runBlocking {
-            dao.insertTransactionDetail(transactionDetail)
+            localDatabase.transactionDetailDao().insertTransactionDetail(transactionDetail)
         }
-        return transactionDetail.transactionDetailId
+    }
+
+    fun removeTransactionDetail(transactionDetail: TransactionDetail) {
+        //TODO("Write Query for this One")
+//        val dao = localDatabase.transactionDetailDao()
+//        runBlocking {
+//            dao.insertTransactionDetail(transactionDetail)
+//        }
+//        return transactionDetail.transactionDetailId
     }
 
     fun getTransactionDetailsOfTransaction(transaction: Transaction) : List<TransactionDetail> {
@@ -261,6 +272,19 @@ class LocalDatabaseProvider(context: Context) {
         return transactionDetails
     }
 
+    fun getTransactionDetailById(transactionDetailId: String) : TransactionDetail? {
+        val dao = localDatabase.transactionDetailDao()
+        var transactionDetail: TransactionDetail? = null
+        runBlocking {
+            transactionDetail = dao.getTransactionDetailById(transactionDetailId)
+        }
+        return transactionDetail
+    }
+
+    fun getUniqueTransactionDetailsNamesAsync(): LiveData<List<String>> { return localDatabase.transactionDetailDao().getUniqueTransactionDetailsNames() }
+    //endregion
+
+    //region Currency
     fun writeCurrency(currency: Currency) {
         val dao = localDatabase.currencyDao()
         runBlocking {
@@ -285,7 +309,9 @@ class LocalDatabaseProvider(context: Context) {
             localDatabase.currencyDao().deleteAllCurrencies()
         }
     }
+    //endregion
 
+    //region Category
     fun writeCategory(category: Category) {
         val dao = localDatabase.categoryDao()
         runBlocking {
@@ -323,4 +349,5 @@ class LocalDatabaseProvider(context: Context) {
             localDatabase.categoryDao().deleteCategory(category)
         }
     }
+    //endregion
 }

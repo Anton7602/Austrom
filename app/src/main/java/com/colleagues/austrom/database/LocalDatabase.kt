@@ -12,6 +12,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import androidx.room.Update
+import com.colleagues.austrom.managers.SyncManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
@@ -19,6 +20,7 @@ import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.User
+import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -212,6 +214,17 @@ interface TransactionDetailsDao {
 
     @Query ("SELECT * FROM TransactionDetail as Trd WHERE Trd.transactionId =:transactionId")
     suspend fun getTransactionDetailsOfTransaction(transactionId: String): List<TransactionDetail>
+
+    @Query ("SELECT * FROM TransactionDetail as Trd WHERE Trd.transactionDetailId =:transactionDetailId")
+    suspend fun getTransactionDetailById(transactionDetailId: String): TransactionDetail?
+
+    @Query("""
+        SELECT name
+        FROM TransactionDetail
+        GROUP BY name
+        ORDER BY COUNT(name) DESC
+    """)
+    fun getUniqueTransactionDetailsNames(): LiveData<List<String>>
 }
 
 @Dao
@@ -253,16 +266,27 @@ interface CategoryDao {
     suspend fun getCategoryById(categoryId: String): List<Category>
 }
 
+@Dao
+interface AssetChangeLogDao {
+    @Insert
+    suspend fun insertChangeLog(changeLog: SyncManager.AssetChangeLog)
+
+    @Query("SELECT * FROM change_log ORDER BY logId DESC")
+    suspend fun getAllChangeLogs(): List<SyncManager.AssetChangeLog>
+}
+
 class Converters {
     @TypeConverter
-    fun fromLocalDate(date: LocalDate?): Long? {
-        return date?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+    fun fromLocalDate(date: LocalDate?): Int? {
+        return date?.let {
+            it.year * 10000 + it.monthValue * 100 + it.dayOfMonth
+        }
     }
 
     @TypeConverter
-    fun toLocalDate(timestamp: Long?): LocalDate? {
-        return timestamp?.let {
-            LocalDate.ofEpochDay(it / (24 * 60 * 60 * 1000))
+    fun toLocalDate(dateInt: Int?): LocalDate? {
+        return dateInt?.let {
+            LocalDate.of(it / 10000, (it % 10000) / 100,  it % 100)
         }
     }
 }

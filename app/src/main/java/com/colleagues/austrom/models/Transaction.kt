@@ -22,20 +22,17 @@ import java.util.UUID
         childColumns = ["categoryId"],
         onDelete = ForeignKey.RESTRICT)],
     indices = [Index(value = ["assetId"]), Index(value = ["categoryId"]), Index(value = ["userId"])])
-class Transaction(val assetId: String, val amount: Double, var categoryId: String, val transactionDate: LocalDate, val transactionName: String, var comment: String? = null)  {
+class Transaction(val assetId: String, val amount: Double, var categoryId: String, val transactionDate: LocalDate, val transactionName: String, var comment: String? = null,
     @PrimaryKey(autoGenerate = false)
-    var transactionId: String = generateUniqueTransactionKey()
-    var userId: String = AustromApplication.appUser!!.userId
-    var linkedTransactionId: String? = null
-    var isPrivate: Boolean = false
-    var version: Int = 1
+    var transactionId: String = generateUniqueTransactionKey(),
+    var userId: String = AustromApplication.appUser!!.userId,
+    var linkedTransactionId: String? = null,
+    var isPrivate: Boolean = false,
+    var version: Int = 1 )  {
 
     fun transactionType(): TransactionType { return if (linkedTransactionId!=null) TransactionType.TRANSFER else if (amount<0) TransactionType.EXPENSE else TransactionType.INCOME }
     fun sumOfTransactionDetailsAmounts(localDBProvider: LocalDatabaseProvider): Double { return localDBProvider.getTransactionDetailsOfTransaction(this).sumOf {it.cost} }
-
-    fun serialize(): String {
-        return "$assetId,$amount,$categoryId,${transactionDate.serialize()},$transactionName,$comment,$transactionId,$userId,$linkedTransactionId,$isPrivate"
-    }
+    fun serialize(): String { return "$transactionId,$amount,$categoryId,$assetId,${transactionDate.serialize()},$transactionName,$comment,$userId,$linkedTransactionId,$isPrivate" }
 
     fun linkTo(transaction: Transaction) {
         if (transactionId==transaction.transactionId) throw IllegalArgumentException("Link can not be pointing on itself")
@@ -110,6 +107,12 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
 
     fun addDetail(transactionDetail: TransactionDetail, dbProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider? = null) {
         dbProvider.writeNewTransactionDetail(transactionDetail)
+        if (remoteDBProvider!=null) {
+            val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+            if (currentBudget!=null) {
+                remoteDBProvider.createNewTransactionDetail(transactionDetail, currentBudget)
+            }
+        }
         //TODO("Validate and finish")
     }
 
@@ -151,19 +154,18 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
 
         fun deserialize(serializedTransaction: String): Transaction {
             val dataParts = serializedTransaction.split(",")
-            val transaction = Transaction(
-                assetId = dataParts[0],
+            return Transaction(
+                transactionId = dataParts[0] ,
                 amount = dataParts[1].toDouble(),
                 categoryId = dataParts[2],
-                transactionDate = LocalDate.parse(dataParts[3], DateTimeFormatter.ISO_LOCAL_DATE) ,
-                transactionName = dataParts[4],
-                comment = if (dataParts[5]=="null") null else dataParts[5],
+                assetId = dataParts[3],
+                transactionDate = LocalDate.parse(dataParts[4], DateTimeFormatter.ISO_LOCAL_DATE) ,
+                transactionName = dataParts[5],
+                comment = if (dataParts[6]=="null") null else dataParts[5],
+                userId = dataParts[7] ,
+                linkedTransactionId = if (dataParts[8]=="null") null else dataParts[8] ,
+                isPrivate=dataParts[9].toBoolean()
             )
-            transaction.transactionId = dataParts[6]
-            transaction.userId = dataParts[7]
-            transaction.linkedTransactionId = if (dataParts[8]=="null") null else dataParts[8]
-            transaction.isPrivate=dataParts[9].toBoolean()
-            return transaction
         }
     }
 }

@@ -119,6 +119,7 @@ class TransactionCreationActivity : AppCompatActivity() {
         bindViews()
         setUpRecyclerViews()
         setUpAutofill()
+        readFromIntent()
 
         if (AustromApplication.activeAssets.size<2) { transferChip.visibility = View.GONE }
 
@@ -150,14 +151,22 @@ class TransactionCreationActivity : AppCompatActivity() {
         createTransactionButton.setOnClickListener { submitTransaction() }
     }
 
+    private fun isInputValid(): Boolean {
+        val amount = amountTxt.text.toString().parseToDouble()?.absoluteValue
+        if (amount==null || amount>Double.MAX_VALUE) {  amountTxt.error = "Invalid transaction amount provided"; return false}
+        if (amount == 0.0) {  amountTxt.error = "Transaction Amount cannot be zero"; return false}
+        val name = transactionNameTxt.text.toString()
+        if (name.isEmpty()) { transactionNameTxt.error = "Name Cannot Be Empty"; return false }
+        if (name.length>40) { transactionNameTxt.error = "Transaction Name is too long"; return false }
+        if (primarySelectedAsset==null) { Toast.makeText(this, "Asset isn't selected", Toast.LENGTH_LONG).show(); return false }
+        if (transactionType==TransactionType.TRANSFER && secondarySelectedAsset==null) { Toast.makeText(this, "Receiver Asset Isn't selected", Toast.LENGTH_LONG).show(); return false }
+        return true
+    }
+
     private fun submitTransaction() {
         val dbProvider = LocalDatabaseProvider(this)
-        if (primarySelectedAsset==null) return
-        val amount = amountTxt.text.toString().parseToDouble()?.absoluteValue
-        if (amount==null || amount==0.0) {
-            Toast.makeText(this, "Invalid transaction amount provided", Toast.LENGTH_LONG).show()
-            return
-        }
+        if (!isInputValid()) return
+        val amount = amountTxt.text.toString().parseToDouble()!!.absoluteValue
         val primaryTransaction = Transaction(
             assetId = primarySelectedAsset!!.assetId,
             amount = if (transactionType==TransactionType.INCOME) amount else -amount,
@@ -178,6 +187,16 @@ class TransactionCreationActivity : AppCompatActivity() {
         }
         primaryTransaction.submit(dbProvider, FirebaseDatabaseProvider(this))
         this.finish()
+    }
+
+    private fun readFromIntent() {
+        val intentString = intent.getStringExtra("TransactionType")
+        when (intentString) {
+            "INCOME" -> switchChipSelection(R.id.trcreat_income_chp)
+            "EXPENSE" -> switchChipSelection(R.id.trcreat_expense_chp)
+            "TRANSFER" -> switchChipSelection(R.id.trcreat_transfer_chp)
+            else -> switchChipSelection(R.id.trcreat_expense_chp)
+        }
     }
 
     private fun launchCategorySelectionDialog() {
@@ -215,6 +234,11 @@ class TransactionCreationActivity : AppCompatActivity() {
             TransactionType.INCOME -> AustromApplication.activeIncomeCategories.values.first().name
             TransactionType.TRANSFER -> AustromApplication.activeTransferCategories.values.first().name
         })
+        selectedCategory = when(transactionType) {
+            TransactionType.EXPENSE -> AustromApplication.activeExpenseCategories.values.first()
+            TransactionType.INCOME -> AustromApplication.activeIncomeCategories.values.first()
+            TransactionType.TRANSFER -> AustromApplication.activeTransferCategories.values.first()
+        }
 
         createTransactionButton.setStrokeColorResource((when (transactionType) {
             TransactionType.EXPENSE -> R.color.expenseRedBackground

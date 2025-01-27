@@ -40,7 +40,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
 
     private fun launchNewTransactionCreationDialog() {
         val dialog = TransactionTypeSelectionDialogFragment()
-        dialog.setOnDialogResultListener { transactionType -> startActivity(Intent(requireActivity(), TransactionCreationActivity::class.java).putExtra("TransactionType", transactionType)) }
+        dialog.setOnDialogResultListener { transactionType -> startActivity(Intent(requireActivity(), TransactionCreationActivity::class.java).putExtra("TransactionType", transactionType.toString())) }
         dialog.show(requireActivity().supportFragmentManager, "AssetTypeSelectionDialog")
     }
 

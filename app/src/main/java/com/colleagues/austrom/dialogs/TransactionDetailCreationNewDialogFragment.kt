@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Spinner
@@ -16,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.extensions.toMoneyFormat
@@ -37,7 +39,7 @@ class TransactionDetailCreationNewDialogFragment(private val transaction: Transa
     //region Binding
     private lateinit var dialogHolder: CardView
     private lateinit var quantityTypeSpinner: Spinner
-    private lateinit var detailNameTextView: TextInputEditText
+    private lateinit var detailNameTextView: AutoCompleteTextView
     private lateinit var detailNameLayout: TextInputLayout
     private lateinit var quantityTextView: TextInputEditText
     private lateinit var quantityLayout: ConstraintLayout
@@ -63,6 +65,7 @@ class TransactionDetailCreationNewDialogFragment(private val transaction: Transa
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
+        setUpAutofill()
         setUpSpinners()
         amountTextView.setHint((transaction.amount.absoluteValue-transaction.sumOfTransactionDetailsAmounts(LocalDatabaseProvider(requireActivity()))).absoluteValue.toMoneyFormat())
         detailNameTextView.addTextChangedListener { _ -> returnDetailValues(getValidatedDetailName(), getValidatedQuantity(), quantityTypeSpinner.selectedItem.toString(), getValidatedAmount()) }
@@ -137,7 +140,7 @@ class TransactionDetailCreationNewDialogFragment(private val transaction: Transa
             typeOfQuantity = if (quantityTextView.text.toString().isEmpty()) null else QuantityUnit.entries[quantityTypeSpinner.selectedItemPosition],
             cost = getValidatedAmount(),
             categoryName = transaction.categoryId
-        ), LocalDatabaseProvider(requireActivity()))
+        ), LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity()))
         this.dismiss()
     }
 
@@ -160,6 +163,16 @@ class TransactionDetailCreationNewDialogFragment(private val transaction: Transa
 //        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 //        categorySpinner.adapter = categoryAdapter
 //        categorySpinner.setSelection(availableCategories.indexOf(availableCategories.find { entry -> entry.name == transaction.categoryId }))
+    }
+
+    private fun setUpAutofill() {
+        val localDBProvider = LocalDatabaseProvider(requireActivity())
+        val activity = requireActivity()
+        localDBProvider.getUniqueTransactionDetailsNamesAsync().observe(requireActivity()) {transactionDetailsName ->
+            val adapter = ArrayAdapter(activity, android.R.layout.simple_dropdown_item_1line, transactionDetailsName)
+            detailNameTextView.setAdapter(adapter)
+            detailNameTextView.threshold = 2
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {

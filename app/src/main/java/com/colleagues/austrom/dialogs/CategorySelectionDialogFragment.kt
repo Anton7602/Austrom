@@ -50,7 +50,7 @@ class CategorySelectionDialogFragment(private val transactionType: TransactionTy
 
     private fun filterCurrenciesList(searchText: String) {
         val adapter = if (searchText.isNotEmpty()) {
-            CategoryRecyclerAdapter(AustromApplication.activeExpenseCategories.values.filter { l -> l.name.contains(searchText) }.toMutableList(), requireActivity() as AppCompatActivity,  false, false)
+            CategoryRecyclerAdapter(AustromApplication.activeExpenseCategories.values.filter { l -> l.name.lowercase().contains(searchText.lowercase()) }.toMutableList(), requireActivity() as AppCompatActivity,  false, false)
         } else {
             CategoryRecyclerAdapter(AustromApplication.activeExpenseCategories.values.toMutableList(), requireActivity() as AppCompatActivity,  false, false)
         }

@@ -29,21 +29,21 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/detail_name"
-                    android:visibility="gone">
+                    android:hint="@string/detail_name">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <AutoCompleteTextView
                         android:id="@+id/trdetcreat2_detailName_txt"
                         style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/unallocated_balance" />
+                        android:hint="@string/unallocated_balance"
+                        android:padding="16dp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/trdetcreat2_quantityLayout_cly"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:visibility="gone">
 
                     <com.google.android.material.textfield.TextInputLayout

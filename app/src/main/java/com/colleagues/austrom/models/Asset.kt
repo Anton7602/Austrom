@@ -6,19 +6,23 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.extensions.parseToDouble
 import com.google.firebase.database.Exclude
 import java.util.UUID
 
 @Entity
-class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode: String, var amount: Double = 0.0) {
+class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode: String, var amount: Double = 0.0,
     @PrimaryKey(autoGenerate = false) @Exclude
-    var assetId: String = generateUniqueAssetKey()
-    var userId: String = AustromApplication.appUser!!.userId
-    var isPrivate: Boolean = false
-    var isArchived: Boolean = false
+    var assetId: String = generateUniqueAssetKey(),
+            var userId: String = AustromApplication.appUser!!.userId,
+            var bank: String? = null,
+            var percent: Double = 0.0,
+            var isPrivate: Boolean = false,
+            var isArchived: Boolean = false,
+            var isLiquid: Boolean = false,
+            var isRefillable: Boolean = false) {
 
-    //isLiquid?
-    //isRefillable??
+    fun serialize(): String { return "$assetId,$assetName,$assetTypeId,$bank,$percent,$currencyCode,$amount,$userId,$isPrivate,$isArchived,$isLiquid,$isRefillable"}
 
     fun delete(localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider? = null) {
         localDBProvider.deleteAsset(this)
@@ -50,6 +54,33 @@ class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode:
                 groupedAssets[asset.value.assetTypeId]!!.add(asset.value)
             }
             return  groupedAssets
+        }
+
+        fun deserialize(serializedAsset: String): Asset {
+            val dataParts = serializedAsset.split(",")
+            return Asset(
+                assetId = dataParts[0],
+                assetName = dataParts[1],
+                assetTypeId = when(dataParts[2]) {
+                    "CARD" -> AssetType.CARD
+                    "CASH" -> AssetType.CASH
+                    "DEPOSIT" -> AssetType.DEPOSIT
+                    "INVESTMENT" -> AssetType.INVESTMENT
+                    "CREDIT_CARD" -> AssetType.CREDIT_CARD
+                    "LOAN" -> AssetType.LOAN
+                    "MORTAGE" -> AssetType.MORTAGE
+                    else -> AssetType.CARD
+                },
+                bank = dataParts[3],
+                percent = dataParts[4].parseToDouble() ?: 0.0,
+                currencyCode = dataParts[5],
+                amount = dataParts[6].parseToDouble() ?: 0.0,
+                userId = dataParts[7],
+                isPrivate = dataParts[8].toBoolean(),
+                isArchived = dataParts[9].toBoolean(),
+                isLiquid = dataParts[10].toBoolean(),
+                isRefillable = dataParts[11].toBoolean()
+            )
         }
     }
 }

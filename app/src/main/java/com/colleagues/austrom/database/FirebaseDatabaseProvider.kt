@@ -9,6 +9,7 @@ import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -17,12 +18,12 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemoteDatabaseProvider{
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
+
+    //region User
     override fun createNewUser(user: User) {
         val reference = database.getReference("users")
         val encryptionManager = EncryptionManager()
@@ -149,7 +150,9 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
             }
         }
     }
+    //endregion
 
+    //region Budget
     override fun createNewBudget(budget: Budget) { database.getReference("budgets").child(budget.budgetId).setValue(budget) }
     override fun updateBudget(budget: Budget) { database.getReference("budgets").child(budget.budgetId).setValue(budget) }
     override fun deleteBudget(budget: Budget) { database.getReference("budgets").child(budget.budgetId).setValue(null)  }
@@ -180,7 +183,9 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
             }
         }
     }
+    //endregion
 
+    //region Asset
     override fun createNewAsset(asset: Asset, budget: Budget) {
         if (AustromApplication.appUser?.tokenId!=null) {
             val encryptionManager = EncryptionManager()
@@ -199,6 +204,96 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
 
     override fun deleteAsset(asset: Asset, budget: Budget) {
         database.getReference("assets").child(budget.budgetId).child(asset.assetId).setValue("-")
+    }
+    //endregion
+
+    //region Transaction
+    override fun createNewTransaction(transaction: Transaction, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
+                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+
+    override fun updateTransaction(transaction: Transaction, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
+                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+
+    override fun deleteTransaction(transaction: Transaction, budget: Budget) {
+        database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId).setValue("-")
+    }
+    //endregion
+
+
+
+    //region TransactionDetail
+    fun createNewTransactionDetail(transactionDetail: TransactionDetail, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("transactionDetails").child(budget.budgetId).child(transactionDetail.transactionDetailId)
+                .setValue(encryptionManager.encrypt(transactionDetail, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+    //endregion
+
+//    override fun getCurrencies(): MutableMap<String, Currency> {
+//        var currencies : MutableMap<String, Currency> = mutableMapOf()
+//        activity?.lifecycleScope?.launch {
+//            currencies = getCurrenciesAsyncOld()
+//        }
+//        return currencies
+//    }
+//
+//    fun getCurrenciesAsyncOld(): MutableMap<String, Currency> {
+//        val databaseQuery = database.getReference("currencies")
+//        val currenciesList = mutableMapOf<String, Currency>()
+//        return runBlocking {
+//            try {
+//                val snapshot = databaseQuery.get().await()
+//                for (child in snapshot.children) {
+//                    val currency = child.getValue(Currency::class.java)
+//                    if (currency!=null) {
+//                        currenciesList[child.key.toString()] = currency
+//                    }
+//                }
+//                currenciesList
+//            }
+//            catch (e: Exception) {
+//                mutableMapOf()
+//            }
+//        }
+//    }
+
+    //Sync
+    fun setCurrenciesListener() {
+        val databaseReference = database.getReference("currencies")
+        val currencyListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val currencies = mutableMapOf<String, Currency>()
+                for (snapshotItem in dataSnapshot.children) {
+                    val currency = snapshotItem.getValue(Currency::class.java)
+                    if (currency!=null) {
+                        currencies[currency.code] = currency
+                    }
+                }
+                if (activity?.baseContext!=null) {
+                    AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(
+                        Currency.localizeCurrencyNames(currencies, activity.baseContext), AustromApplication.appUser?.baseCurrencyCode)
+                    val dbProvider = LocalDatabaseProvider(activity.baseContext)
+                    dbProvider.deleteAllCurrencies()
+                    currencies.forEach { currency ->
+                        dbProvider.writeCurrency(currency.value)
+                    }
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) { Log.w("Debug", "loadPost:onCancelled", databaseError.toException()) }
+        }
+        databaseReference.addValueEventListener(currencyListener)
     }
 
     fun setAssetListener(budget: Budget, localDBProvider: LocalDatabaseProvider) {
@@ -226,26 +321,6 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
             }
         }
         databaseReference.addValueEventListener(assetListener)
-    }
-
-    override fun createNewTransaction(transaction: Transaction, budget: Budget) {
-        if (AustromApplication.appUser?.tokenId!=null) {
-            val encryptionManager = EncryptionManager()
-            database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
-                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
-        }
-    }
-
-    override fun updateTransaction(transaction: Transaction, budget: Budget) {
-        if (AustromApplication.appUser?.tokenId!=null) {
-            val encryptionManager = EncryptionManager()
-            database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
-                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
-        }
-    }
-
-    override fun deleteTransaction(transaction: Transaction, budget: Budget) {
-        database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId).setValue("-")
     }
 
     fun setTransactionListener(budget: Budget, localDBProvider: LocalDatabaseProvider) {
@@ -279,57 +354,31 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         databaseReference.addValueEventListener(transactionListener)
     }
 
-//    override fun getCurrencies(): MutableMap<String, Currency> {
-//        var currencies : MutableMap<String, Currency> = mutableMapOf()
-//        activity?.lifecycleScope?.launch {
-//            currencies = getCurrenciesAsyncOld()
-//        }
-//        return currencies
-//    }
-//
-//    fun getCurrenciesAsyncOld(): MutableMap<String, Currency> {
-//        val databaseQuery = database.getReference("currencies")
-//        val currenciesList = mutableMapOf<String, Currency>()
-//        return runBlocking {
-//            try {
-//                val snapshot = databaseQuery.get().await()
-//                for (child in snapshot.children) {
-//                    val currency = child.getValue(Currency::class.java)
-//                    if (currency!=null) {
-//                        currenciesList[child.key.toString()] = currency
-//                    }
-//                }
-//                currenciesList
-//            }
-//            catch (e: Exception) {
-//                mutableMapOf()
-//            }
-//        }
-//    }
-
-    fun setCurrenciesListener() {
-        val databaseReference = database.getReference("currencies")
-        val currencyListener = object : ValueEventListener {
+    fun setTransactionDetailListener(budget: Budget, localDBProvider: LocalDatabaseProvider) {
+        val databaseReference = database.getReference("transactionDetails").child(budget.budgetId)
+        val transactionListener =  object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val currencies = mutableMapOf<String, Currency>()
+                val encryptionManager = EncryptionManager()
                 for (snapshotItem in dataSnapshot.children) {
-                    val currency = snapshotItem.getValue(Currency::class.java)
-                    if (currency!=null) {
-                        currencies[currency.code] = currency
-                    }
-                }
-                if (activity?.baseContext!=null) {
-                    AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(
-                        Currency.localizeCurrencyNames(currencies, activity.baseContext), AustromApplication.appUser?.baseCurrencyCode)
-                    val dbProvider = LocalDatabaseProvider(activity.baseContext)
-                    dbProvider.deleteAllCurrencies()
-                    currencies.forEach { currency ->
-                        dbProvider.writeCurrency(currency.value)
+                    val localTransactionDetail = localDBProvider.getTransactionDetailById(snapshotItem.key.toString())
+                    if (localTransactionDetail==null) {
+                        if (snapshotItem.value!="-") {
+                            val transactionDetail = encryptionManager.decryptTransactionDetail(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                            localDBProvider.writeNewTransactionDetail(transactionDetail)
+                        }
+                    } else {
+                        if (snapshotItem.value =="-") {
+                            localDBProvider.removeTransactionDetail(localTransactionDetail)
+                        }
                     }
                 }
             }
-            override fun onCancelled(databaseError: DatabaseError) { Log.w("Debug", "loadPost:onCancelled", databaseError.toException()) }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("Debug", "loadPost:onCancelled", databaseError.toException())
+            }
         }
-        databaseReference.addValueEventListener(currencyListener)
+        databaseReference.addValueEventListener(transactionListener)
     }
+    //endregion
 }

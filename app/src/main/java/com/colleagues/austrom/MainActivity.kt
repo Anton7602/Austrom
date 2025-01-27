@@ -103,6 +103,7 @@ class MainActivity : AppCompatActivity() {
         setUpCurrencyListener()
         fetchAssetsFromCloud()
         fetchTransactionsFromCloud()
+        fetchTransactionDetailsFromCloud()
         suggestSettingUpQuickAccessCode()
         setUpNavigationDrawer()
         navigationUserNameTextView.text = AustromApplication.appUser?.username!!.startWithUppercase()
@@ -129,6 +130,16 @@ class MainActivity : AppCompatActivity() {
             val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
             if (currentBudget!=null) {
                 remoteDBProvider.setTransactionListener(currentBudget, LocalDatabaseProvider(this))
+            }
+        }
+    }
+
+    private fun fetchTransactionDetailsFromCloud() {
+        if (AustromApplication.appUser?.activeBudgetId!=null) {
+            val remoteDBProvider = FirebaseDatabaseProvider(this)
+            val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+            if (currentBudget!=null) {
+                remoteDBProvider.setTransactionDetailListener(currentBudget, LocalDatabaseProvider(this))
             }
         }
     }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -72,6 +73,16 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>, pr
         holder.categoryImage.setImageResource(category.imgReference.resourceId)
 
         holder.transactionHolder.setOnClickListener { returnClickedItem(transaction) }
+        animateItem(holder.itemView)
+    }
+
+    private fun animateItem(view: View) {
+        view.alpha = 0f
+        view.animate()
+            .alpha(1f)
+            .setDuration(500)
+            .setInterpolator(AccelerateDecelerateInterpolator())
+            .start()
     }
 }
 
