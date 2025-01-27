@@ -136,6 +136,10 @@ class LocalDatabaseProvider(context: Context) {
         }
         return asset
     }
+
+    fun getAssetsByAssetFilterAsync() : LiveData<List<Asset>> {
+        return localDatabase.assetDao().getAssetsByFilter()
+    }
     //endregion
 
     //region Transaction
@@ -143,6 +147,10 @@ class LocalDatabaseProvider(context: Context) {
         runBlocking {
             localDatabase.complexDao().submitTransaction(localDatabase.transactionDao(), localDatabase.assetDao(), transaction, asset)
         }
+    }
+
+    fun insertNewTransaction(transaction: Transaction) {
+        runBlocking { localDatabase.transactionDao().insertTransaction(transaction) }
     }
 
     fun updateTransaction(transaction: Transaction) {

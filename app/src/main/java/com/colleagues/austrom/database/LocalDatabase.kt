@@ -12,6 +12,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import androidx.room.Update
+import com.colleagues.austrom.managers.AssetChangeLog
 import com.colleagues.austrom.managers.SyncManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
@@ -125,6 +126,11 @@ interface AssetDao {
 
     @Query("SELECT * FROM Asset WHERE Asset.assetId = :id")
     suspend fun getAssetById(id: String): List<Asset>
+
+    @Query("""
+        SELECT * FROM Asset
+    """)
+    fun getAssetsByFilter(): LiveData<List<Asset>>
 }
 
 @Dao
@@ -269,10 +275,10 @@ interface CategoryDao {
 @Dao
 interface AssetChangeLogDao {
     @Insert
-    suspend fun insertChangeLog(changeLog: SyncManager.AssetChangeLog)
+    suspend fun insertChangeLog(changeLog: AssetChangeLog)
 
     @Query("SELECT * FROM change_log ORDER BY logId DESC")
-    suspend fun getAllChangeLogs(): List<SyncManager.AssetChangeLog>
+    suspend fun getAllChangeLogs(): List<AssetChangeLog>
 }
 
 class Converters {

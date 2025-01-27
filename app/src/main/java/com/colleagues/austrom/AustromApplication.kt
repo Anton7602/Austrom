@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.managers.EncryptionManager
+import com.colleagues.austrom.managers.SyncManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency

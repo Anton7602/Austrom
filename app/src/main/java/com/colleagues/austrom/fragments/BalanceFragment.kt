@@ -53,21 +53,27 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         dialog.show(requireActivity().supportFragmentManager, "AssetTypeSelectionDialog")
     }
 
-    fun updateAssetsList() {
-        val dbProvider = LocalDatabaseProvider(requireActivity())
-        val user = AustromApplication.appUser
-        if (user!=null) {
-            val activeAssets =  dbProvider.getAssetsOfBudget()
-            if (activeAssets.isNotEmpty()) {
-                val filteredAssets = (activeAssets.filter { entry ->
-                    !entry.value.isPrivate || entry.value.userId==AustromApplication.appUser?.userId }).toMutableMap()
-                AustromApplication.activeAssets = filteredAssets
-            } else {
-                AustromApplication.activeAssets = mutableMapOf()
-            }
+    private fun updateAssetsList() {
+        val localDBProvider = LocalDatabaseProvider(requireActivity())
+        localDBProvider.getAssetsByAssetFilterAsync().observe(requireActivity()) {assetList ->
+            AustromApplication.activeAssets = mutableMapOf()
+            assetList.forEach { asset -> AustromApplication.activeAssets[asset.assetId] = asset }
+            setUpRecyclerView(AustromApplication.activeAssets)
+            calculateTotalAmount(AustromApplication.activeAssets)
         }
-        setUpRecyclerView(AustromApplication.activeAssets)
-        calculateTotalAmount(AustromApplication.activeAssets)
+//        val user = AustromApplication.appUser
+//        if (user!=null) {
+//            val activeAssets =  dbProvider.getAssetsOfBudget()
+//            if (activeAssets.isNotEmpty()) {
+//                val filteredAssets = (activeAssets.filter { entry ->
+//                    !entry.value.isPrivate || entry.value.userId==AustromApplication.appUser?.userId }).toMutableMap()
+//                AustromApplication.activeAssets = filteredAssets
+//            } else {
+//                AustromApplication.activeAssets = mutableMapOf()
+//            }
+//        }
+//        setUpRecyclerView(AustromApplication.activeAssets)
+//        calculateTotalAmount(AustromApplication.activeAssets)
     }
 
     fun filterAssets(filter: AssetFilter) {

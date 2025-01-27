@@ -34,6 +34,7 @@ import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.fragments.SettingsFragment
 import com.colleagues.austrom.fragments.SharedBudgetEmptyFragment
 import com.colleagues.austrom.fragments.SharedBudgetFragment
+import com.colleagues.austrom.managers.SyncManager
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.TransactionType
@@ -100,10 +101,13 @@ class MainActivity : AppCompatActivity() {
         fillInDefaultCategories()
         fillInDefaultCurrencies()
         fillInKnownUsers()
-        setUpCurrencyListener()
-        fetchAssetsFromCloud()
-        fetchTransactionsFromCloud()
-        fetchTransactionDetailsFromCloud()
+        if (AustromApplication.appUser?.activeBudgetId!=null) {
+            val remoteDBProvider = FirebaseDatabaseProvider(this)
+            val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+            if (currentBudget!=null) {
+                SyncManager(this, LocalDatabaseProvider(this), FirebaseDatabaseProvider(this)).sync()
+            }
+        }
         suggestSettingUpQuickAccessCode()
         setUpNavigationDrawer()
         navigationUserNameTextView.text = AustromApplication.appUser?.username!!.startWithUppercase()
@@ -112,36 +116,6 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationBar.setOnItemSelectedListener { item -> handleBottomNavigationBarClick(item) }
         navigationLogOutButton.setOnClickListener { logOut() }
         onBackPressedDispatcher.addCallback(this) {}
-    }
-
-    private fun fetchAssetsFromCloud() {
-        if (AustromApplication.appUser?.activeBudgetId!=null) {
-            val remoteDBProvider = FirebaseDatabaseProvider(this)
-            val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
-            if (currentBudget!=null) {
-                remoteDBProvider.setAssetListener(currentBudget, LocalDatabaseProvider(this))
-            }
-        }
-    }
-
-    private fun fetchTransactionsFromCloud() {
-        if (AustromApplication.appUser?.activeBudgetId!=null) {
-            val remoteDBProvider = FirebaseDatabaseProvider(this)
-            val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
-            if (currentBudget!=null) {
-                remoteDBProvider.setTransactionListener(currentBudget, LocalDatabaseProvider(this))
-            }
-        }
-    }
-
-    private fun fetchTransactionDetailsFromCloud() {
-        if (AustromApplication.appUser?.activeBudgetId!=null) {
-            val remoteDBProvider = FirebaseDatabaseProvider(this)
-            val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
-            if (currentBudget!=null) {
-                remoteDBProvider.setTransactionDetailListener(currentBudget, LocalDatabaseProvider(this))
-            }
-        }
     }
 
     private fun handleFilterButtonClick() {
@@ -215,11 +189,6 @@ class MainActivity : AppCompatActivity() {
         if (intent.getBooleanExtra("newUser",false) && (application as AustromApplication).getRememberedPin()==null) {
             SuggestQuickAccessDialogFragment().show(supportFragmentManager, "Suggest Quick Access Code Dialog")
         }
-    }
-
-    private fun setUpCurrencyListener() {
-        val dbProvider = FirebaseDatabaseProvider(this)
-        dbProvider.setCurrenciesListener()
     }
 
     private fun setUpNavigationDrawer() {
