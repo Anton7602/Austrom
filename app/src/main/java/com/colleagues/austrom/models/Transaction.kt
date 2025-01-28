@@ -67,7 +67,7 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
             if (remoteDBProvider != null && AustromApplication.appUser?.activeBudgetId != null) {
                 val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
                 if (currentBudget != null) {
-                    remoteDBProvider.createNewTransaction(this, currentBudget)
+                    remoteDBProvider.conductTransaction(this, currentBudget)
                 }
             }
         } else throw InvalidTransactionException(this.validate())
@@ -86,8 +86,8 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
                 if (remoteDBProvider!= null && AustromApplication.appUser?.activeBudgetId!=null) {
                     val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
                     if (currentBudget!=null) {
-                        remoteDBProvider.deleteTransaction(this, currentBudget)
-                        remoteDBProvider.deleteTransaction(linkedTransaction, currentBudget)
+                        remoteDBProvider.cancelTransaction(this, currentBudget)
+                        remoteDBProvider.cancelTransaction(linkedTransaction, currentBudget)
                     }
                 }
             }
@@ -98,7 +98,7 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
                 if (remoteDBProvider!= null && AustromApplication.appUser?.activeBudgetId!=null) {
                     val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
                     if (currentBudget!=null) {
-                        remoteDBProvider.deleteTransaction(this, currentBudget)
+                        remoteDBProvider.cancelTransaction(this, currentBudget)
                     }
                 }
             }

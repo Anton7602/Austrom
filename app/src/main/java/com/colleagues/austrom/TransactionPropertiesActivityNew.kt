@@ -15,11 +15,14 @@ import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.FragmentTransaction
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.ImageSelectionDialogFragment
 import com.colleagues.austrom.dialogs.TextEditDialogFragment
 import com.colleagues.austrom.dialogs.TransactionDetailCreationNewDialogFragment
+import com.colleagues.austrom.fragments.TransactionEditFragment
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.views.ActionButtonView
 import com.colleagues.austrom.views.TransactionReceiptView
@@ -30,6 +33,7 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
     private lateinit var backButton: ImageButton
     private lateinit var moreButton: ImageButton
     private lateinit var transactionHolder: TransactionReceiptView
+    private lateinit var fragmentHolder: FragmentContainerView
 
     private lateinit var newDetailActionButton: ActionButtonView
     private lateinit var newImageActionButton: ActionButtonView
@@ -39,6 +43,7 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
         backButton = findViewById(R.id.trdet2_backButton_btn)
         moreButton = findViewById(R.id.trdet_moreButton_btn)
         transactionHolder = findViewById(R.id.trdet_TransactionReceipt_trec)
+        fragmentHolder = findViewById(R.id.trdet_editFragment_frc)
 
         newDetailActionButton = findViewById(R.id.trdet_newDetail_abtn)
         newImageActionButton = findViewById(R.id.trdet_newImage_abtn)
@@ -79,6 +84,10 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
 
         retrieveTransactionFromIntent()
         transactionHolder.fillInTransaction(transaction)
+        fragmentHolder.visibility = View.GONE
+        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.trdet_editFragment_frc, TransactionEditFragment(transaction))
+        fragmentTransaction.commit()
 
         backButton.setOnClickListener { this.finish() }
         moreButton.setOnClickListener { showMenu(moreButton, R.menu.transaction_context_menu) }
@@ -126,7 +135,7 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
         popup.menuInflater.inflate(menuRes, popup.menu)
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
-                R.id.transconmenu_edit -> {}  //TODO("Edit Section")
+                R.id.transconmenu_edit -> {fragmentHolder.visibility = View.VISIBLE}
                 R.id.transconmenu_delete -> { transaction.cancel(LocalDatabaseProvider(this), FirebaseDatabaseProvider(this)); this.finish() }
             }
             true

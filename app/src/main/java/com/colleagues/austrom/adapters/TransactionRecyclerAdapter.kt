@@ -44,11 +44,13 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>, pr
         val category: Category
         when (transaction.transactionType()) {
             TransactionType.TRANSFER -> {
-                category = AustromApplication.activeTransferCategories[transaction.transactionId] ?: throw InvalidTransactionException("Category used in transaction is not recognized", TransactionValidationType.UNKNOWN_CATEGORY_INVALID)
-                holder.amount.text = if (transaction.amount>0) "+ {${transaction.amount.toMoneyFormat()}}" else transaction.amount.toMoneyFormat()
+                category = AustromApplication.activeTransferCategories[transaction.categoryId] ?: throw InvalidTransactionException("Category used in transaction is not recognized", TransactionValidationType.UNKNOWN_CATEGORY_INVALID)
+                holder.amount.text = if (transaction.amount>0) "+${transaction.amount.toMoneyFormat()}" else transaction.amount.toMoneyFormat()
                 holder.amount.setTextColor(context.getColor(R.color.transferYellow))
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
                 holder.currencySymbol.setTextColor(context.getColor(R.color.transferYellow))
+                holder.primaryParticipant.text = transaction.transactionName
+                holder.secondaryParticipant.text = if (transaction.amount>0) "${context.getString(R.string.toAsset)} ${asset.assetName}" else "${context.getString(R.string.fromAsset)} ${asset.assetName}"
             }
             TransactionType.EXPENSE -> {
                 category = AustromApplication.activeExpenseCategories[transaction.categoryId] ?: throw InvalidTransactionException("Category used in transaction is not recognized", TransactionValidationType.UNKNOWN_CATEGORY_INVALID)

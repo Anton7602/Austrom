@@ -52,7 +52,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
 
     private fun applyTransactionFilter(transactionFilter: TransactionFilter) {
         val localDBProvider = LocalDatabaseProvider(requireActivity())
-        localDBProvider.getTransactionsByTransactionFilterAsync(transactionFilter).observe(requireActivity()) {transactionList ->
+        localDBProvider.getTransactionsByTransactionFilterAsync(transactionFilter).observe(viewLifecycleOwner) {transactionList ->
             if (transactionList.isNotEmpty()) {
                 setUpRecyclerView(transactionList.toMutableList())
                 calculateTransactionsAmountSums(transactionList)

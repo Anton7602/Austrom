@@ -20,34 +20,52 @@ class ActionButtonView@JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     private var textPaint: TextPaint = TextPaint()
+    private var textPaintChecked: TextPaint = TextPaint()
     private var backgroundPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var backgroundPaintChecked: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private var backgroundColor: Int = context.getColor(R.color.backgroundText)
+    private var backgroundColorChecked: Int = context.getColor(R.color.selectionColor)
     private var iconDrawable: Drawable? = AppCompatResources.getDrawable(context, R.drawable.ic_placeholder_icon)
+    private var iconDrawableChecked: Drawable? = AppCompatResources.getDrawable(context, R.drawable.ic_placeholder_icon)
     private var iconTint: Int = Color.WHITE
+    private var iconTintChecked: Int = Color.WHITE
     private var descriptionMargin: Float = context.dpToPx(12)
     private var text: String = ""
+    private var textChecked: String = ""
     private var textColor: Int = context.getColor(R.color.secondaryTextColor)
+    private var textColorChecked: Int = context.getColor(R.color.secondaryTextColor)
     private var textSize: Float = context.spToPx(12)
     private var iconSizePercent = 0.5f
     private var isCheckable: Boolean = false
-    private var isChecked: Boolean = false
-
+    var isChecked: Boolean = false
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     init {
         if (attrs != null) {
             val typeArray = context.obtainStyledAttributes(attrs, R.styleable.ActionButtonView)
 
             backgroundColor = typeArray.getColor(R.styleable.ActionButtonView_backgroundColor, backgroundColor)
+            backgroundColorChecked = typeArray.getColor(R.styleable.ActionButtonView_checkedBackgroundColor, backgroundColorChecked)
             iconDrawable = typeArray.getDrawable(R.styleable.ActionButtonView_iconDrawable) ?: iconDrawable
+            iconDrawableChecked = typeArray.getDrawable(R.styleable.ActionButtonView_checkedIconDrawable) ?: iconDrawableChecked
             iconTint = typeArray.getColor(R.styleable.ActionButtonView_iconTint, iconTint)
+            iconTintChecked = typeArray.getColor(R.styleable.ActionButtonView_checkedIconTint, iconTintChecked)
             descriptionMargin = typeArray.getDimension(R.styleable.ActionButtonView_descriptionMargin, descriptionMargin)
             text = typeArray.getString(R.styleable.ActionButtonView_text) ?: text
+            textChecked = typeArray.getString(R.styleable.ActionButtonView_checkedText) ?: textChecked
             textSize = typeArray.getDimension(R.styleable.ActionButtonView_textSize, textSize)
             isCheckable = typeArray.getBoolean(R.styleable.ActionButtonView_checkable, isCheckable)
+            isChecked = typeArray.getBoolean(R.styleable.ActionButtonView_isChecked, isChecked)
             iconSizePercent = typeArray.getFloat(R.styleable.ActionButtonView_iconSizePercent, iconSizePercent)
 
             initPaints(textPaint, textSize, textColor)
             initPaints(backgroundPaint, backgroundColor)
+
+            initPaints(textPaintChecked, textSize, textColorChecked)
+            initPaints(backgroundPaintChecked, backgroundColorChecked)
 
             typeArray.recycle()
         }
@@ -56,10 +74,14 @@ class ActionButtonView@JvmOverloads constructor(context: Context, attrs: Attribu
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val radius = min(width / 2f, (height-getTextHeight(text, textPaint)-descriptionMargin)/2f)
-        canvas.drawCircle(width/2f, radius, radius, backgroundPaint)
+        if (!isChecked) {
+            canvas.drawCircle(width/2f, radius, radius, backgroundPaint)
+        } else {
+            canvas.drawCircle(width/2f, radius, radius, backgroundPaintChecked)
+        }
 
         iconDrawable?.let {
-            it.setTint(iconTint)
+            it.setTint(if (isChecked) iconTintChecked else iconTint)
             val iconSize = (2*radius*iconSizePercent).toInt()
             it.setBounds(
                 (width - iconSize) / 2,
@@ -79,27 +101,28 @@ class ActionButtonView@JvmOverloads constructor(context: Context, attrs: Attribu
 
     private fun drawText(canvas: Canvas, baseOffset: Float) {
         val textLines = text.split("\n")
+        val paint = if (isChecked) textPaintChecked else textPaint
         var yOffset = baseOffset
         for (line in textLines) {
-            val textWidth = textPaint.measureText(line)
+            val textWidth = paint.measureText(line)
             if (textWidth > width) {
                 val words = line.split(" ")
                 var currentLine = ""
                 for (word in words) {
                     val testLine = "$currentLine $word".trim()
-                    if (textPaint.measureText(testLine) > width) {
-                        canvas.drawText(currentLine, (width - textPaint.measureText(currentLine)) / 2, yOffset, textPaint)
+                    if (paint.measureText(testLine) > width) {
+                        canvas.drawText(currentLine, (width - paint.measureText(currentLine)) / 2, yOffset, paint)
                         currentLine = word
-                        yOffset += textPaint.textSize
+                        yOffset += paint.textSize
                     } else {
                         currentLine = testLine
                     }
                 }
-                canvas.drawText(currentLine, (width - textPaint.measureText(currentLine)) / 2, yOffset, textPaint)
+                canvas.drawText(currentLine, (width - paint.measureText(currentLine)) / 2, yOffset, paint)
             } else {
-                canvas.drawText(line, (width - textWidth) / 2, yOffset, textPaint)
+                canvas.drawText(line, (width - textWidth) / 2, yOffset, paint)
             }
-            yOffset -= textPaint.textSize
+            yOffset -= paint.textSize
         }
     }
 

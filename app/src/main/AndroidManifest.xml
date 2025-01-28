@@ -56,9 +56,6 @@
             android:name=".AssetPropertiesActivity"
             android:exported="false" />
         <activity
-            android:name=".TransactionPropertiesActivity"
-            android:exported="false" />
-        <activity
             android:name=".AuthorizationQuickActivity"
             android:exported="false" />
         <activity

@@ -69,19 +69,19 @@ class SyncManager(val context: Context, val localDBProvider: LocalDatabaseProvid
                 val encryptionManager = EncryptionManager()
                 for (snapshotItem in dataSnapshot.children) {
                     val localAsset = localDBProvider.getAssetById(snapshotItem.key.toString())
-                    if (localAsset==null) {
-                        if (snapshotItem.value!="-") {
-                            val asset = encryptionManager.decryptAsset(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
-                            localDBProvider.createNewAsset(asset)
-                            AustromApplication.activeAssets[asset.assetId] = asset
+                    if (localAsset!=null && snapshotItem.value=="-") {
+                        localAsset.delete(localDBProvider)
+                        if (AustromApplication.activeAssets.containsKey(localAsset.assetId)) {
+                            AustromApplication.activeAssets.remove(localAsset.assetId)
                         }
                     } else {
-                        if (snapshotItem.value=="-") {
-                            localAsset.delete(localDBProvider)
-                            if (AustromApplication.activeAssets.containsKey(localAsset.assetId)) {
-                                AustromApplication.activeAssets.remove(localAsset.assetId)
-                            }
+                        val asset = encryptionManager.decryptAsset(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                        if (localAsset!=null) {
+                            localDBProvider.updateAsset(asset)
+                        } else {
+                            localDBProvider.createNewAsset(asset)
                         }
+                        AustromApplication.activeAssets[asset.assetId] = asset
                     }
                 }
                 syncTransactionsRemoteToLocal()

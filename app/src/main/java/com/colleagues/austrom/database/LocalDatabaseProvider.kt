@@ -250,6 +250,15 @@ class LocalDatabaseProvider(context: Context) {
             else -> localDatabase.transactionDao().getUniqueTransactionNames()
         }
     }
+
+    fun getTransactionNameMostUsedCategory(transactionName: String): String? {
+        var result: String?
+        val dao = localDatabase.transactionDao()
+        runBlocking {
+            result = dao.getMostUsedCategoryOfTransactionName(transactionName)
+        }
+        return result
+    }
     //endregion
 
     //region TransactionDetail

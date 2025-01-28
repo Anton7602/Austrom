@@ -55,7 +55,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
 
     private fun updateAssetsList() {
         val localDBProvider = LocalDatabaseProvider(requireActivity())
-        localDBProvider.getAssetsByAssetFilterAsync().observe(requireActivity()) {assetList ->
+        localDBProvider.getAssetsByAssetFilterAsync().observe(viewLifecycleOwner) {assetList ->
             AustromApplication.activeAssets = mutableMapOf()
             assetList.forEach { asset -> AustromApplication.activeAssets[asset.assetId] = asset }
             setUpRecyclerView(AustromApplication.activeAssets)

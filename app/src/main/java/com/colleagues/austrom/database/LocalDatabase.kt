@@ -205,6 +205,14 @@ interface TransactionDao {
 //        startDate: LocalDate,
 //        endDate: LocalDate
     ): LiveData<List<Transaction>>
+
+    @Query("""SELECT Trn.categoryId FROM `Transaction` as Trn
+        WHERE Trn.transactionName=:transactionName
+        GROUP BY transactionName, categoryId
+        ORDER BY COUNT(categoryId) DESC
+        LIMIT 1
+        """)
+    suspend fun getMostUsedCategoryOfTransactionName(transactionName: String): String
 }
 
 @Dao

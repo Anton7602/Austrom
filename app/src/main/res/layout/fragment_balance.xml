@@ -25,7 +25,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        app:defaultAmount="12235590.56"
+        app:defaultAmount="0"
         app:layout_constraintBottom_toTopOf="@+id/bal_assetHolder_rcv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

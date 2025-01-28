@@ -227,6 +227,23 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
     override fun deleteTransaction(transaction: Transaction, budget: Budget) {
         database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId).setValue("-")
     }
+
+    fun conductTransaction(transaction: Transaction, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null && AustromApplication.activeAssets[transaction.assetId]!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
+                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+            database.getReference("assets").child(budget.budgetId).child(transaction.assetId)
+                .setValue(encryptionManager.encrypt(AustromApplication.activeAssets[transaction.assetId]!!, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+
+    fun cancelTransaction(transaction: Transaction, budget: Budget) {
+        val encryptionManager = EncryptionManager()
+        database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId).setValue("-")
+        database.getReference("assets").child(budget.budgetId).child(transaction.transactionId)
+            .setValue(encryptionManager.encrypt(AustromApplication.activeAssets[transaction.assetId]!!, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+    }
     //endregion
 
 

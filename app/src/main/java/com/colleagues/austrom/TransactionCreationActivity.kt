@@ -276,10 +276,31 @@ class TransactionCreationActivity : AppCompatActivity() {
     }
 
     private fun setUpAutofill() {
-        LocalDatabaseProvider(this).getUniqueTransactionNamesAsync(transactionType).observe(this) { names ->
+        val localDBProvider = LocalDatabaseProvider(this)
+        localDBProvider.getUniqueTransactionNamesAsync(transactionType).observe(this) { names ->
             val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, names)
             transactionNameTxt.setAdapter(adapter)
             transactionNameTxt.threshold = 2
+
+            transactionNameTxt.setOnItemClickListener { parent, view, position, id ->
+                val selectedItem = parent.getItemAtPosition(position) as String
+                val categoryId = localDBProvider.getTransactionNameMostUsedCategory(selectedItem)
+                when (transactionType) {
+                    TransactionType.INCOME -> {
+                        if (AustromApplication.activeIncomeCategories.containsKey(categoryId)) {
+                            selectedCategory = AustromApplication.activeIncomeCategories[categoryId]!!
+                            categorySelector.setFieldValue(selectedCategory.name)
+                        }
+                    }
+                    TransactionType.EXPENSE -> {
+                        if (AustromApplication.activeExpenseCategories.containsKey(categoryId)) {
+                            selectedCategory = AustromApplication.activeExpenseCategories[categoryId]!!
+                            categorySelector.setFieldValue(selectedCategory.name)
+                        }
+                    }
+                    else -> {}
+                }
+            }
         }
     }
 }

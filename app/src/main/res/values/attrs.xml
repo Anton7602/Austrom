@@ -58,10 +58,15 @@
 
     <declare-styleable name="ActionButtonView">
         <attr name="backgroundColor" format="color" />
+        <attr name="checkedBackgroundColor" format="color" />
         <attr name="iconDrawable" format="reference" />
+        <attr name="checkedIconDrawable" format="reference" />
         <attr name="iconTint" format="color" />
+        <attr name="checkedIconTint" format="color" />
         <attr name="text" format="string" />
+        <attr name="checkedText" format="string" />
         <attr name="checkable" format="boolean" />
+        <attr name="isChecked" format="boolean" />
         <attr name="iconSizePercent" format="float"/>
         <attr name="descriptionMargin" format="dimension"/>
         <attr name="textSize" format="dimension"/>
