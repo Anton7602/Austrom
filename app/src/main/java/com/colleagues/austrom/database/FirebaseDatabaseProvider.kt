@@ -232,17 +232,24 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         if (AustromApplication.appUser?.tokenId!=null && AustromApplication.activeAssets[transaction.assetId]!=null) {
             val encryptionManager = EncryptionManager()
             database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
-                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))+"|${transaction.version}")
             database.getReference("assets").child(budget.budgetId).child(transaction.assetId)
                 .setValue(encryptionManager.encrypt(AustromApplication.activeAssets[transaction.assetId]!!, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
         }
     }
 
-    fun cancelTransaction(transaction: Transaction, budget: Budget) {
+    fun cancelTransaction(transaction: Transaction, budget: Budget, linkedTransaction: Transaction? = null) {
         val encryptionManager = EncryptionManager()
         database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId).setValue("-")
-        database.getReference("assets").child(budget.budgetId).child(transaction.transactionId)
+        if (linkedTransaction!=null) {
+            database.getReference("transactions").child(budget.budgetId).child(linkedTransaction.transactionId).setValue("-")
+        }
+        database.getReference("assets").child(budget.budgetId).child(transaction.assetId)
             .setValue(encryptionManager.encrypt(AustromApplication.activeAssets[transaction.assetId]!!, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        if (linkedTransaction!=null) {
+            database.getReference("assets").child(budget.budgetId).child(linkedTransaction.assetId)
+                .setValue(encryptionManager.encrypt(AustromApplication.activeAssets[linkedTransaction.assetId]!!, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
     }
     //endregion
 

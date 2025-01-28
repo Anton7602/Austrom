@@ -38,3 +38,11 @@ fun String?.parseToLocalDate(): LocalDate? {
     }
     return null
 }
+
+fun String?.substringBeforeLastPipe(): String? {
+    return this?.substringBeforeLast('|')
+}
+
+fun String?.intAfterLastPipe(): Int? {
+    return this?.substringAfterLast('|')?.toIntOrNull()
+}

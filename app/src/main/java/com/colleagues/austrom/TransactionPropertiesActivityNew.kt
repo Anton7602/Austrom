@@ -84,10 +84,7 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
 
         retrieveTransactionFromIntent()
         transactionHolder.fillInTransaction(transaction)
-        fragmentHolder.visibility = View.GONE
-        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.trdet_editFragment_frc, TransactionEditFragment(transaction))
-        fragmentTransaction.commit()
+        setUpEditFragment()
 
         backButton.setOnClickListener { this.finish() }
         moreButton.setOnClickListener { showMenu(moreButton, R.menu.transaction_context_menu) }
@@ -100,6 +97,15 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
         commentActionButton.setOnClickListener { launchEditCommentDialog() }
         newImageActionButton.setOnClickListener { launchImageSelectionDialog() }
         newDetailActionButton.setOnClickListener { launchNewDetailDialog() }
+    }
+
+    private fun setUpEditFragment() {
+        fragmentHolder.visibility = View.GONE
+        val fragment = TransactionEditFragment(transaction)
+        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragment.setOnDialogResultListener { result -> fragmentHolder.visibility = View.GONE }
+        fragmentTransaction.replace(R.id.trdet_editFragment_frc, fragment)
+        fragmentTransaction.commit()
     }
 
     private fun launchImageSelectionDialog() {

@@ -153,6 +153,10 @@ class LocalDatabaseProvider(context: Context) {
         runBlocking { localDatabase.transactionDao().insertTransaction(transaction) }
     }
 
+    fun deleteTransaction(transaction: Transaction) {
+        runBlocking { localDatabase.transactionDao().deleteTransaction(transaction) }
+    }
+
     fun updateTransaction(transaction: Transaction) {
         val dao = localDatabase.transactionDao()
         runBlocking {

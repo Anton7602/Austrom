@@ -166,12 +166,12 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
 
     fun setIncome(value: Double) {
         incomeSum = value
-        incomeSumMoneyFormatTextView.setValue(incomeSum, currencySymbol)
+        incomeSumMoneyFormatTextView.setValue(incomeSum, currencySymbol, true)
     }
 
     fun setExpense(value: Double) {
         expenseSum = value
-        expenseSumMoneyFormatTextView.setValue(expenseSum, currencySymbol)
+        expenseSumMoneyFormatTextView.setValue(expenseSum, currencySymbol, true)
     }
 
     fun setCurrencySymbol(value: String) {

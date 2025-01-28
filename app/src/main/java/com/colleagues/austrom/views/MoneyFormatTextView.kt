@@ -1,5 +1,6 @@
 package com.colleagues.austrom.views
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -71,6 +72,16 @@ class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: Att
         canvas.drawText(currencyCode, xStartPos+getTextBounds(moneyAmount.toMoneyFormat(), amountTextPaint).width()+amountToCurrencyMargin, yStartPos, currencyTextPaint)
     }
 
+    fun startAnimation(startVal: Float, endVal: Float) {
+        val animator = ValueAnimator.ofFloat(startVal, endVal)
+        animator.duration = 1000
+        animator.addUpdateListener { animation ->
+            moneyAmount = (animation.animatedValue as Float).toDouble()
+            invalidate()
+        }
+        animator.start()
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val initSizeHeight = resolveDefaultHeight(heightMeasureSpec)
         val initSizeWidth = resolveDefaultWidth(widthMeasureSpec, initSizeHeight)
@@ -135,14 +146,16 @@ class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: Att
     private fun getMoneyTextWidth(): Int { return  getTextWidth(moneyAmount.toMoneyFormat(), amountTextPaint) + getTextWidth(currencyCode, currencyTextPaint)+amountToCurrencyMargin.toInt() }
     private fun getMoneyTextHeight(): Int { return getTextHeight(moneyAmount.toMoneyFormat(), amountTextPaint) }
 
-    fun setValue(value: Double) { setValue(value, AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]?.symbol ?: "$") }
-    fun setValue(value: Double, currency: Currency) { setValue(value, currency.symbol) }
-    fun setValue(value:Double, currencySymbol: String) {
+    fun setValue(value: Double, withAnimation: Boolean=false) { setValue(value, AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]?.symbol ?: "$", withAnimation) }
+    fun setValue(value: Double, currency: Currency, withAnimation: Boolean=false) { setValue(value, currency.symbol, withAnimation) }
+    fun setValue(value:Double, currencySymbol: String, withAnimation: Boolean=false) {
+        val currentValue = moneyAmount
         moneyAmount = value
         currencyCode = currencySymbol
         initPaints(amountTextPaint, amountTextSize, moneyAmountColor)
         initPaints(currencyTextPaint, currencyTextSize, currencyColor)
         calculateTextSizes()
+        if (withAnimation) startAnimation(currentValue.toFloat(), value.toFloat())
         invalidate()
     }
 }

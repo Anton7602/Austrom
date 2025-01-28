@@ -440,4 +440,12 @@
     <string name="detail_name">Detail Name</string>
     <string name="detail_quantity">Detail Quantity</string>
     <string name="detail_amount">Detail Amount</string>
+    <string name="asset_isn_t_selected">Asset Isn\'t Selected</string>
+    <string name="receiver_asset_isn_t_selected">Receiver Asset Isn\'t selected</string>
+    <string name="invalid_transaction_amount_provided">Invalid transaction amount provided</string>
+    <string name="transaction_amount_cannot_be_zero">Transaction Amount cannot be zero</string>
+    <string name="transaction_amount_is_greater_than_assets_balance">Transaction amount is greater than assets balance</string>
+    <string name="name_cannot_be_empty">Name Cannot Be Empty</string>
+    <string name="transaction_name_is_too_long">Transaction Name is too long</string>
+    <string name="transaction_name">Transaction Name</string>
 </resources>

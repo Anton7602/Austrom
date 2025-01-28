@@ -19,8 +19,8 @@ import com.colleagues.austrom.views.SelectorButtonView
 import com.google.android.material.textfield.TextInputEditText
 import kotlin.math.absoluteValue
 
-class TransactionEditFragment(val transaction: Transaction? =null) : Fragment(R.layout.fragment_transaction_edit) {
-    constructor() : this(null)
+class TransactionEditFragment(val transaction: Transaction? =null, val transactionsToChange: List<Transaction>? = null) : Fragment(R.layout.fragment_transaction_edit) {
+    constructor() : this(null, null)
     fun setOnDialogResultListener(l: ((Boolean)->Unit)) { returnResult = l }
     private var returnResult: (Boolean)->Unit = {}
     //region Binding
@@ -60,12 +60,17 @@ class TransactionEditFragment(val transaction: Transaction? =null) : Fragment(R.
         bindViews(view)
         setUpTransaction()
         cancelButton.setOnClickListener { returnResult(false) }
+        saveButton.setOnClickListener {save()}
         nameCheckButtonSingle.setOnClickListener { switchNameChangeSelection(nameCheckButtonSingle) }
         nameCheckButtonMultiple.setOnClickListener { switchNameChangeSelection(nameCheckButtonMultiple) }
 
         categoryCheckButtonSingle.setOnClickListener { switchCategoryChangeSelection(categoryCheckButtonSingle) }
         categoryCheckButtonMultipleByName.setOnClickListener { switchCategoryChangeSelection(categoryCheckButtonMultipleByName) }
         categoryCheckButtonMultipleByCategory.setOnClickListener { switchCategoryChangeSelection(categoryCheckButtonMultipleByCategory) }
+    }
+
+    private fun save() {
+        returnResult(true)
     }
 
     private fun switchNameChangeSelection(pressedButton: ActionButtonView) {

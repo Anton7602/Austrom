@@ -28,7 +28,7 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
     var userId: String = AustromApplication.appUser!!.userId,
     var linkedTransactionId: String? = null,
     var isPrivate: Boolean = false,
-    var version: Int = 1 )  {
+    var version: Int = 0 )  {
 
     fun transactionType(): TransactionType { return if (linkedTransactionId!=null) TransactionType.TRANSFER else if (amount<0) TransactionType.EXPENSE else TransactionType.INCOME }
     fun sumOfTransactionDetailsAmounts(localDBProvider: LocalDatabaseProvider): Double { return localDBProvider.getTransactionDetailsOfTransaction(this).sumOf {it.cost} }
@@ -86,8 +86,7 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
                 if (remoteDBProvider!= null && AustromApplication.appUser?.activeBudgetId!=null) {
                     val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
                     if (currentBudget!=null) {
-                        remoteDBProvider.cancelTransaction(this, currentBudget)
-                        remoteDBProvider.cancelTransaction(linkedTransaction, currentBudget)
+                        remoteDBProvider.cancelTransaction(this, currentBudget, linkedTransaction)
                     }
                 }
             }

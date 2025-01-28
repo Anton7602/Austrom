@@ -152,14 +152,15 @@ class TransactionCreationActivity : AppCompatActivity() {
     }
 
     private fun isInputValid(): Boolean {
+        if (primarySelectedAsset==null) { Toast.makeText(this, getString(R.string.asset_isn_t_selected), Toast.LENGTH_LONG).show(); return false }
+        if (transactionType==TransactionType.TRANSFER && secondarySelectedAsset==null) { Toast.makeText(this, getString(R.string.receiver_asset_isn_t_selected), Toast.LENGTH_LONG).show(); return false }
         val amount = amountTxt.text.toString().parseToDouble()?.absoluteValue
-        if (amount==null || amount>Double.MAX_VALUE) {  amountTxt.error = "Invalid transaction amount provided"; return false}
-        if (amount == 0.0) {  amountTxt.error = "Transaction Amount cannot be zero"; return false}
+        if (amount==null || amount>Double.MAX_VALUE) {  amountTxt.error = getString(R.string.invalid_transaction_amount_provided); return false}
+        if (amount == 0.0) {  amountTxt.error = getString(R.string.transaction_amount_cannot_be_zero); return false}
+        if (transactionType==TransactionType.EXPENSE && amount>primarySelectedAsset!!.amount) { amountTxt.error = getString(R.string.transaction_amount_is_greater_than_assets_balance); return false }
         val name = transactionNameTxt.text.toString()
-        if (name.isEmpty()) { transactionNameTxt.error = "Name Cannot Be Empty"; return false }
-        if (name.length>40) { transactionNameTxt.error = "Transaction Name is too long"; return false }
-        if (primarySelectedAsset==null) { Toast.makeText(this, "Asset isn't selected", Toast.LENGTH_LONG).show(); return false }
-        if (transactionType==TransactionType.TRANSFER && secondarySelectedAsset==null) { Toast.makeText(this, "Receiver Asset Isn't selected", Toast.LENGTH_LONG).show(); return false }
+        if (name.isEmpty() && transactionType!=TransactionType.TRANSFER) { transactionNameTxt.error = getString(R.string.name_cannot_be_empty); return false }
+        if (name.length>40) { transactionNameTxt.error = getString(R.string.transaction_name_is_too_long); return false }
         return true
     }
 

@@ -8,6 +8,8 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.extensions.intAfterLastPipe
+import com.colleagues.austrom.extensions.substringBeforeLastPipe
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Currency
 import com.google.firebase.database.DataSnapshot
@@ -101,8 +103,8 @@ class SyncManager(val context: Context, val localDBProvider: LocalDatabaseProvid
                     val localTransaction = localDBProvider.getTransactionByID(snapshotItem.key.toString())
                     if (localTransaction==null) {
                         if (snapshotItem.value!="-") {
-                            val transaction = encryptionManager.decryptTransaction(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(
-                                AustromApplication.appUser!!.tokenId))
+                            val transaction = encryptionManager.decryptTransaction(snapshotItem.getValue(String::class.java).substringBeforeLastPipe().toString(),
+                                encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
                             val asset = AustromApplication.activeAssets[transaction.assetId]
                             if (asset!=null) {
                                 localDBProvider.insertNewTransaction(transaction)
@@ -111,7 +113,15 @@ class SyncManager(val context: Context, val localDBProvider: LocalDatabaseProvid
                         }
                     } else {
                         if (snapshotItem.value =="-") {
-                            localTransaction.cancel(localDBProvider)
+                            localDBProvider.deleteTransaction(localTransaction)
+                        } else {
+                            val remoteVersion = snapshotItem.getValue(String::class.java).intAfterLastPipe()
+                            if (remoteVersion!=null && remoteVersion>localTransaction.version) {
+                                val transaction = encryptionManager.decryptTransaction(snapshotItem.getValue(String::class.java).substringBeforeLastPipe().toString(),
+                                    encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                                transaction.version = remoteVersion
+                                localDBProvider.updateTransaction(transaction)
+                            }
                         }
                     }
                 }
