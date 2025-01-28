@@ -20,6 +20,7 @@ import com.colleagues.austrom.adapters.CategoryArrayAdapter
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.InvalidTransactionException
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.TransactionValidationType
 
 
@@ -85,9 +86,9 @@ class ImportTransactionDialogFragment(private var transaction: Transaction, priv
 
     private fun setUpSpinners() {
         val categoriesList = if (transaction.amount>0) {
-            AustromApplication.activeIncomeCategories.values.toList()
+            AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }
         } else {
-            AustromApplication.activeExpenseCategories.values.toList()
+            AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }
         }
         knownCategories.adapter = CategoryArrayAdapter(activity, categoriesList)
         knownAssets.adapter = ArrayAdapter(activity, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, AustromApplication.activeAssets.map { it.value.assetName })

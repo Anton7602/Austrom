@@ -78,9 +78,7 @@ class TransactionReceiptView(context: Context, attrs: AttributeSet): CardView(co
         targetNameTextView.text = if (newTransaction.transactionType() == TransactionType.INCOME) AustromApplication.activeAssets[newTransaction.assetId]?.assetName else newTransaction.transactionName
         dateTextView.text = newTransaction.transactionDate.toDayOfWeekAndLongDateFormat()
         ownerTextView.text = AustromApplication.knownUsers[newTransaction.userId]?.username.startWithUppercase()
-        categoryTextView.text = if (newTransaction.transactionType() == TransactionType.INCOME) AustromApplication.activeIncomeCategories[newTransaction.categoryId]?.name
-        else if (newTransaction.transactionType() == TransactionType.EXPENSE) AustromApplication.activeExpenseCategories[newTransaction.categoryId]?.name
-        else AustromApplication.activeTransferCategories.values.toList()[0].name
+        categoryTextView.text = AustromApplication.activeCategories[newTransaction.categoryId]?.name
         commentTextView.visibility = if (newTransaction.comment.isNullOrEmpty()) View.GONE else View.VISIBLE
         commentTextView.text = newTransaction.comment
 

@@ -93,9 +93,9 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         confirmFilterButton.setOnClickListener { switchToMainMode() }
 
         attributes.recycle()
-        setUpCategoriesInChips(AustromApplication.activeExpenseCategories.values.toList(), expenseChipGroup, expenseChip)
-        setUpCategoriesInChips(AustromApplication.activeIncomeCategories.values.toList(), incomeChipGroup, incomeChip)
-        transactionFilter.categories.add(AustromApplication.activeTransferCategories.values.first().categoryId)
+        setUpCategoriesInChips(AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }, expenseChipGroup, expenseChip)
+        setUpCategoriesInChips(AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }, incomeChipGroup, incomeChip)
+        transactionFilter.categories.add(AustromApplication.activeCategories.values.first{ l-> l.transactionType==TransactionType.TRANSFER}.categoryId)
 
         expenseChip.setOnClickListener {_ -> expenseChipGroup.children.forEach { view -> if (view is Chip) view.isChecked=expenseChip.isChecked }; returnFilter(transactionFilter)}
         incomeChip.setOnClickListener {_ -> incomeChipGroup.children.forEach { view -> if (view is Chip) view.isChecked=incomeChip.isChecked }; returnFilter(transactionFilter)}

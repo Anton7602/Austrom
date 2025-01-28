@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.models.Transaction
@@ -103,6 +104,6 @@ class TransactionEditFragment(val transaction: Transaction? =null, val transacti
         amountTextView.setText(transaction.amount.absoluteValue.toString())
         dateSelector.setFieldValue(transaction.transactionDate.toDayOfWeekAndShortDateFormat())
         nameTextView.setText(transaction.transactionName)
-        categorySelector.setFieldValue(transaction.categoryId)
+        categorySelector.setFieldValue(AustromApplication.activeCategories[transaction.categoryId]?.name.toString())
     }
 }

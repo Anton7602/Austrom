@@ -82,11 +82,11 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         if (transaction.amount>0.0) {
             holder.amount.setTextColor(activity.getColor(R.color.incomeGreen))
             holder.currencySymbol.setTextColor(activity.getColor(R.color.incomeGreen))
-            activeCategory = (AustromApplication.activeIncomeCategories.values.find { l -> l.categoryId==transaction.categoryId })
+            activeCategory = (AustromApplication.activeCategories.values.find { l -> l.categoryId==transaction.categoryId })
         } else if (transaction.amount<0.0) {
             holder.amount.setTextColor(activity.getColor(R.color.expenseRed))
             holder.currencySymbol.setTextColor(activity.getColor(R.color.expenseRed))
-            activeCategory = (AustromApplication.activeExpenseCategories.values.find { l -> l.categoryId==transaction.categoryId })
+            activeCategory = (AustromApplication.activeCategories.values.find { l -> l.categoryId==transaction.categoryId })
         } else {
             //TODO("Transfer Case")
             //holder.primaryParticipant.text = transaction.sourceName

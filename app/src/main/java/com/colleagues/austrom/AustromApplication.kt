@@ -27,9 +27,10 @@ class AustromApplication : Application() {
         var appUser : User? = null
         var activeAssets : MutableMap<String, Asset> = mutableMapOf()
         var activeCurrencies : MutableMap<String, Currency> = mutableMapOf()
-        var activeIncomeCategories : MutableMap<String, Category> = mutableMapOf()
-        var activeExpenseCategories : MutableMap<String, Category> = mutableMapOf()
-        var activeTransferCategories: MutableMap<String, Category> = mutableMapOf()
+        var activeCategories: MutableMap<String, Category> = mutableMapOf()
+//        var activeIncomeCategories : MutableMap<String, Category> = mutableMapOf()
+//        var activeExpenseCategories : MutableMap<String, Category> = mutableMapOf()
+//        var activeTransferCategories: MutableMap<String, Category> = mutableMapOf()
         var knownUsers : MutableMap<String, User> = mutableMapOf()
         var supportedLanguages: List<Locale> = listOf(Locale("en"), Locale("ru"))
         var isApplicationThemeLight = false

@@ -149,8 +149,8 @@ class ImportParametersActivity : AppCompatActivity() {
                 importedTransactions.add(Transaction(
                     assetId = AustromApplication.activeAssets.values.find { l -> l.assetName == assetTxt }?.assetId ?: assetTxt.toString(),
                     transactionName = targetTxt.toString(),
-                    categoryId = if (amount>0) AustromApplication.activeIncomeCategories.values.find { l -> l.name == categoryTxt }?.categoryId ?: categoryTxt.toString() else
-                        AustromApplication.activeExpenseCategories.values.find { l -> l.name == categoryTxt }?.categoryId ?: categoryTxt.toString(),
+                    categoryId = if (amount>0) AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }.find { l -> l.name == categoryTxt }?.categoryId ?: categoryTxt.toString() else
+                        AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }.find { l -> l.name == categoryTxt }?.categoryId ?: categoryTxt.toString(),
                     amount =amount,
                     transactionDate = dateTxt.parseToLocalDate() ?: LocalDate.now(),
                     comment =  commentTxt.toString()

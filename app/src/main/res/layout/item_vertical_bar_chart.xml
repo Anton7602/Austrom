@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/backgroundMain"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
+
+    <TextView
+        android:id="@+id/vbaritem_groupTitle_txt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="2dp"
+        android:text="@string/category_name"
+        android:textAppearance="@style/PrimaryCardText"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/vbaritem_groupAmount_monf"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.colleagues.austrom.views.MoneyFormatTextView
+        android:id="@+id/vbaritem_groupAmount_monf"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:currencyTextSizePercent="0.9"
+        app:layout_constraintBottom_toBottomOf="@+id/vbaritem_groupTitle_txt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/vbaritem_groupTitle_txt" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintDimensionRatio="30:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/vbaritem_groupTitle_txt"
+        app:layout_constraintTop_toBottomOf="@+id/vbaritem_groupTitle_txt">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/vbaritem_percentValue_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:text="74%"
+                android:textSize="11sp"
+                android:translationZ="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/vbaritem_filling_cdv"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/vbaritem_filling_cdv"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="@color/diagramColor1"
+                app:cardCornerRadius="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/vbaritem_fillerGuideline_gul"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/vbaritem_fillerGuideline_gul"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.77" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

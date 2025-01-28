@@ -13,6 +13,7 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryRecyclerAdapter
 import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class CategoryControlDialogFragment : BottomSheetDialogFragment() {
@@ -53,12 +54,12 @@ class CategoryControlDialogFragment : BottomSheetDialogFragment() {
 
     private fun setUpRecyclerViews() {
         incomeCategoryHolder.layoutManager = LinearLayoutManager(activity)
-        val adapterIncome = CategoryRecyclerAdapter(AustromApplication.activeIncomeCategories.values.toMutableList(), requireActivity() as AppCompatActivity, true, true)
+        val adapterIncome = CategoryRecyclerAdapter((AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }).toMutableList(), requireActivity() as AppCompatActivity, true, true)
         adapterIncome.setOnItemClickListener { category -> returnResult(category) }
         incomeCategoryHolder.adapter = adapterIncome
 
         expenseCategoryHolder.layoutManager = LinearLayoutManager(activity)
-        val adapterExpense = CategoryRecyclerAdapter(AustromApplication.activeExpenseCategories.values.toMutableList(), requireActivity() as AppCompatActivity, true, true)
+        val adapterExpense = CategoryRecyclerAdapter((AustromApplication.activeCategories.values.filter {l -> l.transactionType==TransactionType.EXPENSE}).toMutableList(), requireActivity() as AppCompatActivity, true, true)
         adapterExpense.setOnItemClickListener { category -> returnResult(category)  }
         expenseCategoryHolder.adapter = adapterExpense
     }

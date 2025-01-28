@@ -107,7 +107,7 @@ class CategoryCreationActivity : AppCompatActivity() {
     private fun getCategoryFromIntent() {
         if (intent.getStringExtra("CategoryId")!=null) {
             val categoryId = intent.getStringExtra("CategoryId")
-            category = AustromApplication.activeIncomeCategories[categoryId] ?: AustromApplication.activeExpenseCategories[categoryId]
+            category = AustromApplication.activeCategories[categoryId]
             if (category!=null) {
                 categoryName.setText(category!!.name)
                 selectedIconImage.setImageResource(category!!.imgReference.resourceId)
@@ -145,16 +145,12 @@ class CategoryCreationActivity : AppCompatActivity() {
                 imgReference = selectedIcon,
                 transactionType = if (isExpenseCategoryBeingCreated) TransactionType.EXPENSE else TransactionType.INCOME)
             dbProvider.writeCategory(newCategory)
-            if (isExpenseCategoryBeingCreated) {
-                AustromApplication.activeExpenseCategories[newCategory.categoryId] = newCategory
-            } else AustromApplication.activeIncomeCategories[newCategory.categoryId] = newCategory
+            AustromApplication.activeCategories[newCategory.categoryId] = newCategory
         } else {
             category!!.name = categoryName.text.toString()
             category!!.imgReference = selectedIcon
             dbProvider.updateCategory(category!!)
-            if (category!!.transactionType == TransactionType.INCOME) {
-                AustromApplication.activeIncomeCategories[category!!.categoryId] = category!!
-            } else AustromApplication.activeIncomeCategories[category!!.categoryId] = category!!
+            AustromApplication.activeCategories[category!!.categoryId] = category!!
         }
         finish()
     }
@@ -169,11 +165,7 @@ class CategoryCreationActivity : AppCompatActivity() {
             val transactions = dbProvider.getTransactionOfCategory(category!!)
             if (transactions.isEmpty()) {
                 dbProvider.deleteCategory(category!!)
-                when (category!!.transactionType) {
-                    TransactionType.INCOME -> AustromApplication.activeIncomeCategories.remove(category!!.categoryId)
-                    TransactionType.EXPENSE -> AustromApplication.activeExpenseCategories.remove(category!!.categoryId)
-                    TransactionType.TRANSFER -> {}
-                }
+                AustromApplication.activeCategories.remove(category!!.categoryId)
                 finish()
             } else {
                 val dialog = CategoryPullDialogFragment(category!!, transactions)

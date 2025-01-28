@@ -2,23 +2,24 @@ package com.colleagues.austrom.fragments
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.adapters.VerticalBarChartAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.PieChartDiagramView
-import java.util.Dictionary
 import kotlin.math.absoluteValue
 
 class BudgetFragment : Fragment(R.layout.fragment_budget) {
-    private lateinit var chart: PieChartDiagramView
+    private lateinit var pieChart: PieChartDiagramView
+    private lateinit var barChart: RecyclerView
     private fun bindViews(view: View) {
-        chart = view.findViewById(R.id.bud_chart_pch)
+        pieChart = view.findViewById(R.id.bud_chart_pch)
+        barChart = view.findViewById(R.id.bud_bar_chart_rcv)
     }
 
 
@@ -30,7 +31,8 @@ class BudgetFragment : Fragment(R.layout.fragment_budget) {
     override fun onStart() {
         super.onStart()
         val dbProvider = LocalDatabaseProvider(requireActivity())
-        chart.setChartData(calculateTransactionsSums(dbProvider.getTransactionsOfUser(AustromApplication.appUser!!)))
+        pieChart.setChartData(calculateTransactionsSums(dbProvider.getTransactionsOfUser(AustromApplication.appUser!!)))
+        setUpRecyclerView()
     }
 
     private fun calculateTransactionsSums(transactions: List<Transaction>) : List<Pair<Double, String>> {
@@ -44,10 +46,16 @@ class BudgetFragment : Fragment(R.layout.fragment_budget) {
             }
         }
         transactionsByCategories.forEach { (categoryId, transactionsSum) ->
-            if (AustromApplication.activeExpenseCategories.containsKey(categoryId)) {
-                dataSet.add(Pair(transactionsSum, AustromApplication.activeExpenseCategories[categoryId]!!.name))
+            if (AustromApplication.activeCategories.filter { l -> l.value.transactionType==TransactionType.EXPENSE }.containsKey(categoryId)) {
+                dataSet.add(Pair(transactionsSum, AustromApplication.activeCategories[categoryId]!!.name))
             }
         }
-        return dataSet
+        return dataSet.sortedByDescending { l->l.first }
+    }
+
+    private fun setUpRecyclerView() {
+        barChart.layoutManager = LinearLayoutManager(requireActivity())
+        val adapter = VerticalBarChartAdapter(requireActivity(), calculateTransactionsSums(LocalDatabaseProvider(requireActivity()).getTransactionsOfUser(AustromApplication.appUser!!)))
+        barChart.adapter = adapter
     }
 }

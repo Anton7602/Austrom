@@ -109,7 +109,7 @@ class TransactionCreationActivity : AppCompatActivity() {
     private var secondarySelectedAsset: Asset? = null
     private var transactionType: TransactionType = TransactionType.EXPENSE
     private var selectedDate: LocalDate = LocalDate.now()
-    private var selectedCategory: Category = AustromApplication.activeExpenseCategories.values.first()
+    private var selectedCategory: Category = AustromApplication.activeCategories.values.first { l -> l.transactionType == TransactionType.EXPENSE }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -230,17 +230,8 @@ class TransactionCreationActivity : AppCompatActivity() {
         transactionNameTxt.visibility = if (transactionType!=TransactionType.TRANSFER) View.VISIBLE else View.GONE
         categorySelector.visibility = if (transactionType!=TransactionType.TRANSFER) View.VISIBLE else View.GONE
         targetHolder.visibility = if (transactionType==TransactionType.TRANSFER) View.VISIBLE else View.GONE
-        categorySelector.setFieldValue(when(transactionType) {
-            TransactionType.EXPENSE -> AustromApplication.activeExpenseCategories.values.first().name
-            TransactionType.INCOME -> AustromApplication.activeIncomeCategories.values.first().name
-            TransactionType.TRANSFER -> AustromApplication.activeTransferCategories.values.first().name
-        })
-        selectedCategory = when(transactionType) {
-            TransactionType.EXPENSE -> AustromApplication.activeExpenseCategories.values.first()
-            TransactionType.INCOME -> AustromApplication.activeIncomeCategories.values.first()
-            TransactionType.TRANSFER -> AustromApplication.activeTransferCategories.values.first()
-        }
-
+        categorySelector.setFieldValue(AustromApplication.activeCategories.values.first{l -> l.transactionType==transactionType}.name)
+        selectedCategory = AustromApplication.activeCategories.values.first{l -> l.transactionType==transactionType}
         createTransactionButton.setStrokeColorResource((when (transactionType) {
             TransactionType.EXPENSE -> R.color.expenseRedBackground
             TransactionType.INCOME -> R.color.incomeGreenBackground
@@ -288,14 +279,14 @@ class TransactionCreationActivity : AppCompatActivity() {
                 val categoryId = localDBProvider.getTransactionNameMostUsedCategory(selectedItem)
                 when (transactionType) {
                     TransactionType.INCOME -> {
-                        if (AustromApplication.activeIncomeCategories.containsKey(categoryId)) {
-                            selectedCategory = AustromApplication.activeIncomeCategories[categoryId]!!
+                        if (AustromApplication.activeCategories.filter { l -> l.value.transactionType==TransactionType.INCOME }.containsKey(categoryId)) {
+                            selectedCategory = AustromApplication.activeCategories[categoryId]!!
                             categorySelector.setFieldValue(selectedCategory.name)
                         }
                     }
                     TransactionType.EXPENSE -> {
-                        if (AustromApplication.activeExpenseCategories.containsKey(categoryId)) {
-                            selectedCategory = AustromApplication.activeExpenseCategories[categoryId]!!
+                        if (AustromApplication.activeCategories.filter { l -> l.value.transactionType==TransactionType.EXPENSE }.containsKey(categoryId)) {
+                            selectedCategory = AustromApplication.activeCategories[categoryId]!!
                             categorySelector.setFieldValue(selectedCategory.name)
                         }
                     }

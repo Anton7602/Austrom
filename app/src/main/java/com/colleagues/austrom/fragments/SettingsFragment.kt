@@ -75,11 +75,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private fun launchCategoryControlDialog() {
         val dialog = CategoryControlDialogFragment()
         dialog.setOnDialogResultListener { category ->
-            when (category.transactionType) {
-                TransactionType.INCOME -> AustromApplication.activeIncomeCategories[category.categoryId] = category
-                TransactionType.EXPENSE -> AustromApplication.activeExpenseCategories[category.categoryId] = category
-                else -> {}
-            }
+            AustromApplication.activeCategories[category.categoryId] = category
             categorySetting.setValueText(updateCategoriesListLine())
         }
         dialog.show(requireActivity().supportFragmentManager, "Category Control Dialog")
@@ -97,8 +93,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     private fun updateCategoriesListLine(): String {
         var categoryLine = ""
-        AustromApplication.activeExpenseCategories.values.forEach{ category -> categoryLine += "${category.name}, "  }
-        AustromApplication.activeIncomeCategories.values.forEach { category -> categoryLine += "${category.name}, "  }
+        AustromApplication.activeCategories.values.filter { l -> l.transactionType!=TransactionType.TRANSFER }.forEach{ category -> categoryLine += "${category.name}, "  }
         if (categoryLine.isNotEmpty()) {
             categoryLine = categoryLine.dropLast(2)
         }

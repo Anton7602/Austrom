@@ -50,9 +50,9 @@ class CategorySelectionDialogFragment(private val transactionType: TransactionTy
 
     private fun filterCurrenciesList(searchText: String) {
         val adapter = if (searchText.isNotEmpty()) {
-            CategoryRecyclerAdapter(AustromApplication.activeExpenseCategories.values.filter { l -> l.name.lowercase().contains(searchText.lowercase()) }.toMutableList(), requireActivity() as AppCompatActivity,  false, false)
+            CategoryRecyclerAdapter(AustromApplication.activeCategories.values.filter { l -> l.name.lowercase().contains(searchText.lowercase()) && l.transactionType==transactionType }.toMutableList(), requireActivity() as AppCompatActivity,  false, false)
         } else {
-            CategoryRecyclerAdapter(AustromApplication.activeExpenseCategories.values.toMutableList(), requireActivity() as AppCompatActivity,  false, false)
+            CategoryRecyclerAdapter((AustromApplication.activeCategories.values.filter { l -> l.transactionType==transactionType }).toMutableList(), requireActivity() as AppCompatActivity,  false, false)
         }
         adapter.setOnItemClickListener{currency -> returnResult(currency); dismiss() }
         categoryHolder.adapter = adapter
@@ -60,11 +60,7 @@ class CategorySelectionDialogFragment(private val transactionType: TransactionTy
 
     private fun setUpRecyclerViews() {
         categoryHolder.layoutManager = LinearLayoutManager(activity)
-        val adapter = when(transactionType) {
-            TransactionType.EXPENSE -> CategoryRecyclerAdapter(AustromApplication.activeExpenseCategories.values.toMutableList(), requireActivity() as AppCompatActivity,  false, false)
-            TransactionType.INCOME -> CategoryRecyclerAdapter(AustromApplication.activeIncomeCategories.values.toMutableList(), requireActivity() as AppCompatActivity,  false, false)
-            TransactionType.TRANSFER -> CategoryRecyclerAdapter(AustromApplication.activeTransferCategories.values.toMutableList(), requireActivity() as AppCompatActivity,  false, false)
-        }
+        val adapter = CategoryRecyclerAdapter(AustromApplication.activeCategories.values.filter { l -> l.transactionType == transactionType }.toMutableList(), requireActivity() as AppCompatActivity,  false, false)
         adapter.setOnItemClickListener { category -> returnResult(category); dismiss() }
         categoryHolder.adapter = adapter
     }

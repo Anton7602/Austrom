@@ -122,11 +122,7 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
     fun validate(): TransactionValidationType {
         if (amount==0.0) return TransactionValidationType.AMOUNT_INVALID
         if (AustromApplication.activeAssets[assetId]==null) return TransactionValidationType.UNKNOWN_ASSET_INVALID
-        when (transactionType()) {
-            TransactionType.INCOME -> if (AustromApplication.activeIncomeCategories[categoryId]==null) return TransactionValidationType.UNKNOWN_CATEGORY_INVALID
-            TransactionType.EXPENSE -> if (AustromApplication.activeExpenseCategories[categoryId]==null) return TransactionValidationType.UNKNOWN_CATEGORY_INVALID
-            else -> {}
-        }
+        if (AustromApplication.activeCategories[categoryId]==null) return TransactionValidationType.UNKNOWN_CATEGORY_INVALID
         return TransactionValidationType.VALID
     }
 
