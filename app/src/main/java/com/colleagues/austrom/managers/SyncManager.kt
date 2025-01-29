@@ -27,9 +27,12 @@ class SyncManager(val context: Context, val localDBProvider: LocalDatabaseProvid
         if (remoteDBProvider is FirebaseDatabaseProvider) setCurrenciesListener(remoteDBProvider)
     }
 
+    private fun syncUsersRemoteToLocal() {
+        if (remoteDBProvider is FirebaseDatabaseProvider) setUsersListener(remoteDBProvider)
+    }
+
     private fun syncAssetsRemoteToLocal() {
         if (remoteDBProvider is FirebaseDatabaseProvider) setAssetListener(remoteDBProvider)
-
     }
 
     private fun syncTransactionsRemoteToLocal() {
@@ -43,100 +46,125 @@ class SyncManager(val context: Context, val localDBProvider: LocalDatabaseProvid
 
     private fun setCurrenciesListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
         firebaseDatabaseProvider.setCurrenciesListener(
-        object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val currencies = mutableMapOf<String, Currency>()
-                for (snapshotItem in dataSnapshot.children) {
-                    val currency = snapshotItem.getValue(Currency::class.java)
-                    if (currency!=null) {
-                        currencies[currency.code] = currency
+            object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val currencies = mutableMapOf<String, Currency>()
+                    for (snapshotItem in dataSnapshot.children) {
+                        val currency = snapshotItem.getValue(Currency::class.java)
+                        if (currency!=null) {
+                            currencies[currency.code] = currency
+                        }
                     }
+                    AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(Currency.localizeCurrencyNames(currencies, context), AustromApplication.appUser?.baseCurrencyCode)
+                    localDBProvider.deleteAllCurrencies()
+                    currencies.forEach { currency ->
+                        localDBProvider.writeCurrency(currency.value)
+                    }
+                    syncUsersRemoteToLocal()
                 }
-                AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(Currency.localizeCurrencyNames(currencies, context), AustromApplication.appUser?.baseCurrencyCode)
-                localDBProvider.deleteAllCurrencies()
-                currencies.forEach { currency ->
-                    localDBProvider.writeCurrency(currency.value)
+                override fun onCancelled(databaseError: DatabaseError) { Log.w("Debug", "loadPost:onCancelled", databaseError.toException()) }
+            })
+    }
+
+    private fun setUsersListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
+        if (budget==null) return
+        firebaseDatabaseProvider.setUserListener(budget,
+            object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (snapshotItem in dataSnapshot.children) {
+                        val userID = snapshotItem.getValue(String::class.java)
+                        if (userID!=null) {
+                            val user = firebaseDatabaseProvider.getUserByUserId(userID)
+                            if (user!= null) {
+                                val localUser = localDBProvider.getUserByUserId(userID)
+                                if (localUser != null) {
+                                    localDBProvider.updateUser(user)
+                                } else {
+                                    localDBProvider.writeNewUser(user)
+                                }
+                            }
+                        }
+                    }
+                    syncAssetsRemoteToLocal()
                 }
-                syncAssetsRemoteToLocal()
-            }
-            override fun onCancelled(databaseError: DatabaseError) { Log.w("Debug", "loadPost:onCancelled", databaseError.toException()) }
-        })
+                override fun onCancelled(databaseError: DatabaseError) { Log.w("Debug", "loadPost:onCancelled", databaseError.toException()) }
+            })
+
     }
 
     private fun setAssetListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
         if (budget==null) return
-        firebaseDatabaseProvider.setAssetListener(
+        firebaseDatabaseProvider.setAssetListener(budget,
             object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val encryptionManager = EncryptionManager()
-                for (snapshotItem in dataSnapshot.children) {
-                    val localAsset = localDBProvider.getAssetById(snapshotItem.key.toString())
-                    if (localAsset!=null && snapshotItem.value=="-") {
-                        localAsset.delete(localDBProvider)
-                        if (AustromApplication.activeAssets.containsKey(localAsset.assetId)) {
-                            AustromApplication.activeAssets.remove(localAsset.assetId)
-                        }
-                    } else {
-                        val asset = encryptionManager.decryptAsset(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
-                        if (localAsset!=null) {
-                            localDBProvider.updateAsset(asset)
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val encryptionManager = EncryptionManager()
+                    for (snapshotItem in dataSnapshot.children) {
+                        val localAsset = localDBProvider.getAssetById(snapshotItem.key.toString())
+                        if (localAsset!=null && snapshotItem.value=="-") {
+                            localAsset.delete(localDBProvider)
+                            if (AustromApplication.activeAssets.containsKey(localAsset.assetId)) {
+                                AustromApplication.activeAssets.remove(localAsset.assetId)
+                            }
                         } else {
-                            localDBProvider.createNewAsset(asset)
+                            val asset = encryptionManager.decryptAsset(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                            if (localAsset!=null) {
+                                localDBProvider.updateAsset(asset)
+                            } else {
+                                localDBProvider.createNewAsset(asset)
+                            }
+                            AustromApplication.activeAssets[asset.assetId] = asset
                         }
-                        AustromApplication.activeAssets[asset.assetId] = asset
                     }
+                    syncTransactionsRemoteToLocal()
                 }
-                syncTransactionsRemoteToLocal()
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) { Log.w("Debug", "loadPost:onCancelled", databaseError.toException()) }
-        }, budget)
+                override fun onCancelled(databaseError: DatabaseError) { Log.w("Debug", "loadPost:onCancelled", databaseError.toException()) }
+            })
     }
 
     private fun setTransactionListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
         if (budget==null) return
-        firebaseDatabaseProvider.setTransactionListener(
-        object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val encryptionManager = EncryptionManager()
-                for (snapshotItem in dataSnapshot.children) {
-                    val localTransaction = localDBProvider.getTransactionByID(snapshotItem.key.toString())
-                    if (localTransaction==null) {
-                        if (snapshotItem.value!="-") {
-                            val transaction = encryptionManager.decryptTransaction(snapshotItem.getValue(String::class.java).substringBeforeLastPipe().toString(),
-                                encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
-                            val asset = AustromApplication.activeAssets[transaction.assetId]
-                            if (asset!=null) {
-                                localDBProvider.insertNewTransaction(transaction)
-                            }
-                            //TODO("What if asset of this transaction doesn't exist?")
-                        }
-                    } else {
-                        if (snapshotItem.value =="-") {
-                            localDBProvider.deleteTransaction(localTransaction)
-                        } else {
-                            val remoteVersion = snapshotItem.getValue(String::class.java).intAfterLastPipe()
-                            if (remoteVersion!=null && remoteVersion>localTransaction.version) {
+        firebaseDatabaseProvider.setTransactionListener(budget,
+            object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val encryptionManager = EncryptionManager()
+                    for (snapshotItem in dataSnapshot.children) {
+                        val localTransaction = localDBProvider.getTransactionByID(snapshotItem.key.toString())
+                        if (localTransaction==null) {
+                            if (snapshotItem.value!="-") {
                                 val transaction = encryptionManager.decryptTransaction(snapshotItem.getValue(String::class.java).substringBeforeLastPipe().toString(),
                                     encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
-                                transaction.version = remoteVersion
-                                localDBProvider.updateTransaction(transaction)
+                                val asset = AustromApplication.activeAssets[transaction.assetId]
+                                if (asset!=null) {
+                                    localDBProvider.insertNewTransaction(transaction)
+                                }
+                                //TODO("What if asset of this transaction doesn't exist?")
+                            }
+                        } else {
+                            if (snapshotItem.value =="-") {
+                                localDBProvider.deleteTransaction(localTransaction)
+                            } else {
+                                val remoteVersion = snapshotItem.getValue(String::class.java).intAfterLastPipe()
+                                if (remoteVersion!=null && remoteVersion>localTransaction.version) {
+                                    val transaction = encryptionManager.decryptTransaction(snapshotItem.getValue(String::class.java).substringBeforeLastPipe().toString(),
+                                        encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                                    transaction.version = remoteVersion
+                                    localDBProvider.updateTransaction(transaction)
+                                }
                             }
                         }
                     }
+                    syncTransactionsDetailsRemoteToLocal()
                 }
-                syncTransactionsDetailsRemoteToLocal()
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.w("Debug", "loadPost:onCancelled", databaseError.toException())
-            }
-        }, budget)
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.w("Debug", "loadPost:onCancelled", databaseError.toException())
+                }
+            })
     }
 
     private fun setTransactionDetailListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
         if (budget==null) return
-        firebaseDatabaseProvider.setTransactionDetailListener(
+        firebaseDatabaseProvider.setTransactionDetailListener(budget,
             object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val encryptionManager = EncryptionManager()
@@ -159,7 +187,7 @@ class SyncManager(val context: Context, val localDBProvider: LocalDatabaseProvid
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.w("Debug", "loadPost:onCancelled", databaseError.toException())
             }
-        }, budget)
+        })
     }
 }
 

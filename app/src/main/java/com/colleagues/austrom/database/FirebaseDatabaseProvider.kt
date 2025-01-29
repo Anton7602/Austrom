@@ -312,8 +312,9 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
 
     //Sync
     fun setCurrenciesListener(listener: ValueEventListener) { database.getReference("currencies").addValueEventListener(listener) }
-    fun setAssetListener(listener: ValueEventListener, budget: Budget) { database.getReference("assets").child(budget.budgetId).addValueEventListener(listener) }
-    fun setTransactionListener(listener: ValueEventListener, budget: Budget) { database.getReference("transactions").child(budget.budgetId).addValueEventListener(listener) }
-    fun setTransactionDetailListener(listener: ValueEventListener, budget: Budget) { database.getReference("transactionDetails").child(budget.budgetId).addValueEventListener(listener) }
+    fun setUserListener(budget: Budget, listener: ValueEventListener) { database.getReference("budgets").child(budget.budgetId).child("users").addValueEventListener(listener) }
+    fun setAssetListener(budget: Budget, listener: ValueEventListener) { database.getReference("assets").child(budget.budgetId).addValueEventListener(listener) }
+    fun setTransactionListener(budget: Budget, listener: ValueEventListener) { database.getReference("transactions").child(budget.budgetId).addValueEventListener(listener) }
+    fun setTransactionDetailListener(budget: Budget, listener: ValueEventListener) { database.getReference("transactionDetails").child(budget.budgetId).addValueEventListener(listener) }
     //endregion
 }
