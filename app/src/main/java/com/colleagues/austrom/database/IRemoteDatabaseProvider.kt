@@ -3,7 +3,9 @@ package com.colleagues.austrom.database
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Currency
+import com.colleagues.austrom.models.Invitation
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.User
 
 interface IRemoteDatabaseProvider {
@@ -18,6 +20,7 @@ interface IRemoteDatabaseProvider {
     fun createNewAsset(asset: Asset, budget: Budget)
     fun updateAsset(asset: Asset, budget: Budget)
     fun deleteAsset(asset: Asset, budget: Budget)
+    fun deleteAssetsOfBudget(budget: Budget)
 //    fun getAssetsOfUser(user: User) : MutableMap<String, Asset>
 //    fun getAssetsOfBudget(budget: Budget) : MutableMap<String, Asset>
 
@@ -26,9 +29,15 @@ interface IRemoteDatabaseProvider {
     fun deleteBudget(budget: Budget)
     fun getBudgetById(budgetId: String) : Budget?
 
-    fun createNewTransaction(transaction: Transaction, budget: Budget)
+    fun insertTransaction(transaction: Transaction, budget: Budget)
     fun updateTransaction(transaction: Transaction, budget: Budget)
     fun deleteTransaction(transaction: Transaction, budget: Budget)
+    fun deleteTransactionsOfBudget(budget: Budget)
+
+    fun insertTransactionDetail(transactionDetail: TransactionDetail, budget: Budget)
+    fun deleteTransactionDetailsOfBudget(budget: Budget)
+
+    fun sentBudgetInvite(invitation: Invitation)
 //    fun getTransactionsOfUser(user: User) : MutableList<Transaction>
 //    fun getTransactionsOfBudget(budget: Budget) : MutableList<Transaction>
 //    fun getTransactionsOfAsset(asset: Asset): MutableList<Transaction>

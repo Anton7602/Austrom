@@ -2,6 +2,7 @@ package com.colleagues.austrom.managers
 
 import android.util.Base64
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Invitation
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.google.gson.Gson
@@ -28,6 +29,7 @@ class EncryptionManager {
     fun encrypt(asset: Asset, secretKey: SecretKey): String { return encrypt(asset.serialize(), secretKey) }
     fun encrypt(transaction: Transaction, secretKey: SecretKey): String { return encrypt(transaction.serialize(), secretKey) }
     fun encrypt(transactionDetail: TransactionDetail, secretKey: SecretKey): String { return encrypt(transactionDetail.serialize(), secretKey) }
+    fun encrypt(invitation: Invitation, secretKey: SecretKey): String {return encrypt(invitation.serialize(), secretKey)}
 
     fun decrypt(encryptedData: String, secretKey: SecretKey): String {
         val encryptedBytes = Base64.decode(encryptedData, Base64.DEFAULT)
@@ -40,6 +42,7 @@ class EncryptionManager {
     fun decryptAsset(encryptedData: String, secretKey: SecretKey): Asset { return Asset.deserialize(decrypt(encryptedData, secretKey)) }
     fun decryptTransaction(encryptedData: String, secretKey: SecretKey): Transaction { return Transaction.deserialize(decrypt(encryptedData, secretKey))  }
     fun decryptTransactionDetail(encryptedData: String, secretKey: SecretKey): TransactionDetail { return TransactionDetail.deserialize(decrypt(encryptedData, secretKey)) }
+    fun decryptInvitation(encryptedData: String, secretKey: SecretKey): Invitation {return Invitation.deserialize(decrypt(encryptedData, secretKey))}
 
     fun generateEncryptionKey(): SecretKey {
         val keyGenerator = KeyGenerator.getInstance("AES")

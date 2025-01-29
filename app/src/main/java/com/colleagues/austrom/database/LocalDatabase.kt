@@ -17,6 +17,7 @@ import com.colleagues.austrom.managers.SyncManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
+import com.colleagues.austrom.models.Invitation
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
@@ -25,7 +26,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
-@Database(entities = [Asset::class, Transaction::class, TransactionDetail::class, User::class, Currency::class, Category::class], version = 1, exportSchema = false)
+@Database(entities = [Asset::class, Transaction::class, TransactionDetail::class, User::class, Currency::class, Category::class, Invitation::class, AssetChangeLog::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class LocalDatabase: RoomDatabase() {
     abstract fun assetDao(): AssetDao
@@ -34,6 +35,8 @@ abstract class LocalDatabase: RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun currencyDao(): CurrencyDao
     abstract fun categoryDao(): CategoryDao
+    abstract fun invitationDao(): InvitationDao
+    abstract fun assetChangeLogDao(): AssetChangeLogDao
     abstract fun complexDao(): ComplexDao
 
     companion object {
@@ -278,6 +281,24 @@ interface CategoryDao {
 
     @Query("SELECT * FROM CATEGORY WHERE Category.categoryId = :categoryId")
     suspend fun getCategoryById(categoryId: String): List<Category>
+}
+
+@Dao
+interface InvitationDao {
+    @Insert
+    suspend fun insertInvitation(invitation: Invitation)
+
+    @Update
+    suspend fun updateInvitation(invitation: Invitation)
+
+    @Delete
+    suspend fun deleteInvitation(invitation: Invitation)
+
+    @Query("SELECT * FROM Invitation WHERE userId = :invitationId")
+    suspend fun getInvitationById(invitationId: Long): Invitation?
+
+    @Query("SELECT * FROM Invitation")
+    suspend fun getAllInvitations(): List<Invitation>
 }
 
 @Dao

@@ -7,6 +7,7 @@ import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.InvalidTransactionException
+import com.colleagues.austrom.models.Invitation
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionFilter
@@ -331,6 +332,21 @@ class LocalDatabaseProvider(context: Context) {
         }
     }
     //endregion
+
+    fun insertInvitation(invitation: Invitation) {
+        runBlocking {
+            localDatabase.invitationDao().insertInvitation(invitation)
+        }
+    }
+
+    fun getInvitations(): List<Invitation> {
+        val dao = localDatabase.invitationDao()
+        var invitations = listOf<Invitation>()
+        runBlocking {
+            invitations = dao.getAllInvitations()
+        }
+        return invitations
+    }
 
     //region Category
     fun writeCategory(category: Category) {

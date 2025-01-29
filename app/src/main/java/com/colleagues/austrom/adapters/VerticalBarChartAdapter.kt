@@ -24,7 +24,8 @@ class VerticalBarChartAdapter(context: Context, private val dataSet: List<Pair<D
     }
     private var totalSum: Double = 0.0
     private var barChartColors: List<Int> = listOf(context.getColor(R.color.diagramColor1), context.getColor(R.color.diagramColor2), context.getColor(R.color.diagramColor3),
-        context.getColor(R.color.diagramColor4), context.getColor(R.color.diagramColor5))
+        context.getColor(R.color.diagramColor4), context.getColor(R.color.diagramColor5), context.getColor(R.color.diagramColor6), context.getColor(R.color.diagramColor7),
+        context.getColor(R.color.diagramColor8), context.getColor(R.color.diagramColor9), context.getColor(R.color.diagramColor10))
 
     init {
         dataSet.forEach { dataEntry -> totalSum+=dataEntry.first }

@@ -109,7 +109,7 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
         if (remoteDBProvider!=null) {
             val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
             if (currentBudget!=null) {
-                remoteDBProvider.createNewTransactionDetail(transactionDetail, currentBudget)
+                remoteDBProvider.insertTransactionDetail(transactionDetail, currentBudget)
             }
         }
         //TODO("Validate and finish")

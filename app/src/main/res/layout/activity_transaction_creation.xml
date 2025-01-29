@@ -169,7 +169,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="5"
-                    android:hint="@string/recieved_amount">
+                    android:hint="@string/received_amount">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/trcreat_amount_secondary_txt"

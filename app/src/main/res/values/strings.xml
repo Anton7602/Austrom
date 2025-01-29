@@ -132,8 +132,6 @@
     <string name="string_static">Static</string>
     <string name="choose_period_start_date">Choose Period Start Date</string>
     <string name="choose_period_end_date">Choose Period End Date</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="language_selection">Language Selection</string>
     <string name="select_from_gallery">Select From Gallery</string>
     <string name="take_photo">Take Photo</string>
@@ -363,7 +361,7 @@
     <string name="fromAsset">from</string>
     <string name="toAsset">to</string>
     <string name="create_transaction">Create Transaction</string>
-    <string name="empty_name_category_not_allower">Please, don\'t leave category name empty</string>
+    <string name="empty_name_category_not_allowed">Please, don\'t leave category name empty</string>
     <string name="import_transactions">Import Transactions</string>
     <string name="transaction_amount_is_zero">"Transaction Amount Is Zero; "</string>
     <string name="asset_does_not_match_any_active_asset">"Asset does not match any active asset; "</string>
@@ -402,14 +400,14 @@
     <string name="credit_card_desc">Payment card that allows to borrow funds up to a specified limit for purchases, requiring repayment with interest if not settled within a grace period</string>
     <string name="loan">Loan</string>
     <string name="loan_desc">This is a sum of money borrowed from a financial institution, which must be repaid over time with interest</string>
-    <string name="mortage">Mortage</string>
-    <string name="mortage_desc">Type of loan specifically used to purchase real estate</string>
+    <string name="mortgage">Mortgage</string>
+    <string name="mortgage_desc">Type of loan specifically used to purchase real estate</string>
     <string name="debit_card">Debit Card</string>
     <string name="add_liability">Add Liability</string>
     <string name="current_debt">Current Debt</string>
     <string name="liability_name">Liability Name</string>
     <string name="new_liability">New Liability</string>
-    <string name="recieved_amount">Recieved Amount</string>
+    <string name="received_amount">Received Amount</string>
     <string name="income_desc">Money received from various sources, such as salaries, investments, or business activities</string>
     <string name="expense_desc">Money spent on goods and services, including bills, purchases, and other costs</string>
     <string name="transfer_desc">Money moving from one account to another, between assets held by you</string>
@@ -428,7 +426,7 @@
     <string name="add_comment">Add Comment</string>
     <string name="split">Split</string>
     <string name="edit_comment">Edit Comment</string>
-    <string name="kilogramm">Kilogramm</string>
+    <string name="kilogram">Kilogram</string>
     <string name="kg">kg</string>
     <string name="piece">Piece</string>
     <string name="pc">pc</string>
@@ -448,4 +446,6 @@
     <string name="name_cannot_be_empty">Name Cannot Be Empty</string>
     <string name="transaction_name_is_too_long">Transaction Name is too long</string>
     <string name="transaction_name">Transaction Name</string>
+    <string name="invite_user">Invite User</string>
+    <string name="email_of_invited_user">Email of Invited User</string>
 </resources>

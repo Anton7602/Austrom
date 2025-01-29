@@ -62,7 +62,7 @@ class TransactionReceiptView(context: Context, attrs: AttributeSet): CardView(co
     //endregion
     private var transaction: Transaction? = null
     private var transactionDetails = mutableListOf<TransactionDetail>()
-
+    private var isFullyDetailed: Boolean = false
 
     init {
         val layoutInflater = LayoutInflater.from(context)
@@ -88,6 +88,7 @@ class TransactionReceiptView(context: Context, attrs: AttributeSet): CardView(co
         }
 
         val unallocatedBalance = newTransaction.amount.absoluteValue-transactionDetails.sumOf { it.cost }
+        isFullyDetailed = unallocatedBalance==0.0
         editedDetailLayout.visibility = if (unallocatedBalance==0.0) View.GONE else View.VISIBLE
         updateEditedTransactionDetail(resources.getString(R.string.unallocated_balance), 0.0, "", unallocatedBalance)
         totalAmountTextView.setValue(newTransaction.amount.absoluteValue, AustromApplication.activeAssets[newTransaction.assetId]!!.currencyCode)
@@ -101,4 +102,6 @@ class TransactionReceiptView(context: Context, attrs: AttributeSet): CardView(co
         editedDetailUnit.visibility = if (detailAmount==0.0) View.GONE else View.VISIBLE
         editedDetailCost.setValue(detailCost, AustromApplication.activeCurrencies[AustromApplication.activeAssets[transaction?.assetId]?.currencyCode]?.symbol ?: "USD" )
     }
+
+    fun getIsFullyDetailed(): Boolean {return isFullyDetailed}
 }

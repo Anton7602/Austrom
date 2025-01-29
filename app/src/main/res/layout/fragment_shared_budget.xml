@@ -20,13 +20,13 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/shb_budgetInfo_crd"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        app:cardBackgroundColor="@color/navigationBarColor"
+        app:cardBackgroundColor="@color/backgroundText"
         app:cardCornerRadius="20dp"
-        app:layout_constraintDimensionRatio="2:1"
+        app:layout_constraintDimensionRatio=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -34,7 +34,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/shb_budgetInfo_cly"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp">
 
             <TextView
                 android:id="@+id/shb_budgetNameHint_txt"
@@ -43,6 +44,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/your_budget_is"
+                android:textAppearance="@style/SecondaryCardText"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -53,55 +55,82 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="budgetName"
+                android:textAppearance="@style/PrimaryCardText"
                 android:textSize="34sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/shb_budgetNameHint_txt"
                 tools:ignore="HardcodedText" />
 
-            <TextView
-                android:id="@+id/shb_invitationCode_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="invitationCode"
-                android:textIsSelectable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/budget_s_invitation_code"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/shb_invitationCode_txt"
-                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.cardview.widget.CardView>
 
-    <LinearLayout
-        android:id="@+id/shb_buttonsHolder_lly"
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Active Users:"
+        android:textAppearance="@style/SecondaryCardText"
+        app:layout_constraintStart_toStartOf="@+id/shb_budgetInfo_crd"
+        app:layout_constraintTop_toBottomOf="@+id/shb_budgetInfo_crd" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/shb_activeUsers_rcv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintWidth_min="50dp" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Pending Invitations:"
+        android:textAppearance="@style/SecondaryCardText"
+        app:layout_constraintStart_toStartOf="@+id/shb_activeUsers_rcv"
+        app:layout_constraintTop_toBottomOf="@+id/shb_activeUsers_rcv" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/shb_pendingInvitations_rcv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
+    <Button
+        android:id="@+id/shb_leaveBudget_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/expenseRed"
+        android:text="@string/leave"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
-            android:id="@+id/shb_leaveBudget_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:backgroundTint="@color/expenseRed"
-            android:text="@string/leave" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/shb_inviteUser_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#403F43"
+        android:text="@string/invite_user"
+        app:layout_constraintBottom_toTopOf="@+id/shb_leaveBudget_btn"
+        app:layout_constraintEnd_toEndOf="@+id/shb_leaveBudget_btn"
+        app:layout_constraintStart_toStartOf="@+id/shb_leaveBudget_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

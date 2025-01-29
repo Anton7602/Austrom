@@ -93,7 +93,7 @@ enum class AssetType(val stringResourceId: Int = R.string.unresolved, val string
 
     CREDIT_CARD(R.string.credit_card, R.string.credit_card_desc, R.drawable.ic_assettype_card_temp, true),
     LOAN(R.string.loan, R.string.loan_desc, R.drawable.ic_assettype_loan_temp, true),
-    MORTAGE(R.string.mortage, R.string.mortage_desc, R.drawable.ic_assettype_mortage_temp, true)
+    MORTAGE(R.string.mortgage, R.string.mortgage_desc, R.drawable.ic_assettype_mortage_temp, true)
 }
 
 enum class AssetValidationType{

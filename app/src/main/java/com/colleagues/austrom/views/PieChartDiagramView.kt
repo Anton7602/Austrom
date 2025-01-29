@@ -71,7 +71,7 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
     private var circleRadius: Float = 0F
     private var circlePadding: Float = context.dpToPx(8)
     private var circlePaintRoundSize: Boolean = true
-    private var circleSectionSpace: Float = 3F
+    private var circleSectionSpace: Float = 1F
     private var circleCenterX: Float = 0F
     private var circleCenterY: Float = 0F
     private var numberTextPaint: TextPaint = TextPaint()
@@ -88,7 +88,8 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
     private var textAmountYDescription: Float = 0F
     private var totalAmount: Double = 0.0
     private var pieChartColors: List<Int> = listOf(context.getColor(R.color.diagramColor1), context.getColor(R.color.diagramColor2), context.getColor(R.color.diagramColor3),
-        context.getColor(R.color.diagramColor4), context.getColor(R.color.diagramColor5))
+        context.getColor(R.color.diagramColor4), context.getColor(R.color.diagramColor5), context.getColor(R.color.diagramColor6), context.getColor(R.color.diagramColor7),
+        context.getColor(R.color.diagramColor8), context.getColor(R.color.diagramColor9), context.getColor(R.color.diagramColor10))
     private var percentageCircleList: List<PieChartArc> = listOf()
     private var textRowList: MutableList<StaticLayout> = mutableListOf()
     private var dataList: List<Pair<Double, String>> = listOf()
@@ -180,14 +181,36 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
     /**
      * Метод заполнения поля [percentageCircleList]
      */
+//    private fun calculatePercentageOfData() {
+//        totalAmount = 0.0
+//        dataList.forEach { entry -> totalAmount += entry.first }
+//
+//        var startAt = circleSectionSpace
+//        percentageCircleList = dataList.mapIndexed { index, pair ->
+//            var percent = pair.first * 100 / totalAmount.toFloat() - circleSectionSpace
+//            percent = if (percent < 0.0) 0.0 else percent
+//
+//            val resultModel = PieChartArc(
+//                percentOfCircle = percent.toFloat(),
+//                percentToStartAt = startAt,
+//                colorOfLine = pieChartColors[index % pieChartColors.size],
+//                stroke = circleStrokeWidth,
+//                paintRound = circlePaintRoundSize
+//            )
+//            if (percent != 0.0) startAt += percent.toFloat() + circleSectionSpace
+//            resultModel
+//        }
+//    }
+
     private fun calculatePercentageOfData() {
         totalAmount = 0.0
         dataList.forEach { entry -> totalAmount += entry.first }
-
-        var startAt = circleSectionSpace
+        circleSectionSpace=1F
+        var startAt = 0F
         percentageCircleList = dataList.mapIndexed { index, pair ->
-            var percent = pair.first * 100 / totalAmount.toFloat() - circleSectionSpace
+            var percent = pair.first * 100 / (totalAmount.toFloat()*(1F+(dataList.size+1)/100F))
             percent = if (percent < 0.0) 0.0 else percent
+            percent = if (percent>100.0) 100.0 else percent
 
             val resultModel = PieChartArc(
                 percentOfCircle = percent.toFloat(),
@@ -196,20 +219,17 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
                 stroke = circleStrokeWidth,
                 paintRound = circlePaintRoundSize
             )
-            if (percent != 0.0) startAt += percent.toFloat() + circleSectionSpace
+            if (percent != 0.0) startAt += percent.toFloat()+circleSectionSpace
             resultModel
         }
     }
 
     fun startAnimation() {
-        // Проход значений от 0 до 360 (целый круг), с длительностью - 1.5 секунды
         val animator = ValueAnimator.ofInt(0, 360).apply {
-            duration = 1500 // длительность анимации в миллисекундах
-            interpolator = FastOutSlowInInterpolator() // интерпретатор анимации
+            duration = 1500
+            interpolator = FastOutSlowInInterpolator()
             addUpdateListener { valueAnimator ->
-                // Обновляем значение для отрисовки диаграммы
                 animationSweepAngle = valueAnimator.animatedValue as Int
-                // Принудительная перерисовка
                 invalidate()
             }
         }

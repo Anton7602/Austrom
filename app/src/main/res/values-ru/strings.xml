@@ -362,7 +362,7 @@
     <string name="fromAsset">с</string>
     <string name="toAsset">на</string>
     <string name="create_transaction">Создать Транзакцию</string>
-    <string name="empty_name_category_not_allower">Пожалуйста, не оставляйте имя категории пустым</string>
+    <string name="empty_name_category_not_allowed">Пожалуйста, не оставляйте имя категории пустым</string>
     <string name="import_transactions">Импортировать Транзакции</string>
     <string name="transaction_amount_is_zero">"Сумма Транзакции Равна Нулю; "</string>
     <string name="asset_does_not_match_any_active_asset">"Актив не соответствует ни одному из известных; "</string>
@@ -401,14 +401,14 @@
     <string name="credit_card_desc">Платежная карта, которая позволяет занимать средства до определенного лимита для покупок, требуя погашения с процентами</string>
     <string name="loan">Кредит</string>
     <string name="loan_desc">Сумма денег, взятая в долг у финансового учреждения, которая должна быть погашена с течением времени с процентами</string>
-    <string name="mortage">Ипотека</string>
-    <string name="mortage_desc">Тип кредита, специально используемый для покупки недвижимости</string>
+    <string name="mortgage">Ипотека</string>
+    <string name="mortgage_desc">Тип кредита, специально используемый для покупки недвижимости</string>
     <string name="debit_card">Дебетовая Карта</string>
     <string name="add_liability">Добавить Пассив</string>
     <string name="current_debt">Текущий Долг</string>
     <string name="liability_name">Имя Пассива</string>
     <string name="new_liability">Ноывй Пассив</string>
-    <string name="recieved_amount">Полученный Объём</string>
+    <string name="received_amount">Полученный Объём</string>
     <string name="income_desc">Деньги, полученные из различных источников, таких как зарплаты, инвестиции или деловая деятельность</string>
     <string name="expense_desc">Деньги, потраченные на товары и услуги, включая счета, покупки и другие расходы</string>
     <string name="transfer_desc">Деньги, перемещаемые с одного счета на другой, между активами, которыми вы владеете</string>
@@ -427,7 +427,7 @@
     <string name="add_comment">Добавить Коммент</string>
     <string name="split">Разделить</string>
     <string name="edit_comment">Изменить Коммент</string>
-    <string name="kilogramm">Килограмм</string>
+    <string name="kilogram">Килограмм</string>
     <string name="kg">кг</string>
     <string name="piece">Штука</string>
     <string name="pc">шт</string>
@@ -439,4 +439,13 @@
     <string name="detail_name">Имя Товара</string>
     <string name="detail_quantity">Количество Товара</string>
     <string name="detail_amount">Цена Товара</string>
+    <string name="asset_isn_t_selected">Актив не Выбран</string>
+    <string name="receiver_asset_isn_t_selected">Актив Получатель Не Выбран</string>
+    <string name="invalid_transaction_amount_provided">Введена некорректная сумма транзакции</string>
+    <string name="transaction_amount_cannot_be_zero">Сумма транзакции не может быть равна нулю</string>
+    <string name="transaction_amount_is_greater_than_assets_balance">Сумма Транзакции больше чем баланс актива</string>
+    <string name="name_cannot_be_empty">Поле Имя не может быть Пустым</string>
+    <string name="transaction_name_is_too_long">Имя Транзакции слишком длинное</string>
+    <string name="transaction_name">Имя Транзакции</string>
+    <string name="invite_user">Пригласить Пользователя</string>
 </resources>

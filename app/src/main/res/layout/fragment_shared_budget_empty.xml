@@ -9,45 +9,80 @@
     android:orientation="vertical"
     tools:context=".fragments.SharedBudgetEmptyFragment">
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        app:cardBackgroundColor="@color/backgroundText"
-        app:cardCornerRadius="20dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Your Budget - Anytime, Anywhere, Together!"
+            android:textAlignment="center"
+            android:textAppearance="@style/PrimaryCardText"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="32dp"
+            android:text="Create a budget that you can access from anywhere, allowing seamless collaboration and tracking on any device."
+            android:textAlignment="center"
+            android:textAppearance="@style/PrimaryCardText"
+            android:textColor="#E4FFFFFF" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingTop="100dp">
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
             <Button
                 android:id="@+id/shbe_createBudget_btn"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:backgroundTint="@color/confirmationColor"
+                android:layout_weight="5"
+                android:backgroundTint="#303035"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
                 android:text="@string/create_budget" />
 
-            <Button
-                android:id="@+id/shbe_joinBudget_btn"
-                android:layout_width="match_parent"
+            <Space
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:backgroundTint="@color/confirmationColor"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:text="@string/join_budget" />
+                android:layout_weight="1" />
+
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="32dp"
+            android:text="Or"
+            android:textAlignment="center"
+            android:textAppearance="@style/SecondaryCardText" />
+
+        <TextView
+            android:id="@+id/textView24"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ask you partner to invite you to their budget"
+            android:textAlignment="center" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

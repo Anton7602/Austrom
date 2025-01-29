@@ -18,7 +18,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
-import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CategoryPullDialogFragment
 import com.colleagues.austrom.dialogs.IconSelectionDialogFragment
@@ -135,7 +134,7 @@ class CategoryCreationActivity : AppCompatActivity() {
 
     private fun commitCategory() {
         if (categoryName.text.toString().isEmpty()) {
-            Toast.makeText(this, getString(R.string.empty_name_category_not_allower), Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.empty_name_category_not_allowed), Toast.LENGTH_LONG).show()
             return
         }
         val dbProvider = LocalDatabaseProvider(this)

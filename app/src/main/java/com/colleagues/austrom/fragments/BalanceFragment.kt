@@ -38,6 +38,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        totalAmountText.setValue(0.0, AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]!!)
         if (AustromApplication.activeAssets.isEmpty()) { updateAssetsList() }
         addNewAssetButton.setOnClickListener { launchNewAssetCreationDialog()  }
     }

@@ -36,9 +36,7 @@ class Category(var name: String,
     }
 
     companion object{
-        fun generateCategoryId(): String {
-            return UUID.randomUUID().toString()
-        }
+        fun generateCategoryId(): String { return UUID.randomUUID().toString() }
 
         var defaultExpenseCategories : List<Category> = listOf(
             Category("Food",  Icon.I7, TransactionType.EXPENSE, "FOOD"),

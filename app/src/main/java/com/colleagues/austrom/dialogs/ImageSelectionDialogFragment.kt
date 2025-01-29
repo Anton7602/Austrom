@@ -21,6 +21,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
@@ -40,12 +41,14 @@ class ImageSelectionDialogFragment(private val transaction: Transaction) : Botto
     private lateinit var imageHolder: ImageView
     private lateinit var messageText: TextView
     private lateinit var imageUri: Uri
+    private lateinit var dialogHolder: CardView
     private fun bindViews(view: View) {
         makePhotoButton = view.findViewById(R.id.imsedial_fromCamera_btn)
         choosePhotoButton = view.findViewById(R.id.imsedial_fromGallery_btn)
         imageHolder = view.findViewById(R.id.imsedial_imageHolder_img)
         messageText = view.findViewById(R.id.imsedial_noImageMessage_txt)
         closeButton = view.findViewById(R.id.imsedial_close_btn)
+        dialogHolder = view.findViewById(R.id.imsedial_holder_crv)
     }
     // endregion
 
@@ -122,6 +125,7 @@ class ImageSelectionDialogFragment(private val transaction: Transaction) : Botto
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
 
         val imageFile = File(requireActivity().externalCacheDir, "${transaction.transactionId}.jpg")
         if (imageFile.exists()) {

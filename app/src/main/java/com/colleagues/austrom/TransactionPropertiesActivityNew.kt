@@ -115,10 +115,10 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
     }
 
     private fun launchNewDetailDialog() {
+        if (transactionHolder.getIsFullyDetailed()) return
         val dialog = TransactionDetailCreationNewDialogFragment(transaction, LocalDatabaseProvider(this).getTransactionDetailsOfTransaction(transaction))
-        dialog.setOnDialogResultListener { _ -> transactionHolder.fillInTransaction(transaction) }
+        dialog.setOnDialogResultListener { _ -> transactionHolder.fillInTransaction(transaction); }
         dialog.setOnDetailChangedListener { detailName, quantity, unit, amount -> transactionHolder.updateEditedTransactionDetail(detailName, quantity, unit, amount) }
-
         dialog.show(supportFragmentManager, "TransactionDetailCreation")
     }
 

@@ -1,18 +1,15 @@
 package com.colleagues.austrom.database
 
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
-import com.colleagues.austrom.models.Currency
+import com.colleagues.austrom.models.Invitation
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
@@ -38,7 +35,6 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         val token = user.tokenId
         val encryptionManager = EncryptionManager()
         if (token!=null) {
-
             user.tokenId = encryptionManager.encrypt(token, encryptionManager.generateEncryptionKey(user.password, user.userId.toByteArray()))
         }
         user.password = encryptionManager.hashPassword(user.password)
@@ -46,6 +42,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         user.password = password
         user.tokenId = token
     }
+
     override fun deleteUser(user: User) { database.getReference("users").child(user.userId).setValue(null) }
 
     override fun getUserByUserId(userId: String) : User? {
@@ -106,7 +103,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
 
     private suspend fun getUserByEmailAsync(email: String) : User? {
         val reference = database.getReference("users")
-        val databaseQuery = reference.orderByChild("email").equalTo(email).limitToFirst(1)
+        val databaseQuery = reference.orderByChild("email").equalTo(email.lowercase()).limitToFirst(1)
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()
@@ -205,10 +202,14 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
     override fun deleteAsset(asset: Asset, budget: Budget) {
         database.getReference("assets").child(budget.budgetId).child(asset.assetId).setValue("-")
     }
+
+    override fun deleteAssetsOfBudget(budget: Budget) {
+        database.getReference("assets").child(budget.budgetId).setValue(null)
+    }
     //endregion
 
     //region Transaction
-    override fun createNewTransaction(transaction: Transaction, budget: Budget) {
+    override fun insertTransaction(transaction: Transaction, budget: Budget) {
         if (AustromApplication.appUser?.tokenId!=null) {
             val encryptionManager = EncryptionManager()
             database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
@@ -251,19 +252,35 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
                 .setValue(encryptionManager.encrypt(AustromApplication.activeAssets[linkedTransaction.assetId]!!, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
         }
     }
+
+    override fun deleteTransactionsOfBudget(budget: Budget) {
+        database.getReference("transactions").child(budget.budgetId).setValue(null)
+    }
     //endregion
 
 
 
     //region TransactionDetail
-    fun createNewTransactionDetail(transactionDetail: TransactionDetail, budget: Budget) {
+    override fun insertTransactionDetail(transactionDetail: TransactionDetail, budget: Budget) {
         if (AustromApplication.appUser?.tokenId!=null) {
             val encryptionManager = EncryptionManager()
             database.getReference("transactionDetails").child(budget.budgetId).child(transactionDetail.transactionDetailId)
                 .setValue(encryptionManager.encrypt(transactionDetail, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
         }
     }
+
+    override fun deleteTransactionDetailsOfBudget(budget: Budget) {
+        database.getReference("transactionDetails").child(budget.budgetId).setValue(null)
+    }
     //endregion
+
+    override fun sentBudgetInvite(invitation: Invitation) {
+        val encryptionManager = EncryptionManager()
+        database.getReference("invitations").child(invitation.userId)
+            .setValue(encryptionManager.encrypt(invitation, encryptionManager.generateEncryptionKey(invitation.invitationCode, invitation.invitationCode.toByteArray())))
+    }
+
+
 
 //    override fun getCurrencies(): MutableMap<String, Currency> {
 //        var currencies : MutableMap<String, Currency> = mutableMapOf()

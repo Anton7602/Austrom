@@ -46,5 +46,5 @@ class TransactionDetail(val transactionId: String, val name: String, val cost: D
 }
 
 enum class QuantityUnit(val fullNameResourceId: Int, val shortNameResourceId: Int) {
-    KG(R.string.kilogramm, R.string.kg), PC(R.string.piece, R.string.pc), L(R.string.litre, R.string.l), M(R.string.meter, R.string.m)
+    KG(R.string.kilogram, R.string.kg), PC(R.string.piece, R.string.pc), L(R.string.litre, R.string.l), M(R.string.meter, R.string.m)
 }
