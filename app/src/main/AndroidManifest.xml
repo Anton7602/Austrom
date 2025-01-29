@@ -26,10 +26,10 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/placeholder_icon"
+        android:icon="@mipmap/ic_au_launcher_icon"
         android:label="@string/app_name"
         android:localeConfig="@xml/local_config"
-        android:roundIcon="@mipmap/placeholder_icon_round"
+        android:roundIcon="@mipmap/ic_au_launcher_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Austrom"
         tools:targetApi="34">

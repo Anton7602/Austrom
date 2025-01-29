@@ -28,7 +28,7 @@ class SyncManager(val context: Context, val localDBProvider: LocalDatabaseProvid
     }
 
     private fun syncUsersRemoteToLocal() {
-        if (remoteDBProvider is FirebaseDatabaseProvider) setUsersListener(remoteDBProvider)
+        //if (remoteDBProvider is FirebaseDatabaseProvider) setUsersListener(remoteDBProvider)
     }
 
     private fun syncAssetsRemoteToLocal() {
@@ -60,7 +60,8 @@ class SyncManager(val context: Context, val localDBProvider: LocalDatabaseProvid
                     currencies.forEach { currency ->
                         localDBProvider.writeCurrency(currency.value)
                     }
-                    syncUsersRemoteToLocal()
+                    //syncUsersRemoteToLocal()
+                    syncAssetsRemoteToLocal()
                 }
                 override fun onCancelled(databaseError: DatabaseError) { Log.w("Debug", "loadPost:onCancelled", databaseError.toException()) }
             })
@@ -106,7 +107,8 @@ class SyncManager(val context: Context, val localDBProvider: LocalDatabaseProvid
                                 AustromApplication.activeAssets.remove(localAsset.assetId)
                             }
                         } else {
-                            val asset = encryptionManager.decryptAsset(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                            val asset = encryptionManager.decryptAsset(snapshotItem.getValue(String::class.java).toString(),
+                                encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
                             if (localAsset!=null) {
                                 localDBProvider.updateAsset(asset)
                             } else {
