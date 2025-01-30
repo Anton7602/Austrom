@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundMain"
+    android:orientation="vertical"
+    android:paddingHorizontal="8dp"
+    tools:context=".fragments.ImportMappingFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/impmap_demoTransactionHolder_rcv"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_marginBottom="40dp"
+        tools:listitem="@layout/item_transaction_extended" />
+
+    <com.colleagues.austrom.views.SelectorButtonView
+        android:id="@+id/impmap_assetSelector_selb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        app:fieldName="Asset"
+        app:fieldValue="Card" />
+
+    <com.colleagues.austrom.views.SelectorButtonView
+        android:id="@+id/impmap_nameSelector_selb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        app:fieldName="Payer/Payee"
+        app:fieldValue="Unknown" />
+
+    <com.colleagues.austrom.views.SelectorButtonView
+        android:id="@+id/impmap_amountSelector_selb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        app:fieldName="Amount"
+        app:fieldValue="13 500.00 RUB" />
+
+    <com.colleagues.austrom.views.SelectorButtonView
+        android:id="@+id/impmap_dateSelector_selb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        app:fieldName="@string/date"
+        app:fieldValue="13.01.2025" />
+
+    <com.colleagues.austrom.views.SelectorButtonView
+        android:id="@+id/impmap_categorySelector_selb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        app:fieldName="@string/category"
+        app:fieldValue="@string/food" />
+
+    <com.colleagues.austrom.views.SelectorButtonView
+        android:id="@+id/impmap_commentSelector_selb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        app:fieldName="@string/comment"
+        app:fieldValue="Test Comment" />
+
+    <Button
+        android:id="@+id/impmap_impotButton_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layoutDirection="rtl"
+                android:orientation="horizontal">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/imppar_sourceSwitch_sch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:layoutDirection="ltr"
+                    android:text="@string/string_dynamic"
+                    android:textColor="@color/secondaryTextColor" />
+
+                <TextView
+                    android:id="@+id/imppar_source_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="8dp"
+                    android:fontFamily="@font/dm_sans"
+                    android:gravity="center_vertical"
+                    android:text="@string/source"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/imppar_source_dynamic_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/primaryTextColor"
+                android:padding="8dp"
+                android:visibility="gone" />
+
+            <Spinner
+                android:id="@+id/imppar_source_static_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:padding="8dp" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider25"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dark_grey" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layoutDirection="rtl"
+                android:orientation="horizontal">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/imppar_targetSwitch_sch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:layoutDirection="ltr"
+                    android:text="@string/string_dynamic"
+                    android:textColor="@color/secondaryTextColor" />
+
+                <TextView
+                    android:id="@+id/imppar_target_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="8dp"
+                    android:fontFamily="@font/dm_sans"
+                    android:gravity="center_vertical"
+                    android:text="@string/target"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/imppar_target_dynamic_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/primaryTextColor"
+                android:padding="8dp" />
+
+            <EditText
+                android:id="@+id/imppar_target_static_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/target"
+                android:padding="8dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider26"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dark_grey" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layoutDirection="rtl"
+                android:orientation="horizontal">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/imppar_amountSwitch_sch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:layoutDirection="ltr"
+                    android:text="@string/string_dynamic"
+                    android:textColor="@color/secondaryTextColor" />
+
+                <TextView
+                    android:id="@+id/imppar_amount_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="8dp"
+                    android:fontFamily="@font/dm_sans"
+                    android:gravity="center_vertical"
+                    android:text="@string/amount"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/imppar_amount_dynamic_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/primaryTextColor"
+                android:padding="8dp" />
+
+            <EditText
+                android:id="@+id/imppar_amount_static_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/amount"
+                android:padding="8dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider27"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dark_grey" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layoutDirection="rtl"
+                android:orientation="horizontal">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/imppar_dateSwitch_sch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:layoutDirection="ltr"
+                    android:text="@string/string_dynamic"
+                    android:textColor="@color/secondaryTextColor" />
+
+                <TextView
+                    android:id="@+id/imppar_date_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="8dp"
+                    android:fontFamily="@font/dm_sans"
+                    android:gravity="center_vertical"
+                    android:text="@string/date"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+
+            <Spinner
+                android:id="@+id/imppar_date_dynamic_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/primaryTextColor"
+                android:padding="8dp" />
+
+            <Spinner
+                android:id="@+id/imppar_date_static_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider29"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dark_grey" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layoutDirection="rtl"
+                android:orientation="horizontal">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/imppar_categorySwitch_sch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:layoutDirection="ltr"
+                    android:text="@string/string_dynamic"
+                    android:textColor="@color/secondaryTextColor" />
+
+                <TextView
+                    android:id="@+id/imppar_category_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="8dp"
+                    android:fontFamily="@font/dm_sans"
+                    android:gravity="center_vertical"
+                    android:text="@string/category"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+
+            <Spinner
+                android:id="@+id/imppar_category_dynamic_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/primaryTextColor"
+                android:padding="8dp" />
+
+            <TextView
+                android:id="@+id/imppar_category_income_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/income"
+                android:textColor="@color/dark_grey"
+                android:textSize="10sp"
+                android:visibility="gone" />
+
+            <Spinner
+                android:id="@+id/imppar_category_income_static_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/imppar_category_expense_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/expense"
+                android:textColor="@color/dark_grey"
+                android:textSize="10sp"
+                android:visibility="gone" />
+
+            <Spinner
+                android:id="@+id/imppar_category_expense_static_spn2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider30"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dark_grey" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layoutDirection="rtl"
+                android:orientation="horizontal">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/imppar_commentSwitch_sch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:layoutDirection="ltr"
+                    android:text="@string/string_dynamic"
+                    android:textColor="@color/secondaryTextColor" />
+
+                <TextView
+                    android:id="@+id/imppar_comment_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="8dp"
+                    android:fontFamily="@font/dm_sans"
+                    android:gravity="center_vertical"
+                    android:text="@string/comment"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/imppar_comment_dynamic_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/primaryTextColor"
+                android:padding="8dp" />
+
+            <EditText
+                android:id="@+id/imppar_comment_static_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/comment"
+                android:padding="8dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/imppar_accept_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:backgroundTint="@color/blue"
+            android:text="@string/import_transactions" />
+    </FrameLayout>
+
+</LinearLayout>
+
+

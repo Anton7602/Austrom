@@ -40,5 +40,9 @@ class SelectorButtonView(context: Context, attrs: AttributeSet) : CardView(conte
         selectorFieldValueTextView.text = value
     }
 
+    fun setFieldName(value: String) {
+        selectorFieldNameTextView.text = value
+    }
+
     fun getValue() : String {return selectorFieldValueTextView.text.toString()}
 }
