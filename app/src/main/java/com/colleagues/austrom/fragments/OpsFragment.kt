@@ -19,6 +19,9 @@ import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.TransactionHeaderView
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.time.Instant
+import java.time.ZoneId
 
 class OpsFragment : Fragment(R.layout.fragment_ops){
     //region Binding
@@ -46,17 +49,32 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
 
     private fun setUpTransactionHeader() {
         transactionsHeader.setOnFilterChangedListener { transactionFilter ->applyTransactionFilter(transactionFilter) }
+        transactionsHeader.setOnDatesRequestedListener { setUpDatePicker() }
         transactionsHeader.setCurrencySymbol(AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]!!.symbol)
         applyTransactionFilter(transactionsHeader.getTransactionFilter())
+    }
+
+    private fun setUpDatePicker() {
+        val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText("Select Date Range")
+            .build()
+        dateRangePicker.show(requireActivity().supportFragmentManager, "DATE_PICKER")
+        dateRangePicker.addOnPositiveButtonClickListener { selection ->
+            val startDate = Instant.ofEpochMilli(selection.first)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+            val endDate = Instant.ofEpochMilli(selection.second)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+            transactionsHeader.setFilterDates(startDate, endDate)
+        }
     }
 
     private fun applyTransactionFilter(transactionFilter: TransactionFilter) {
         val localDBProvider = LocalDatabaseProvider(requireActivity())
         localDBProvider.getTransactionsByTransactionFilterAsync(transactionFilter).observe(viewLifecycleOwner) {transactionList ->
-            if (transactionList.isNotEmpty()) {
-                setUpRecyclerView(transactionList.toMutableList())
-                calculateTransactionsAmountSums(transactionList)
-            }
+            setUpRecyclerView(transactionList.toMutableList())
+            calculateTransactionsAmountSums(transactionList)
         }
     }
 

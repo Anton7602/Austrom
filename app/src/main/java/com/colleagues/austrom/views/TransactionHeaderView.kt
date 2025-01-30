@@ -1,6 +1,7 @@
 package com.colleagues.austrom.views
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
 import android.os.Bundle
@@ -19,17 +20,24 @@ import androidx.core.view.forEach
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.dpToPx
+import com.colleagues.austrom.extensions.toDayAndShortMonthNameFormat
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.shape.ShapeAppearanceModel
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjuster
+import java.time.temporal.TemporalAdjusters
 import java.util.Locale
 
+@SuppressLint("SetTextI18n")
 class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(context, attrs) {
+    fun setOnDatesRequestedListener(l: (()->Unit)) { requestDates = l }
+    private var requestDates: ()->Unit = {}
     fun setOnFilterChangedListener(l: ((TransactionFilter)->Unit)) { returnFilter = l }
     private var returnFilter: (TransactionFilter)->Unit = {}
     //region Binding
@@ -48,6 +56,10 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
     private lateinit var expenseChip: Chip
     private lateinit var incomeChip: Chip
     private lateinit var transferChip: Chip
+    private lateinit var datesHeaderChip: Chip
+    private lateinit var expenseHeaderChip: Chip
+    private lateinit var incomeHeaderChip: Chip
+    private lateinit var datesChip: Chip
     private fun bindViews(view: View) {
         incomeSumMoneyFormatTextView = view.findViewById(R.id.trlistheadview_income_monf)
         expenseSumMoneyFormatTextView = view.findViewById(R.id.trlistheadview_expense_monf)
@@ -63,13 +75,19 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         expenseChip = view.findViewById(R.id.trlistheadview_expenseFilter_chp)
         incomeChip = view.findViewById(R.id.trlistheadview_incomeFilter_chp)
         transferChip = view.findViewById(R.id.trlistheadview_transferFilter_chp)
+        datesChip = view.findViewById(R.id.trlistheadview_dateFilter_chp)
+        datesHeaderChip = view.findViewById(R.id.trlistheadview_dateHeader_chp)
+        expenseHeaderChip = view.findViewById(R.id.trlistheadview_expenseHeader_chp)
+        incomeHeaderChip = view.findViewById(R.id.trlistheadview_incomeHeader_chp)
     }
     //endregion
     private var incomeSum: Double = 0.0
     private var expenseSum: Double = 0.0
     private var currencySymbol: String = "$"
     private var collapsedHeight: Int = 0
-    private var transactionFilter: TransactionFilter = TransactionFilter(mutableListOf(), LocalDate.now(), LocalDate.now().minusMonths(1))
+    private var transactionFilter: TransactionFilter = TransactionFilter(mutableListOf(),
+        LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()),
+        LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()))
 
     companion object {
         private const val ANIMATION_DURATION_MS: Long = 300
@@ -92,18 +110,55 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         filterButton.setOnClickListener { switchToFilterMode() }
         confirmFilterButton.setOnClickListener { switchToMainMode() }
 
+
+        datesHeaderChip.isCheckable = false
+        datesChip.isCheckable = false
+        datesHeaderChip.text = "${transactionFilter.dateFrom?.toDayAndShortMonthNameFormat()} - ${transactionFilter.dateTo?.toDayAndShortMonthNameFormat()}"
+        datesHeaderChip.setOnClickListener { requestDates() }
+        datesChip.text = "${transactionFilter.dateFrom?.toDayAndShortMonthNameFormat()} - ${transactionFilter.dateTo?.toDayAndShortMonthNameFormat()}"
+        datesChip.setOnClickListener { requestDates() }
+
         attributes.recycle()
-        setUpCategoriesInChips(AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }, expenseChipGroup, expenseChip)
-        setUpCategoriesInChips(AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }, incomeChipGroup, incomeChip)
+        setUpCategoriesInChips(AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }, expenseChipGroup, expenseChip, expenseHeaderChip)
+        setUpCategoriesInChips(AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }, incomeChipGroup, incomeChip, incomeHeaderChip)
         transactionFilter.categories.add(AustromApplication.activeCategories.values.first{ l-> l.transactionType==TransactionType.TRANSFER}.categoryId)
 
-        expenseChip.setOnClickListener {_ -> expenseChipGroup.children.forEach { view -> if (view is Chip) view.isChecked=expenseChip.isChecked }; returnFilter(transactionFilter)}
-        incomeChip.setOnClickListener {_ -> incomeChipGroup.children.forEach { view -> if (view is Chip) view.isChecked=incomeChip.isChecked }; returnFilter(transactionFilter)}
+        expenseChip.setOnClickListener {_ -> handleCategoryHeaderClick(expenseChip, expenseChipGroup, expenseHeaderChip) }
+        incomeChip.setOnClickListener { _ -> handleCategoryHeaderClick(incomeChip, incomeChipGroup, incomeHeaderChip) }
+        expenseHeaderChip.setOnClickListener { _ -> handleCategoryHeaderClick(expenseHeaderChip, expenseChipGroup, expenseChip) }
+        incomeHeaderChip.setOnClickListener { _ -> handleCategoryHeaderClick(incomeHeaderChip, incomeChipGroup, incomeChip) }
+        transferChip.setOnClickListener { _ ->
+            if (transferChip.isChecked)
+                transactionFilter.categories.add(Category.defaultTransferCategories.first().categoryId)
+            else
+                transactionFilter.categories.remove(Category.defaultTransferCategories.first().categoryId)
+        }
+    }
+
+    private fun handleCategoryHeaderClick(chip: Chip, chipGroup: ChipGroup, secondaryChip: Chip? = null) {
+        chipGroup.children.forEach { view ->
+            if (view is Chip) {
+                view.isChecked=chip.isChecked
+                if (chip.isChecked) transactionFilter.categories.add(view.tag.toString()) else transactionFilter.categories.remove(view.tag.toString())
+            }
+        }
+        if (secondaryChip!= null) {secondaryChip.isChecked=chip.isChecked}
+        returnFilter(transactionFilter)
+    }
+
+    fun setFilterDates(startDate: LocalDate, endDate: LocalDate) {
+        transactionFilter.dateFrom = startDate
+        transactionFilter.dateTo = endDate
+        datesHeaderChip.text = "${transactionFilter.dateFrom?.toDayAndShortMonthNameFormat()} - ${transactionFilter.dateTo?.toDayAndShortMonthNameFormat()}"
+        datesHeaderChip.isChecked = true
+        datesChip.text = "${transactionFilter.dateFrom?.toDayAndShortMonthNameFormat()} - ${transactionFilter.dateTo?.toDayAndShortMonthNameFormat()}"
+        datesChip.isChecked = true
+        returnFilter(transactionFilter)
     }
 
     fun getTransactionFilter(): TransactionFilter { return  transactionFilter }
 
-    private fun setUpCategoriesInChips(categories: List<Category>, chipGroup: ChipGroup, chipHeader: Chip) {
+    private fun setUpCategoriesInChips(categories: List<Category>, chipGroup: ChipGroup, chipHeader: Chip, secondaryChipHeader: Chip? = null) {
         for (category in categories) {
             chipGroup.addView(Chip(context).apply {
                 layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -125,9 +180,11 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
                     if (this.isChecked) {
                         transactionFilter.categories.add(chip.tag.toString())
                         chipHeader.isChecked = true
+                        secondaryChipHeader?.isChecked = true
                     } else {
                         transactionFilter.categories.remove(chip.tag.toString())
                         chipHeader.isChecked = false
+                        secondaryChipHeader?.isChecked = false
                         chipGroup.children.forEach { view -> if (view is Chip && view.isChecked) chipHeader.isChecked = true; }
                     }
                     returnFilter(transactionFilter)

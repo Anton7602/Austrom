@@ -34,7 +34,7 @@ class AustromApplication : Application() {
         var knownUsers : MutableMap<String, User> = mutableMapOf()
         var supportedLanguages: List<Locale> = listOf(Locale("en"), Locale("ru"))
         var isApplicationThemeLight = false
-        private var appLanguageCode: String? = null
+        var appLanguageCode: String? = null
 
         fun showKeyboard(activity: Activity, view: View) {
             view.requestFocus()

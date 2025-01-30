@@ -49,7 +49,7 @@
                         app:layout_constraintTop_toTopOf="@+id/guideline7">
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/trcreat_expense_chp5"
+                            android:id="@+id/trlistheadview_dateHeader_chp"
                             style="@style/ChipTransactionFilter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/trcreat_expense_chp6"
+                            android:id="@+id/trlistheadview_expenseHeader_chp"
                             style="@style/ChipTransactionFilter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/trlistheadview_dateFilter_chp" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/trcreat_expense_chp7"
+                            android:id="@+id/trlistheadview_incomeHeader_chp"
                             style="@style/ChipTransactionFilter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

@@ -12,6 +12,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import androidx.room.Update
+import com.colleagues.austrom.extensions.toInt
 import com.colleagues.austrom.managers.AssetChangeLog
 import com.colleagues.austrom.managers.SyncManager
 import com.colleagues.austrom.models.Asset
@@ -201,13 +202,9 @@ interface TransactionDao {
 //    """)
     @Query("""
         SELECT * FROM `Transaction`
-        WHERE categoryId IN (:categoryIds)
+        WHERE categoryId IN (:categoryIds) AND transactionDate BETWEEN :startDate AND :endDate
     """)
-    fun getTransactionsByCategoryAndDate(
-        categoryIds: List<String>,
-//        startDate: LocalDate,
-//        endDate: LocalDate
-    ): LiveData<List<Transaction>>
+    fun getTransactionsByCategoryAndDate(categoryIds: List<String>, startDate: Int, endDate: Int): LiveData<List<Transaction>>
 
     @Query("""SELECT Trn.categoryId FROM `Transaction` as Trn
         WHERE Trn.transactionName=:transactionName
@@ -312,10 +309,7 @@ interface AssetChangeLogDao {
 
 class Converters {
     @TypeConverter
-    fun fromLocalDate(date: LocalDate?): Int? {
-        return date?.let {
-            it.year * 10000 + it.monthValue * 100 + it.dayOfMonth
-        }
+    fun fromLocalDate(date: LocalDate?): Int? { return date?.toInt()
     }
 
     @TypeConverter

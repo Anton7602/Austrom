@@ -2,6 +2,7 @@ package com.colleagues.austrom.database
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import com.colleagues.austrom.extensions.toInt
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
@@ -234,8 +235,7 @@ class LocalDatabaseProvider(context: Context) {
 //    }
 
     fun getTransactionsByTransactionFilterAsync(transactionFilter: TransactionFilter): LiveData<List<Transaction>> {
-        return localDatabase.transactionDao().getTransactionsByCategoryAndDate(transactionFilter.categories)
-           // , transactionFilter.dateFrom!!, transactionFilter.dateTo!!)
+        return localDatabase.transactionDao().getTransactionsByCategoryAndDate(transactionFilter.categories, transactionFilter.dateFrom!!.toInt(), transactionFilter.dateTo!!.toInt())
     }
 
     fun isCollidingTransactionExist(transaction: Transaction): Boolean {

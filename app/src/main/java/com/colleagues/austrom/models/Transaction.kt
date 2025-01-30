@@ -185,4 +185,4 @@ class InvalidTransactionException(message: String, validationType: TransactionVa
     }, validationType)
 }
 
-class TransactionFilter(val categories: MutableList<String>, val dateFrom: LocalDate?, val dateTo: LocalDate?)
+class TransactionFilter(val categories: MutableList<String>, var dateFrom: LocalDate?, var dateTo: LocalDate?)
