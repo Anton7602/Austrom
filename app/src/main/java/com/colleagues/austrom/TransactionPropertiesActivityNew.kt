@@ -104,9 +104,14 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
         val fragment = TransactionEditFragment(transaction)
         val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         fragment.setOnDialogResultListener { transaction, transactionsList ->
+            val localDBProvider = LocalDatabaseProvider(this)
+            val remoteDBProvider = FirebaseDatabaseProvider(this)
             fragmentHolder.visibility = View.GONE
-            transaction.update(LocalDatabaseProvider(this), FirebaseDatabaseProvider(this))
+            transaction.update(localDBProvider, remoteDBProvider)
             transactionHolder.fillInTransaction(transaction)
+            if (transactionsList.isNotEmpty()) {
+                transactionsList.forEach { massUpdateTransaction -> massUpdateTransaction.update(localDBProvider, remoteDBProvider) }
+            }
         }
         fragmentTransaction.replace(R.id.trdet_editFragment_frc, fragment)
         fragmentTransaction.commit()
