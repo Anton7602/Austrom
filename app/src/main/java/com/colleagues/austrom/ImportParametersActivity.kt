@@ -143,54 +143,6 @@ class ImportParametersActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this) { handleReturn() }
         backButton.setOnClickListener { handleReturn() }
-
-
-
-//        fileUri = intent.getParcelableExtra("FilePath") as Uri?
-//        if (fileUri!=null) {
-//            detectSeparator()
-//            setUpSpinnersFromCSV()
-//        } else {
-//            finish()
-//        }
-//
-//        exampleTransactionHolder.layoutManager = LinearLayoutManager(this)
-//        val selectionChangedListener = object :  OnItemSelectedListener {
-//            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) { updateExampleTransactionFromCSV() }
-//            override fun onNothingSelected(parent: AdapterView<*>?) { }
-//        }
-//        val valueChangedListener = OnFocusChangeListener { _, _ -> updateExampleTransactionFromCSV()}
-//        sourceDynamicSpinner.onItemSelectedListener = selectionChangedListener
-//        targetDynamicSpinner.onItemSelectedListener = selectionChangedListener
-//        amountDynamicSpinner.onItemSelectedListener = selectionChangedListener
-//        dateDynamicSpinner.onItemSelectedListener = selectionChangedListener
-//        categoryDynamicSpinner.onItemSelectedListener = selectionChangedListener
-//        commentDynamicSpinner.onItemSelectedListener = selectionChangedListener
-//
-//        sourceStaticSpinner.onItemSelectedListener = selectionChangedListener
-//        targetStaticValue.onFocusChangeListener = valueChangedListener
-//        amountStaticValue.onFocusChangeListener = valueChangedListener
-//        dateDynamicSpinner.onFocusChangeListener = valueChangedListener
-//        categoryExpenseStaticSpinner.onItemSelectedListener = selectionChangedListener
-//        commentStaticValue.onFocusChangeListener = valueChangedListener
-//
-//        sourceSwitchMaterial.setOnClickListener {switchVisibilityOfSpinners(sourceSwitchMaterial, sourceDynamicSpinner, sourceStaticSpinner)}
-//        targetSwitchMaterial.setOnClickListener {switchVisibilityOfSpinners(targetSwitchMaterial, targetDynamicSpinner, null, targetStaticValue) }
-//        amountSwitchMaterial.setOnClickListener {switchVisibilityOfSpinners(amountSwitchMaterial, amountDynamicSpinner, null, amountStaticValue) }
-//        categorySwitchMaterial.setOnClickListener {
-//            switchVisibilityOfSpinners(categorySwitchMaterial, categoryDynamicSpinner, categoryExpenseStaticSpinner, null, categoryExpenseStaticLabel)
-//            switchVisibilityOfSpinners(categorySwitchMaterial, categoryDynamicSpinner, categoryIncomeStaticSpinner, null, categoryIncomeStaticLabel)
-//        }
-//        dateSwitchMaterial.setOnClickListener {switchVisibilityOfSpinners(dateSwitchMaterial, dateDynamicSpinner, dateStaticValue)}
-//        commentSwitchMaterial.setOnClickListener {switchVisibilityOfSpinners(commentSwitchMaterial, commentDynamicSpinner, null, commentStaticValue)}
-//
-//        importButton.setOnClickListener {
-//            readTransactionDataFromCSV()
-//        }
-//
-//        validImportButton.setOnClickListener { (exampleTransactionHolder.adapter as TransactionExtendedRecyclerAdapter).submitAllValidTransactions()  }
-//        suspiciousImportButton.setOnClickListener { (exampleTransactionHolder.adapter as TransactionExtendedRecyclerAdapter).submitAllSuspiciousTransactions() }
-//        invalidRemoveButton.setOnClickListener { (exampleTransactionHolder.adapter as TransactionExtendedRecyclerAdapter).removeAllInvalidTransaction() }
     }
 
     private fun handleReturn() {
@@ -202,10 +154,13 @@ class ImportParametersActivity : AppCompatActivity() {
         transition.replace(fragmentHolder.id, fragment)
         when(fragment) {
             is ImportMappingFragment -> fragment.setOnFragmentChangeRequestedListener{newFragment -> if (newFragment!=null) switchFragment(newFragment) else this.finish() }
-            is TransactionApprovementFragment -> fragment.setOnFragmentChangeRequestedListener { newFragment -> if (newFragment!=null) switchFragment(newFragment) else this.finish() }
+            is TransactionApprovementFragment -> {
+                fragment.setOnFragmentChangeRequestedListener { newFragment -> if (newFragment!=null) switchFragment(newFragment) else this.finish() }
+                fragment.setOnImportCompletedListener { this.finish() }
+            }
+            is TransactionEditFragment -> fragment.setOnDialogResultListener{transaction, transactionList -> switchFragment(TransactionApprovementFragment(transactionList.toMutableList())) }
         }
         transition.commit()
-
     }
 
     private fun initializeActivityForResult(): ActivityResultLauncher<Intent> {

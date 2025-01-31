@@ -20,7 +20,8 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 
-class ImportMappingDialogFragment(private val fileColumnNames: List<String>, private val appValues: List<String>, private val keyMap: String) : BottomSheetDialogFragment() {
+class ImportMappingDialogFragment(private val fileColumnNames: List<String>, private val appValues: List<String>,  private val keyMap: String,
+                                  private val isFromAppByDefault: Boolean = false, private val selectedValueDefault: String? = null) : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_import_mapping, container, false) }
     fun setOnDialogResultListener(l: ((isFromFile: Boolean, value: String, keyMap: String)->Unit)) { returnResult = l }
     private var returnResult: (Boolean, String, String) -> Unit = { _, _, _ -> }
@@ -58,12 +59,14 @@ class ImportMappingDialogFragment(private val fileColumnNames: List<String>, pri
             else -> manualInputTextView.inputType
         }
         dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
-        fromFileSwitchButton.setOnClickListener { switchTransactionTypeVisibility(true) }
-        fromAppSwitchButton.setOnClickListener { switchTransactionTypeVisibility(false) }
+        fromFileSwitchButton.setOnClickListener { switchFromAppVisibility(true) }
+        fromAppSwitchButton.setOnClickListener { switchFromAppVisibility(false) }
         acceptButton.setOnClickListener { returnResult(false, manualInputTextView.text.toString(), keyMap); dismiss() }
+
+        if (isFromAppByDefault) switchFromAppVisibility(false)
     }
 
-    private fun switchTransactionTypeVisibility(isFromFileSelected: Boolean) {
+    private fun switchFromAppVisibility(isFromFileSelected: Boolean) {
         fromFileValuesHolder.visibility = if (isFromFileSelected) View.VISIBLE else View.GONE
         fromAppValuesHolder.visibility = if (!isFromFileSelected && appValues.isNotEmpty()) View.VISIBLE else View.GONE
         manualInputLayout.visibility = if (!isFromFileSelected && appValues.isEmpty()) View.VISIBLE else View.GONE
@@ -73,12 +76,12 @@ class ImportMappingDialogFragment(private val fileColumnNames: List<String>, pri
 
     private fun setUpRecyclerViews() {
         fromFileValuesHolder.layoutManager = LinearLayoutManager(activity)
-        val adapterFromFile = SelectorRecyclerAdapter(fileColumnNames)
+        val adapterFromFile = SelectorRecyclerAdapter(fileColumnNames, selectedValueDefault)
         adapterFromFile.setOnItemClickListener { selectedValue -> returnResult(fromFileValuesHolder.visibility==View.VISIBLE, selectedValue, keyMap); dismiss() }
         fromFileValuesHolder.adapter = adapterFromFile
 
         fromAppValuesHolder.layoutManager = LinearLayoutManager(activity)
-        val adapterFromApp = SelectorRecyclerAdapter(appValues)
+        val adapterFromApp = SelectorRecyclerAdapter(appValues, selectedValueDefault)
         adapterFromApp.setOnItemClickListener { selectedValue -> returnResult(fromFileValuesHolder.visibility==View.VISIBLE ,selectedValue, keyMap); dismiss()  }
         fromAppValuesHolder.adapter = adapterFromApp
     }

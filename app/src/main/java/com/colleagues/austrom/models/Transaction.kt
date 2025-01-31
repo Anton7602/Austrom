@@ -22,7 +22,7 @@ import java.util.UUID
         childColumns = ["categoryId"],
         onDelete = ForeignKey.RESTRICT)],
     indices = [Index(value = ["assetId"]), Index(value = ["categoryId"]), Index(value = ["userId"])])
-class Transaction(val assetId: String, val amount: Double, var categoryId: String, val transactionDate: LocalDate, val transactionName: String, var comment: String? = null,
+class Transaction(val assetId: String, var amount: Double, var categoryId: String, var transactionDate: LocalDate, var transactionName: String, var comment: String? = null,
     @PrimaryKey(autoGenerate = false)
     var transactionId: String = generateUniqueTransactionKey(),
     var userId: String = AustromApplication.appUser!!.userId,
@@ -51,12 +51,13 @@ class Transaction(val assetId: String, val amount: Double, var categoryId: Strin
     }
 
     fun update(localDBProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider? = null) {
-        // TODO("Validate Changes To Transaction")
-        localDBProvider.updateTransaction(this)
-        if (remoteDBProvider != null && AustromApplication.appUser?.activeBudgetId != null) {
-            val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
-            if (currentBudget != null) remoteDBProvider.updateTransaction(this, currentBudget)
-        }
+        if (this.validate() == TransactionValidationType.VALID) {
+            localDBProvider.updateTransaction(this)
+            if (remoteDBProvider != null && AustromApplication.appUser?.activeBudgetId != null) {
+                val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+                if (currentBudget != null) remoteDBProvider.updateTransaction(this, currentBudget)
+            }
+        } else throw InvalidTransactionException(this.validate())
     }
 
     fun submit(localDBProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider? = null) {

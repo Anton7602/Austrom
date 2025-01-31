@@ -450,4 +450,7 @@
     <string name="email_of_invited_user">Email of Invited User</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="payer_payee">Payer/Payee</string>
+    <string name="mapped_to_file">*Mapped To File - %1$s</string>
+    <string name="import_all">Import All</string>
 </resources>

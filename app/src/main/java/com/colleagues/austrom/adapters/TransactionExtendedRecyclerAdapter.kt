@@ -18,6 +18,7 @@ import com.colleagues.austrom.dialogs.ImportTransactionDialogFragment
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.TransactionValidationType
 
 class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<Transaction>, private val context: Context, private val isShowingActionButtons: Boolean = false)  : RecyclerView.Adapter<TransactionExtendedRecyclerAdapter.TransactionExtendedViewHolder>() {
@@ -75,7 +76,7 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         holder.issueMessage.text = context.getString(R.string.no_issues_encountered)
         holder.actionButtonsHolder.visibility = if (isShowingActionButtons) View.VISIBLE else View.GONE
         holder.transactionHolderBackground.visibility = if (isShowingActionButtons) View.VISIBLE else View.GONE
-        holder.categoryName.text = transaction.categoryId
+        //holder.categoryName.text = transaction.categoryId
         holder.comment.text = transaction.comment
         holder.amount.text = transaction.amount.toMoneyFormat()
         holder.date.text = transaction.transactionDate.toString()
@@ -85,17 +86,19 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         if (transaction.amount>0.0) {
             holder.amount.setTextColor(context.getColor(R.color.incomeGreen))
             holder.currencySymbol.setTextColor(context.getColor(R.color.incomeGreen))
-            activeCategory = (AustromApplication.activeCategories.values.find { l -> l.categoryId==transaction.categoryId })
+            val incomeCategories = AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }
+            activeCategory = incomeCategories.find { l -> l.name.lowercase()==transaction.categoryId.lowercase() } ?: incomeCategories.find { l -> l.categoryId.lowercase()==transaction.categoryId.lowercase() }
         } else if (transaction.amount<0.0) {
             holder.amount.setTextColor(context.getColor(R.color.expenseRed))
             holder.currencySymbol.setTextColor(context.getColor(R.color.expenseRed))
-            activeCategory = (AustromApplication.activeCategories.values.find { l -> l.categoryId==transaction.categoryId })
+            val expenseCategories = AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }
+            activeCategory = expenseCategories.find { l -> l.name.lowercase()==transaction.categoryId.lowercase() } ?: expenseCategories.find { l -> l.categoryId.lowercase()==transaction.categoryId.lowercase() }
         } else {
-            //TODO("Transfer Case")
-            //holder.primaryParticipant.text = transaction.sourceName
-            //holder.secondaryParticipant.text = transaction.targetName
             holder.issueMessage.text = context.getString(R.string.transaction_amount_is_zero)
             holder.isIssueEncountered = true
+        }
+        if (activeCategory!=null) {
+            transaction.categoryId = activeCategory.categoryId
         }
         holder.categoryName.text = activeCategory?.name ?: transaction.categoryId
 
@@ -115,21 +118,6 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
             holder.issueMessage.text = context.getString(R.string.in_this_date_transaction_of_this_exact_amount_already_exist_are_you_sure_it_isn_t_duplicate)
         }
 
-//        if (!holder.isIssueEncountered) {
-//            holder.transaction = Transaction(
-//                userId = AustromApplication.appUser!!.userId,
-//                sourceId = if (transaction.amount<0) assetId else null,
-//                sourceName = transaction.sourceName,
-//                targetId = if (transaction.amount>0) assetId else null,
-//                targetName = transaction.targetName,
-//                amount = transaction.amount.absoluteValue,
-//                categoryId = categoryId,
-//                transactionDate = transaction.transactionDate,
-//                comment = transaction.comment
-//            )
-
-//        }
-
         holder.switchDisplayMode(context)
         holder.cancelButton.setOnClickListener {
             val index = transactions.indexOf(transaction)
@@ -141,16 +129,11 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         holder.acceptButton.setOnClickListener { returnClickedItemAccept(transaction) }
     }
 
-//    private fun launchImportTransactionDialog(selectedTransaction: Transaction) {
-//        val dialog = ImportTransactionDialogFragment(selectedTransaction, transactions, context)
-//        dialog.setOnDialogResultListener { affectedTransactions ->
-//            affectedTransactions.forEach { transaction ->
-//                val index = transactions.indexOf(transaction)
-//                this.notifyItemChanged(index)
-//            }
-//        }
-//        dialog.show(context.supportFragmentManager, "Import Linking Dialog" )
-//    }
+    fun removeTransaction(transaction: Transaction) {
+        val index = transactions.indexOf(transaction)
+        transactions.remove(transaction)
+        this.notifyItemRemoved(index)
+    }
 
     private fun submitTransaction(transaction: Transaction, dbProvider: LocalDatabaseProvider) {
         if (transaction.isValid()) {

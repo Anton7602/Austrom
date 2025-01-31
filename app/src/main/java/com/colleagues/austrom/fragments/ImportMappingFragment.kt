@@ -71,6 +71,10 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
             if (csvColumnsList.isNotEmpty()) {
                 updateDemoTransaction(fileUri)
                 selectorsList.forEach { selector -> selector.setOnClickListener{ launchMappingDialog(selector)}; selector.setFieldValue("*Mapped To File - ${csvColumnsList.first()}") }
+                if (AustromApplication.activeAssets.isNotEmpty()) {
+                    assetSelector.setFieldValue(AustromApplication.activeAssets[AustromApplication.appUser!!.primaryPaymentMethod]?.assetName
+                        ?: AustromApplication.activeAssets.values.first().assetName)
+                }
             }
             importButton.setOnClickListener { changeFragment(TransactionApprovementFragment(readTransactionDataFromCSV(fileUri))) }
         }
@@ -78,17 +82,17 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
 
     private fun launchMappingDialog(clickedSelector: SelectorButtonView) {
         val dialog = when (clickedSelector.id) {
-            assetSelector.id -> ImportMappingDialogFragment(csvColumnsList, AustromApplication.activeAssets.values.map {it.assetName}, "asset")
+            assetSelector.id -> ImportMappingDialogFragment(csvColumnsList, AustromApplication.activeAssets.values.map {it.assetName}, "asset", true)
             nameSelector.id -> ImportMappingDialogFragment(csvColumnsList, listOf(), "name")
             amountSelector.id -> ImportMappingDialogFragment(csvColumnsList, listOf(), "amount")
             dateSelector.id -> ImportMappingDialogFragment(csvColumnsList, listOf(), "date")
             categorySelector.id -> ImportMappingDialogFragment(csvColumnsList, AustromApplication.activeCategories.values.filter { it.transactionType!=TransactionType.TRANSFER }.map { it.name }, "category")
-            commentSelector.id -> ImportMappingDialogFragment(csvColumnsList, listOf(), "comment")
+            commentSelector.id -> ImportMappingDialogFragment(csvColumnsList, listOf(), "comment", true)
             else -> null
         }
         if (dialog==null) return
         dialog.setOnDialogResultListener { isFromFile, selectedValue, keyMap ->
-            clickedSelector.setFieldValue(if (isFromFile) "*Mapped To File - $selectedValue" else selectedValue)
+            clickedSelector.setFieldValue(if (isFromFile) getString(R.string.mapped_to_file, selectedValue) else selectedValue)
             fileMap[keyMap] = if (!isFromFile) 0 else csvColumnsList.indexOf(selectedValue)
             updateDemoTransaction(fileUri!!)
         }

@@ -3,6 +3,9 @@ package com.colleagues.austrom.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,24 +20,54 @@ class TransactionApprovementFragment(private val transactionsList: MutableList<T
     constructor(): this(mutableListOf())
     fun setOnFragmentChangeRequestedListener(l: ((Fragment?)->Unit)) { changeFragment = l }
     private var changeFragment: (Fragment?) -> Unit = {}
+    fun setOnImportCompletedListener(l: (()->Unit)) { completeImport = l }
+    private var completeImport: () -> Unit = {}
 
     //region Binding
     private lateinit var transactionHolder: RecyclerView
+    private lateinit var massImportButton: CardView
+    private lateinit var counterTxt: TextView
     private fun bindViews(view: View) {
         transactionHolder = view.findViewById(R.id.tranapprov_transactionExampleRecycler_rcv)
+        massImportButton = view.findViewById(R.id.tranapprov_massApprove_crv)
+        counterTxt = view.findViewById(R.id.tranapprov_counter_txt)
     }
     //endregion
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        if (transactionsList.isEmpty()) completeImport
         setUpRecyclerView()
+        calculateValidTransaction()
+        massImportButton.setOnClickListener { acceptValidTransactions() }
+    }
+
+    private fun acceptValidTransactions() {
+        transactionsList.forEach { transaction ->
+            if (transaction.isValid()) {
+                transaction.submit(LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity() as AppCompatActivity))
+                transactionsList.remove(transaction)
+            }
+        }
+        if (transactionsList.isEmpty()) {
+            completeImport
+        } else {
+            calculateValidTransaction()
+            setUpRecyclerView()
+        }
+    }
+
+    private fun calculateValidTransaction() {
+        var counter = 0
+        transactionsList.forEach { transaction -> if (transaction.isValid()) counter++ }
+        counterTxt.text = counter.toString()
     }
 
     private fun setUpRecyclerView() {
         transactionHolder.layoutManager = LinearLayoutManager(requireActivity())
         val adapter = TransactionExtendedRecyclerAdapter(transactionsList, requireActivity(), true)
-        adapter.setOnItemClickListenerAccept { transaction -> transaction.submit(LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity()))}
-        adapter.setOnItemClickListenerEdit { transaction -> changeFragment(TransactionEditFragment(transaction)) }
+        adapter.setOnItemClickListenerAccept { transaction -> transaction.submit(LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity())); adapter.removeTransaction(transaction)}
+        adapter.setOnItemClickListenerEdit { transaction -> changeFragment(TransactionEditFragment(transaction, transactionsList)) }
         transactionHolder.adapter = adapter
     }
 }

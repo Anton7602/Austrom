@@ -126,6 +126,7 @@
     <string name="add">Добавить</string>
     <string name="choose_period_start_date">Выберите Начальную Дату Периода</string>
     <string name="choose_period_end_date">Выберите Конечную Дату Периода</string>
+    <string name="email_of_invited_user">Email приглашённого пользователя</string>
     <string name="hello_blank_fragment">Пустой Фрагмент</string>
     <string name="language_selection">Выбор Языка</string>
     <string name="select_from_gallery">Выбрать из Галереи</string>
@@ -448,4 +449,7 @@
     <string name="transaction_name_is_too_long">Имя Транзакции слишком длинное</string>
     <string name="transaction_name">Имя Транзакции</string>
     <string name="invite_user">Пригласить Пользователя</string>
+    <string name="payer_payee">Отправитель/Получатель</string>
+    <string name="mapped_to_file">*Связано с файлом - %1$s</string>
+    <string name="import_all">Импортировать Всё</string>
 </resources>

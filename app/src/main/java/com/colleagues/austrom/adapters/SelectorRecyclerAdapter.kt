@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.R
 import com.colleagues.austrom.models.Category
 
-class SelectorRecyclerAdapter(private val items: List<String>): RecyclerView.Adapter<SelectorRecyclerAdapter.ViewHolder>() {
+class SelectorRecyclerAdapter(private val items: List<String>, private val defaultSelectedItem: String? = null): RecyclerView.Adapter<SelectorRecyclerAdapter.ViewHolder>() {
     private var returnClickedItem: (String)->Unit = {}
     fun setOnItemClickListener(l: ((String)->Unit)) { returnClickedItem = l }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder { return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_selector, parent, false))  }
@@ -25,6 +25,10 @@ class SelectorRecyclerAdapter(private val items: List<String>): RecyclerView.Ada
         val item = items[position]
         holder.radioButton.text = item
         holder.radioButton.isChecked = position == selectedPosition
+        if (selectedPosition==-1 && defaultSelectedItem!=null && item==defaultSelectedItem) {
+            holder.radioButton.isChecked = true
+            selectedPosition = holder.adapterPosition
+        }
         holder.radioButton.setOnClickListener {
             selectedPosition = holder.adapterPosition
             notifyDataSetChanged()

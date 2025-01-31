@@ -136,19 +136,20 @@ class TransactionCreationActivity : AppCompatActivity() {
         targetHolderLabel.text = getString(R.string.payee).startWithUppercase()
 
         dateSelector.setFieldValue(selectedDate.toDayOfWeekAndShortDateFormat())
-        dateSelector.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.choose_transaction_date)).setSelection(
-                MaterialDatePicker.todayInUtcMilliseconds()).build()
-            datePicker.addOnPositiveButtonClickListener { selection ->
-                selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
-                dateSelector.setFieldValue(selectedDate.toDayOfWeekAndShortDateFormat())
-            }
-            datePicker.show(this.supportFragmentManager, "DatePicker Dialog")
-        }
+        dateSelector.setOnClickListener { launchDateSelectionDialog() }
 
         categorySelector.setFieldValue(selectedCategory.name)
         categorySelector.setOnClickListener { launchCategorySelectionDialog() }
         createTransactionButton.setOnClickListener { submitTransaction() }
+    }
+
+    private fun launchDateSelectionDialog() {
+        val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.choose_transaction_date)).setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
+            dateSelector.setFieldValue(selectedDate.toDayOfWeekAndShortDateFormat())
+        }
+        datePicker.show(this.supportFragmentManager, "DatePicker Dialog")
     }
 
     private fun isInputValid(): Boolean {

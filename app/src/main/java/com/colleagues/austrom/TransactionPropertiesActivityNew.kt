@@ -103,7 +103,11 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
         fragmentHolder.visibility = View.GONE
         val fragment = TransactionEditFragment(transaction)
         val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        fragment.setOnDialogResultListener { result -> fragmentHolder.visibility = View.GONE }
+        fragment.setOnDialogResultListener { transaction, transactionsList ->
+            fragmentHolder.visibility = View.GONE
+            transaction.update(LocalDatabaseProvider(this), FirebaseDatabaseProvider(this))
+            transactionHolder.fillInTransaction(transaction)
+        }
         fragmentTransaction.replace(R.id.trdet_editFragment_frc, fragment)
         fragmentTransaction.commit()
     }

@@ -16,7 +16,7 @@ import kotlin.math.min
 
 class ActionButtonView@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : BaseView(context, attrs, defStyleAttr) {
     companion object {
-        const val DEFAULT_VIEW_SIZE_WIDTH = 75
+        const val DEFAULT_VIEW_SIZE_WIDTH = 65
     }
 
     private var textPaint: TextPaint = TextPaint()

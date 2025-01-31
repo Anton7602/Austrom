@@ -9,21 +9,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.dialogs.CategorySelectionDialogFragment
+import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.ActionButtonView
 import com.colleagues.austrom.views.SelectorButtonView
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import kotlin.math.absoluteValue
 
-class TransactionEditFragment(val transaction: Transaction? =null, val transactionsToChange: List<Transaction>? = null) : Fragment(R.layout.fragment_transaction_edit) {
-    constructor() : this(null, null)
-    fun setOnDialogResultListener(l: ((Boolean)->Unit)) { returnResult = l }
-    private var returnResult: (Boolean)->Unit = {}
+class TransactionEditFragment(private val transaction: Transaction? =null, private val transactionsToChange: MutableList<Transaction> = mutableListOf()) : Fragment(R.layout.fragment_transaction_edit) {
+    constructor() : this(null)
+    fun setOnDialogResultListener(l: ((transaction: Transaction, transactionList: List<Transaction>)->Unit)) { returnResult = l }
+    private var returnResult: (Transaction, List<Transaction>)->Unit = {_,_ ->}
     //region Binding
     private lateinit var amountTextView: TextInputEditText
     private lateinit var dateSelector: SelectorButtonView
@@ -55,12 +64,16 @@ class TransactionEditFragment(val transaction: Transaction? =null, val transacti
 
     }
     //endregion
+    private var selectedDate: LocalDate? = transaction?.transactionDate
+    private var selectedCategory: Category? = AustromApplication.activeCategories.values
+        .filter { l -> l.transactionType==transaction?.transactionType() }
+        .find { l -> l.categoryId == transaction?.categoryId }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         setUpTransaction()
-        cancelButton.setOnClickListener { returnResult(false) }
+        cancelButton.setOnClickListener { if (transaction!=null) returnResult(transaction, transactionsToChange) }
         saveButton.setOnClickListener {save()}
         nameCheckButtonSingle.setOnClickListener { switchNameChangeSelection(nameCheckButtonSingle) }
         nameCheckButtonMultiple.setOnClickListener { switchNameChangeSelection(nameCheckButtonMultiple) }
@@ -68,11 +81,75 @@ class TransactionEditFragment(val transaction: Transaction? =null, val transacti
         categoryCheckButtonSingle.setOnClickListener { switchCategoryChangeSelection(categoryCheckButtonSingle) }
         categoryCheckButtonMultipleByName.setOnClickListener { switchCategoryChangeSelection(categoryCheckButtonMultipleByName) }
         categoryCheckButtonMultipleByCategory.setOnClickListener { switchCategoryChangeSelection(categoryCheckButtonMultipleByCategory) }
+
+        categorySelector.setOnClickListener { launchCategorySelectionDialog() }
+        dateSelector.setOnClickListener { launchDateSelectionDialog() }
+    }
+
+    private fun updateTransactionsList() {
+        if (transaction==null) return
+        val transactionName = transaction.transactionName
+        val transactionCategoryId = transaction.categoryId
+        transactionsToChange.forEach { massEditedTransaction ->
+            if (nameCheckButtonMultiple.isChecked && massEditedTransaction.transactionName == transactionName) {
+                massEditedTransaction.transactionName = nameTextView.text.toString()
+            }
+            if (categoryCheckButtonMultipleByCategory.isChecked && selectedCategory!=null && massEditedTransaction.categoryId == transactionCategoryId) {
+                massEditedTransaction.categoryId = selectedCategory!!.categoryId
+            }
+            if (categoryCheckButtonMultipleByName.isChecked && selectedCategory!=null && massEditedTransaction.transactionName == transactionName) {
+                massEditedTransaction.categoryId = selectedCategory!!.categoryId
+            }
+        }
+    }
+
+    private fun updateTransaction() {
+        if (transaction==null) return
+        val amount = amountTextView.text.toString().parseToDouble()?.absoluteValue ?: 0.0
+        transaction.amount = if (transaction.transactionType()==TransactionType.EXPENSE) -amount else amount
+        transaction.transactionName = nameTextView.text.toString()
+        if (selectedDate!=null) transaction.transactionDate = selectedDate!!
+        if (selectedCategory!=null) transaction.categoryId = selectedCategory!!.categoryId
+    }
+
+    private fun isInputValid(): Boolean {
+        val amount = amountTextView.text.toString().parseToDouble()
+        if (amount==null || amount>Double.MAX_VALUE) { amountTextView.error = requireActivity().getString(R.string.invalid_transaction_amount_provided); return false; }
+        if (amount==0.0) { amountTextView.error = requireActivity().getString(R.string.transaction_amount_cannot_be_zero); return false; }
+        val name = nameTextView.text.toString()
+        if (name.isEmpty())  { nameTextView.error = getString(R.string.name_cannot_be_empty); return false }
+        if (name.isEmpty())  { nameTextView.error = getString(R.string.transaction_name_is_too_long); return false }
+        if (selectedDate==null) {Toast.makeText(requireActivity(), "Invalid Date Provided", Toast.LENGTH_LONG).show(); return false}
+        if (selectedCategory==null) {Toast.makeText(requireActivity(), "Invalid Category Provided", Toast.LENGTH_LONG).show(); return false}
+        return true
+    }
+
+    private fun launchCategorySelectionDialog() {
+        if (transaction==null) return
+        val dialog = CategorySelectionDialogFragment(transaction.transactionType())
+        dialog.setOnDialogResultListener { category -> selectedCategory = category; categorySelector.setFieldValue(category.name) }
+        dialog.show(requireActivity().supportFragmentManager, "CategorySelectionDialog")
+    }
+
+    private fun launchDateSelectionDialog() {
+        val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.choose_transaction_date)).setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
+            if (selectedDate!=null) {
+                dateSelector.setFieldValue(selectedDate!!.toDayOfWeekAndShortDateFormat())
+            }
+        }
+        datePicker.show(requireActivity().supportFragmentManager, "DatePicker Dialog")
     }
 
     private fun save() {
-        returnResult(true)
+        if (transaction==null || !isInputValid()) return
+        updateTransactionsList()
+        updateTransaction()
+        returnResult(transaction, transactionsToChange)
     }
+
+
 
     private fun switchNameChangeSelection(pressedButton: ActionButtonView) {
         if (transaction==null) return

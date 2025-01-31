@@ -29,7 +29,7 @@
             android:background="@color/secondaryTextColor" />
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/tranapprov_counter_txt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
