@@ -453,4 +453,6 @@
     <string name="payer_payee">Payer/Payee</string>
     <string name="mapped_to_file">*Mapped To File - %1$s</string>
     <string name="import_all">Import All</string>
+    <string name="from_application">From Application</string>
+    <string name="from_file">From File</string>
 </resources>

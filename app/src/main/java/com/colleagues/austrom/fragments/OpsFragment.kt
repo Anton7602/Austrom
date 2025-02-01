@@ -106,9 +106,9 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         transactionHolder.adapter = adapter
     }
 
-    override fun onResume() {
-        super.onResume()
-        setUpTransactionHeader()
-        applyTransactionFilter(transactionsHeader.getTransactionFilter())
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        setUpTransactionHeader()
+//        applyTransactionFilter(transactionsHeader.getTransactionFilter())
+//    }
 }

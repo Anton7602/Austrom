@@ -303,6 +303,13 @@ class LocalDatabaseProvider(context: Context) {
         return transactionDetail
     }
 
+    fun removeTransactionDetailsOfTransaction(transaction: Transaction) {
+        val dao = localDatabase.transactionDetailDao()
+        runBlocking {
+            dao.removeTransactionDetailsOfTransaction(transaction.transactionId)
+        }
+    }
+
     fun getUniqueTransactionDetailsNamesAsync(): LiveData<List<String>> { return localDatabase.transactionDetailDao().getUniqueTransactionDetailsNames() }
     //endregion
 

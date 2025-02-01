@@ -74,7 +74,16 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
         } else throw InvalidTransactionException(this.validate())
     }
 
+    fun removeTransactionDetails(localDBProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider?) {
+        if (remoteDBProvider!=null) {
+            val transactionDetails = localDBProvider.getTransactionDetailsOfTransaction(this)
+            transactionDetails.forEach { transactionDetail -> remoteDBProvider.deleteTransactionDetail(transactionDetail) }
+        }
+        localDBProvider.removeTransactionDetailsOfTransaction(this)
+    }
+
     fun cancel(dbProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider? = null) {
+        removeTransactionDetails(dbProvider, remoteDBProvider)
         when (this.transactionType()) {
             TransactionType.TRANSFER -> {
                 val involvedAsset = AustromApplication.activeAssets[assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)

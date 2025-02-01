@@ -53,7 +53,7 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
     private var charset = "windows-1251"
     private var csvColumnsList: List<String> = listOf()
     private var selectorsList: List<SelectorButtonView> =  listOf()
-    private var fileMap: MutableMap<String, Int> = mutableMapOf("asset" to 1, "name" to 1, "amount" to 1, "date" to 1, "category" to 1, "comment" to 1)
+    private var fileMap: MutableMap<String, Int> = mutableMapOf("asset" to 0, "name" to 1, "amount" to 1, "date" to 1, "category" to 1, "comment" to 0)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,14 +69,15 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
             readCsvSchema(fileUri)
             selectorsList = listOf(assetSelector, nameSelector, amountSelector, dateSelector, categorySelector, commentSelector)
             if (csvColumnsList.isNotEmpty()) {
-                updateDemoTransaction(fileUri)
                 selectorsList.forEach { selector -> selector.setOnClickListener{ launchMappingDialog(selector)}; selector.setFieldValue("*Mapped To File - ${csvColumnsList.first()}") }
                 if (AustromApplication.activeAssets.isNotEmpty()) {
                     assetSelector.setFieldValue(AustromApplication.activeAssets[AustromApplication.appUser!!.primaryPaymentMethod]?.assetName
                         ?: AustromApplication.activeAssets.values.first().assetName)
+                    commentSelector.setFieldValue("")
                 }
             }
             importButton.setOnClickListener { changeFragment(TransactionApprovementFragment(readTransactionDataFromCSV(fileUri))) }
+            updateDemoTransaction(fileUri)
         }
     }
 

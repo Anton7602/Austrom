@@ -43,10 +43,11 @@ class TransactionApprovementFragment(private val transactionsList: MutableList<T
     }
 
     private fun acceptValidTransactions() {
-        transactionsList.forEach { transaction ->
-            if (transaction.isValid()) {
-                transaction.submit(LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity() as AppCompatActivity))
-                transactionsList.remove(transaction)
+        for (i in transactionsList.size - 1 downTo 0) {
+            if (transactionsList[i].isValid()) {
+                transactionsList[i].submit(LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity() as AppCompatActivity)
+                )
+                transactionsList.removeAt(i)
             }
         }
         if (transactionsList.isEmpty()) {

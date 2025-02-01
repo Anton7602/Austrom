@@ -41,7 +41,7 @@
                         android:drawableBottom="@android:drawable/button_onoff_indicator_off"
                         android:drawableTint="@color/blue"
                         android:padding="5dp"
-                        android:text="From File"
+                        android:text="@string/from_file"
                         android:textColor="@color/black"
                         app:cornerRadius="0dp" />
 
@@ -61,7 +61,7 @@
                         android:drawableBottom="@android:drawable/button_onoff_indicator_off"
                         android:drawableTint="@color/grey"
                         android:padding="5dp"
-                        android:text="From Application"
+                        android:text="@string/from_application"
                         android:textColor="@color/black"
                         app:cornerRadius="0dp" />
                 </LinearLayout>

@@ -452,4 +452,6 @@
     <string name="payer_payee">Отправитель/Получатель</string>
     <string name="mapped_to_file">*Связано с файлом - %1$s</string>
     <string name="import_all">Импортировать Всё</string>
+    <string name="from_application">Из Приложения</string>
+    <string name="from_file">Из Файла</string>
 </resources>

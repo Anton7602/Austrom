@@ -239,6 +239,9 @@ interface TransactionDetailsDao {
         ORDER BY COUNT(name) DESC
     """)
     fun getUniqueTransactionDetailsNames(): LiveData<List<String>>
+
+    @Query("DELETE FROM TransactionDetail Where transactionId = :transactionId")
+    suspend fun removeTransactionDetailsOfTransaction(transactionId: String)
 }
 
 @Dao
