@@ -2,6 +2,7 @@ package com.colleagues.austrom.database
 
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Invitation
 import com.colleagues.austrom.models.Transaction
@@ -36,6 +37,11 @@ interface IRemoteDatabaseProvider {
 
     fun insertTransactionDetail(transactionDetail: TransactionDetail, budget: Budget)
     fun deleteTransactionDetailsOfBudget(budget: Budget)
+
+    fun insertCategory(category: Category, budget: Budget)
+    fun updateCategory(category: Category, budget: Budget)
+    fun deleteCategory(category: Category, budget: Budget)
+    fun deleteCategoriesOfBudget(budget: Budget)
 
     fun sentBudgetInvite(invitation: Invitation)
 //    fun getTransactionsOfUser(user: User) : MutableList<Transaction>

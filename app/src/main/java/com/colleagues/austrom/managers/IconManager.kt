@@ -7,6 +7,11 @@ class IconManager {
     fun getAllAvailableIcons(): List<Icon> {
         return Icon.entries
     }
+
+    fun getIconByResourceId(resourceId: Int): Icon? {
+        Icon.entries.forEach { icon -> if (icon.resourceId==resourceId) return icon }
+        return null
+    }
 }
 
 enum class Icon(@DrawableRes val resourceId: Int = R.drawable.ic_placeholder_icon) {

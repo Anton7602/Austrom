@@ -2,6 +2,10 @@ package com.colleagues.austrom.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.colleagues.austrom.AustromApplication.Companion.activeCurrencies
+import com.colleagues.austrom.AustromApplication.Companion.appUser
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.google.firebase.database.Exclude
 import java.util.UUID
 
@@ -23,5 +27,12 @@ data class User private constructor(var username: String,
         fun generateUniqueUserId() : String {
             return UUID.randomUUID().toString()
         }
+    }
+
+    public fun setNewBaseCurrency(currency: Currency, localDBProvider: LocalDatabaseProvider, remoteDbProvider: IRemoteDatabaseProvider? = null) {
+        this.baseCurrencyCode = currency.code
+        localDBProvider.updateUser(this)
+        remoteDbProvider?.updateUser(this)
+        Currency.switchRatesToNewBaseCurrency(activeCurrencies, currency.code)
     }
 }

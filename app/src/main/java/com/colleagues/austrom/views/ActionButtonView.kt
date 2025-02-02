@@ -141,7 +141,7 @@ class ActionButtonView@JvmOverloads constructor(context: Context, attrs: Attribu
                 else
                     minOf(context.dpToPx(DEFAULT_VIEW_SIZE_WIDTH).toInt(), MeasureSpec.getSize(spec))
             }
-            MeasureSpec.UNSPECIFIED -> (context.dpToPx(DEFAULT_VIEW_SIZE_WIDTH)+descriptionMargin+calculateWrappedTextHeight(text,textPaint,sizeWidth)).toInt()
+            MeasureSpec.UNSPECIFIED -> (context.dpToPx(DEFAULT_VIEW_SIZE_WIDTH)+descriptionMargin+calculateWrappedTextHeight(text,textPaint,sizeWidth)).toInt()+context.dpToPx(4).toInt()
             else -> MeasureSpec.getSize(spec)
         }
     }

@@ -7,6 +7,8 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -14,6 +16,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CategorySelectionDialogFragment
 import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
@@ -36,7 +39,7 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
     //region Binding
     private lateinit var amountTextView: TextInputEditText
     private lateinit var dateSelector: SelectorButtonView
-    private lateinit var nameTextView: TextInputEditText
+    private lateinit var nameTextView: AutoCompleteTextView
     private lateinit var nameChangeDescription: TextView
     private lateinit var nameCheckButtonSingle: ActionButtonView
     private lateinit var nameCheckButtonMultiple: ActionButtonView
@@ -73,6 +76,7 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         setUpTransaction()
+        setUpAutofill()
         cancelButton.setOnClickListener { if (transaction!=null) returnResult(transaction, transactionsToChange) }
         saveButton.setOnClickListener {save()}
         nameCheckButtonSingle.setOnClickListener { switchNameChangeSelection(nameCheckButtonSingle) }
@@ -182,5 +186,35 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
         dateSelector.setFieldValue(transaction.transactionDate.toDayOfWeekAndShortDateFormat())
         nameTextView.setText(transaction.transactionName)
         categorySelector.setFieldValue(AustromApplication.activeCategories[transaction.categoryId]?.name.toString())
+    }
+
+    private fun setUpAutofill() {
+        if (transaction==null) return
+        val localDBProvider = LocalDatabaseProvider(requireActivity())
+        localDBProvider.getUniqueTransactionNamesAsync(transaction.transactionType()).observe(requireActivity()) { names ->
+            val adapter = ArrayAdapter(requireActivity(), android.R.layout.simple_dropdown_item_1line, names)
+            nameTextView.setAdapter(adapter)
+            nameTextView.threshold = 2
+
+            nameTextView.setOnItemClickListener { parent, view, position, id ->
+                val selectedItem = parent.getItemAtPosition(position) as String
+                val categoryId = localDBProvider.getTransactionNameMostUsedCategory(selectedItem)
+                when (transaction.transactionType()) {
+                    TransactionType.INCOME -> {
+                        if (AustromApplication.activeCategories.filter { l -> l.value.transactionType==TransactionType.INCOME }.containsKey(categoryId)) {
+                            selectedCategory = AustromApplication.activeCategories[categoryId]
+                            if (selectedCategory!=null) categorySelector.setFieldValue(selectedCategory!!.name)
+                        }
+                    }
+                    TransactionType.EXPENSE -> {
+                        if (AustromApplication.activeCategories.filter { l -> l.value.transactionType==TransactionType.EXPENSE }.containsKey(categoryId)) {
+                            selectedCategory = AustromApplication.activeCategories[categoryId]!!
+                            if (selectedCategory!=null) categorySelector.setFieldValue(selectedCategory!!.name)
+                        }
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
 }

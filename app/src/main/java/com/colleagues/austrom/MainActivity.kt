@@ -100,7 +100,6 @@ class MainActivity : AppCompatActivity() {
         adjustInsets()
         fillInDefaultCategories()
         fillInDefaultCurrencies()
-        fillInKnownUsers()
         if (AustromApplication.appUser?.activeBudgetId!=null) {
             val remoteDBProvider = FirebaseDatabaseProvider(this)
             val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
@@ -233,10 +232,5 @@ class MainActivity : AppCompatActivity() {
         }
         AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(
             Currency.localizeCurrencyNames(dbProvider.getCurrencies(), this), AustromApplication.appUser?.baseCurrencyCode)
-    }
-
-    private fun fillInKnownUsers() {
-        val dbProvider = LocalDatabaseProvider(this)
-        AustromApplication.knownUsers = dbProvider.getAllUsers()
     }
 }

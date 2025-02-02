@@ -50,7 +50,7 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>, pr
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
                 holder.currencySymbol.setTextColor(context.getColor(R.color.transferYellow))
                 holder.primaryParticipant.text = transaction.transactionName
-                holder.secondaryParticipant.text = if (transaction.amount>0) "${context.getString(R.string.toAsset)} ${asset.assetName}" else "${context.getString(R.string.fromAsset)} ${asset.assetName}"
+                holder.secondaryParticipant.text = if (transaction.amount>0) "${context.getString(R.string.fromAsset)} ${asset.assetName}" else "${context.getString(R.string.toAsset)} ${asset.assetName}"
             }
             TransactionType.EXPENSE -> {
                 category = AustromApplication.activeCategories[transaction.categoryId] ?: throw InvalidTransactionException("Category used in transaction is not recognized", TransactionValidationType.UNKNOWN_CATEGORY_INVALID)

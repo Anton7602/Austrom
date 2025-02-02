@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.managers.Icon
+import com.colleagues.austrom.managers.IconManager
 import java.util.UUID
 
 @Entity
@@ -13,11 +14,12 @@ class Category(var name: String,
                var imgReference: Icon,
                val transactionType: TransactionType,
                @PrimaryKey(autoGenerate = false)
-               val categoryId: String) {
-    var userId: String = AustromApplication.appUser?.userId.toString()
-    var type: String? = null
+               val categoryId: String,
+    var userId: String = AustromApplication.appUser?.userId.toString(),
+    var type: String? = null) {
 
     constructor(name: String, imgReference: Icon, transactionType: TransactionType): this(name, imgReference, transactionType, generateCategoryId())
+    fun serialize(): String { return "$categoryId,$name,${imgReference.resourceId},${transactionType},$userId"}
 
     override fun toString(): String {
         return this.name
@@ -37,6 +39,23 @@ class Category(var name: String,
 
     companion object{
         fun generateCategoryId(): String { return UUID.randomUUID().toString() }
+
+        fun deserialize(serializedCategory: String): Category {
+            val dataParts = serializedCategory.split(",")
+            return Category(
+                categoryId = dataParts[0],
+                name = dataParts[1],
+                imgReference = IconManager().getIconByResourceId(dataParts[2].toInt()) ?: Icon.I0,
+                transactionType = when (dataParts[3]) {
+                    "EXPENSE" -> TransactionType.EXPENSE
+                    "INCOME" -> TransactionType.INCOME
+                    "TRANSFER" -> TransactionType.TRANSFER
+                    else -> TransactionType.EXPENSE
+                },
+                userId = dataParts[4],
+                type = null
+            )
+        }
 
         var defaultExpenseCategories : List<Category> = listOf(
             Category("Food",  Icon.I7, TransactionType.EXPENSE, "FOOD"),

@@ -28,6 +28,7 @@ class Budget(val budgetName: String, var budgetId: String = generateUniqueBudget
             remoteDBProvider.createNewBudget(budget)
 
             AustromApplication.activeAssets.values.forEach{ asset -> remoteDBProvider.createNewAsset(asset, budget) }
+            AustromApplication.activeCategories.values.forEach { category -> remoteDBProvider.insertCategory(category, budget) }
             val transactions = localDBProvider.getTransactionsOfUser(AustromApplication.appUser!!)
             transactions.forEach { transaction ->
                 remoteDBProvider.insertTransaction(transaction, budget)
@@ -50,6 +51,7 @@ class Budget(val budgetName: String, var budgetId: String = generateUniqueBudget
             remoteDBProvider.deleteTransactionDetailsOfBudget(this)
             remoteDBProvider.deleteTransactionsOfBudget(this)
             remoteDBProvider.deleteAssetsOfBudget(this)
+            remoteDBProvider.deleteCategoriesOfBudget(this)
             remoteDBProvider.deleteBudget(this)
         } else {
             remoteDBProvider.updateBudget(this)

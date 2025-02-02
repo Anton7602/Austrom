@@ -92,15 +92,6 @@ class AustromApplication : Application() {
         sharedPreferences.edit().remove("appQuickPin").apply()
     }
 
-    fun setNewBaseCurrency(currency: Currency) {
-        if (appUser!=null) {
-            val dbProvider = LocalDatabaseProvider(this)
-            appUser!!.baseCurrencyCode = currency.code
-            dbProvider.updateUser(appUser!!)
-            Currency.switchRatesToNewBaseCurrency(activeCurrencies, currency.code)
-        }
-    }
-
     fun getRememberedTargets(): List<String> {
         return sharedPreferences.getStringSet("targetList", null)?.toList() ?: listOf()
     }

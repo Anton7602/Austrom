@@ -54,12 +54,13 @@
                 android:layout_marginTop="16dp"
                 android:hint="@string/transaction_name">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
                     android:id="@+id/tredit_name_txt"
                     style="@style/DefaultEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/transaction_name" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView

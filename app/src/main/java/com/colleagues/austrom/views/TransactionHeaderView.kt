@@ -106,7 +106,8 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         incomeSumMoneyFormatTextView.setValue(incomeSum, currencySymbol)
         expenseSumMoneyFormatTextView.setValue(expenseSum, currencySymbol)
 
-        holderCardView.setBackgroundResource(R.drawable.sh_transaction_header_background)
+        //holderCardView.setBackgroundResource(R.drawable.sh_transaction_header_background)
+        mainLayoutCardView.setBackgroundResource(R.drawable.sh_transaction_header_background)
         filterButton.setOnClickListener { switchToFilterMode() }
         confirmFilterButton.setOnClickListener { switchToMainMode() }
 

@@ -7,7 +7,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.AustromApplication.Companion.appUser
 import com.colleagues.austrom.R
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CategoryControlDialogFragment
 import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
 import com.colleagues.austrom.dialogs.LanguageSelectionDialogFragment
@@ -45,9 +48,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun launchCurrencyDialog() {
-        val dialog = CurrencySelectionDialogFragment(AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode])
+        val dialog = CurrencySelectionDialogFragment(AustromApplication.activeCurrencies[appUser!!.baseCurrencyCode])
         dialog.setOnDialogResultListener { currency ->
-            (requireActivity().application as AustromApplication).setNewBaseCurrency(currency)
+            appUser!!.setNewBaseCurrency(currency, LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity()))
             baseCurrencySetting.setValueText(currency.name)
             moneyFormatSetting.setValueText("${1234567.89.toMoneyFormat()} ${AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol}")
         }

@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CategoryPullDialogFragment
 import com.colleagues.austrom.dialogs.IconSelectionDialogFragment
@@ -144,11 +145,21 @@ class CategoryCreationActivity : AppCompatActivity() {
                 imgReference = selectedIcon,
                 transactionType = if (isExpenseCategoryBeingCreated) TransactionType.EXPENSE else TransactionType.INCOME)
             dbProvider.writeCategory(newCategory)
+            if (AustromApplication.appUser!!.activeBudgetId!=null) {
+                val remoteDbProvider = FirebaseDatabaseProvider(this)
+                val budget = remoteDbProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+                if (budget!=null)  remoteDbProvider.insertCategory(newCategory, budget)
+            }
             AustromApplication.activeCategories[newCategory.categoryId] = newCategory
         } else {
             category!!.name = categoryName.text.toString()
             category!!.imgReference = selectedIcon
             dbProvider.updateCategory(category!!)
+            if (AustromApplication.appUser!!.activeBudgetId!=null) {
+                val remoteDbProvider = FirebaseDatabaseProvider(this)
+                val budget = remoteDbProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+                if (budget!=null)  remoteDbProvider.updateCategory(category!!, budget)
+            }
             AustromApplication.activeCategories[category!!.categoryId] = category!!
         }
         finish()
@@ -165,10 +176,28 @@ class CategoryCreationActivity : AppCompatActivity() {
             if (transactions.isEmpty()) {
                 dbProvider.deleteCategory(category!!)
                 AustromApplication.activeCategories.remove(category!!.categoryId)
+                if (AustromApplication.appUser!!.activeBudgetId!=null) {
+                    val remoteDBProvider = FirebaseDatabaseProvider(this)
+                    val budget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+                    if (budget!=null) {
+                        remoteDBProvider.deleteCategory(category!!, budget)
+                    }
+                }
                 finish()
             } else {
                 val dialog = CategoryPullDialogFragment(category!!, transactions)
-                dialog.setOnDialogResultListener { isTransactionPullingSuccessful -> if (isTransactionPullingSuccessful) {dbProvider.deleteCategory(category!!); finish()}}
+                dialog.setOnDialogResultListener { isTransactionPullingSuccessful -> if (isTransactionPullingSuccessful) {
+                    dbProvider.deleteCategory(category!!)
+                    if (AustromApplication.appUser!!.activeBudgetId!=null) {
+                        val remoteDBProvider = FirebaseDatabaseProvider(this)
+                        val budget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+                        if (budget!=null) {
+                            remoteDBProvider.deleteCategory(category!!, budget)
+                        }
+                    }
+                    AustromApplication.activeCategories.remove(category?.categoryId)
+                    finish()
+                }}
                 dialog.show(supportFragmentManager, "Transaction Target Dialog")
             }
         }

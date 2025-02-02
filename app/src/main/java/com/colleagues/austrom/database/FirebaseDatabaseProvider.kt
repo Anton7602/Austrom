@@ -6,15 +6,22 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Invitation
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.User
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemoteDatabaseProvider{
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
@@ -258,7 +265,29 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
     }
     //endregion
 
+    override fun insertCategory(category: Category, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("categories").child(budget.budgetId).child(category.categoryId)
+                .setValue(encryptionManager.encrypt(category, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
 
+    override fun updateCategory(category: Category, budget: Budget) {
+        if (AustromApplication.appUser!!.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("categories").child(budget.budgetId).child(category.categoryId)
+                .setValue(encryptionManager.encrypt(category, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+
+    override fun deleteCategoriesOfBudget(budget: Budget) {
+        database.getReference("categories").child(budget.budgetId).setValue(null)
+    }
+
+    override fun deleteCategory(category: Category, budget: Budget) {
+        database.getReference("categories").child(budget.budgetId).child(category.categoryId).setValue("-")
+    }
 
     //region TransactionDetail
     override fun insertTransactionDetail(transactionDetail: TransactionDetail, budget: Budget) {
@@ -315,10 +344,61 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
 //    }
 
     //Sync
-    fun setCurrenciesListener(listener: ValueEventListener) { database.getReference("currencies").addValueEventListener(listener) }
-    fun setUserListener(budget: Budget, listener: ValueEventListener) { database.getReference("budgets").child(budget.budgetId).child("users").addValueEventListener(listener) }
-    fun setAssetListener(budget: Budget, listener: ValueEventListener) { database.getReference("assets").child(budget.budgetId).addValueEventListener(listener) }
-    fun setTransactionListener(budget: Budget, listener: ValueEventListener) { database.getReference("transactions").child(budget.budgetId).addValueEventListener(listener) }
-    fun setTransactionDetailListener(budget: Budget, listener: ValueEventListener) { database.getReference("transactionDetails").child(budget.budgetId).addValueEventListener(listener) }
-    //endregion
+//    fun setCurrenciesListener(listener: ValueEventListener) { database.getReference("currencies").addValueEventListener(listener) }
+//    fun setUserListener(budget: Budget, listener: ValueEventListener) { database.getReference("budgets").child(budget.budgetId).child("users").addValueEventListener(listener) }
+//    fun setAssetListener(budget: Budget, listener: ValueEventListener) { database.getReference("assets").child(budget.budgetId).addValueEventListener(listener) }
+//    fun setTransactionListener(budget: Budget, listener: ValueEventListener) { database.getReference("transactions").child(budget.budgetId).addValueEventListener(listener) }
+//    fun setTransactionDetailListener(budget: Budget, listener: ValueEventListener) { database.getReference("transactionDetails").child(budget.budgetId).addValueEventListener(listener) }
+
+    suspend fun fetchCurrenciesData(processSnapshot: (DataSnapshot) -> Unit) { fetchDataSnapshot(database.getReference("currencies")) {dataSnapshot -> processSnapshot(dataSnapshot) } }
+    suspend fun fetchUserData(budget: Budget, processSnapshot: (DataSnapshot) -> Unit) {
+        fetchDataSnapshot(database.getReference("budgets").child(budget.budgetId).child("users"))  {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
+    suspend fun fetchCategoriesData(budget: Budget,processSnapshot: (DataSnapshot) -> Unit) {
+        fetchDataSnapshot(database.getReference("categories").child(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
+    suspend fun fetchAssetData(budget: Budget,processSnapshot: (DataSnapshot) -> Unit) {
+        fetchDataSnapshot(database.getReference("assets").child(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
+    suspend fun fetchTransactionData(budget: Budget,processSnapshot: (DataSnapshot) -> Unit) {
+        fetchDataSnapshot(database.getReference("transactions").child(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
+    suspend fun fetchTransactionDetailsData(budget: Budget,processSnapshot: (DataSnapshot) -> Unit) {
+        fetchDataSnapshot(database.getReference("transactionDetails").child(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
+
+
+    private suspend fun fetchDataSnapshot(databaseReference: DatabaseReference, processSnapshot: (DataSnapshot) -> Unit) {
+        suspendCancellableCoroutine { continuation ->
+            var isResumed = false
+
+            val listener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (!isResumed) {
+                        isResumed = true
+                        try {
+                            processSnapshot(dataSnapshot)
+                            continuation.resume(Unit)
+                        } catch (e: Exception) {
+                            continuation.resumeWithException(e)
+                        }
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    if (!isResumed) { // Check if the continuation has already been resumed
+                        isResumed = true
+                        continuation.resumeWithException(databaseError.toException())
+                    }
+                }
+            }
+
+            databaseReference.addValueEventListener(listener)
+
+            continuation.invokeOnCancellation {
+                databaseReference.removeEventListener(listener)
+            }
+        }
+    }
+//endregion
 }
