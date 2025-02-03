@@ -1,19 +1,17 @@
 package com.colleagues.austrom.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import com.colleagues.austrom.AustromApplication
-import com.colleagues.austrom.MainActivity
+import com.colleagues.austrom.AustromApplication.Companion.appUser
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.bottomsheetdialogs.TextEditDialogFragment
 import com.colleagues.austrom.models.Budget
+import com.colleagues.austrom.models.Invitation
 import com.google.android.material.textfield.TextInputEditText
 
 class SharedBudgetJoinFragment(private val budget: Budget) : Fragment(R.layout.fragment_shared_budget_join) {
@@ -38,6 +36,20 @@ class SharedBudgetJoinFragment(private val budget: Budget) : Fragment(R.layout.f
     }
 
     private fun acceptInvitationWithCode(invitationCode: String) {
+        val remoteDBProvider = FirebaseDatabaseProvider(requireActivity())
+        var invitation: Invitation? = null
+        try {
+            invitation = remoteDBProvider.acceptInvitation(appUser!!, budget, invitationCode)
+        } catch(e: Exception) {
+            Log.d("Debug", e.message.toString())
+        }
+        val users = remoteDBProvider.getUsersByBudget(budget.budgetId)
+        if (users.containsKey(invitation?.userId)) {
+            appUser!!.activeBudgetId = budget.budgetId
+            appUser!!.tokenId = invitation?.token
+            //LocalDatabaseProvider(requireActivity()).updateUser(appUser!!)
+        }
+        val test = 5
 
     }
 }

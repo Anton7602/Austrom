@@ -353,12 +353,35 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
             try {
                 val snapshot = databaseQuery.get().await()
                 if (snapshot.childrenCount>0) {
-                    val dataParts = snapshot.value.toString().split("=")
-                    if (dataParts.isNotEmpty()) {
-                        dataParts[0].substring(1)
-                    } else null
+                    snapshot.children.first().key.toString()
                 } else null
             } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
+    fun acceptInvitation(user: User, budget: Budget, invitationCode: String): Invitation? {
+        var invitation: Invitation? = null
+        activity?.lifecycleScope?.launch {
+            invitation = acceptInvitationAsync(user, budget, invitationCode)
+        }
+        return invitation
+    }
+
+    private fun acceptInvitationAsync(user: User, budget: Budget, invitationCode: String): Invitation? {
+        val reference = database.getReference("invitations")
+        val databaseQuery = reference.child(user.userId).child(budget.budgetId)
+        return runBlocking {
+            try {
+                val snapshot = databaseQuery.get().await()
+                if (snapshot.value.toString().isNotEmpty()) {
+                    val encryptionManager = EncryptionManager()
+                    encryptionManager.decryptInvitation(snapshot.value.toString(), budget, encryptionManager.generateEncryptionKey(invitationCode, invitationCode.toByteArray()))
+                } else {
+                    null
+                }
+            } catch(e: Exception) {
                 null
             }
         }

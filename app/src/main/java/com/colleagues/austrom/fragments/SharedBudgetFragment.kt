@@ -14,6 +14,7 @@ import com.colleagues.austrom.adapters.UserRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.dialogs.InvitationSentDialogFragment
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.TextEditDialogFragment
 import com.colleagues.austrom.models.Budget
 
@@ -49,7 +50,10 @@ class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout
         dialog.setOnDialogResultListener { emailOfUser ->
             val user = remoteDBProvider.getUserByEmail(emailOfUser)
             if (user!=null) {
-                activeBudget.inviteUser(user, LocalDatabaseProvider(requireActivity()), remoteDBProvider)
+                val invitation = activeBudget.inviteUser(user, LocalDatabaseProvider(requireActivity()), remoteDBProvider)
+                val successDialog = InvitationSentDialogFragment(invitation.invitationCode)
+                successDialog.setOnDialogResultListener { result ->  }
+                successDialog.show(requireActivity().supportFragmentManager, "Confirmation Dialog")
             }
         }
         dialog.show(requireActivity().supportFragmentManager, "AssetTypeSelectionDialog")
