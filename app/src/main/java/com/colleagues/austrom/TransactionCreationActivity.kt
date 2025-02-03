@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.colleagues.austrom.adapters.AssetSquareRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.CategorySelectionDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.CategorySelectionDialogFragment
 import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat

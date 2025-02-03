@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.TransactionExtendedRecyclerAdapter
-import com.colleagues.austrom.dialogs.ImportMappingDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.ImportMappingDialogFragment
 import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.extensions.parseToLocalDate
 import com.colleagues.austrom.models.Transaction

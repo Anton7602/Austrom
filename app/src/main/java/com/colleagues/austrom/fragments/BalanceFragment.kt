@@ -15,11 +15,10 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.AssetGroupRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.AssetFilter
-import com.colleagues.austrom.dialogs.AssetTypeSelectionDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.AssetFilter
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.AssetTypeSelectionDialogFragment
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
-import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.views.MoneyFormatTextView
 
 class BalanceFragment : Fragment(R.layout.fragment_balance) {

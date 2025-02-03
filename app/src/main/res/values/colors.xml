@@ -25,6 +25,9 @@
     <color name="confirmationColor">#FF0d99ff</color>
 
 
+    <color name="dialogBackgroundColor">#FF10111A</color>
+
+
     <color name="diagramColor1">#E480F4</color>
     <color name="diagramColor2">#6CC3F3</color>
     <color name="diagramColor3">#7167ED</color>

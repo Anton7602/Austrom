@@ -9,8 +9,7 @@ import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.BudgetCreationDialogFragment
-import com.colleagues.austrom.dialogs.TextEditDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.TextEditDialogFragment
 import com.colleagues.austrom.models.Budget
 
 class SharedBudgetEmptyFragment : Fragment(R.layout.fragment_shared_budget_empty) {

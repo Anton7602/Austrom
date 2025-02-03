@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".dialogs.CurrencySelectionDialogFragment">
+    tools:context=".dialogs.bottomsheetdialogs.CurrencySelectionDialogFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/csdial_holder_crv"

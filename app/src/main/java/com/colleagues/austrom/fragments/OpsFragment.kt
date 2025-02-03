@@ -14,7 +14,7 @@ import com.colleagues.austrom.TransactionCreationActivity
 import com.colleagues.austrom.TransactionPropertiesActivityNew
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.TransactionTypeSelectionDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.TransactionTypeSelectionDialogFragment
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType

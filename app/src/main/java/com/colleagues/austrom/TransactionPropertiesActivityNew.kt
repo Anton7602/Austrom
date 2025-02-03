@@ -1,7 +1,6 @@
 package com.colleagues.austrom
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -11,7 +10,6 @@ import android.widget.PopupMenu
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -19,9 +17,9 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentTransaction
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.ImageSelectionDialogFragment
-import com.colleagues.austrom.dialogs.TextEditDialogFragment
-import com.colleagues.austrom.dialogs.TransactionDetailCreationNewDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.ImageSelectionDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.TextEditDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.TransactionDetailCreationNewDialogFragment
 import com.colleagues.austrom.fragments.TransactionEditFragment
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.views.ActionButtonView

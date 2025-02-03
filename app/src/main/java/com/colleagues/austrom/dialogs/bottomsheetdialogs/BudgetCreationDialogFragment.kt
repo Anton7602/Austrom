@@ -1,4 +1,4 @@
-package com.colleagues.austrom.dialogs
+package com.colleagues.austrom.dialogs.bottomsheetdialogs
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,6 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.fragments.SharedBudgetFragment
 import com.colleagues.austrom.models.Budget

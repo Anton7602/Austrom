@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".dialogs.BudgetJoinDialogFragment">
+    tools:context=".dialogs.bottomsheetdialogs.BudgetJoinDialogFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/bjdial_holder_crd"

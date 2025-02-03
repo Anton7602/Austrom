@@ -1,14 +1,10 @@
-package com.colleagues.austrom.dialogs
+package com.colleagues.austrom.dialogs.bottomsheetdialogs
 
 import android.Manifest
 import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.Manifest.permission.READ_MEDIA_VIDEO
 import android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
-import android.app.AlertDialog
-import android.app.Dialog
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -24,7 +20,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.fragment.app.DialogFragment
 import com.colleagues.austrom.R
 import com.colleagues.austrom.models.Transaction
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

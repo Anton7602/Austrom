@@ -21,7 +21,7 @@ import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.CategoryPullDialogFragment
-import com.colleagues.austrom.dialogs.IconSelectionDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.IconSelectionDialogFragment
 import com.colleagues.austrom.managers.Icon
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction

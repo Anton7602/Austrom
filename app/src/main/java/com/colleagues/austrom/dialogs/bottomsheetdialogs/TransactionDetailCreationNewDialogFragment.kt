@@ -1,4 +1,4 @@
-package com.colleagues.austrom.dialogs
+package com.colleagues.austrom.dialogs.bottomsheetdialogs
 
 import android.content.DialogInterface
 import android.os.Bundle
@@ -10,7 +10,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.Spinner
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout

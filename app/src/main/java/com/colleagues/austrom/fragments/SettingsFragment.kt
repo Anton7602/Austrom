@@ -11,10 +11,10 @@ import com.colleagues.austrom.AustromApplication.Companion.appUser
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.CategoryControlDialogFragment
-import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
-import com.colleagues.austrom.dialogs.LanguageSelectionDialogFragment
-import com.colleagues.austrom.dialogs.QuickAccessPinDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.CategoryControlDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.CurrencySelectionDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.LanguageSelectionDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.QuickAccessPinDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.TransactionType

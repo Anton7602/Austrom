@@ -16,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.CurrencySelectionDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.CurrencySelectionDialogFragment
 import com.colleagues.austrom.extensions.dpToPx
 import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.models.Asset

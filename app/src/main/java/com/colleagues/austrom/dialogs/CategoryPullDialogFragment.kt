@@ -36,7 +36,7 @@ class CategoryPullDialogFragment(private val deletedCategory: Category, private 
         val view = i.inflate(R.layout.dialog_fragment_category_pull, null)
         bindViews(view)
         setUpValues()
-        val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity()).setView(view)
+        val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity(), STYLE_NO_FRAME).setView(view)
         val transactionTransferDialog = adb.create()
 
         acceptButton.setOnClickListener { updateCategoryInTransactions(); dismiss() }

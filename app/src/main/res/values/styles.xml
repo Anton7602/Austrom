@@ -66,7 +66,7 @@
 
     <style name="PrimaryCardText" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/primaryTextColor</item>
-        <item name="android:fontFamily">@font/dm_sans_light</item>
+        <item name="android:fontFamily">@font/dm_sans</item>
     </style>
 
     <style name="SecondaryCardText" parent="TextAppearance.AppCompat">

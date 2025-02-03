@@ -1,4 +1,4 @@
-package com.colleagues.austrom.dialogs
+package com.colleagues.austrom.dialogs.bottomsheetdialogs
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryRecyclerAdapter
-import com.colleagues.austrom.adapters.CurrencyRecyclerAdapter
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

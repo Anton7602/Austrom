@@ -8,13 +8,11 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.ImportTransactionDialogFragment
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction

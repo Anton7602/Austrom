@@ -1,4 +1,4 @@
-package com.colleagues.austrom.dialogs
+package com.colleagues.austrom.dialogs.bottomsheetdialogs
 
 import android.content.Intent
 import android.os.Bundle

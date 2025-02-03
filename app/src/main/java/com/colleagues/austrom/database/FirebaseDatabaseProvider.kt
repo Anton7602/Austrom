@@ -338,6 +338,32 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         }
     }
 
+    fun getTopInvitingBudgetId(user: User): String? {
+        var budgetId: String? = null
+        activity?.lifecycleScope?.launch {
+            budgetId = getTopInvitingBudgetIdAsync(user)
+        }
+        return budgetId
+    }
+
+    private fun getTopInvitingBudgetIdAsync(user: User): String? {
+        val reference = database.getReference("invitations")
+        val databaseQuery = reference.child(user.userId)
+        return runBlocking {
+            try {
+                val snapshot = databaseQuery.get().await()
+                if (snapshot.childrenCount>0) {
+                    val dataParts = snapshot.value.toString().split("=")
+                    if (dataParts.isNotEmpty()) {
+                        dataParts[0].substring(1)
+                    } else null
+                } else null
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
 
 //    override fun getCurrencies(): MutableMap<String, Currency> {
 //        var currencies : MutableMap<String, Currency> = mutableMapOf()

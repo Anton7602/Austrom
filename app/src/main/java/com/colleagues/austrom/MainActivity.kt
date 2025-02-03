@@ -1,8 +1,10 @@
 package com.colleagues.austrom
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
@@ -25,9 +27,10 @@ import com.colleagues.austrom.AustromApplication.Companion.appUser
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.AssetFilterDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.AssetFilterDialogFragment
 import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
-import com.colleagues.austrom.dialogs.SuggestQuickAccessDialogFragment
+import com.colleagues.austrom.dialogs.InvitationNotificationDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.SuggestQuickAccessDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.fragments.BudgetFragment
@@ -36,10 +39,11 @@ import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.fragments.SettingsFragment
 import com.colleagues.austrom.fragments.SharedBudgetEmptyFragment
 import com.colleagues.austrom.fragments.SharedBudgetFragment
+import com.colleagues.austrom.fragments.SharedBudgetJoinFragment
 import com.colleagues.austrom.managers.SyncManager
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
-import com.colleagues.austrom.models.TransactionType
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 
@@ -189,8 +193,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun notifyAboutBudgetInvitation() {
         val remoteDBProvider = FirebaseDatabaseProvider(this)
-        if (!intent.getBooleanExtra("newUser", false) && remoteDBProvider.isUserInvitedToBudgets(appUser!!)) {
-            DeletionConfirmationDialogFragment().show(supportFragmentManager, "testDialog")
+        val invitingBudgetId = remoteDBProvider.getTopInvitingBudgetId(appUser!!)
+        if (!intent.getBooleanExtra("newUser", false) && !invitingBudgetId.isNullOrEmpty()) {
+            val budget = remoteDBProvider.getBudgetById(invitingBudgetId)
+            if (budget!=null) {
+                val dialog = InvitationNotificationDialogFragment()
+                dialog.setOnDialogResultListener { isAccepted -> if (isAccepted) switchFragment(SharedBudgetJoinFragment(budget)) }
+                dialog.show(supportFragmentManager, "testDialog")
+            }
         }
     }
 

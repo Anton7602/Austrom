@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.InvitationRecyclerAdapter
@@ -15,7 +14,7 @@ import com.colleagues.austrom.adapters.UserRecyclerAdapter
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.TextEditDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.TextEditDialogFragment
 import com.colleagues.austrom.models.Budget
 
 class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout.fragment_shared_budget) {
