@@ -2,6 +2,7 @@ package com.colleagues.austrom.managers
 
 import android.util.Base64
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Invitation
 import com.colleagues.austrom.models.Transaction
@@ -45,7 +46,7 @@ class EncryptionManager {
     fun decryptTransaction(encryptedData: String, secretKey: SecretKey): Transaction { return Transaction.deserialize(decrypt(encryptedData, secretKey))  }
     fun decryptTransactionDetail(encryptedData: String, secretKey: SecretKey): TransactionDetail { return TransactionDetail.deserialize(decrypt(encryptedData, secretKey)) }
     fun decryptCategory(encryptedData: String, secretKey: SecretKey): Category {return Category.deserialize(decrypt(encryptedData, secretKey))}
-    fun decryptInvitation(encryptedData: String, secretKey: SecretKey): Invitation {return Invitation.deserialize(decrypt(encryptedData, secretKey))}
+    fun decryptInvitation(encryptedData: String, budget: Budget, secretKey: SecretKey): Invitation {return Invitation.deserialize(decrypt(encryptedData, secretKey), budget.budgetId)}
 
     fun generateEncryptionKey(): SecretKey {
         val keyGenerator = KeyGenerator.getInstance("AES")

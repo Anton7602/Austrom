@@ -192,10 +192,13 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
         if (transaction==null) return
         val localDBProvider = LocalDatabaseProvider(requireActivity())
         localDBProvider.getUniqueTransactionNamesAsync(transaction.transactionType()).observe(requireActivity()) { names ->
-            val adapter = ArrayAdapter(requireActivity(), android.R.layout.simple_dropdown_item_1line, names)
-            nameTextView.setAdapter(adapter)
-            nameTextView.threshold = 2
-
+            try {
+                val adapter = ArrayAdapter(requireActivity(), android.R.layout.simple_dropdown_item_1line, names)
+                nameTextView.setAdapter(adapter)
+                nameTextView.threshold = 2
+            } catch (e: IllegalStateException) {
+                return@observe
+            }
             nameTextView.setOnItemClickListener { parent, view, position, id ->
                 val selectedItem = parent.getItemAtPosition(position) as String
                 val categoryId = localDBProvider.getTransactionNameMostUsedCategory(selectedItem)

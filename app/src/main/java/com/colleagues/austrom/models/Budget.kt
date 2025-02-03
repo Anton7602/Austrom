@@ -93,16 +93,16 @@ class Budget(val budgetName: String, var budgetId: String = generateUniqueBudget
 class Invitation(@PrimaryKey(autoGenerate = false) val userId: String, val token: String, val budgetId: String, val invitationCode: String = generateInviteCode()) {
     companion object {
         private fun generateInviteCode(): String { return Random.nextInt(10000000, 100000000).toString() }
-        fun deserialize(serializedInvitation: String): Invitation {
+        fun deserialize(serializedInvitation: String, budgetId: String): Invitation {
             val dataParts = serializedInvitation.split(",")
             return Invitation(
-                userId = AustromApplication.appUser!!.userId,
                 token = dataParts[0],
-                budgetId = dataParts[1]
+                userId = dataParts[1],
+                budgetId = budgetId
             )
         }
     }
 
-    fun serialize(): String { return "${token},${budgetId}"}
+    fun serialize(): String { return "${token},${userId}"}
 }
 

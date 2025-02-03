@@ -21,10 +21,12 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentTransaction
+import com.colleagues.austrom.AustromApplication.Companion.appUser
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.AssetFilterDialogFragment
+import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
 import com.colleagues.austrom.dialogs.SuggestQuickAccessDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.fragments.BalanceFragment
@@ -100,16 +102,11 @@ class MainActivity : AppCompatActivity() {
         adjustInsets()
         fillInDefaultCategories()
         fillInDefaultCurrencies()
-        if (AustromApplication.appUser?.activeBudgetId!=null) {
-            val remoteDBProvider = FirebaseDatabaseProvider(this)
-            val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
-            if (currentBudget!=null) {
-                SyncManager(this, LocalDatabaseProvider(this), FirebaseDatabaseProvider(this)).sync()
-            }
-        }
         suggestSettingUpQuickAccessCode()
+        notifyAboutBudgetInvitation()
         setUpNavigationDrawer()
-        navigationUserNameTextView.text = AustromApplication.appUser?.username!!.startWithUppercase()
+        synchronizeWithBudget()
+        navigationUserNameTextView.text = appUser?.username!!.startWithUppercase()
         filterButton.setOnClickListener { handleFilterButtonClick() }
         navigationView.setNavigationItemSelectedListener { pressedMenuItem -> handleSideNavigationPanelClick(pressedMenuItem) }
         bottomNavigationBar.setOnItemSelectedListener { item -> handleBottomNavigationBarClick(item) }
@@ -127,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         when(pressedMenuItem.itemId) {
             R.id.nav_sharedBudget_mit -> {
                 val provider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(this)
-                val activeBudgetId = AustromApplication.appUser?.activeBudgetId
+                val activeBudgetId = appUser?.activeBudgetId
                 if (activeBudgetId!=null) {
                     val activeBudget = provider.getBudgetById(activeBudgetId)
                     if (activeBudget!=null) {
@@ -176,7 +173,7 @@ class MainActivity : AppCompatActivity() {
     private fun logOut() {
         (application as AustromApplication).forgetRememberedUser()
         (application as AustromApplication).forgetRememberedPin()
-        AustromApplication.appUser = null
+        appUser = null
         AustromApplication.activeAssets = mutableMapOf()
         AustromApplication.knownUsers = mutableMapOf()
         val dbProvider = LocalDatabaseProvider(this)
@@ -187,6 +184,23 @@ class MainActivity : AppCompatActivity() {
     private fun suggestSettingUpQuickAccessCode() {
         if (intent.getBooleanExtra("newUser",false) && (application as AustromApplication).getRememberedPin()==null) {
             SuggestQuickAccessDialogFragment().show(supportFragmentManager, "Suggest Quick Access Code Dialog")
+        }
+    }
+
+    private fun notifyAboutBudgetInvitation() {
+        val remoteDBProvider = FirebaseDatabaseProvider(this)
+        if (!intent.getBooleanExtra("newUser", false) && remoteDBProvider.isUserInvitedToBudgets(appUser!!)) {
+            DeletionConfirmationDialogFragment().show(supportFragmentManager, "testDialog")
+        }
+    }
+
+    private fun synchronizeWithBudget() {
+        if (appUser?.activeBudgetId!=null) {
+            val remoteDBProvider = FirebaseDatabaseProvider(this)
+            val currentBudget = remoteDBProvider.getBudgetById(appUser!!.activeBudgetId!!)
+            if (currentBudget!=null) {
+                SyncManager(this, LocalDatabaseProvider(this), FirebaseDatabaseProvider(this)).sync()
+            }
         }
     }
 
@@ -231,6 +245,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(
-            Currency.localizeCurrencyNames(dbProvider.getCurrencies(), this), AustromApplication.appUser?.baseCurrencyCode)
+            Currency.localizeCurrencyNames(dbProvider.getCurrencies(), this), appUser?.baseCurrencyCode)
     }
 }

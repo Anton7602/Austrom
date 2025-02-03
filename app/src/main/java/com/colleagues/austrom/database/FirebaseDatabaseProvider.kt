@@ -309,10 +309,34 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
 
     override fun sentBudgetInvite(invitation: Invitation) {
         val encryptionManager = EncryptionManager()
-        database.getReference("invitations").child(invitation.userId)
+        database.getReference("invitations").child(invitation.userId).child(invitation.budgetId)
             .setValue(encryptionManager.encrypt(invitation, encryptionManager.generateEncryptionKey(invitation.invitationCode, invitation.invitationCode.toByteArray())))
     }
 
+    fun isUserInvitedToBudgets(user: User): Boolean {
+        var isUserInvited = false
+        activity?.lifecycleScope?.launch {
+            isUserInvited = isUserInvitedToBudgetsAsync(user)
+        }
+        return isUserInvited
+    }
+
+    private fun isUserInvitedToBudgetsAsync(user: User): Boolean {
+        val reference = database.getReference("invitations")
+        val databaseQuery = reference.child(user.userId)
+        return runBlocking {
+            try {
+                val snapshot = databaseQuery.get().await()
+                if (snapshot.childrenCount>0) {
+                    true
+                } else {
+                    false
+                }
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
 
 
 //    override fun getCurrencies(): MutableMap<String, Currency> {
