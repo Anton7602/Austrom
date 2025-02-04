@@ -16,6 +16,7 @@ import com.colleagues.austrom.extensions.toInt
 import com.colleagues.austrom.managers.AssetChangeLog
 import com.colleagues.austrom.managers.SyncManager
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Invitation
@@ -125,16 +126,16 @@ interface AssetDao {
     @Query("SELECT * FROM Asset WHERE Asset.userId=:userId")
     suspend fun getAssetsOfUser(userId: String): List<Asset>
 
-    @Query("SELECT * FROM Asset")
-    suspend fun getAssetsOfBudget(): List<Asset>
+    @Query("SELECT * FROM Asset WHERE userId IN (:users)")
+    suspend fun getAssetsOfBudget(users: List<String>): List<Asset>
 
     @Query("SELECT * FROM Asset WHERE Asset.assetId = :id")
     suspend fun getAssetById(id: String): List<Asset>
 
     @Query("""
-        SELECT * FROM Asset
+        SELECT * FROM Asset WHERE userId IN (:users)
     """)
-    fun getAssetsByFilter(): LiveData<List<Asset>>
+    fun getAssetsByFilter(users: List<String>): LiveData<List<Asset>>
 }
 
 @Dao
@@ -154,8 +155,8 @@ interface TransactionDao {
     @Query ("SELECT * FROM `Transaction` as Trn WHERE Trn.transactionId=:transactionID")
     suspend fun getTransactionByID(transactionID: String): Transaction?
 
-    @Query("SELECT * FROM `Transaction`")
-    suspend fun getTransactionsOfBudget(): List<Transaction>
+    @Query("SELECT * FROM `Transaction` WHERE userId IN (:users)")
+    suspend fun getTransactionsOfBudget(users: List<String>): List<Transaction>
 
     @Query("SELECT * FROM `Transaction` as Trn WHERE Trn.userId=:userId")
     suspend fun getTransactionsOfUser(userId: String): List<Transaction>
@@ -163,48 +164,44 @@ interface TransactionDao {
     @Query("SELECT * FROM `Transaction` as Trn WHERE Trn.assetId=:assetId")
     suspend fun getTransactionsOfAsset(assetId: String): List<Transaction>
 
-    @Query ("SELECT * FROM `TRANSACTION` as Trn WHERE Trn.categoryId = :categoryId ")
-    suspend fun getTransactionsByCategoryId(categoryId: String): List<Transaction>
+    @Query ("SELECT * FROM `TRANSACTION` as Trn WHERE userId IN (:users) AND Trn.categoryId = :categoryId ")
+    suspend fun getTransactionsByCategoryId(users: List<String>, categoryId: String): List<Transaction>
 
-    @Query("SELECT * FROM `Transaction` as Trn WHERE transactionDate = :date AND amount = :amount")
-    suspend fun getCollidingTransaction(date: LocalDate, amount: Double): List<Transaction>
-
-    @Query("""
-        SELECT transactionName
-        FROM `Transaction`
-        GROUP BY transactionName
-        ORDER BY COUNT(transactionName) DESC
-    """)
-    fun getUniqueTransactionNames(): LiveData<List<String>>
+    @Query("SELECT * FROM `Transaction` as Trn WHERE userId IN (:users) AND transactionDate = :date AND amount = :amount")
+    suspend fun getCollidingTransaction(users: List<String>, date: LocalDate, amount: Double): List<Transaction>
 
     @Query("""
         SELECT transactionName
         FROM `Transaction`
-        WHERE linkedTransactionId IS NULL AND amount < 0
+        WHERE userId IN (:users)
         GROUP BY transactionName
         ORDER BY COUNT(transactionName) DESC
     """)
-    fun getUniqueExpenseNames(): LiveData<List<String>>
+    fun getUniqueTransactionNames(users: List<String>): LiveData<List<String>>
 
     @Query("""
         SELECT transactionName
         FROM `Transaction`
-        WHERE linkedTransactionId IS NULL AND amount > 0
+        WHERE userId IN (:users) AND linkedTransactionId IS NULL AND amount < 0
         GROUP BY transactionName
         ORDER BY COUNT(transactionName) DESC
     """)
-    fun getUniqueIncomeNames(): LiveData<List<String>>
+    fun getUniqueExpenseNames(users: List<String>): LiveData<List<String>>
 
-//    @Query("""
-//        SELECT * FROM `Transaction`
-//        WHERE categoryId IN (:categoryIds)
-//        AND transactionDate BETWEEN :startDate AND :endDate
-//    """)
+    @Query("""
+        SELECT transactionName
+        FROM `Transaction`
+        WHERE userId IN (:users) AND linkedTransactionId IS NULL AND amount > 0
+        GROUP BY transactionName
+        ORDER BY COUNT(transactionName) DESC
+    """)
+    fun getUniqueIncomeNames(users: List<String>): LiveData<List<String>>
+
     @Query("""
         SELECT * FROM `Transaction`
-        WHERE categoryId IN (:categoryIds) AND transactionDate BETWEEN :startDate AND :endDate
+        WHERE userId IN (:users) AND categoryId IN (:categoryIds) AND transactionDate BETWEEN :startDate AND :endDate
     """)
-    fun getTransactionsByCategoryAndDate(categoryIds: List<String>, startDate: Int, endDate: Int): LiveData<List<Transaction>>
+    fun getTransactionsByCategoryAndDate(users: List<String>, categoryIds: List<String>, startDate: Int, endDate: Int): LiveData<List<Transaction>>
 
     @Query("""SELECT Trn.categoryId FROM `Transaction` as Trn
         WHERE Trn.transactionName=:transactionName
@@ -273,11 +270,11 @@ interface CategoryDao {
     @Delete
     suspend fun deleteCategory(category: Category)
 
-    @Query("SELECT * FROM Category")
-    suspend fun getAllCategories(): List<Category>
+    @Query("SELECT * FROM Category WHERE userId IN (:users)")
+    suspend fun getAllCategories(users: List<String>): List<Category>
 
-    @Query("SELECT * FROM Category WHERE Category.transactionType = :transactionType")
-    suspend fun getCategories(transactionType: TransactionType): List<Category>
+    @Query("SELECT * FROM Category WHERE userId IN (:users) AND transactionType = :transactionType")
+    suspend fun getCategories(users: List<String>, transactionType: TransactionType): List<Category>
 
     @Query("SELECT * FROM CATEGORY WHERE Category.categoryId = :categoryId")
     suspend fun getCategoryById(categoryId: String): List<Category>

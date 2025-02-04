@@ -31,7 +31,7 @@ class BudgetFragment : Fragment(R.layout.fragment_budget) {
     override fun onStart() {
         super.onStart()
         val dbProvider = LocalDatabaseProvider(requireActivity())
-        pieChart.setChartData(calculateTransactionsSums(dbProvider.getTransactionsOfUser(AustromApplication.appUser!!)))
+        pieChart.setChartData(calculateTransactionsSums(dbProvider.getTransactionsOfActiveBudget()))
         setUpRecyclerView()
     }
 

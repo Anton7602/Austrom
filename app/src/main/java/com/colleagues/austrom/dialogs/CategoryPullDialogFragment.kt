@@ -9,11 +9,16 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import com.colleagues.austrom.AustromApplication.Companion.appUser
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.CategoryArrayAdapter
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class CategoryPullDialogFragment(private val deletedCategory: Category, private val transactionsToChange: List<Transaction>) : DialogFragment() {
     fun setOnDialogResultListener(l: ((Boolean)->Unit)) { returnResult = l }
@@ -36,19 +41,25 @@ class CategoryPullDialogFragment(private val deletedCategory: Category, private 
         val view = i.inflate(R.layout.dialog_fragment_category_pull, null)
         bindViews(view)
         setUpValues()
-        val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity(), STYLE_NO_FRAME).setView(view)
-        val transactionTransferDialog = adb.create()
 
         acceptButton.setOnClickListener { updateCategoryInTransactions(); dismiss() }
         cancelButton.setOnClickListener { dismiss() }
-        return transactionTransferDialog
+
+        return MaterialAlertDialogBuilder(requireContext()).setView(view).create()
     }
 
     private fun updateCategoryInTransactions() {
-        val dbProvider = LocalDatabaseProvider(requireActivity())
+        val localDBProvider = LocalDatabaseProvider(requireActivity())
+        var remoteDBProvider: IRemoteDatabaseProvider? = null
+        var budget: Budget? = null
+        if (appUser!!.activeBudgetId!=null) {
+            remoteDBProvider = FirebaseDatabaseProvider(requireActivity())
+            budget = remoteDBProvider.getBudgetById(appUser!!.activeBudgetId!!)
+        }
         transactionsToChange.forEach { transaction ->
             transaction.categoryId = (categoriesSpinner.selectedItem as Category).categoryId
-            dbProvider.updateTransaction(transaction)
+            localDBProvider.updateTransaction(transaction)
+            if (remoteDBProvider!=null && budget!=null) remoteDBProvider.updateTransaction(transaction, budget)
         }
         returnResult(true)
     }

@@ -2,22 +2,29 @@ package com.colleagues.austrom.managers
 
 import android.content.Context
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.AustromApplication.Companion.activeCategories
+import com.colleagues.austrom.AustromApplication.Companion.appUser
+import com.colleagues.austrom.AustromApplication.Companion.knownUsers
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.intAfterLastPipe
 import com.colleagues.austrom.extensions.substringBeforeLastPipe
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
+import com.colleagues.austrom.models.TransactionType
+import com.colleagues.austrom.models.User
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SyncManager(val context: Context, private val localDBProvider: LocalDatabaseProvider, private val remoteDBProvider: IRemoteDatabaseProvider) {
-    private val budget = remoteDBProvider.getBudgetById(AustromApplication.appUser?.activeBudgetId.toString())
+    private val budget = remoteDBProvider.getBudgetById(appUser?.activeBudgetId.toString())
     private var currenciesListener: ValueEventListener? = null
     private var userListener: ValueEventListener? = null
     private var assetListener: ValueEventListener? = null
@@ -63,7 +70,6 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
 
     private suspend fun syncTransactionsRemoteToLocal() {
         if (remoteDBProvider is FirebaseDatabaseProvider) setTransactionListener(remoteDBProvider)
-
     }
 
     private suspend fun syncTransactionsDetailsRemoteToLocal() {
@@ -80,7 +86,7 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                     currencies[currency.code] = currency
                 }
             }
-            AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(Currency.localizeCurrencyNames(currencies, context), AustromApplication.appUser?.baseCurrencyCode)
+            AustromApplication.activeCurrencies = Currency.switchRatesToNewBaseCurrency(Currency.localizeCurrencyNames(currencies, context), appUser?.baseCurrencyCode)
             localDBProvider.deleteAllCurrencies()
             currencies.forEach { currency ->
                 localDBProvider.writeCurrency(currency.value)
@@ -90,28 +96,37 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
     }
 
     private suspend fun setUsersListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
-        if (budget==null) return
+        if (budget==null) {
+            localDBProvider.getAllUsers().forEach{(id, user) -> if (appUser!!.userId!=id) localDBProvider.deleteUser(user)}
+            return
+        }
         firebaseDatabaseProvider.fetchUserData(budget) { dataSnapshot ->
             Log.d("Debug", "Started Syncing Users")
+            val budgetUserKeys = mutableListOf<String>()
             for (snapshotItem in dataSnapshot.children) {
                 val userID = snapshotItem.getValue(String::class.java)
                 if (userID!=null) {
+                    budgetUserKeys.add(userID)
                     val user = firebaseDatabaseProvider.getUserByUserId(userID)
                     if (user!= null) {
                         val localUser = localDBProvider.getUserByUserId(userID)
-                        if (userID == AustromApplication.appUser?.userId) {
-                            user.password = AustromApplication.appUser!!.password
-                            user.tokenId = AustromApplication.appUser!!.tokenId
+                        if (userID == appUser?.userId) {
+                            user.password = appUser!!.password
+                            user.tokenId = appUser!!.tokenId
                         }
                         if (localUser != null) {
                             localDBProvider.updateUser(user)
                         } else {
                             localDBProvider.writeNewUser(user)
                         }
-                        AustromApplication.knownUsers[user.userId] = user
+                        knownUsers[user.userId] = user
                     }
                 }
             }
+            localDBProvider.getAllUsers().forEach { (id, user) -> if (!budgetUserKeys.contains(id) && appUser!!.userId!=id) {
+                localDBProvider.deleteUser(user)
+                knownUsers.remove(id)
+            }}
             Log.d("Debug", "Finished Syncing Users")
         }
     }
@@ -130,7 +145,7 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                     }
                 } else {
                     val asset = encryptionManager.decryptAsset(snapshotItem.getValue(String::class.java).toString(),
-                        encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                        encryptionManager.convertStringToSecretKey(appUser!!.tokenId))
                     if (localAsset!=null) {
                         localDBProvider.updateAsset(asset)
                     } else {
@@ -148,24 +163,37 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
         firebaseDatabaseProvider.fetchCategoriesData(budget) {dataSnapshot ->
             Log.d("Debug", "Started Syncing Categories")
             val encryptionManager = EncryptionManager()
+            val remoteCategoriesId = mutableListOf<String>()
             dataSnapshot.children.forEach {snapshotItem ->
                 val localCategory = localDBProvider.getCategoryById(snapshotItem.key.toString())
-                if (localCategory!=null && snapshotItem.value=="-") {
-                    localDBProvider.deleteCategory(localCategory)
-                    if (AustromApplication.activeCategories.containsKey(localCategory.categoryId)) {
-                        AustromApplication.activeCategories.remove(localCategory.categoryId)
+                remoteCategoriesId.add(snapshotItem.key.toString())
+                if (localCategory!=null) {
+                    if (snapshotItem.value=="-") {
+                        localDBProvider.deleteCategory(localCategory)
+                        if (activeCategories.containsKey(localCategory.categoryId)) {
+                            activeCategories.remove(localCategory.categoryId)
+                        }
+                    } else {
+                        val category = encryptionManager.decryptCategory(snapshotItem.getValue(String::class.java).toString(),
+                            encryptionManager.convertStringToSecretKey(appUser!!.tokenId))
+                        localDBProvider.updateCategory(category)
                     }
                 } else {
-                    val category = encryptionManager.decryptCategory(snapshotItem.getValue(String::class.java).toString(),
-                        encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
-                    if (localCategory!=null) {
-                        localDBProvider.updateCategory(category)
-                    } else {
+                    if (snapshotItem.value!="-") {
+                        val category = encryptionManager.decryptCategory(snapshotItem.getValue(String::class.java).toString(),
+                            encryptionManager.convertStringToSecretKey(appUser!!.tokenId))
                         localDBProvider.writeCategory(category)
+                        activeCategories[category.categoryId] = category
                     }
-                    AustromApplication.activeCategories[category.categoryId] = category
                 }
             }
+            localDBProvider.getCategories().filter { l -> l.transactionType!=TransactionType.TRANSFER }.forEach { category ->
+                if (!remoteCategoriesId.contains(category.categoryId)) {
+                    localDBProvider.deleteCategory(category)
+                    if (activeCategories.containsKey(category.categoryId)) activeCategories.remove(category.categoryId)
+                }
+            }
+            Log.d("Debug", "Finished Syncing Categories")
         }
     }
 
@@ -179,7 +207,7 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                 if (localTransaction==null) {
                     if (snapshotItem.value!="-") {
                         val transaction = encryptionManager.decryptTransaction(snapshotItem.getValue(String::class.java).substringBeforeLastPipe().toString(),
-                            encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                            encryptionManager.convertStringToSecretKey(appUser!!.tokenId))
                         val asset = AustromApplication.activeAssets[transaction.assetId]
                         if (asset!=null) {
                             localDBProvider.insertNewTransaction(transaction)
@@ -193,7 +221,7 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                         val remoteVersion = snapshotItem.getValue(String::class.java).intAfterLastPipe()
                         if (remoteVersion!=null && remoteVersion>localTransaction.version) {
                             val transaction = encryptionManager.decryptTransaction(snapshotItem.getValue(String::class.java).substringBeforeLastPipe().toString(),
-                                encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))
+                                encryptionManager.convertStringToSecretKey(appUser!!.tokenId))
                             transaction.version = remoteVersion
                             localDBProvider.updateTransaction(transaction)
                         }
@@ -214,7 +242,7 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                 if (localTransactionDetail==null) {
                     if (snapshotItem.value!="-") {
                         val transactionDetail = encryptionManager.decryptTransactionDetail(snapshotItem.getValue(String::class.java).toString(), encryptionManager.convertStringToSecretKey(
-                            AustromApplication.appUser!!.tokenId))
+                            appUser!!.tokenId))
                         localDBProvider.writeNewTransactionDetail(transactionDetail)
                     }
                 } else {

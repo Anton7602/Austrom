@@ -2,9 +2,9 @@ package com.colleagues.austrom.database
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import com.colleagues.austrom.AustromApplication.Companion.knownUsers
 import com.colleagues.austrom.extensions.toInt
 import com.colleagues.austrom.models.Asset
-import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.InvalidTransactionException
@@ -119,7 +119,7 @@ class LocalDatabaseProvider(context: Context) {
         val assetMap = mutableMapOf<String, Asset>()
         val dao = localDatabase.assetDao()
         runBlocking {
-            val assets = dao.getAssetsOfBudget()
+            val assets = dao.getAssetsOfBudget(knownUsers.values.map { l -> l.userId })
             for (asset in assets) {
                 assetMap[asset.assetId] = asset
             }
@@ -140,7 +140,7 @@ class LocalDatabaseProvider(context: Context) {
     }
 
     fun getAssetsByAssetFilterAsync() : LiveData<List<Asset>> {
-        return localDatabase.assetDao().getAssetsByFilter()
+        return localDatabase.assetDao().getAssetsByFilter(knownUsers.values.map { l -> l.userId })
     }
     //endregion
 
@@ -193,16 +193,16 @@ class LocalDatabaseProvider(context: Context) {
         val dao =  localDatabase.transactionDao()
         var transactions: MutableList<Transaction>
         runBlocking {
-            transactions = dao.getTransactionsOfUser(user.userId.toString()).toMutableList()
+            transactions = dao.getTransactionsOfUser(user.userId).toMutableList()
         }
         return transactions
     }
 
-    fun getTransactionsOfBudget(budget: Budget): MutableList<Transaction> {
+    fun getTransactionsOfActiveBudget(): MutableList<Transaction> {
         val dao =  localDatabase.transactionDao()
         var transactions: MutableList<Transaction>
         runBlocking {
-            transactions = dao.getTransactionsOfBudget().toMutableList()
+            transactions = dao.getTransactionsOfBudget(knownUsers.values.map { l -> l.userId }).toMutableList()
         }
         return transactions
     }
@@ -220,39 +220,30 @@ class LocalDatabaseProvider(context: Context) {
         val dao = localDatabase.transactionDao()
         var transaction: MutableList<Transaction>
         runBlocking {
-            transaction = dao.getTransactionsByCategoryId(category.categoryId).toMutableList()
+            transaction = dao.getTransactionsByCategoryId(knownUsers.values.map { l -> l.userId }, category.categoryId).toMutableList()
         }
         return transaction
     }
 
-//    fun getTransactionsByTransactionFilter(transactionFilter: TransactionFilter): MutableList<Transaction> {
-//        val dao = localDatabase.transactionDao()
-//        var transactions: MutableList<Transaction>
-//        runBlocking {
-//            transactions = dao.getTransactionsByCategoryAndDate(transactionFilter.categories, transactionFilter.dateFrom!!, transactionFilter.dateTo!!)
-//        }
-//        return transactions
-//    }
-
     fun getTransactionsByTransactionFilterAsync(transactionFilter: TransactionFilter): LiveData<List<Transaction>> {
-        return localDatabase.transactionDao().getTransactionsByCategoryAndDate(transactionFilter.categories, transactionFilter.dateFrom!!.toInt(), transactionFilter.dateTo!!.toInt())
+        return localDatabase.transactionDao().getTransactionsByCategoryAndDate(knownUsers.values.map { l -> l.userId }, transactionFilter.categories, transactionFilter.dateFrom!!.toInt(), transactionFilter.dateTo!!.toInt())
     }
 
     fun isCollidingTransactionExist(transaction: Transaction): Boolean {
         var result = false
         val dao = localDatabase.transactionDao()
         runBlocking {
-            result = (dao.getCollidingTransaction(transaction.transactionDate, transaction.amount).isNotEmpty())
+            result = (dao.getCollidingTransaction(knownUsers.values.map { l -> l.userId }, transaction.transactionDate, transaction.amount).isNotEmpty())
         }
         return result
     }
 
     fun getUniqueTransactionNamesAsync(transactionType: TransactionType? = null): LiveData<List<String>> {
         return when (transactionType) {
-            TransactionType.INCOME -> localDatabase.transactionDao().getUniqueIncomeNames()
-            TransactionType.EXPENSE -> localDatabase.transactionDao().getUniqueExpenseNames()
-            TransactionType.TRANSFER -> localDatabase.transactionDao().getUniqueTransactionNames()
-            else -> localDatabase.transactionDao().getUniqueTransactionNames()
+            TransactionType.INCOME -> localDatabase.transactionDao().getUniqueIncomeNames(knownUsers.values.map { l -> l.userId })
+            TransactionType.EXPENSE -> localDatabase.transactionDao().getUniqueExpenseNames(knownUsers.values.map { l -> l.userId })
+            TransactionType.TRANSFER -> localDatabase.transactionDao().getUniqueTransactionNames(knownUsers.values.map { l -> l.userId })
+            else -> localDatabase.transactionDao().getUniqueTransactionNames(knownUsers.values.map { l -> l.userId })
         }
     }
 
@@ -367,7 +358,7 @@ class LocalDatabaseProvider(context: Context) {
         val dao = localDatabase.categoryDao()
         var categories: List<Category>
         runBlocking {
-            categories = if (transactionType!=null) dao.getCategories(transactionType) else dao.getAllCategories()
+            categories = if (transactionType!=null) dao.getCategories(knownUsers.values.map { l -> l.userId }, transactionType) else dao.getAllCategories(knownUsers.values.map { l -> l.userId })
         }
         return categories
     }
@@ -376,7 +367,10 @@ class LocalDatabaseProvider(context: Context) {
         val dao = localDatabase.categoryDao()
         var category: Category? = null
         runBlocking {
-            category = dao.getCategoryById(categoryId).first()
+            val categories = dao.getCategoryById(categoryId)
+            if (categories.isNotEmpty()) {
+                category = categories.first()
+            }
         }
         return category
     }

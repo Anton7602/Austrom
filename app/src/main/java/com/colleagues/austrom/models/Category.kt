@@ -58,25 +58,25 @@ class Category(var name: String,
         }
 
         var defaultExpenseCategories : List<Category> = listOf(
-            Category("Food",  Icon.I7, TransactionType.EXPENSE, "FOOD"),
-            Category("Clothes", Icon.I3, TransactionType.EXPENSE, "CLOTHES"),
-            Category("Health", Icon.I8, TransactionType.EXPENSE, "HEALTH"),
-            Category("House", Icon.I11, TransactionType.EXPENSE, "HOUSE"),
-            Category("Transport", Icon.I15, TransactionType.EXPENSE, "TRANSPORT"),
-            Category("Travel", Icon.I16, TransactionType.EXPENSE, "TRAVEL"),
-            Category("Subscriptions", Icon.I13, TransactionType.EXPENSE, "SUBSCRIPTIONS"),
-            Category("Entertainment", Icon.I5, TransactionType.EXPENSE, "ENTERTAINMENT"),
-            Category("Sport", Icon.I12, TransactionType.EXPENSE, "SPORT"),
-            Category("Beauty", Icon.I1, TransactionType.EXPENSE, "BEAUTY"),
-            Category("Presents", Icon.I10, TransactionType.EXPENSE, "PRESENTS"),
-            Category("Education", Icon.I4, TransactionType.EXPENSE, "EDUCATION"),
-            Category("Equipment", Icon.I6, TransactionType.EXPENSE, "EQUIPMENT"),
-            Category("Other", Icon.I9, TransactionType.EXPENSE, "OTHER"),
+            Category("Food",  Icon.I7, TransactionType.EXPENSE, generateCategoryId()),
+            Category("Clothes", Icon.I3, TransactionType.EXPENSE, generateCategoryId()),
+            Category("Health", Icon.I8, TransactionType.EXPENSE, generateCategoryId()),
+            Category("House", Icon.I11, TransactionType.EXPENSE, generateCategoryId()),
+            Category("Transport", Icon.I15, TransactionType.EXPENSE, generateCategoryId()),
+            Category("Travel", Icon.I16, TransactionType.EXPENSE, generateCategoryId()),
+            Category("Subscriptions", Icon.I13, TransactionType.EXPENSE, generateCategoryId()),
+            Category("Entertainment", Icon.I5, TransactionType.EXPENSE, generateCategoryId()),
+            Category("Sport", Icon.I12, TransactionType.EXPENSE, generateCategoryId()),
+            Category("Beauty", Icon.I1, TransactionType.EXPENSE, generateCategoryId()),
+            Category("Presents", Icon.I10, TransactionType.EXPENSE, generateCategoryId()),
+            Category("Education", Icon.I4, TransactionType.EXPENSE, generateCategoryId()),
+            Category("Equipment", Icon.I6, TransactionType.EXPENSE, generateCategoryId()),
+            Category("Other", Icon.I9, TransactionType.EXPENSE, generateCategoryId()),
         )
 
         var defaultIncomeCategories : List<Category> = listOf(
-            Category("Wages", Icon.I62, TransactionType.INCOME, "WAGES"),
-            Category("Cashback", Icon.I2, TransactionType.INCOME, "CASHBACK"),
+            Category("Wages", Icon.I62, TransactionType.INCOME, generateCategoryId()),
+            Category("Cashback", Icon.I2, TransactionType.INCOME, generateCategoryId()),
         )
 
         var defaultTransferCategories : List<Category> = listOf(

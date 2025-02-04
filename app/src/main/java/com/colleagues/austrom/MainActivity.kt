@@ -1,10 +1,8 @@
 package com.colleagues.austrom
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
@@ -28,7 +26,6 @@ import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.AssetFilterDialogFragment
-import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
 import com.colleagues.austrom.dialogs.InvitationNotificationDialogFragment
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.SuggestQuickAccessDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
@@ -43,7 +40,6 @@ import com.colleagues.austrom.fragments.SharedBudgetJoinFragment
 import com.colleagues.austrom.managers.SyncManager
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 
@@ -104,6 +100,7 @@ class MainActivity : AppCompatActivity() {
         bindViews()
         setSupportActionBar(toolbar)
         adjustInsets()
+        fillInDefaultUsers()
         fillInDefaultCategories()
         fillInDefaultCurrencies()
         suggestSettingUpQuickAccessCode()
@@ -116,6 +113,10 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationBar.setOnItemSelectedListener { item -> handleBottomNavigationBarClick(item) }
         navigationLogOutButton.setOnClickListener { logOut() }
         onBackPressedDispatcher.addCallback(this) {}
+    }
+
+    private fun fillInDefaultUsers() {
+        AustromApplication.knownUsers = LocalDatabaseProvider(this).getAllUsers()
     }
 
     private fun handleFilterButtonClick() {
@@ -198,8 +199,14 @@ class MainActivity : AppCompatActivity() {
             val budget = remoteDBProvider.getBudgetById(invitingBudgetId)
             if (budget!=null) {
                 val dialog = InvitationNotificationDialogFragment()
-                dialog.setOnDialogResultListener { isAccepted -> if (isAccepted) switchFragment(SharedBudgetJoinFragment(budget)) }
-                dialog.show(supportFragmentManager, "testDialog")
+                dialog.setOnDialogResultListener { isAccepted ->
+                    if (isAccepted)  {
+                        switchFragment(SharedBudgetJoinFragment(budget))
+                    } else {
+                        remoteDBProvider.removeInvitation(appUser!!, budget)
+                    }
+                }
+                dialog.show(supportFragmentManager, "Invitation Received Dialog")
             }
         }
     }

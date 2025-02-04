@@ -38,7 +38,6 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>, pr
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
         holder.transactionHolder.setBackgroundResource(R.drawable.img_transaction_card_background)
-        val dbProvider = LocalDatabaseProvider(context)
         val transaction = transactions[position]
         val asset = AustromApplication.activeAssets[transaction.assetId] ?: throw InvalidTransactionException("Asset used in transaction is not recognized", TransactionValidationType.UNKNOWN_ASSET_INVALID)
         val category: Category

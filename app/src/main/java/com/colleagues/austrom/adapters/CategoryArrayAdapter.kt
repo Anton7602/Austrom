@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.colleagues.austrom.R
 import com.colleagues.austrom.models.Category
@@ -20,9 +21,12 @@ class CategoryArrayAdapter (context: Context, categories: List<Category>) : Arra
 
         val category = getItem(position)
         if (category!= null) {
+            view?.findViewById<LinearLayout>(R.id.itcatnew_categoryHolder_lly)?.setBackgroundColor(context.resources.getColor(R.color.backgroundCard, null))
             view?.findViewById<TextView>(R.id.itcatnew_categoryName_txt)?.text = category.name
+            view?.findViewById<TextView>(R.id.itcatnew_categoryName_txt)?.setTextColor(context.resources.getColor(R.color.primaryTextColor,null))
             view?.findViewById<ImageButton>(R.id.itcatnew_edit_btn)?.visibility = View.GONE
             view?.findViewById<ImageView>(R.id.itcatnew_categoryIcon_img)?.setImageResource(category.imgReference.resourceId)
+            view?.findViewById<ImageView>(R.id.itcatnew_categoryIcon_img)?.setColorFilter(context.resources.getColor(R.color.primaryTextColor, null))
         }
         return view ?: throw IllegalArgumentException("View cannot be null")
     }

@@ -387,6 +387,10 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         }
     }
 
+    fun removeInvitation(user: User, budget: Budget) {
+        database.getReference("invitations").child(user.userId).child(budget.budgetId).setValue(null)
+    }
+
 
 //    override fun getCurrencies(): MutableMap<String, Currency> {
 //        var currencies : MutableMap<String, Currency> = mutableMapOf()

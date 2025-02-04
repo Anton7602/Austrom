@@ -7,9 +7,11 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.colleagues.austrom.AustromApplication.Companion.appUser
+import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.managers.SyncManager
 import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Invitation
 import com.google.android.material.textfield.TextInputEditText
@@ -43,13 +45,21 @@ class SharedBudgetJoinFragment(private val budget: Budget) : Fragment(R.layout.f
         } catch(e: Exception) {
             Log.d("Debug", e.message.toString())
         }
-        val users = remoteDBProvider.getUsersByBudget(budget.budgetId)
-        if (users.containsKey(invitation?.userId)) {
-            appUser!!.activeBudgetId = budget.budgetId
-            appUser!!.tokenId = invitation?.token
-            //LocalDatabaseProvider(requireActivity()).updateUser(appUser!!)
+        if (invitation!=null && appUser!!.userId==(invitation.userId)) {
+            budget.addUser(appUser!!, invitation.token, LocalDatabaseProvider(requireActivity()), remoteDBProvider)
+            remoteDBProvider.removeInvitation(appUser!!, budget)
+            synchronizeWithBudget()
+            (requireActivity() as MainActivity).switchFragment(SharedBudgetFragment(budget))
         }
-        val test = 5
+    }
 
+    private fun synchronizeWithBudget() {
+        if (appUser?.activeBudgetId!=null) {
+            val remoteDBProvider = FirebaseDatabaseProvider(requireActivity())
+            val currentBudget = remoteDBProvider.getBudgetById(appUser!!.activeBudgetId!!)
+            if (currentBudget!=null) {
+                SyncManager(requireActivity(), LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity())).sync()
+            }
+        }
     }
 }

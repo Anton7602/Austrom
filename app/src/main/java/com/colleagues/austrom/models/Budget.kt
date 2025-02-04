@@ -78,12 +78,27 @@ class Budget(val budgetName: String, var budgetId: String = generateUniqueBudget
         remoteDBProvider.updateUser(user)
         remoteDBProvider.updateBudget(this)
 
+        mergeCategories(localDBProvider, remoteDBProvider)
         AustromApplication.activeAssets.values.forEach{ asset -> remoteDBProvider.createNewAsset(asset, this) }
         val transactions = localDBProvider.getTransactionsOfUser(AustromApplication.appUser!!)
         transactions.forEach { transaction ->
             remoteDBProvider.insertTransaction(transaction, this)
             localDBProvider.getTransactionDetailsOfTransaction(transaction).forEach { transactionDetail ->
                 remoteDBProvider.insertTransactionDetail(transactionDetail, this)
+            }
+        }
+    }
+
+
+    private fun mergeCategories(localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider) {
+        AustromApplication.activeCategories.values.forEach { category ->
+            if (localDBProvider.getTransactionOfCategory(category).isNotEmpty()) {
+                remoteDBProvider.insertCategory(category, this)
+            }
+            else {
+                if (category.transactionType!=TransactionType.TRANSFER) {
+                    localDBProvider.deleteCategory(category)
+                }
             }
         }
     }
