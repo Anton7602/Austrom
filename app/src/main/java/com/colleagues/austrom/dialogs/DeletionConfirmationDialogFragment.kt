@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.colleagues.austrom.R
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class DeletionConfirmationDialogFragment(private var message: String? = null, private var titleAccept: String? = null,  private var titleDecline: String? = null) : DialogFragment() {
     fun setOnDialogResultListener(l: ((Boolean)->Unit)) { returnResult = l }
@@ -38,7 +39,7 @@ class DeletionConfirmationDialogFragment(private var message: String? = null, pr
         }
         acceptButton.setOnClickListener { returnResult(true); dismiss() }
         cancelButton.setOnClickListener { dismiss() }
-        return targetSelectionDialog
+        return MaterialAlertDialogBuilder(requireContext()).setView(view).create()
     }
 
     private fun setUpValues() {

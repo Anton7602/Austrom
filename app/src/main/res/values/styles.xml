@@ -64,6 +64,15 @@
         <item name="strokeColor">@color/backgroundText</item>
     </style>
 
+    <style name="TabHeaderButton" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/transparent</item>
+        <item name="android:textAppearance">@style/PrimaryCardText</item>
+        <item name="android:drawableBottom">@android:drawable/button_onoff_indicator_off</item>
+        <item name="android:drawableTint">@color/blue</item>
+        <item name="android:padding">5dp</item>
+        <item name="cornerRadius">0dp</item>
+    </style>
+
     <style name="PrimaryCardText" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/primaryTextColor</item>
         <item name="android:fontFamily">@font/dm_sans</item>

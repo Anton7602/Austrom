@@ -33,6 +33,15 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
     fun transactionType(): TransactionType { return if (linkedTransactionId!=null) TransactionType.TRANSFER else if (amount<0) TransactionType.EXPENSE else TransactionType.INCOME }
     fun sumOfTransactionDetailsAmounts(localDBProvider: LocalDatabaseProvider): Double { return localDBProvider.getTransactionDetailsOfTransaction(this).sumOf {it.cost} }
     fun serialize(): String { return "$transactionId,$amount,$categoryId,$assetId,${transactionDate.serialize()},$transactionName,$comment,$userId,$linkedTransactionId,$isPrivate" }
+    fun toCSVFormat(): String {
+        val activeAsset = AustromApplication.activeAssets[assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
+        val category = AustromApplication.activeCategories[categoryId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_CATEGORY_INVALID)
+        var originalAmount = this.amount
+        if (activeAsset.currencyCode!=AustromApplication.appUser!!.baseCurrencyCode) {
+            originalAmount *= (AustromApplication.activeCurrencies[activeAsset.currencyCode]?.exchangeRate ?: 1.0)
+        }
+        return "${transactionName},${transactionDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))},${amount},${activeAsset.currencyCode},${originalAmount},${AustromApplication.appUser!!.baseCurrencyCode},${activeAsset.assetName},${category.name},${AustromApplication.appUser!!.username},${comment}"
+    }
 
     fun linkTo(transaction: Transaction) {
         if (transactionId==transaction.transactionId) throw IllegalArgumentException("Link can not be pointing on itself")

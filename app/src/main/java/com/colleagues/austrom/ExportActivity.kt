@@ -86,14 +86,14 @@ class ExportActivity : AppCompatActivity() {
         val csvBuilder = StringBuilder()
         val dbProvider = LocalDatabaseProvider(this)
         val exportedTransactions = dbProvider.getTransactionsOfAsset(exportedAsset)
-        csvBuilder.append("AssetId,Amount,CategoryId,TransactionDate,TransactionName,Comment,TransactionId,UserId,LinkedTransactionId,isPrivate")
+        csvBuilder.append("Transaction Description,Date,Amount,Currency,Base Currency Amount,Base Currency,Asset,Category,Holder,Comment")
         exportedTransactions.forEach { transaction ->
-            csvBuilder.append(transaction.serialize())
+            csvBuilder.append(transaction.toCSVFormat())
         }
         try {
             fos.write(csvBuilder.toString().toByteArray())
             fos.close()
-            val csvFile = File(filesDir, "data.csv")
+            val csvFile = File(filesDir, "${exportedAsset.assetName}_${LocalDate.now().format(DateTimeFormatter.ISO_DATE)}.csv")
             val csvUri = FileProvider.getUriForFile(this, "${applicationContext.packageName}.provider", csvFile)
 
             val shareIntent = Intent(Intent.ACTION_SEND)

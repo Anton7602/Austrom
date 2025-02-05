@@ -10,7 +10,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/navigationBarColor"
+        app:cardBackgroundColor="@color/backgroundDialogColor"
         app:cardCornerRadius="20dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,7 +34,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/are_you_sure"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textAppearance="@style/PrimaryCardText"
+                android:textSize="22sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/imageView6"
                 app:layout_constraintStart_toStartOf="@+id/imageView6"
@@ -46,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/the_action_you_about_to_do_is_irreversible_are_you_sure_you_want_to_proceed"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textAppearance="@style/SecondaryCardText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/wardial_title_txt" />
@@ -58,7 +59,8 @@
                 android:layout_marginTop="16dp"
                 android:background="@color/transparent"
                 android:text="@string/cancel"
-                android:textColor="@color/black"
+                android:textAppearance="@style/SecondaryCardText"
+                android:textColor="@color/secondaryTextColor"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/wardial_message_txt" />
 

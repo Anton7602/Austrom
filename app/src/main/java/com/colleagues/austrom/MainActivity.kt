@@ -33,6 +33,7 @@ import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.fragments.BudgetFragment
 import com.colleagues.austrom.fragments.ImportFragment
 import com.colleagues.austrom.fragments.OpsFragment
+import com.colleagues.austrom.fragments.PlanningFragment
 import com.colleagues.austrom.fragments.SettingsFragment
 import com.colleagues.austrom.fragments.SharedBudgetEmptyFragment
 import com.colleagues.austrom.fragments.SharedBudgetFragment
@@ -154,6 +155,7 @@ class MainActivity : AppCompatActivity() {
         when(pressedButton.itemId) {
             R.id.navbar_balance_mit -> switchFragment(BalanceFragment())
             R.id.navbar_budget_mit -> switchFragment(BudgetFragment())
+            R.id.navbar_planning_mit -> switchFragment(PlanningFragment())
             R.id.navbar_ops_mit -> switchFragment(OpsFragment())
             else -> return false
         }
@@ -172,6 +174,7 @@ class MainActivity : AppCompatActivity() {
             is OpsFragment -> filterButton.visibility = View.GONE
             else -> filterButton.visibility = View.GONE
         }
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         transaction.commit()
     }
 

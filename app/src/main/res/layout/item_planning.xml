@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/backgroundMain"
+    android:paddingVertical="2dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/backgroundCard"
+        app:cardCornerRadius="24dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/planit_categoryName_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="2dp"
+                android:text="Category"
+                android:textAppearance="@style/PrimaryCardText"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.colleagues.austrom.views.MoneyFormatTextView
+                android:id="@+id/planit_categoryPlanExpense_monf"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:currencyTextSizePercent="0.9"
+                app:layout_constraintBottom_toBottomOf="@+id/planit_categoryName_txt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/planit_categoryName_txt" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/planit_barEmpty_crv"
+                android:layout_width="match_parent"
+                android:layout_height="14dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/planit_categoryName_txt">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/planit_fillPercentInner_gui"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.55" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/planit_barFilled_crd"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:cardBackgroundColor="@color/incomeGreen"
+                        app:cardCornerRadius="0dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/divider5"
+                        app:layout_constraintEnd_toStartOf="@+id/divider5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/divider5"
+                        android:layout_width="2dp"
+                        android:layout_height="0dp"
+                        android:background="@color/backgroundCard"
+                        android:translationZ="8dp"
+                        app:layout_constraintEnd_toStartOf="@+id/planit_fillPercentInner_gui"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/planit_topExpensesHolder_rcv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/planit_factExpence_monf"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_transaction_detail_new" />
+
+            <com.colleagues.austrom.views.MoneyFormatTextView
+                android:id="@+id/planit_factExpence_monf"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginTop="4dp"
+                app:amountColor="@color/secondaryTextColor"
+                app:amountSize="11sp"
+                app:currencySize="10sp"
+                app:layout_constraintEnd_toStartOf="@+id/planit_fillPercentOut_gui"
+                app:layout_constraintStart_toStartOf="@+id/planit_fillPercentOut_gui"
+                app:layout_constraintTop_toBottomOf="@+id/planit_barEmpty_crv" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/planit_fillPercentOut_gui"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.55" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>

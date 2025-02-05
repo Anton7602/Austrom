@@ -45,7 +45,8 @@
                         app:layout_constraintBottom_toTopOf="@+id/guideline8"
                         app:layout_constraintEnd_toStartOf="@+id/trlistheadview_filterButton_btn"
                         app:layout_constraintStart_toStartOf="@+id/guideline5"
-                        app:layout_constraintTop_toTopOf="@+id/guideline7">
+                        app:layout_constraintTop_toTopOf="@+id/guideline7"
+                        app:singleLine="true">
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/trlistheadview_dateHeader_chp"

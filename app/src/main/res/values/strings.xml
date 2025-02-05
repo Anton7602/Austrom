@@ -455,4 +455,6 @@
     <string name="import_all">Import All</string>
     <string name="from_application">From Application</string>
     <string name="from_file">From File</string>
+    <string name="planning">Planning</string>
+    <string name="analytics">Analytics</string>
 </resources>

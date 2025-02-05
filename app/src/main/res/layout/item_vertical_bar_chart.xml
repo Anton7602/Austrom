@@ -49,7 +49,7 @@
                 android:layout_height="0dp"
                 android:gravity="center"
                 android:text="74%"
-                android:textSize="11sp"
+                android:textSize="10sp"
                 android:translationZ="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

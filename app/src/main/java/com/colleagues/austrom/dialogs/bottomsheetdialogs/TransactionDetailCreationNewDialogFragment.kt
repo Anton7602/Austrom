@@ -30,7 +30,7 @@ import kotlin.math.absoluteValue
 
 
 class TransactionDetailCreationNewDialogFragment(private val transaction: Transaction, private val transactionDetails: List<TransactionDetail>) : BottomSheetDialogFragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_transaction_detail_creation_new, container, false) }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { return inflater.inflate(R.layout.dialog_fragment_transaction_detail_creation, container, false) }
     fun setOnDialogResultListener(l: ((TransactionDetail?)->Unit)) { returnResult = l }
     private var returnResult: (TransactionDetail?)->Unit = {}
     fun setOnDetailChangedListener(l: ((name: String, quantity: Double, unit: String, amount: Double)->Unit)) { returnDetailValues = l }

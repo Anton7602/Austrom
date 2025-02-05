@@ -1,134 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingVertical="1dp"
-    tools:context=".dialogs.TransactionDetailCreationDialogFragment">
+    android:layout_height="match_parent"
+    tools:context=".dialogs.bottomsheetdialogs.TransactionDetailCreationNewDialogFragment">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/trdetct_outline_crd"
+        android:id="@+id/trdetcreat2_dialogHolder_crv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/dark_grey"
-        app:cardCornerRadius="20dp">
+        android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            app:cardCornerRadius="20dp">
+            android:orientation="horizontal"
+            android:paddingVertical="8dp"
+            android:paddingStart="16dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="5"
+                android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/trdetcr_addRemove_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@color/transparent"
-                    android:paddingHorizontal="12dp"
-                    android:src="@drawable/ic_navigation_add_temp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/trdetcr_buttonLabel_txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingVertical="14dp"
-                    android:paddingEnd="48dp"
-                    android:text="@string/add_new_entry"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <EditText
-                    android:id="@+id/trdetcr_detailName_txt"
-                    style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="@string/item_name"
-                    android:inputType="text"
-                    android:paddingTop="14dp"
-                    android:paddingBottom="14dp"
-                    android:visibility="gone" />
-
-                <EditText
-                    android:id="@+id/trdetcr_detailQuantity_txt"
-                    style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:breakStrategy="simple"
-                    android:ems="0"
-                    android:hint="@string/quantity"
-                    android:hyphenationFrequency="normal"
-                    android:inputType="numberDecimal"
-                    android:paddingStart="0dp"
-                    android:paddingLeft="0dp"
-                    android:paddingTop="14dp"
-                    android:paddingEnd="10dp"
-                    android:paddingRight="0dp"
-                    android:paddingBottom="14dp"
-                    android:textAlignment="viewEnd"
-                    android:textColor="@color/dark_grey" />
-
-                <Spinner
-                    android:id="@+id/trdetcr_quantityType_spr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-                <Spinner
-                    android:id="@+id/trdet_category_spr"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/trdetcreat2_detailName_til"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingTop="14dp"
-                    android:paddingBottom="14dp"
-                    android:visibility="gone" />
+                    android:hint="@string/detail_name">
 
-                <EditText
-                    android:id="@+id/trdetcr_cost_txt"
-                    style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
-                    android:layout_width="wrap_content"
+                    <AutoCompleteTextView
+                        android:id="@+id/trdetcreat2_detailName_txt"
+                        style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/unallocated_balance"
+                        android:padding="16dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/trdetcreat2_quantityLayout_cly"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="@string/cost"
-                    android:inputType="numberDecimal"
-                    android:paddingTop="14dp"
-                    android:paddingBottom="14dp"
-                    android:textAlignment="viewEnd"
-                    android:visibility="gone" />
+                    android:visibility="gone">
 
-                <TextView
-                    android:id="@+id/trdetcr_currency_txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:paddingHorizontal="8dp"
-                    android:text="RUB"
-                    android:textSize="16sp"
-                    android:visibility="gone"
-                    tools:ignore="HardcodedText" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/trdetcreat2_quantity_til"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/detail_quantity"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                <ImageButton
-                    android:id="@+id/trdetcr_forward_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@color/transparent"
-                    android:paddingHorizontal="12dp"
-                    android:src="@drawable/ic_navigation_forward_temp"
-                    android:visibility="gone" />
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/trdetcreat2_quantity_txt"
+                            style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number|numberDecimal"
+                            android:paddingEnd="80dp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Spinner
+                        android:id="@+id/trdetcreat2_quantityType_spr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_weight="1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/trdetcreat2_amount_til"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/detail_amount"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/trdetcreat2_amount_txt"
+                        style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number|numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+            <ImageButton
+                android:id="@+id/trdetcreat2_next_btn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:rotation="180"
+                android:src="@drawable/ic_navigation_back_temp" />
+
+        </LinearLayout>
+
     </androidx.cardview.widget.CardView>
-</LinearLayout>
+</FrameLayout>

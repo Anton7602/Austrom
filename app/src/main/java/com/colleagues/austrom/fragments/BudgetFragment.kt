@@ -55,7 +55,7 @@ class BudgetFragment : Fragment(R.layout.fragment_budget) {
 
     private fun setUpRecyclerView() {
         barChart.layoutManager = LinearLayoutManager(requireActivity())
-        val adapter = VerticalBarChartAdapter(requireActivity(), calculateTransactionsSums(LocalDatabaseProvider(requireActivity()).getTransactionsOfUser(AustromApplication.appUser!!)))
+        val adapter = VerticalBarChartAdapter(requireActivity(), calculateTransactionsSums(LocalDatabaseProvider(requireActivity()).getTransactionsOfActiveBudget()))
         barChart.adapter = adapter
     }
 }
