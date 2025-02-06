@@ -29,8 +29,8 @@ fun LocalDate.getLocalizedMonthName(): String {
     return "${this.format(DateTimeFormatter.ofPattern("MMMM", Locale(AustromApplication.appLanguageCode ?: "en"))).startWithUppercase().replace(".","")} ${this.format(DateTimeFormatter.ofPattern("yyyy"))}"
 }
 
-fun LocalDate.getLocalizedWeekName(context: Context): String {
-    return "${context.getString(R.string.week).startWithUppercase()} ${this.getWeekNumber()}"
+fun LocalDate.getLocalizedWeekName(): String {
+    return "${getFirstDayOfWeek().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}-${getLastDayOfWeek().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}"
 }
 
 fun LocalDate.getWeekNumber(): Int {
@@ -38,7 +38,7 @@ fun LocalDate.getWeekNumber(): Int {
     return this.get(weekFields.weekOfWeekBasedYear())
 }
 
-fun LocalDate.getFirstDayOfWeek(): LocalDate { return this.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY))}
+fun LocalDate.getFirstDayOfWeek(): LocalDate { return this.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))}
 fun LocalDate.getLastDayOfWeek(): LocalDate { return this.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))}
 fun LocalDate.getFirstDayOfMonth(): LocalDate {return this.withDayOfMonth(1)}
 fun LocalDate.getLastDayOfMonth(): LocalDate {return this.with(TemporalAdjusters.lastDayOfMonth())}

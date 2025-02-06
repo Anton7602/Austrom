@@ -111,6 +111,11 @@ class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: Att
         }
     }
 
+    private fun dropTextSizeCalculation() {
+        initPaints(amountTextPaint, amountTextSize, moneyAmountColor)
+        initPaints(currencyTextPaint, currencyTextSize, currencyColor)
+    }
+
     private fun calculateTextSizes() {
         val isAmountTextSizeFixed = amountTextPaint.textSize!=0F
         val isCurrencyTextSizeFixed = currencyTextPaint.textSize!=0F
@@ -152,8 +157,7 @@ class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: Att
         val currentValue = moneyAmount
         moneyAmount = value
         currencyCode = currencySymbol
-        initPaints(amountTextPaint, amountTextSize, moneyAmountColor)
-        initPaints(currencyTextPaint, currencyTextSize, currencyColor)
+        dropTextSizeCalculation()
         calculateTextSizes()
         if (withAnimation) startAnimation(currentValue.toFloat(), value.toFloat())
         invalidate()

@@ -19,6 +19,7 @@ import com.colleagues.austrom.dialogs.bottomsheetdialogs.AssetFilter
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.AssetTypeSelectionDialogFragment
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
+import com.colleagues.austrom.views.DateControllerView
 import com.colleagues.austrom.views.MoneyFormatTextView
 
 class BalanceFragment : Fragment(R.layout.fragment_balance) {

@@ -176,32 +176,13 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
     fun setChartData(list: List<Pair<Double, String>>) {
         dataList = list
         calculatePercentageOfData()
+        requestLayout()
+        startAnimation()
     }
 
     /**
      * Метод заполнения поля [percentageCircleList]
      */
-//    private fun calculatePercentageOfData() {
-//        totalAmount = 0.0
-//        dataList.forEach { entry -> totalAmount += entry.first }
-//
-//        var startAt = circleSectionSpace
-//        percentageCircleList = dataList.mapIndexed { index, pair ->
-//            var percent = pair.first * 100 / totalAmount.toFloat() - circleSectionSpace
-//            percent = if (percent < 0.0) 0.0 else percent
-//
-//            val resultModel = PieChartArc(
-//                percentOfCircle = percent.toFloat(),
-//                percentToStartAt = startAt,
-//                colorOfLine = pieChartColors[index % pieChartColors.size],
-//                stroke = circleStrokeWidth,
-//                paintRound = circlePaintRoundSize
-//            )
-//            if (percent != 0.0) startAt += percent.toFloat() + circleSectionSpace
-//            resultModel
-//        }
-//    }
-
     private fun calculatePercentageOfData() {
         totalAmount = 0.0
         dataList.forEach { entry -> totalAmount += entry.first }
@@ -224,7 +205,7 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
         }
     }
 
-    fun startAnimation() {
+    private fun startAnimation() {
         val animator = ValueAnimator.ofInt(0, 360).apply {
             duration = 1500
             interpolator = FastOutSlowInInterpolator()
