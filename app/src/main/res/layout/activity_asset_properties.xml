@@ -10,23 +10,21 @@
 
     <ImageButton
         android:id="@+id/asdet_back_btn"
+        style="@style/HeaderButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/back_button"
-        style="@style/BackButtonStyle"
+        android:src="@drawable/ic_navigation_back_temp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/asdet_remove_btn"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/transparent"
+        style="@style/HeaderButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:contentDescription="@string/delete"
-        android:padding="8dp"
         android:src="@drawable/ic_navigation_more_temp"
-        app:layout_constraintBottom_toBottomOf="@+id/asdet_back_btn"
-        app:layout_constraintDimensionRatio="w,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

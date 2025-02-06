@@ -456,4 +456,7 @@
     <string name="from_file">Из Файла</string>
     <string name="planning">Планирование</string>
     <string name="analytics">Аналитика</string>
+    <string name="week">Неделя</string>
+    <string name="month">Месяц</string>
+    <string name="year">Год</string>
 </resources>

@@ -26,12 +26,16 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     private lateinit var assetHolderRecyclerView: RecyclerView
     private lateinit var addNewAssetButton: ImageButton
     private lateinit var totalAmountText: MoneyFormatTextView
+    private lateinit var callNavigationDrawerButton: ImageButton
     private fun bindViews(view: View) {
         assetHolderRecyclerView = view.findViewById(R.id.bal_assetHolder_rcv)
         addNewAssetButton = view.findViewById(R.id.bal_createNewAsset_btn)
         totalAmountText = view.findViewById(R.id.bal_totalAmout_mtxt)
+        callNavigationDrawerButton = view.findViewById(R.id.bal_navDrawer_btn)
     }
     //endregion
+    fun setOnNavigationDrawerOpenCalled(l: ()->Unit) { requestNavigationDrawerOpen = l }
+    private var requestNavigationDrawerOpen: ()->Unit = {}
     var activeFilter: AssetFilter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,6 +44,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         totalAmountText.setValue(0.0, AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]!!)
         if (AustromApplication.activeAssets.isEmpty()) { updateAssetsList() }
         addNewAssetButton.setOnClickListener { launchNewAssetCreationDialog()  }
+        callNavigationDrawerButton.setOnClickListener { requestNavigationDrawerOpen() }
     }
 
     private fun launchNewAssetCreationDialog() {

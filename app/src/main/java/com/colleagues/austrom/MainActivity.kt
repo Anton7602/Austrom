@@ -47,6 +47,7 @@ import com.google.android.material.navigation.NavigationView
 class MainActivity : AppCompatActivity() {
     //region Binding
     private lateinit var drawerLayout : DrawerLayout
+    private lateinit var mainLayout : ConstraintLayout
     private lateinit var toolbar : Toolbar
     private lateinit var filterButton: ImageButton
     private lateinit var navigationHeaderLayout : ConstraintLayout
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fragmentHolder: FragmentContainerView
     private fun bindViews() {
         drawerLayout = findViewById(R.id.main_drawerLayout_dly)
+        mainLayout = findViewById(R.id.main_mainLayout_cly)
         toolbar = findViewById(R.id.main_toolbar_tbr)
         filterButton = findViewById(R.id.main_filter_btn)
         navigationView = findViewById(R.id.main_navigationView_nvw)
@@ -79,16 +81,25 @@ class MainActivity : AppCompatActivity() {
     //endregion
     //region Styling
     private fun adjustInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_drawerLayout_dly)) { _, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_drawerLayout_dly)) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            //v.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = insets.bottom }
-            //toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
-            toolbar.setPadding(0, insets.top, 0,0)
+            //val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            //drawerLayout.setPadding(0, insets.top, 0, 0)
             navigationHeaderLayout.setPadding(0, insets.top, 0,0)
+            mainLayout.setPadding(0, insets.top, 0,0)
             bottomNavigationBar.setPadding(0,0,0,insets.bottom)
-            //v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
             WindowInsetsCompat.CONSUMED
         }
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_drawerLayout_dly)) { _, windowInsets ->
+//            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+//            //v.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = insets.bottom }
+//            //toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
+//            toolbar.setPadding(0, insets.top, 0,0)
+//            navigationHeaderLayout.setPadding(0, insets.top, 0,0)
+//            bottomNavigationBar.setPadding(0,0,0,insets.bottom)
+//            //v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
+//            WindowInsetsCompat.CONSUMED
+//        }
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
@@ -114,6 +125,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationBar.setOnItemSelectedListener { item -> handleBottomNavigationBarClick(item) }
         navigationLogOutButton.setOnClickListener { logOut() }
         onBackPressedDispatcher.addCallback(this) {}
+        switchFragment(BalanceFragment())
     }
 
     private fun fillInDefaultUsers() {
@@ -121,9 +133,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleFilterButtonClick() {
-        when (fragmentHolder.getFragment<Fragment>()) {
-            is BalanceFragment -> AssetFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
-        }
+//        when (fragmentHolder.getFragment<Fragment>()) {
+//            is BalanceFragment -> AssetFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
+//        }
+//        drawerLayout.open()
     }
 
     private fun handleSideNavigationPanelClick(pressedMenuItem: MenuItem): Boolean {
@@ -170,8 +183,15 @@ class MainActivity : AppCompatActivity() {
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.main_fragmentHolder_frg, fragment)
         when (fragment) {
-            is BalanceFragment -> filterButton.visibility = View.VISIBLE
-            is OpsFragment -> filterButton.visibility = View.GONE
+            is BalanceFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
+            is BudgetFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
+            is OpsFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
+            is ImportFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
+            is PlanningFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
+            is SettingsFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
+            is SharedBudgetFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
+            is SharedBudgetJoinFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
+            is SharedBudgetEmptyFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             else -> filterButton.visibility = View.GONE
         }
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)

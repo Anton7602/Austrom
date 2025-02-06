@@ -13,6 +13,7 @@ import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionCreationActivity
 import com.colleagues.austrom.TransactionPropertiesActivityNew
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
+import com.colleagues.austrom.adapters.TransactionRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.TransactionTypeSelectionDialogFragment
 import com.colleagues.austrom.models.Transaction
@@ -24,21 +25,27 @@ import java.time.Instant
 import java.time.ZoneId
 
 class OpsFragment : Fragment(R.layout.fragment_ops){
+    fun setOnNavigationDrawerOpenCalled(l: ()->Unit) { requestNavigationDrawerOpen = l }
+    private var requestNavigationDrawerOpen: ()->Unit = {}
     //region Binding
     private lateinit var transactionHolder: RecyclerView
     private lateinit var transactionsHeader: TransactionHeaderView
     private lateinit var createNewTransactionButton: ImageButton
+    private lateinit var callNavDrawerButton: ImageButton
     private fun bindViews(view: View) {
         transactionHolder = view.findViewById(R.id.ops_transactionHolder_rcv)
         transactionsHeader = view.findViewById(R.id.ops_transactionsHeader_trhed)
         createNewTransactionButton = view.findViewById(R.id.ops_createNewTransaction_btn)
+        callNavDrawerButton = view.findViewById(R.id.ops_navDrawer_btn)
     }
     //endregion
+    private var lastSelectedIndex: Int = 0
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         setUpTransactionHeader()
         createNewTransactionButton.setOnClickListener { launchNewTransactionCreationDialog() }
+        callNavDrawerButton.setOnClickListener { requestNavigationDrawerOpen() }
     }
 
     private fun launchNewTransactionCreationDialog() {
@@ -75,6 +82,9 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         localDBProvider.getTransactionsByTransactionFilterAsync(transactionFilter).observe(viewLifecycleOwner) {transactionList ->
             setUpRecyclerView(transactionList.toMutableList())
             calculateTransactionsAmountSums(transactionList)
+            if (lastSelectedIndex!=0 && (transactionHolder.adapter as TransactionGroupRecyclerAdapter).itemCount>lastSelectedIndex) {
+                transactionHolder.scrollToPosition(lastSelectedIndex)
+            }
         }
     }
 
@@ -102,13 +112,10 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         val groupedTransactions = Transaction.groupTransactionsByDate(transactionList)
         transactionHolder.layoutManager = LinearLayoutManager(activity)
         val adapter = TransactionGroupRecyclerAdapter(groupedTransactions, (requireActivity() as AppCompatActivity))
-        adapter.setOnItemClickListener { transaction -> requireActivity().startActivity(Intent(requireActivity(), TransactionPropertiesActivityNew::class.java).putExtra("transactionId", transaction.transactionId)) }
+        adapter.setOnItemClickListener { transaction, index ->
+            lastSelectedIndex = index
+            requireActivity().startActivity(Intent(requireActivity(), TransactionPropertiesActivityNew::class.java).putExtra("transactionId", transaction.transactionId))
+        }
         transactionHolder.adapter = adapter
     }
-
-//    override fun onResume() {
-//        super.onResume()
-//        setUpTransactionHeader()
-//        applyTransactionFilter(transactionsHeader.getTransactionFilter())
-//    }
 }

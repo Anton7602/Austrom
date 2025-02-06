@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundMain">
 
+    <ImageButton
+        android:id="@+id/ops_navDrawer_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/HeaderButtonStyle"
+        app:srcCompat="@drawable/ic_navigation_mainmenu_temp" />
+
     <com.colleagues.austrom.views.TransactionHeaderView
         android:id="@+id/ops_transactionsHeader_trhed"
         android:layout_width="0dp"
@@ -15,14 +24,13 @@
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/ops_navDrawer_btn" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ops_transactionHolder_rcv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="2dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

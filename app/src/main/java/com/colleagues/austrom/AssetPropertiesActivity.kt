@@ -160,7 +160,7 @@ class AssetPropertiesActivity : AppCompatActivity(){
         transactionHolder.layoutManager = LinearLayoutManager(this)
         val groupedTransactions = Transaction.groupTransactionsByDate(transactionsOfAsset)
         val adapter = TransactionGroupRecyclerAdapter(groupedTransactions, this)
-        adapter.setOnItemClickListener { transaction -> startActivity(Intent(this, TransactionPropertiesActivityNew::class.java).putExtra("transactionId", transaction.transactionId)) }
+        adapter.setOnItemClickListener { transaction, _ -> startActivity(Intent(this, TransactionPropertiesActivityNew::class.java).putExtra("transactionId", transaction.transactionId)) }
         transactionHolder.adapter = adapter
     }
 }

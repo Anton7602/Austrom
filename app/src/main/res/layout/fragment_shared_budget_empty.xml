@@ -9,6 +9,15 @@
     android:orientation="vertical"
     tools:context=".fragments.SharedBudgetEmptyFragment">
 
+    <ImageButton
+        style="@style/HeaderButtonStyle"
+        android:id="@+id/shbe_navDrawer_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_navigation_mainmenu_temp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

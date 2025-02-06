@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundMain">
 
+    <ImageButton
+        android:id="@+id/bal_navDrawer_btn"
+        style="@style/HeaderButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_navigation_mainmenu_temp" />
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -16,7 +25,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/bal_navDrawer_btn" />
 
     <com.colleagues.austrom.views.MoneyFormatTextView
         android:id="@+id/bal_totalAmout_mtxt"
@@ -63,6 +72,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.2" />
+        app:layout_constraintGuide_percent="0.25" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

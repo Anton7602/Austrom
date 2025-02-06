@@ -19,6 +19,7 @@ import com.colleagues.austrom.models.InvalidTransactionException
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.TransactionValidationType
+import kotlin.math.absoluteValue
 
 class TransactionRecyclerAdapter(private val transactions: List<Transaction>, private val context: Context) : RecyclerView.Adapter<TransactionRecyclerAdapter.TransactionViewHolder>() {
     class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -30,8 +31,8 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>, pr
         val primaryParticipant: TextView = itemView.findViewById(R.id.tritem_targetName_txt)
         val transactionHolder: CardView = itemView.findViewById(R.id.tritem_transactionHolder_cdv)
     }
-    private var returnClickedItem: (Transaction)->Unit = {}
-    fun setOnItemClickListener(l: ((Transaction)->Unit)) { returnClickedItem = l }
+    private var returnClickedItem: (transaction: Transaction, index: Int)->Unit = {_,_ ->}
+    fun setOnItemClickListener(l: ((Transaction, Int)->Unit)) { returnClickedItem = l }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder { return TransactionViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_transaction, parent, false)) }
     override fun getItemCount(): Int { return transactions.size }
 
@@ -44,7 +45,7 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>, pr
         when (transaction.transactionType()) {
             TransactionType.TRANSFER -> {
                 category = AustromApplication.activeCategories[transaction.categoryId] ?: throw InvalidTransactionException("Category used in transaction is not recognized", TransactionValidationType.UNKNOWN_CATEGORY_INVALID)
-                holder.amount.text = if (transaction.amount>0) "+${transaction.amount.toMoneyFormat()}" else transaction.amount.toMoneyFormat()
+                holder.amount.text = if (transaction.amount>0) "-${transaction.amount.absoluteValue.toMoneyFormat()}" else "+${transaction.amount.absoluteValue.toMoneyFormat()}"
                 holder.amount.setTextColor(context.getColor(R.color.transferYellow))
                 holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
                 holder.currencySymbol.setTextColor(context.getColor(R.color.transferYellow))
@@ -73,7 +74,7 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>, pr
         holder.categoryName.text = category.name
         holder.categoryImage.setImageResource(category.imgReference.resourceId)
 
-        holder.transactionHolder.setOnClickListener { returnClickedItem(transaction) }
+        holder.transactionHolder.setOnClickListener { returnClickedItem(transaction, position) }
         animateItem(holder.itemView)
     }
 

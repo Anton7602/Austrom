@@ -10,7 +10,7 @@
 
     <ImageButton
         android:id="@+id/trdet2_backButton_btn"
-        style="@style/BackButtonStyle"
+        style="@style/HeaderButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/back_button"
@@ -20,13 +20,10 @@
 
     <ImageButton
         android:id="@+id/trdet_moreButton_btn"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="4dp"
-        android:background="@color/transparent"
+        style="@style/HeaderButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:contentDescription="More"
-        app:layout_constraintBottom_toBottomOf="@+id/trdet2_backButton_btn"
-        app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/trdet2_backButton_btn"
         app:srcCompat="@drawable/ic_navigation_more_temp"

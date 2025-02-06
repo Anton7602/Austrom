@@ -3,6 +3,7 @@ package com.colleagues.austrom.fragments
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
@@ -21,19 +22,22 @@ import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.SettingsButtonView
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
+    fun setOnNavigationDrawerOpenCalled(l: ()->Unit) { requestNavigationDrawerOpen = l }
+    private var requestNavigationDrawerOpen: ()->Unit = {}
     //region Binding
     private lateinit var baseCurrencySetting: SettingsButtonView
     private lateinit var categorySetting: SettingsButtonView
     private lateinit var quickAccessPinSetting: SettingsButtonView
     private lateinit var languageSetting: SettingsButtonView
     private lateinit var moneyFormatSetting: SettingsButtonView
-
+    private lateinit var callNavDrawerButton: ImageButton
     private fun bindViews(view: View) {
         baseCurrencySetting = view.findViewById(R.id.set_baseCurrency_btn)
         quickAccessPinSetting = view.findViewById(R.id.set_quickPin_btn)
         languageSetting = view.findViewById(R.id.set_appLocale_btn)
         categorySetting = view.findViewById(R.id.set_categories_btn)
         moneyFormatSetting = view.findViewById(R.id.set_moneyFormat_btn)
+        callNavDrawerButton = view.findViewById(R.id.set_navDrawer_btn)
     }
     //endregion
 
@@ -45,6 +49,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         quickAccessPinSetting.setOnClickListener { launchQuickAccessPinDialog() }
         languageSetting.setOnClickListener { launchLanguageSelectionDialog() }
         categorySetting.setOnClickListener { launchCategoryControlDialog() }
+        callNavDrawerButton.setOnClickListener { requestNavigationDrawerOpen() }
     }
 
     private fun launchCurrencyDialog() {

@@ -30,7 +30,7 @@ class PlanningGraphRecyclerAdapter(private val context: Context, private val dat
     override fun onBindViewHolder(holder: PlanningGraphViewHolder, position: Int) {
         val item = dataSet[position]
         holder.categoryNameTextView.text = item.first
-        val sum = item.second.sumOf { l -> l.amount }.absoluteValue
+        val sum = item.second.sumOf { l -> l.getAmountInBaseCurrency() }.absoluteValue
         holder.plannedExpenseTextView.setValue(10000.0)
         holder.actualExpenseTextView.setValue(sum)
         val percent = sum.toFloat()/10000f

@@ -10,6 +10,7 @@
     tools:openDrawer="start">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_mainLayout_cly"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -20,6 +21,7 @@
             android:layout_height="0dp"
             android:background="@color/backgroundMain"
             android:elevation="4dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -28,7 +30,6 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/main_fragmentHolder_frg"
-            android:name="com.colleagues.austrom.fragments.BalanceFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/main_bottomNav_bnv"
@@ -58,9 +59,11 @@
             android:contentDescription="@string/filter"
             android:elevation="4dp"
             android:padding="12dp"
-            app:layout_constraintBottom_toBottomOf="@+id/main_toolbar_tbr"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_navigation_filter_temp" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_navigation_filter_temp"
+            app:tint="@color/primaryTextColor" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

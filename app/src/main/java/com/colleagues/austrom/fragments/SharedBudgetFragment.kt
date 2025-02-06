@@ -3,6 +3,7 @@ package com.colleagues.austrom.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,18 +20,22 @@ import com.colleagues.austrom.dialogs.bottomsheetdialogs.TextEditDialogFragment
 import com.colleagues.austrom.models.Budget
 
 class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout.fragment_shared_budget) {
+    fun setOnNavigationDrawerOpenCalled(l: ()->Unit) { requestNavigationDrawerOpen = l }
+    private var requestNavigationDrawerOpen: ()->Unit = {}
     //region Binding
     private lateinit var budgetName: TextView
     private lateinit var leaveButton: Button
     private lateinit var inviteButton: Button
     private lateinit var invitationsRecycler: RecyclerView
     private lateinit var usersRecycler: RecyclerView
+    private lateinit var callNavDrawerButton: ImageButton
     private fun bindViews(view: View) {
         budgetName = view.findViewById(R.id.shb_budgetName_txt)
         leaveButton = view.findViewById(R.id.shb_leaveBudget_btn)
         inviteButton = view.findViewById(R.id.shb_inviteUser_btn)
         invitationsRecycler = view.findViewById(R.id.shb_pendingInvitations_rcv)
         usersRecycler = view.findViewById(R.id.shb_activeUsers_rcv)
+        callNavDrawerButton = view.findViewById(R.id.shb_navDrawer_btn)
     }
     //endregion
 
@@ -42,6 +47,7 @@ class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout
 
         leaveButton.setOnClickListener { leaveBudget() }
         inviteButton.setOnClickListener { launchInviteUserDialog() }
+        callNavDrawerButton.setOnClickListener { requestNavigationDrawerOpen() }
     }
 
     private fun launchInviteUserDialog() {

@@ -10,10 +10,11 @@
 
     <ImageButton
         android:id="@+id/catcr_backButton_btn"
-        style="@style/BackButtonStyle"
+        style="@style/HeaderButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/back_button"
+        android:src="@drawable/ic_navigation_back_temp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,16 +22,12 @@
         android:id="@+id/catcr_negativeResult_btn"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="@color/transparent"
         android:contentDescription="@string/delete"
         app:layout_constraintBottom_toBottomOf="@+id/catcr_backButton_btn"
-        app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/catcr_backButton_btn"
-        app:srcCompat="@drawable/ic_navigation_more_temp"
-        app:tint="@color/primaryTextColor" />
+        style="@style/HeaderButtonStyle"
+        app:srcCompat="@drawable/ic_navigation_more_temp" />
 
     <ImageButton
         android:id="@+id/catcr_categoryIcon_img"

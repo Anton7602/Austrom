@@ -18,8 +18,8 @@ class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMa
         val transactionGroupName: TextView = itemView.findViewById(R.id.trgritem_date_txt)
         val transactionHolderRecyclerView: RecyclerView= itemView.findViewById(R.id.trgritem_transactionholder_rcv)
     }
-    private var returnClickedItem: (Transaction)->Unit = {}
-    fun setOnItemClickListener(l: ((Transaction)->Unit)) { returnClickedItem = l }
+    private var returnClickedItem: (transaction: Transaction, index: Int)->Unit = {_,_ ->}
+    fun setOnItemClickListener(l: ((Transaction, Int)->Unit)) { returnClickedItem = l }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionGroupViewHolder { return TransactionGroupViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_transaction_group, parent, false)) }
     override fun getItemCount(): Int { return groupedTransactions.size }
 
@@ -29,7 +29,7 @@ class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMa
         holder.transactionGroupName.text = transactionDate.toDayOfWeekAndShortDateFormat()
         holder.transactionHolderRecyclerView.layoutManager = LinearLayoutManager(context)
         val adapter = TransactionRecyclerAdapter(groupedTransactions.values.elementAt(position), context)
-        adapter.setOnItemClickListener { transaction -> returnClickedItem(transaction) }
+        adapter.setOnItemClickListener { transaction, _ -> returnClickedItem(transaction, position) }
         holder.transactionHolderRecyclerView.adapter = adapter
     }
 }

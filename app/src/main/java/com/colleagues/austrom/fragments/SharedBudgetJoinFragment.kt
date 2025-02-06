@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import com.colleagues.austrom.AustromApplication.Companion.appUser
 import com.colleagues.austrom.MainActivity
@@ -17,14 +18,18 @@ import com.colleagues.austrom.models.Invitation
 import com.google.android.material.textfield.TextInputEditText
 
 class SharedBudgetJoinFragment(private val budget: Budget) : Fragment(R.layout.fragment_shared_budget_join) {
+    fun setOnNavigationDrawerOpenCalled(l: ()->Unit) { requestNavigationDrawerOpen = l }
+    private var requestNavigationDrawerOpen: ()->Unit = {}
     //region Binding
     private lateinit var budgetNameTextView: TextView
     private lateinit var invitationCodeTextView: TextInputEditText
     private lateinit var joinButton: Button
+    private lateinit var callNavDrawerButton: ImageButton
     private fun bindViews(view: View) {
         budgetNameTextView = view.findViewById(R.id.budjoin_budgetName_txt)
         invitationCodeTextView = view.findViewById(R.id.budjoin_invitationCode_txt)
         joinButton = view.findViewById(R.id.budjoin_joinBudget_btn)
+        callNavDrawerButton = view.findViewById(R.id.budjoin_navDrawer_btn)
     }
     //endregion
 
@@ -33,7 +38,7 @@ class SharedBudgetJoinFragment(private val budget: Budget) : Fragment(R.layout.f
         bindViews(view)
         budgetNameTextView.text = budget.budgetName
 
-
+        callNavDrawerButton.setOnClickListener { requestNavigationDrawerOpen() }
         joinButton.setOnClickListener { acceptInvitationWithCode(invitationCodeTextView.text.toString()) }
     }
 

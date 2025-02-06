@@ -206,8 +206,10 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                 val localTransaction = localDBProvider.getTransactionByID(snapshotItem.key.toString())
                 if (localTransaction==null) {
                     if (snapshotItem.value!="-") {
+                        val remoteVersion = snapshotItem.getValue(String::class.java).intAfterLastPipe()
                         val transaction = encryptionManager.decryptTransaction(snapshotItem.getValue(String::class.java).substringBeforeLastPipe().toString(),
                             encryptionManager.convertStringToSecretKey(appUser!!.tokenId))
+                        if (remoteVersion!=null) transaction.version = remoteVersion
                         val asset = AustromApplication.activeAssets[transaction.assetId]
                         if (asset!=null) {
                             localDBProvider.insertNewTransaction(transaction)

@@ -61,6 +61,7 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
 
     fun update(localDBProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider? = null) {
         if (this.validate() == TransactionValidationType.VALID) {
+            this.version++
             localDBProvider.updateTransaction(this)
             if (remoteDBProvider != null && AustromApplication.appUser?.activeBudgetId != null) {
                 val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
@@ -180,7 +181,7 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
                 assetId = dataParts[3],
                 transactionDate = LocalDate.parse(dataParts[4], DateTimeFormatter.ISO_LOCAL_DATE) ,
                 transactionName = dataParts[5],
-                comment = if (dataParts[6]=="null") null else dataParts[5],
+                comment = if (dataParts[6]=="null") null else dataParts[6],
                 userId = dataParts[7] ,
                 linkedTransactionId = if (dataParts[8]=="null") null else dataParts[8] ,
                 isPrivate=dataParts[9].toBoolean()

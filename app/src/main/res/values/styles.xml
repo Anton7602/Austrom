@@ -9,13 +9,12 @@
         <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="BackButtonStyle" parent="Widget.AppCompat.ImageButton">
-        <item name="android:layout_marginStart">4dp</item>
-        <item name="android:layout_marginTop">4dp</item>
-        <item name="android:padding">12dp</item>
+    <style name="HeaderButtonStyle" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_marginStart">0dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:padding">16dp</item>
         <item name="android:backgroundTint">@color/transparent</item>
-        <item name="srcCompat">@drawable/ic_navigation_back_temp</item>
-        <item name="tint">@color/primaryTextColor</item>
+        <item name="tint">@color/secondaryTextColor</item>
     </style>
 
     <style name="DefaultSpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">

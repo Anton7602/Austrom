@@ -228,7 +228,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         if (AustromApplication.appUser?.tokenId!=null) {
             val encryptionManager = EncryptionManager()
             database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
-                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))+"|${transaction.version}")
         }
     }
 
