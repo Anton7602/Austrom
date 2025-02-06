@@ -40,9 +40,9 @@ class BudgetFragment : Fragment(R.layout.fragment_budget) {
         val dataSet = mutableListOf<Pair<Double, String>>()
         transactions.forEach { transaction ->
             if (transactionsByCategories.containsKey(transaction.categoryId)) {
-                transactionsByCategories[transaction.categoryId] = transactionsByCategories[transaction.categoryId]!! +  transaction.amount.absoluteValue
+                transactionsByCategories[transaction.categoryId] = transactionsByCategories[transaction.categoryId]!! +  transaction.getAmountInBaseCurrency().absoluteValue
             } else {
-                transactionsByCategories[transaction.categoryId] = transaction.amount.absoluteValue
+                transactionsByCategories[transaction.categoryId] = transaction.getAmountInBaseCurrency().absoluteValue
             }
         }
         transactionsByCategories.forEach { (categoryId, transactionsSum) ->

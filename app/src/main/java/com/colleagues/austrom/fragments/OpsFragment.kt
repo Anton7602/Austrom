@@ -85,12 +85,12 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
             val transactionsAsset = AustromApplication.activeAssets[transaction.assetId]
             if (transaction.transactionType() == TransactionType.EXPENSE) {
                 if (transactionsAsset!=null) {
-                    expenseSum+= if (transactionsAsset.currencyCode==AustromApplication.appUser!!.baseCurrencyCode) transaction.amount else transaction.amount/(AustromApplication.activeCurrencies[transactionsAsset.currencyCode]?.exchangeRate ?: 1.0)
+                    expenseSum+= transaction.getAmountInBaseCurrency()
                 }
             }
             if (transaction.transactionType() == TransactionType.INCOME) {
                 if (transactionsAsset!=null) {
-                    incomeSum+= if (transactionsAsset.currencyCode==AustromApplication.appUser!!.baseCurrencyCode) transaction.amount else transaction.amount/(AustromApplication.activeCurrencies[transactionsAsset.currencyCode]?.exchangeRate ?: 1.0)
+                    incomeSum+= transaction.getAmountInBaseCurrency()
                 }
             }
         }

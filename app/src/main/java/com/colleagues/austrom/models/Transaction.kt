@@ -134,6 +134,11 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
         //TODO("Validate and finish")
     }
 
+    fun getAmountInBaseCurrency(): Double {
+        val transactionsAsset = AustromApplication.activeAssets[assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
+        return if (transactionsAsset.currencyCode==AustromApplication.appUser!!.baseCurrencyCode) amount else amount/(AustromApplication.activeCurrencies[transactionsAsset.currencyCode]?.exchangeRate ?: 1.0)
+    }
+
     fun isValid(): Boolean { return (this.validate()==TransactionValidationType.VALID)  }
 
     fun isColliding(dbProvider: LocalDatabaseProvider): Boolean {return dbProvider.isCollidingTransactionExist(this)}
