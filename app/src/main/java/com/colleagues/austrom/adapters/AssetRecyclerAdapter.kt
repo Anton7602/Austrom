@@ -36,7 +36,8 @@ class AssetRecyclerAdapter(private val assets: MutableList<Asset>, private val c
         holder.assetType.text = asset.assetTypeId.toString()
         holder.assetAmount.setValue(asset.amount, AustromApplication.activeCurrencies[asset.currencyCode]?.symbol ?: throw Exception())
         if (asset.currencyCode!=AustromApplication.appUser?.baseCurrencyCode) {
-            holder.baseAssetAmount.setValue((asset.amount/(AustromApplication.activeCurrencies[asset.currencyCode]?.exchangeRate ?: 0.0)), AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol ?: throw Exception())
+            holder.baseAssetAmount.visibility = View.VISIBLE
+            holder.baseAssetAmount.setValue((asset.amount/(AustromApplication.activeCurrencies[asset.currencyCode]?.exchangeRate ?: 1.0)), AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol ?: throw Exception())
         } else {
             holder.baseAssetAmount.visibility = View.GONE
         }

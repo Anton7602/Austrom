@@ -209,15 +209,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun synchronizeWithBudget() {
-        if (appUser?.activeBudgetId!=null) {
-            val remoteDBProvider = FirebaseDatabaseProvider(this)
-            val currentBudget = remoteDBProvider.getBudgetById(appUser!!.activeBudgetId!!)
-            if (currentBudget!=null) {
-                SyncManager(this, LocalDatabaseProvider(this), FirebaseDatabaseProvider(this)).sync()
-            }
-        }
-    }
+    private fun synchronizeWithBudget() { SyncManager(this, LocalDatabaseProvider(this), FirebaseDatabaseProvider(this)).sync() }
 
     private fun fillInDefaultCategories() {
         val dbProvider = LocalDatabaseProvider(this)
@@ -249,7 +241,7 @@ class MainActivity : AppCompatActivity() {
             currenciesMap = Currency.localizeCurrencyNames(currenciesMap, this)
             for (item in currenciesMap) {
                 val currency = item.value
-                currency.exchangeRate = 0.0
+                currency.exchangeRate = 1.0
                 dbProvider.writeCurrency(currency)
             }
         }

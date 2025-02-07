@@ -25,12 +25,6 @@ import kotlinx.coroutines.launch
 
 class SyncManager(val context: Context, private val localDBProvider: LocalDatabaseProvider, private val remoteDBProvider: IRemoteDatabaseProvider) {
     private val budget = remoteDBProvider.getBudgetById(appUser?.activeBudgetId.toString())
-    private var currenciesListener: ValueEventListener? = null
-    private var userListener: ValueEventListener? = null
-    private var assetListener: ValueEventListener? = null
-    private var transactionListener: ValueEventListener? = null
-    private var transactionDetailListener: ValueEventListener? = null
-
 
     fun sync() {
         CoroutineScope(Dispatchers.IO).launch {

@@ -89,6 +89,7 @@ class AssetCreationActivity : AppCompatActivity() {
 
         switchFieldVisibilities(selectedAssetType)
         backButton.setOnClickListener { finish() }
+        currencyTextView.text = selectedCurrency?.symbol.toString()
         currencyTextView.setOnClickListener { launchCurrencyDialog() }
         addAssetButton.setOnClickListener { addAsset() }
 
