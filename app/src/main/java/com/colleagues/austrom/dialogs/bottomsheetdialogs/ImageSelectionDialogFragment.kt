@@ -76,47 +76,6 @@ class ImageSelectionDialogFragment(private val transaction: Transaction) : Botto
         }
     }
 
-//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-//        val i: LayoutInflater = requireActivity().layoutInflater
-//        val view = i.inflate(R.layout.dialog_fragment_image_selection, null)
-//        bindViews(view)
-//        val adb: AlertDialog.Builder = AlertDialog.Builder(requireActivity()).setView(view)
-//        val imageSelectionDialog = adb.create()
-//        if (imageSelectionDialog != null && imageSelectionDialog.window != null) {
-//            imageSelectionDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//        }
-//
-//        val imageFile = File(requireActivity().externalCacheDir, "${transaction.transactionId}.jpg")
-//        if (imageFile.exists()) {
-//            imageHolder.setImageURI(FileProvider.getUriForFile(requireActivity(), "${requireActivity().applicationContext.packageName}.provider", imageFile))
-//            messageText.visibility = View.GONE
-//            imageHolder.visibility = View.VISIBLE
-//        } else {
-//            messageText.visibility = View.VISIBLE
-//            imageHolder.visibility = View.GONE
-//        }
-//
-//        imageHolder.setOnClickListener {
-//            closeButton.visibility= if (closeButton.visibility==View.VISIBLE) View.GONE else View.VISIBLE
-//            makePhotoButton.visibility= if (makePhotoButton.visibility==View.VISIBLE) View.GONE else View.VISIBLE
-//            choosePhotoButton.visibility= if (choosePhotoButton.visibility==View.VISIBLE) View.GONE else View.VISIBLE
-//        }
-//
-//        makePhotoButton.setOnClickListener {
-//            requestCameraPermission()
-//        }
-//
-//        choosePhotoButton.setOnClickListener {
-//            requestGalleryPermission()
-//        }
-//
-//        closeButton.setOnClickListener {
-//            dismiss()
-//        }
-//
-//        return imageSelectionDialog
-//    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)

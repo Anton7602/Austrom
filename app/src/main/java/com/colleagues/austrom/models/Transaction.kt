@@ -40,7 +40,7 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
         if (activeAsset.currencyCode!=AustromApplication.appUser!!.baseCurrencyCode) {
             originalAmount *= (AustromApplication.activeCurrencies[activeAsset.currencyCode]?.exchangeRate ?: 1.0)
         }
-        return "${transactionName},${transactionDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))},${amount},${activeAsset.currencyCode},${originalAmount},${AustromApplication.appUser!!.baseCurrencyCode},${activeAsset.assetName},${category.name},${AustromApplication.appUser!!.username},${comment}"
+        return "${transactionName},${transactionDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))},${amount},${activeAsset.currencyCode},${originalAmount},${AustromApplication.appUser!!.baseCurrencyCode},${activeAsset.assetName},${category.name},${AustromApplication.appUser!!.username},${comment}"
     }
 
     fun linkTo(transaction: Transaction) {

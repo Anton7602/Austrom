@@ -38,15 +38,12 @@ fun LocalDate.getWeekNumber(): Int {
     return this.get(weekFields.weekOfWeekBasedYear())
 }
 
+fun LocalDate.toDayMonthYearFormat(): String {return this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}
 fun LocalDate.getFirstDayOfWeek(): LocalDate { return this.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))}
 fun LocalDate.getLastDayOfWeek(): LocalDate { return this.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))}
 fun LocalDate.getFirstDayOfMonth(): LocalDate {return this.withDayOfMonth(1)}
 fun LocalDate.getLastDayOfMonth(): LocalDate {return this.with(TemporalAdjusters.lastDayOfMonth())}
 fun LocalDate.getFirstDayOfYear(): LocalDate {return this.withDayOfYear(1)}
 fun LocalDate.getLastDayOfYear(): LocalDate {return this.withDayOfYear(this.lengthOfYear())}
-
-fun LocalDate.serialize() : String {
-    return this.format(DateTimeFormatter.ISO_LOCAL_DATE)
-}
-
+fun LocalDate.serialize() : String { return this.format(DateTimeFormatter.ISO_LOCAL_DATE) }
 fun LocalDate.toInt(): Int { return this.year * 10000 + this.monthValue * 100 + this.dayOfMonth }

@@ -306,6 +306,21 @@
                 android:layout_marginEnd="16dp"
                 app:fieldName="@string/date"
                 app:fieldValue="Friday 17.12.2024" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/trcreat_comment_til"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/comment">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/trcreat_comment_txt"
+                    style="@style/DefaultEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </ScrollView>
 

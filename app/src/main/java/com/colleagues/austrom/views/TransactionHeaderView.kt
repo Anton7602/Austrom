@@ -206,7 +206,7 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         collapsedHeight = holderCardView.height
         mainLayout.visibility = View.GONE
         filterLayout.visibility = View.VISIBLE
-        animateHeightChange(holderCardView.height, ((frameLayout.parent as ViewGroup).parent as ViewGroup).height, false)
+        animateHeightChange(holderCardView.height, holderCardView.width*3, false)
     }
 
     private fun animateHeightChange(startHeight: Int, endHeight: Int, isSwitchingToMainMode: Boolean) {

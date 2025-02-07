@@ -63,6 +63,7 @@ class TransactionCreationActivity : AppCompatActivity() {
     private lateinit var secondaryAmountHolder: LinearLayout
     private lateinit var secondaryAmountTxt: TextInputEditText
     private lateinit var secondaryCurrencyTxt: TextView
+    private lateinit var commentTextView: TextInputEditText
     private fun bindViews() {
         sourceHolderRecycler = findViewById(R.id.trcreat_sourceHolder_rcv)
         targetHolderRecycler = findViewById(R.id.trcreat_targetHolder_rcv)
@@ -84,6 +85,7 @@ class TransactionCreationActivity : AppCompatActivity() {
         secondaryAmountHolder = findViewById(R.id.trcreat_secondaryAmountHolder_lly)
         secondaryAmountTxt = findViewById(R.id.trcreat_amount_secondary_txt)
         secondaryCurrencyTxt = findViewById(R.id.trcreat_currencySymbol_secondary_txt)
+        commentTextView = findViewById(R.id.trcreat_comment_txt)
     }
     //endregion
     //region Localizing
@@ -174,7 +176,8 @@ class TransactionCreationActivity : AppCompatActivity() {
             amount = if (transactionType==TransactionType.INCOME) amount else -amount,
             categoryId = selectedCategory.categoryId,
             transactionDate = selectedDate,
-            transactionName = if (transactionType==TransactionType.TRANSFER) secondarySelectedAsset!!.assetName else transactionNameTxt.text.toString()
+            transactionName = if (transactionType==TransactionType.TRANSFER) secondarySelectedAsset!!.assetName else transactionNameTxt.text.toString(),
+            comment = commentTextView.text.toString().ifEmpty { null }
         )
         if (transactionType==TransactionType.TRANSFER) {
             val secondaryTransaction =  Transaction(
@@ -182,7 +185,8 @@ class TransactionCreationActivity : AppCompatActivity() {
                 amount = if (secondaryAmountHolder.visibility==View.VISIBLE) secondaryAmountTxt.text.toString().parseToDouble()?.absoluteValue ?: amount else amount,
                 categoryId = selectedCategory.categoryId,
                 transactionDate = selectedDate,
-                transactionName = primarySelectedAsset!!.assetName
+                transactionName = primarySelectedAsset!!.assetName,
+                comment = commentTextView.text.toString().ifEmpty { null }
             )
             secondaryTransaction.linkTo(primaryTransaction)
             secondaryTransaction.submit(dbProvider, FirebaseDatabaseProvider(this))

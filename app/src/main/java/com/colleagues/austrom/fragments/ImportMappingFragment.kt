@@ -53,7 +53,7 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
     private var charset = "windows-1251"
     private var csvColumnsList: List<String> = listOf()
     private var selectorsList: List<SelectorButtonView> =  listOf()
-    private var fileMap: MutableMap<String, Int> = mutableMapOf("asset" to 0, "name" to 1, "amount" to 1, "date" to 1, "category" to 1, "comment" to 0)
+    private var fileMap: MutableMap<String, Int> = mutableMapOf("asset" to -1, "name" to 0, "amount" to 0, "date" to 0, "category" to 0, "comment" to -1)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,7 +94,7 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
         if (dialog==null) return
         dialog.setOnDialogResultListener { isFromFile, selectedValue, keyMap ->
             clickedSelector.setFieldValue(if (isFromFile) getString(R.string.mapped_to_file, selectedValue) else selectedValue)
-            fileMap[keyMap] = if (!isFromFile) 0 else csvColumnsList.indexOf(selectedValue)
+            fileMap[keyMap] = if (!isFromFile) -1 else csvColumnsList.indexOf(selectedValue)
             updateDemoTransaction(fileUri!!)
         }
         dialog.show(requireActivity().supportFragmentManager, "Value Selection Dialog")
@@ -139,22 +139,22 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
     }
 
     private fun readTransactionFromCSVLine(line: Array<String>): Transaction {
-        val assetTxt = if (fileMap["asset"]!=0) line[fileMap["asset"]!!] else assetSelector.getValue()
-        val targetTxt = if (fileMap["name"]!=0) line[fileMap["name"]!!] else nameSelector.getValue()
-        val amountTxt = if (fileMap["amount"]!=0) line[fileMap["amount"]!!] else amountSelector.getValue()
+        val assetTxt = if (fileMap["asset"]!=-1) line[fileMap["asset"]!!] else assetSelector.getValue()
+        val targetTxt = if (fileMap["name"]!=-1) line[fileMap["name"]!!] else nameSelector.getValue()
+        val amountTxt = if (fileMap["amount"]!=-1) line[fileMap["amount"]!!] else amountSelector.getValue()
         val amount = amountTxt.parseToDouble() ?: 0.0
-        val categoryTxt = if (fileMap["category"]!=0) line[fileMap["category"]!!] else categorySelector.getValue()
-        val dateTxt = if (fileMap["date"]!=0) {line[fileMap["date"]!!]} else dateSelector.getValue()
-        val commentTxt = if (fileMap["comment"]!=0) line[fileMap["comment"]!!] else commentSelector.getValue()
+        val categoryTxt = if (fileMap["category"]!=-1) line[fileMap["category"]!!] else categorySelector.getValue()
+        val dateTxt = if (fileMap["date"]!=-1) {line[fileMap["date"]!!]} else dateSelector.getValue()
+        val commentTxt = if (fileMap["comment"]!=-1) line[fileMap["comment"]!!] else commentSelector.getValue()
 
         return Transaction(
             assetId = AustromApplication.activeAssets.values.find { l -> l.assetName == assetTxt }?.assetId ?: assetTxt,
-            transactionName = targetTxt.toString(),
+            transactionName = targetTxt,
             categoryId = if (amount>0) AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }.find { l -> l.name == categoryTxt }?.categoryId ?: categoryTxt.toString() else
                 AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }.find { l -> l.name == categoryTxt }?.categoryId ?: categoryTxt.toString(),
             amount =amount,
             transactionDate = dateTxt.parseToLocalDate() ?: LocalDate.now(),
-            comment =  commentTxt.toString()
+            comment = commentTxt
         )
     }
 

@@ -9,12 +9,14 @@ import androidx.constraintlayout.widget.Guideline
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.R
+import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.views.MoneyFormatTextView
 import kotlin.math.absoluteValue
 
-class PlanningGraphRecyclerAdapter(private val context: Context, private val dataSet: List<Pair<String, List<Transaction>>>) : RecyclerView.Adapter<PlanningGraphRecyclerAdapter.PlanningGraphViewHolder>() {
+class PlanningGraphRecyclerAdapter(private val context: Context, private val dataSet: List<Pair<Category, List<Transaction>>>) : RecyclerView.Adapter<PlanningGraphRecyclerAdapter.PlanningGraphViewHolder>() {
     class PlanningGraphViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val categoryNameTextView: TextView = view.findViewById(R.id.planit_categoryName_txt)
         val plannedExpenseTextView: MoneyFormatTextView = view.findViewById(R.id.planit_categoryPlanExpense_monf)
@@ -29,25 +31,26 @@ class PlanningGraphRecyclerAdapter(private val context: Context, private val dat
 
     override fun onBindViewHolder(holder: PlanningGraphViewHolder, position: Int) {
         val item = dataSet[position]
-        holder.categoryNameTextView.text = item.first
+        holder.categoryNameTextView.text = item.first.name
         val sum = item.second.sumOf { l -> l.getAmountInBaseCurrency() }.absoluteValue
         holder.plannedExpenseTextView.setValue(10000.0)
-        holder.actualExpenseTextView.setValue(sum)
-        val percent = sum.toFloat()/10000f
+        holder.actualExpenseTextView.setValue(sum, "")
+        var percent = sum.toFloat()/10000f
+        if (percent>1f) percent=1f
         holder.innerPercent.setGuidelinePercent(percent)
-        holder.outerPercent.setGuidelinePercent(percent)
+        holder.outerPercent.setGuidelinePercent(innerPercentToOuterPercent(percent))
 
         holder.topItemsRecycler.layoutManager = LinearLayoutManager(context)
         if (item.second.isNotEmpty()) {
-            holder.topItemsRecycler.adapter = TransactionDetailRecyclerAdapter(
-                item.second.first(),
-                listOf(
-                    TransactionDetail("00000", "ProductName", 150.0),
-                    TransactionDetail("00001", "ProductName2", 1234.0),
-                    TransactionDetail("00002", "ProductName2", 98745.0)
-                ),
-                context
-            )
+            val transactionsDetailsToShow = mutableListOf<TransactionDetail>()
+            item.second.sortedBy { transaction -> transaction.amount }.take(3).forEach { transaction ->
+                transactionsDetailsToShow.add(TransactionDetail(transaction.transactionId, transaction.transactionName, transaction.amount.absoluteValue))
+            }
+            holder.topItemsRecycler.adapter = TransactionDetailRecyclerAdapter(item.second.first(), transactionsDetailsToShow, context)
+        } else {
+            holder.topItemsRecycler.adapter = SelectorRecyclerAdapter(listOf())
         }
     }
+
+    private fun innerPercentToOuterPercent(innerPercentValue: Float): Float { return 0.07f+0.86f*innerPercentValue }
 }

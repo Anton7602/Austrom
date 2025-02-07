@@ -15,19 +15,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/main_toolbar_tbr"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/backgroundMain"
-            android:elevation="4dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/ic_placeholder_icon"
-            app:titleTextColor="@color/backgroundMain" />
-
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/main_fragmentHolder_frg"
             android:layout_width="match_parent"
@@ -35,7 +22,7 @@
             app:layout_constraintBottom_toTopOf="@+id/main_bottomNav_bnv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/main_toolbar_tbr" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/main_bottomNav_bnv"
@@ -50,20 +37,6 @@
             app:menu="@menu/bottom_navigation_menu">
 
         </com.google.android.material.bottomnavigation.BottomNavigationView>
-
-        <ImageButton
-            android:id="@+id/main_filter_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:contentDescription="@string/filter"
-            android:elevation="4dp"
-            android:padding="12dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_navigation_filter_temp"
-            app:tint="@color/primaryTextColor" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

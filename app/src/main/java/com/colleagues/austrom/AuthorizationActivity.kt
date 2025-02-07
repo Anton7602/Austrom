@@ -47,7 +47,8 @@ class AuthorizationActivity : AppCompatActivity() {
     private fun adjustInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(0, 0, 0, 0)
+            val softKeyboardHeightInset = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, if (softKeyboardHeightInset==0) systemBars.bottom else softKeyboardHeightInset)
             insets
         }
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight

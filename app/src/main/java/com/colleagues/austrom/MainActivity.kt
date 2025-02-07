@@ -48,8 +48,6 @@ class MainActivity : AppCompatActivity() {
     //region Binding
     private lateinit var drawerLayout : DrawerLayout
     private lateinit var mainLayout : ConstraintLayout
-    private lateinit var toolbar : Toolbar
-    private lateinit var filterButton: ImageButton
     private lateinit var navigationHeaderLayout : ConstraintLayout
     private lateinit var navigationView : NavigationView
     private lateinit var navigationUserNameTextView : TextView
@@ -59,8 +57,6 @@ class MainActivity : AppCompatActivity() {
     private fun bindViews() {
         drawerLayout = findViewById(R.id.main_drawerLayout_dly)
         mainLayout = findViewById(R.id.main_mainLayout_cly)
-        toolbar = findViewById(R.id.main_toolbar_tbr)
-        filterButton = findViewById(R.id.main_filter_btn)
         navigationView = findViewById(R.id.main_navigationView_nvw)
         bottomNavigationBar = findViewById(R.id.main_bottomNav_bnv)
         fragmentHolder = findViewById(R.id.main_fragmentHolder_frg)
@@ -90,16 +86,6 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationBar.setPadding(0,0,0,insets.bottom)
             WindowInsetsCompat.CONSUMED
         }
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_drawerLayout_dly)) { _, windowInsets ->
-//            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            //v.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = insets.bottom }
-//            //toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
-//            toolbar.setPadding(0, insets.top, 0,0)
-//            navigationHeaderLayout.setPadding(0, insets.top, 0,0)
-//            bottomNavigationBar.setPadding(0,0,0,insets.bottom)
-//            //v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
-//            WindowInsetsCompat.CONSUMED
-//        }
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
@@ -110,33 +96,23 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         bindViews()
-        setSupportActionBar(toolbar)
         adjustInsets()
         fillInDefaultUsers()
         fillInDefaultCategories()
         fillInDefaultCurrencies()
         suggestSettingUpQuickAccessCode()
         notifyAboutBudgetInvitation()
-        setUpNavigationDrawer()
         synchronizeWithBudget()
         navigationUserNameTextView.text = appUser?.username!!.startWithUppercase()
-        filterButton.setOnClickListener { handleFilterButtonClick() }
         navigationView.setNavigationItemSelectedListener { pressedMenuItem -> handleSideNavigationPanelClick(pressedMenuItem) }
         bottomNavigationBar.setOnItemSelectedListener { item -> handleBottomNavigationBarClick(item) }
         navigationLogOutButton.setOnClickListener { logOut() }
         onBackPressedDispatcher.addCallback(this) {}
-        switchFragment(BalanceFragment())
+        if (supportFragmentManager.findFragmentById(R.id.main_fragmentHolder_frg)==null) switchFragment(BalanceFragment())
     }
 
     private fun fillInDefaultUsers() {
         AustromApplication.knownUsers = LocalDatabaseProvider(this).getAllUsers()
-    }
-
-    private fun handleFilterButtonClick() {
-//        when (fragmentHolder.getFragment<Fragment>()) {
-//            is BalanceFragment -> AssetFilterDialogFragment(fragmentHolder.getFragment()).show(supportFragmentManager, "Suggest Quick Access Code Dialog")
-//        }
-//        drawerLayout.open()
     }
 
     private fun handleSideNavigationPanelClick(pressedMenuItem: MenuItem): Boolean {
@@ -192,7 +168,6 @@ class MainActivity : AppCompatActivity() {
             is SharedBudgetFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             is SharedBudgetJoinFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             is SharedBudgetEmptyFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
-            else -> filterButton.visibility = View.GONE
         }
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         transaction.commit()
@@ -242,12 +217,6 @@ class MainActivity : AppCompatActivity() {
                 SyncManager(this, LocalDatabaseProvider(this), FirebaseDatabaseProvider(this)).sync()
             }
         }
-    }
-
-    private fun setUpNavigationDrawer() {
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
     }
 
     private fun fillInDefaultCategories() {

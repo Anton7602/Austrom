@@ -31,13 +31,20 @@ class AssetSquareRecyclerAdapter (private val assets: MutableList<Asset>, privat
         val asset = assets[position]
         holder.assetName.text = asset.assetName
         holder.assetAmount.setValue(asset.amount, AustromApplication.activeCurrencies[asset.currencyCode]?.symbol.toString())
-        if (asset.assetId==selectedAsset?.assetId) holder.assetHolder.setCardBackgroundColor(context.getColor(R.color.selectionColor))
+        if (asset.assetId==selectedAsset?.assetId) {
+            holder.assetHolder.setCardBackgroundColor(context.getColor(R.color.primaryTextColor));
+            holder.assetName.setTextColor(context.getColor(R.color.backgroundMain))
+        } else {
+            holder.assetHolder.setCardBackgroundColor(context.getColor(R.color.transparent));
+            holder.assetName.setTextColor(context.getColor(R.color.primaryTextColor))
+        }
         holderList.add(holder)
 
         holder.assetHolder.setOnClickListener {
             selectedAsset = asset
-            holderList.forEach { fholder -> fholder.assetHolder.setCardBackgroundColor(context.getColor(R.color.transparent)) }
-            holder.assetHolder.setCardBackgroundColor(context.getColor(R.color.selectionColor))
+            holderList.forEach { fholder -> fholder.assetHolder.setCardBackgroundColor(context.getColor(R.color.transparent)); fholder.assetName.setTextColor(context.getColor(R.color.primaryTextColor)) }
+            holder.assetHolder.setCardBackgroundColor(context.getColor(R.color.primaryTextColor))
+            holder.assetName.setTextColor(context.getColor(R.color.backgroundMain))
             returnClickedItem(asset)
         }
     }

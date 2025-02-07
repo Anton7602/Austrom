@@ -459,4 +459,5 @@
     <string name="week">Неделя</string>
     <string name="month">Месяц</string>
     <string name="year">Год</string>
+    <string name="export_csv_file">Экспортировать CSV</string>
 </resources>

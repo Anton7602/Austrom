@@ -1,6 +1,8 @@
 package com.colleagues.austrom.fragments
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -9,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.AustromApplication.Companion.activeCategories
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.CategorySelectionDialogFragment
@@ -82,6 +85,15 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
 
         categorySelector.setOnClickListener { launchCategorySelectionDialog() }
         dateSelector.setOnClickListener { launchDateSelectionDialog() }
+
+        nameTextView.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+            override fun afterTextChanged(s: Editable?) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                nameChangeDescription.text = generateNameChangeTip()
+                categoryChangeDescription.text = generateCategoryChangeTip()
+            }
+        })
     }
 
     private fun updateTransactionsList() {
@@ -125,7 +137,11 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
     private fun launchCategorySelectionDialog() {
         if (transaction==null) return
         val dialog = CategorySelectionDialogFragment(transaction.transactionType())
-        dialog.setOnDialogResultListener { category -> selectedCategory = category; categorySelector.setFieldValue(category.name) }
+        dialog.setOnDialogResultListener { category ->
+            selectedCategory = category
+            categorySelector.setFieldValue(category.name)
+            categoryChangeDescription.text = generateCategoryChangeTip()
+        }
         dialog.show(requireActivity().supportFragmentManager, "CategorySelectionDialog")
     }
 
@@ -147,17 +163,18 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
         returnResult(transaction, transactionsToChange)
     }
 
-
-
     private fun switchNameChangeSelection(pressedButton: ActionButtonView) {
         if (transaction==null) return
         nameCheckButtonSingle.isChecked = pressedButton==nameCheckButtonSingle
         nameCheckButtonMultiple.isChecked = pressedButton==nameCheckButtonMultiple
-        nameChangeDescription.text = when (pressedButton.id) {
-            nameCheckButtonSingle.id -> { "The name of only this transaction will be changed"}
-            nameCheckButtonMultiple.id -> { "All ${transaction.transactionName} values will be changed to ${nameTextView.text.toString()}" }
-            else -> ""
-        }
+        nameChangeDescription.text = generateNameChangeTip()
+    }
+
+    private fun generateNameChangeTip(): String {
+        if (transaction==null) return ""
+        return if(nameCheckButtonSingle.isChecked) "The name of only this transaction will be changed"
+        else if (nameCheckButtonMultiple.isChecked) "All ${transaction.transactionName} values will be changed to ${nameTextView.text}"
+        else ""
     }
 
     private fun switchCategoryChangeSelection(pressedButton: ActionButtonView) {
@@ -165,12 +182,15 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
         categoryCheckButtonSingle.isChecked = pressedButton==categoryCheckButtonSingle
         categoryCheckButtonMultipleByName.isChecked = pressedButton==categoryCheckButtonMultipleByName
         categoryCheckButtonMultipleByCategory.isChecked = pressedButton==categoryCheckButtonMultipleByCategory
-        categoryChangeDescription.text = when(pressedButton.id) {
-            categoryCheckButtonSingle.id -> "The name of this category will be changed only"
-            categoryCheckButtonMultipleByName.id -> "All transaction with name ${nameTextView.text.toString()} will change category to ${categorySelector.getValue()}"
-            categoryCheckButtonMultipleByCategory.id -> "All transactions with category ${transaction.categoryId} will change category to ${categorySelector.getValue()}"
-            else -> ""
-        }
+        categoryChangeDescription.text = generateCategoryChangeTip()
+    }
+
+    private fun generateCategoryChangeTip(): String {
+        if (transaction==null) return ""
+        return if (categoryCheckButtonSingle.isChecked) "The name of this category will be changed only"
+        else if (categoryCheckButtonMultipleByName.isChecked) "All transaction with name ${nameTextView.text} will change category to ${categorySelector.getValue()}"
+        else if (categoryCheckButtonMultipleByCategory.isChecked) "All transactions with category ${activeCategories[transaction.categoryId]?.name ?: transaction.categoryId } will change category to ${categorySelector.getValue()}"
+        else ""
     }
 
 

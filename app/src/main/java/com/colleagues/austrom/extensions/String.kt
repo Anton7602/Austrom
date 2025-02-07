@@ -19,6 +19,7 @@ fun String?.parseToLocalDate(): LocalDate? {
     val dateFormats = listOf(
         "dd.MM.yyyy HH:mm:ss",
         "dd.MM.yyyy",
+        "yyyy.dd.MM",
         "yyyy-MM-dd",
         "dd-MM-yyyy",
         "MM/dd/yyyy",
