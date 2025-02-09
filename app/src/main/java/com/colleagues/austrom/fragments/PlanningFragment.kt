@@ -11,7 +11,10 @@ import com.colleagues.austrom.AustromApplication.Companion.activeCategories
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.PlanningGraphRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.TextEditDialogFragment
+import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.models.Plan
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType
@@ -41,8 +44,25 @@ class PlanningFragment : Fragment(R.layout.fragment_planning) {
 
     private fun setUpRecyclerView(dataSet: MutableList<Pair<Category, List<Transaction>>>) {
         planHolderRecycler.layoutManager = LinearLayoutManager(requireActivity())
-        val adapter = PlanningGraphRecyclerAdapter(requireActivity(), dataSet)
+        val adapter = PlanningGraphRecyclerAdapter(requireActivity(), dataSet, dateController.getSelectedDatesRange().first, dateController.getSelectedPeriodType())
+        adapter.setOnItemClickListener {category -> launchPlannedValueEditDialog(category) }
         planHolderRecycler.adapter = adapter
+    }
+
+    private fun launchPlannedValueEditDialog(category: Category) {
+        val dialog = TextEditDialogFragment()
+        dialog.setOnDialogResultListener { result ->
+            val parsedResult = result.parseToDouble() ?: return@setOnDialogResultListener
+            val localDBProvider = LocalDatabaseProvider(requireActivity())
+            localDBProvider.insertPlan(Plan(
+                planDate = dateController.getSelectedDatesRange().first,
+                planType = dateController.getSelectedPeriodType(),
+                planName = category.categoryId,
+                planValue = parsedResult
+            ))
+
+        }
+        dialog.show(requireActivity().supportFragmentManager, "Plan Edit Dialog")
     }
 
     private fun setUpDateController() {

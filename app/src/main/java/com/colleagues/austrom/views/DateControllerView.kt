@@ -87,6 +87,8 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
         }
     }
 
+    fun getSelectedPeriodType(): PeriodType { return selectedPeriodType}
+
     private fun setUpDateVisibleName() {
         when (selectedPeriodType) {
             PeriodType.WEEK -> { periodNameTextView.text = selectedStartDate.getLocalizedWeekName() }

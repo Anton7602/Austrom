@@ -20,15 +20,18 @@ import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.Invitation
+import com.colleagues.austrom.models.Plan
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.User
+import com.colleagues.austrom.views.PeriodType
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
-@Database(entities = [Asset::class, Transaction::class, TransactionDetail::class, User::class, Currency::class, Category::class, Invitation::class, AssetChangeLog::class], version = 1, exportSchema = false)
+@Database(entities = [Asset::class, Transaction::class, TransactionDetail::class, User::class, Currency::class, Category::class,
+    Invitation::class, AssetChangeLog::class, Plan::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class LocalDatabase: RoomDatabase() {
     abstract fun assetDao(): AssetDao
@@ -39,6 +42,7 @@ abstract class LocalDatabase: RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
     abstract fun invitationDao(): InvitationDao
     abstract fun assetChangeLogDao(): AssetChangeLogDao
+    abstract fun planDao(): PlanDao
     abstract fun complexDao(): ComplexDao
 
     companion object {
@@ -296,6 +300,26 @@ interface InvitationDao {
 
     @Query("SELECT * FROM Invitation")
     suspend fun getAllInvitations(): List<Invitation>
+}
+
+@Dao
+interface PlanDao {
+    @Insert
+    suspend fun insertPlan(plan: Plan)
+
+    @Update
+    suspend fun updatePlan(plan: Plan)
+
+    @Delete
+    suspend fun deletePlan(plan: Plan)
+
+    @Query("""
+        SELECT *
+        FROM `Plan`
+        WHERE planDate=:date AND planType=:periodType AND planName=:categoryType
+        LIMIT 1
+    """)
+    suspend fun getPlan(date: String, periodType: String, categoryType: String): Plan
 }
 
 @Dao

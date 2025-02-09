@@ -9,13 +9,16 @@ import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.InvalidTransactionException
 import com.colleagues.austrom.models.Invitation
+import com.colleagues.austrom.models.Plan
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.TransactionValidationType
 import com.colleagues.austrom.models.User
+import com.colleagues.austrom.views.PeriodType
 import kotlinx.coroutines.runBlocking
+import java.time.LocalDate
 
 class LocalDatabaseProvider(context: Context) {
     private val localDatabase = LocalDatabase.getDatabase(context)
@@ -331,6 +334,7 @@ class LocalDatabaseProvider(context: Context) {
     }
     //endregion
 
+    //region Invitation
     fun insertInvitation(invitation: Invitation) {
         runBlocking {
             localDatabase.invitationDao().insertInvitation(invitation)
@@ -345,6 +349,21 @@ class LocalDatabaseProvider(context: Context) {
         }
         return invitations
     }
+    //endregion
+
+    //region Plan
+    fun insertPlan(plan: Plan) {
+        runBlocking { localDatabase.planDao().insertPlan(plan) }
+    }
+
+    fun getPlan(date: LocalDate, periodType: PeriodType, categoryType: Category): Plan? {
+        var plan: Plan?  = null
+        runBlocking {
+            plan = localDatabase.planDao().getPlan(date.toInt().toString(), periodType.toString(), categoryType.categoryId)
+        }
+        return plan
+    }
+    //endregion
 
     //region Category
     fun writeCategory(category: Category) {
