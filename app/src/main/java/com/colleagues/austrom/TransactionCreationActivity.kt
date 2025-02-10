@@ -78,7 +78,7 @@ class TransactionCreationActivity : AppCompatActivity() {
         transactionNameTil = findViewById(R.id.trcreat_transactionName_til)
         transactionNameTxt = findViewById(R.id.trcreat_transactionName_txt)
         amountTxt = findViewById(R.id.trcreat_amount_txt)
-        currencyTxt = findViewById(R.id.trcreat_currencySymbol_txt)
+        currencyTxt = findViewById(R.id.assed_currencySymbol_txt)
         createTransactionButton = findViewById(R.id.trcreat_acceptButton_btn)
         categorySelector = findViewById(R.id.trcreat_categorySelector_sbv)
         dateSelector = findViewById(R.id.trcreat_dateSelector_sbv)

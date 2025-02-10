@@ -167,7 +167,7 @@ class TransactionDetailCreationNewDialogFragment(private val transaction: Transa
     private fun setUpAutofill() {
         val localDBProvider = LocalDatabaseProvider(requireActivity())
         val activity = requireActivity()
-        localDBProvider.getUniqueTransactionDetailsNamesAsync().observe(requireActivity()) {transactionDetailsName ->
+        localDBProvider.getUniqueTransactionDetailsNamesAsync().observe(viewLifecycleOwner) {transactionDetailsName ->
             val adapter = ArrayAdapter(activity, android.R.layout.simple_dropdown_item_1line, transactionDetailsName)
             detailNameTextView.setAdapter(adapter)
             detailNameTextView.threshold = 2

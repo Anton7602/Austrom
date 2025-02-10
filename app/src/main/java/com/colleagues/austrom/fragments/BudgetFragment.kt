@@ -79,7 +79,7 @@ class BudgetFragment : Fragment(R.layout.fragment_budget) {
         dateController.setDatesRangeChangedListener { dateRange ->
             localDBProvider.getTransactionsByTransactionFilterAsync(
                 TransactionFilter(activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }.map { l -> l.categoryId }.toMutableList(),
-                    dateRange.first, dateRange.second)).observe(requireActivity()) { transactionList ->
+                    dateRange.first, dateRange.second)).observe(viewLifecycleOwner) { transactionList ->
                         val calculatedSumsOfTransactions = calculateTransactionsSums(transactionList)
                         pieChart.setChartData(calculatedSumsOfTransactions)
                         setUpRecyclerView(calculatedSumsOfTransactions)

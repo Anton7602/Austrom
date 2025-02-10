@@ -29,8 +29,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import kotlin.math.absoluteValue
 
-class TransactionEditFragment(private val transaction: Transaction? =null, private val transactionsToChange: MutableList<Transaction> = mutableListOf()) : Fragment(R.layout.fragment_transaction_edit) {
-    constructor() : this(null)
+class TransactionEditFragment(private val transaction: Transaction, private val transactionsToChange: MutableList<Transaction> = mutableListOf()) : Fragment(R.layout.fragment_transaction_edit) {
     fun setOnDialogResultListener(l: ((transaction: Transaction, transactionList: List<Transaction>)->Unit)) { returnResult = l }
     private var returnResult: (Transaction, List<Transaction>)->Unit = {_,_ ->}
     //region Binding
@@ -47,6 +46,7 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
     private lateinit var categoryCheckButtonMultipleByCategory: ActionButtonView
     private lateinit var cancelButton: Button
     private lateinit var saveButton: Button
+    private lateinit var currencySymbolTextView: TextView
     private fun bindViews(view: View) {
         amountTextView = view.findViewById(R.id.tredit_amount_txt)
         dateSelector = view.findViewById(R.id.tredit_date_sel)
@@ -61,20 +61,20 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
         categoryCheckButtonMultipleByCategory = view.findViewById(R.id.tredit_categoryMultipleByCategory_abtn)
         cancelButton = view.findViewById(R.id.tredit_cancel_btn)
         saveButton = view.findViewById(R.id.tredit_save_btn)
-
+        currencySymbolTextView = view.findViewById(R.id.tredit_currencySymbol_txt)
     }
     //endregion
-    private var selectedDate: LocalDate? = transaction?.transactionDate
-    private var selectedCategory: Category? = AustromApplication.activeCategories.values
-        .filter { l -> l.transactionType==transaction?.transactionType() }
-        .find { l -> l.categoryId == transaction?.categoryId }
+    private var selectedDate: LocalDate? = transaction.transactionDate
+    private var selectedCategory: Category? = activeCategories.values
+        .filter { l -> l.transactionType==transaction.transactionType() }
+        .find { l -> l.categoryId == transaction.categoryId }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         setUpTransaction()
         setUpAutofill()
-        cancelButton.setOnClickListener { if (transaction!=null) returnResult(transaction, transactionsToChange) }
+        cancelButton.setOnClickListener { returnResult(transaction, transactionsToChange) }
         saveButton.setOnClickListener {save()}
         nameCheckButtonSingle.setOnClickListener { switchNameChangeSelection(nameCheckButtonSingle) }
         nameCheckButtonMultiple.setOnClickListener { switchNameChangeSelection(nameCheckButtonMultiple) }
@@ -97,7 +97,6 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
     }
 
     private fun updateTransactionsList() {
-        if (transaction==null) return
         val transactionName = transaction.transactionName
         val transactionCategoryId = transaction.categoryId
         transactionsToChange.forEach { massEditedTransaction ->
@@ -114,7 +113,6 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
     }
 
     private fun updateTransaction() {
-        if (transaction==null) return
         val amount = amountTextView.text.toString().parseToDouble()?.absoluteValue ?: 0.0
         transaction.amount = if (transaction.transactionType()==TransactionType.EXPENSE) -amount else amount
         transaction.transactionName = nameTextView.text.toString()
@@ -135,7 +133,6 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
     }
 
     private fun launchCategorySelectionDialog() {
-        if (transaction==null) return
         val dialog = CategorySelectionDialogFragment(transaction.transactionType())
         dialog.setOnDialogResultListener { category ->
             selectedCategory = category
@@ -157,28 +154,25 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
     }
 
     private fun save() {
-        if (transaction==null || !isInputValid()) return
+        if (!isInputValid()) return
         updateTransactionsList()
         updateTransaction()
         returnResult(transaction, transactionsToChange)
     }
 
     private fun switchNameChangeSelection(pressedButton: ActionButtonView) {
-        if (transaction==null) return
         nameCheckButtonSingle.isChecked = pressedButton==nameCheckButtonSingle
         nameCheckButtonMultiple.isChecked = pressedButton==nameCheckButtonMultiple
         nameChangeDescription.text = generateNameChangeTip()
     }
 
     private fun generateNameChangeTip(): String {
-        if (transaction==null) return ""
         return if(nameCheckButtonSingle.isChecked) "The name of only this transaction will be changed"
         else if (nameCheckButtonMultiple.isChecked) "All ${transaction.transactionName} values will be changed to ${nameTextView.text}"
         else ""
     }
 
     private fun switchCategoryChangeSelection(pressedButton: ActionButtonView) {
-        if (transaction==null) return
         categoryCheckButtonSingle.isChecked = pressedButton==categoryCheckButtonSingle
         categoryCheckButtonMultipleByName.isChecked = pressedButton==categoryCheckButtonMultipleByName
         categoryCheckButtonMultipleByCategory.isChecked = pressedButton==categoryCheckButtonMultipleByCategory
@@ -186,7 +180,6 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
     }
 
     private fun generateCategoryChangeTip(): String {
-        if (transaction==null) return ""
         return if (categoryCheckButtonSingle.isChecked) "The name of this category will be changed only"
         else if (categoryCheckButtonMultipleByName.isChecked) "All transaction with name ${nameTextView.text} will change category to ${categorySelector.getValue()}"
         else if (categoryCheckButtonMultipleByCategory.isChecked) "All transactions with category ${activeCategories[transaction.categoryId]?.name ?: transaction.categoryId } will change category to ${categorySelector.getValue()}"
@@ -195,17 +188,16 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
 
 
     private fun setUpTransaction() {
-        if (transaction==null) return
-        amountTextView.setText(transaction.amount.absoluteValue.toString())
+        amountTextView.setText("%.2f".format(transaction.amount.absoluteValue))
         dateSelector.setFieldValue(transaction.transactionDate.toDayOfWeekAndShortDateFormat())
         nameTextView.setText(transaction.transactionName)
-        categorySelector.setFieldValue(AustromApplication.activeCategories[transaction.categoryId]?.name.toString())
+        categorySelector.setFieldValue(activeCategories[transaction.categoryId]?.name.toString())
+        currencySymbolTextView.text = AustromApplication.activeAssets[transaction.assetId]?.currencyCode ?: "USD"
     }
 
     private fun setUpAutofill() {
-        if (transaction==null) return
         val localDBProvider = LocalDatabaseProvider(requireActivity())
-        localDBProvider.getUniqueTransactionNamesAsync(transaction.transactionType()).observe(requireActivity()) { names ->
+        localDBProvider.getUniqueTransactionNamesAsync(transaction.transactionType()).observe(viewLifecycleOwner) { names ->
             try {
                 val adapter = ArrayAdapter(requireActivity(), android.R.layout.simple_dropdown_item_1line, names)
                 nameTextView.setAdapter(adapter)
@@ -218,14 +210,14 @@ class TransactionEditFragment(private val transaction: Transaction? =null, priva
                 val categoryId = localDBProvider.getTransactionNameMostUsedCategory(selectedItem)
                 when (transaction.transactionType()) {
                     TransactionType.INCOME -> {
-                        if (AustromApplication.activeCategories.filter { l -> l.value.transactionType==TransactionType.INCOME }.containsKey(categoryId)) {
-                            selectedCategory = AustromApplication.activeCategories[categoryId]
+                        if (activeCategories.filter { l -> l.value.transactionType==TransactionType.INCOME }.containsKey(categoryId)) {
+                            selectedCategory = activeCategories[categoryId]
                             if (selectedCategory!=null) categorySelector.setFieldValue(selectedCategory!!.name)
                         }
                     }
                     TransactionType.EXPENSE -> {
-                        if (AustromApplication.activeCategories.filter { l -> l.value.transactionType==TransactionType.EXPENSE }.containsKey(categoryId)) {
-                            selectedCategory = AustromApplication.activeCategories[categoryId]!!
+                        if (activeCategories.filter { l -> l.value.transactionType==TransactionType.EXPENSE }.containsKey(categoryId)) {
+                            selectedCategory = activeCategories[categoryId]!!
                             if (selectedCategory!=null) categorySelector.setFieldValue(selectedCategory!!.name)
                         }
                     }

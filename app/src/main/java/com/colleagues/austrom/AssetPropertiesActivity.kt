@@ -17,6 +17,8 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
@@ -25,6 +27,8 @@ import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toMoneyFormat
+import com.colleagues.austrom.fragments.AssetEditFragment
+import com.colleagues.austrom.fragments.TransactionEditFragment
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Transaction
 
@@ -42,6 +46,7 @@ class AssetPropertiesActivity : AppCompatActivity(){
     private lateinit var noTransactionsText: TextView
     private lateinit var assetCard: CardView
     private lateinit var dbProvider: LocalDatabaseProvider
+    private lateinit var fragmentHolder: FragmentContainerView
     private fun bindViews() {
         backButton = findViewById(R.id.asdet_back_btn)
         moreButton = findViewById(R.id.asdet_remove_btn)
@@ -55,6 +60,7 @@ class AssetPropertiesActivity : AppCompatActivity(){
         noTransactionsText = findViewById(R.id.asdet_noTransactions_txt)
         assetCard = findViewById(R.id.asdet_assetCard_crd)
         dbProvider = LocalDatabaseProvider(this)
+        fragmentHolder = findViewById(R.id.asdet_fragmentHolder_frh)
     }
     //endregion
     //region Localization
@@ -89,11 +95,26 @@ class AssetPropertiesActivity : AppCompatActivity(){
         retrieveAssetFromIntent()
         setUpAssetProperties()
         setUpRecyclerView()
+        setUpEditFragment()
 
         assetPrimary.setOnClickListener { markAssetAsPrimary() }
         assetPrivate.setOnClickListener { markAssetAsPrivate() }
         moreButton.setOnClickListener { showMenu(moreButton, R.menu.asset_context_menu) }
         backButton.setOnClickListener { this.finish() }
+    }
+
+    private fun setUpEditFragment() {
+        fragmentHolder.visibility = View.GONE
+        val fragment = AssetEditFragment(asset)
+        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragment.setOnDialogResultListener { asset ->
+            val remoteDBProvider = FirebaseDatabaseProvider(this)
+            fragmentHolder.visibility = View.GONE
+            asset.update(dbProvider, remoteDBProvider)
+            setUpAssetProperties()
+        }
+        fragmentTransaction.replace(R.id.asdet_fragmentHolder_frh, fragment)
+        fragmentTransaction.commit()
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {
@@ -102,7 +123,7 @@ class AssetPropertiesActivity : AppCompatActivity(){
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.asconmenu_delete -> { tryDeleteAsset()}
-                R.id.asconmenu_edit -> {  } //TODO("Edit Section")
+                R.id.asconmenu_edit -> { fragmentHolder.visibility = View.VISIBLE }
             }
             true
         }

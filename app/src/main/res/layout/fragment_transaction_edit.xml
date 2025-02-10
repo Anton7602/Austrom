@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,6 +12,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_weight="1"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,21 +24,42 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tredit_amount_til"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/amount">
+                android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tredit_amount_txt"
-                    style="@style/DefaultEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="12500"
-                    android:inputType="number|numberDecimal"
-                    android:textSize="18sp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tredit_amount_til"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="5"
+                    android:hint="@string/transaction_amount">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tredit_amount_txt"
+                        style="@style/DefaultEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number|numberDecimal"
+                        android:textSize="18sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tredit_currencySymbol_txt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:autoSizeMaxTextSize="18dp"
+                    android:autoSizeTextType="uniform"
+                    android:background="@drawable/sh_category_deselected"
+                    android:backgroundTint="@color/backgroundText"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="RUB"
+                    android:textAppearance="@style/PrimaryCardText" />
+            </LinearLayout>
 
             <com.colleagues.austrom.views.SelectorButtonView
                 android:id="@+id/tredit_date_sel"
@@ -181,4 +203,4 @@
             android:text="@string/accept"
             android:textStyle="bold" />
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

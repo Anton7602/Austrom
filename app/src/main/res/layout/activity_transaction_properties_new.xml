@@ -31,7 +31,6 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/trdet_editFragment_frc"
-        android:name="com.colleagues.austrom.fragments.TransactionEditFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="8dp"

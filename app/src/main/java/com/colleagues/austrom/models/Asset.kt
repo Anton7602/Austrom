@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.parseToDouble
@@ -25,6 +26,7 @@ class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode:
     fun serialize(): String { return "$assetId,$assetName,$assetTypeId,$bank,$percent,$currencyCode,$amount,$userId,$isPrivate,$isArchived,$isLiquid,$isRefillable"}
 
     fun delete(localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider? = null) {
+        localDBProvider.getTransactionsOfAsset(this).forEach { transaction -> transaction.cancel(localDBProvider, remoteDBProvider as FirebaseDatabaseProvider) }
         localDBProvider.deleteAsset(this)
         AustromApplication.activeAssets.remove(assetId)
         if (remoteDBProvider!=null && AustromApplication.appUser!!.activeBudgetId!=null) {
@@ -37,6 +39,14 @@ class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode:
         AustromApplication.activeAssets[this.assetId] = this
         if (remoteDBProvider!=null && AustromApplication.appUser!!.activeBudgetId!=null) {
             remoteDBProvider.createNewAsset(this, remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)!!)
+        }
+    }
+
+    fun update(localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider? = null) {
+        localDBProvider.updateAsset(this)
+        AustromApplication.activeAssets[this.assetId] = this
+        if (remoteDBProvider!=null && AustromApplication.appUser!!.activeBudgetId!=null) {
+            remoteDBProvider.updateAsset(this, remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)!!)
         }
     }
 
