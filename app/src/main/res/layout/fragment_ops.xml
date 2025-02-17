@@ -8,36 +8,39 @@
 
     <ImageButton
         android:id="@+id/ops_navDrawer_btn"
+        style="@style/HeaderButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        style="@style/HeaderButtonStyle"
         app:srcCompat="@drawable/ic_navigation_mainmenu_temp" />
 
-    <com.colleagues.austrom.views.TransactionHeaderView
-        android:id="@+id/ops_transactionsHeader_trhed"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="2dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ops_navDrawer_btn" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ops_transactionHolder_rcv"
-        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ops_transactionsHeader_trhed"
-        tools:listitem="@layout/item_transaction_group" />
+        app:layout_constraintTop_toBottomOf="@+id/ops_navDrawer_btn">
+
+        <com.colleagues.austrom.views.TransactionHeaderView
+            android:id="@+id/ops_transactionsHeader_trhed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="2dp"
+            app:cardElevation="0dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ops_transactionHolder_rcv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_transaction_group" />
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/ops_createNewTransaction_btn"

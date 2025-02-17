@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -206,7 +207,7 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         collapsedHeight = holderCardView.height
         mainLayout.visibility = View.GONE
         filterLayout.visibility = View.VISIBLE
-        animateHeightChange(holderCardView.height, holderCardView.width*3, false)
+        animateHeightChange(holderCardView.height, (parent as LinearLayout).height, false)
     }
 
     private fun animateHeightChange(startHeight: Int, endHeight: Int, isSwitchingToMainMode: Boolean) {
