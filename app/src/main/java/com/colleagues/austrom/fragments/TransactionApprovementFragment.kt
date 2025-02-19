@@ -36,7 +36,10 @@ class TransactionApprovementFragment(private val transactionsList: MutableList<T
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        if (transactionsList.isEmpty()) completeImport
+        if (transactionsList.isEmpty()) {
+            completeImport
+            requireActivity().finish()  //TODO("FIX LATER!!!")
+        }
         setUpRecyclerView()
         calculateValidTransaction()
         massImportButton.setOnClickListener { acceptValidTransactions() }
@@ -45,13 +48,13 @@ class TransactionApprovementFragment(private val transactionsList: MutableList<T
     private fun acceptValidTransactions() {
         for (i in transactionsList.size - 1 downTo 0) {
             if (transactionsList[i].isValid()) {
-                transactionsList[i].submit(LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity() as AppCompatActivity)
-                )
+                transactionsList[i].submit(LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity() as AppCompatActivity))
                 transactionsList.removeAt(i)
             }
         }
         if (transactionsList.isEmpty()) {
             completeImport
+            requireActivity().finish()  //TODO("FIX LATER!!!")
         } else {
             calculateValidTransaction()
             setUpRecyclerView()
@@ -67,7 +70,14 @@ class TransactionApprovementFragment(private val transactionsList: MutableList<T
     private fun setUpRecyclerView() {
         transactionHolder.layoutManager = LinearLayoutManager(requireActivity())
         val adapter = TransactionExtendedRecyclerAdapter(transactionsList, requireActivity(), true)
-        adapter.setOnItemClickListenerAccept { transaction -> transaction.submit(LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity())); adapter.removeTransaction(transaction)}
+        adapter.setOnItemClickListenerAccept { transaction ->
+            transaction.submit(LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity()));
+            adapter.removeTransaction(transaction)
+            if (transactionsList.isEmpty()) {
+                completeImport
+                requireActivity().finish() //TODO("FIX LATER!!!")
+            }
+        }
         adapter.setOnItemClickListenerEdit { transaction -> changeFragment(TransactionEditFragment(transaction, transactionsList)) }
         transactionHolder.adapter = adapter
     }

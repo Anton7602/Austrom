@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.dialogs.DeletionConfirmationDialogFragment
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.InvalidTransactionException
@@ -40,40 +43,70 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>, pr
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
         holder.transactionHolder.setBackgroundResource(R.drawable.img_transaction_card_background)
         val transaction = transactions[position]
-        val asset = AustromApplication.activeAssets[transaction.assetId] ?: throw InvalidTransactionException("Asset used in transaction is not recognized", TransactionValidationType.UNKNOWN_ASSET_INVALID)
-        val category: Category
-        when (transaction.transactionType()) {
-            TransactionType.TRANSFER -> {
-                category = AustromApplication.activeCategories[transaction.categoryId] ?: throw InvalidTransactionException("Category used in transaction is not recognized", TransactionValidationType.UNKNOWN_CATEGORY_INVALID)
-                holder.amount.text = if (transaction.amount>0) "-${transaction.amount.absoluteValue.toMoneyFormat()}" else "+${transaction.amount.absoluteValue.toMoneyFormat()}"
-                holder.amount.setTextColor(context.getColor(R.color.transferYellow))
-                holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
-                holder.currencySymbol.setTextColor(context.getColor(R.color.transferYellow))
-                holder.primaryParticipant.text = transaction.transactionName
-                holder.secondaryParticipant.text = if (transaction.amount>0) "${context.getString(R.string.fromAsset)} ${asset.assetName}" else "${context.getString(R.string.toAsset)} ${asset.assetName}"
-            }
-            TransactionType.EXPENSE -> {
-                category = AustromApplication.activeCategories[transaction.categoryId] ?: throw InvalidTransactionException("Category used in transaction is not recognized", TransactionValidationType.UNKNOWN_CATEGORY_INVALID)
-                holder.amount.text = transaction.amount.toMoneyFormat()
-                holder.amount.setTextColor(context.getColor(R.color.expenseRed))
-                holder.currencySymbol.setTextColor(context.getColor(R.color.expenseRed))
-                holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
-                holder.secondaryParticipant.text = "${context.getString(R.string.fromAsset)} ${asset.assetName}"
-                holder.primaryParticipant.text = transaction.transactionName
-            }
-            TransactionType.INCOME -> {
-                category = AustromApplication.activeCategories[transaction.categoryId] ?: throw InvalidTransactionException("Category used in transaction is not recognized", TransactionValidationType.UNKNOWN_CATEGORY_INVALID)
-                holder.amount.text = "+" + transaction.amount.toMoneyFormat()
-                holder.amount.setTextColor(context.getColor(R.color.incomeGreen))
-                holder.currencySymbol.setTextColor(context.getColor(R.color.incomeGreen))
-                holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
-                holder.secondaryParticipant.text = "${context.getString(R.string.toAsset)} ${asset.assetName}"
-                holder.primaryParticipant.text = transaction.transactionName
-            }
-        }
-        holder.categoryName.text = category.name
-        holder.categoryImage.setImageResource(category.imgReference.resourceId)
+        try {
+            val asset = AustromApplication.activeAssets[transaction.assetId]
+                ?: throw InvalidTransactionException(
+                    "Asset used in transaction is not recognized",
+                    TransactionValidationType.UNKNOWN_ASSET_INVALID
+                )
+            val category: Category
+            when (transaction.transactionType()) {
+                TransactionType.TRANSFER -> {
+                    category = AustromApplication.activeCategories[transaction.categoryId]
+                        ?: throw InvalidTransactionException(
+                            "Category used in transaction is not recognized",
+                            TransactionValidationType.UNKNOWN_CATEGORY_INVALID
+                        )
+                    holder.amount.text =
+                        if (transaction.amount > 0) "-${transaction.amount.absoluteValue.toMoneyFormat()}" else "+${transaction.amount.absoluteValue.toMoneyFormat()}"
+                    holder.amount.setTextColor(context.getColor(R.color.transferYellow))
+                    holder.currencySymbol.text =
+                        AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
+                    holder.currencySymbol.setTextColor(context.getColor(R.color.transferYellow))
+                    holder.primaryParticipant.text = transaction.transactionName
+                    holder.secondaryParticipant.text =
+                        if (transaction.amount > 0) "${context.getString(R.string.fromAsset)} ${asset.assetName}" else "${
+                            context.getString(R.string.toAsset)
+                        } ${asset.assetName}"
+                }
 
+                TransactionType.EXPENSE -> {
+                    category = AustromApplication.activeCategories[transaction.categoryId]
+                        ?: throw InvalidTransactionException(
+                            "Category used in transaction is not recognized",
+                            TransactionValidationType.UNKNOWN_CATEGORY_INVALID
+                        )
+                    holder.amount.text = transaction.amount.toMoneyFormat()
+                    holder.amount.setTextColor(context.getColor(R.color.expenseRed))
+                    holder.currencySymbol.setTextColor(context.getColor(R.color.expenseRed))
+                    holder.currencySymbol.text =
+                        AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
+                    holder.secondaryParticipant.text =
+                        "${context.getString(R.string.fromAsset)} ${asset.assetName}"
+                    holder.primaryParticipant.text = transaction.transactionName
+                }
+
+                TransactionType.INCOME -> {
+                    category = AustromApplication.activeCategories[transaction.categoryId]
+                        ?: throw InvalidTransactionException(
+                            "Category used in transaction is not recognized",
+                            TransactionValidationType.UNKNOWN_CATEGORY_INVALID
+                        )
+                    holder.amount.text = "+" + transaction.amount.toMoneyFormat()
+                    holder.amount.setTextColor(context.getColor(R.color.incomeGreen))
+                    holder.currencySymbol.setTextColor(context.getColor(R.color.incomeGreen))
+                    holder.currencySymbol.text =
+                        AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
+                    holder.secondaryParticipant.text =
+                        "${context.getString(R.string.toAsset)} ${asset.assetName}"
+                    holder.primaryParticipant.text = transaction.transactionName
+                }
+            }
+            holder.categoryName.text = category.name
+            holder.categoryImage.setImageResource(category.imgReference.resourceId)
+        } catch (ex: InvalidTransactionException) {
+            callErrorDialog(transaction)
+        }
         holder.transactionHolder.setOnClickListener { returnClickedItem(transaction, position) }
         animateItem(holder.itemView)
     }
@@ -85,6 +118,12 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>, pr
             .setDuration(500)
             .setInterpolator(AccelerateDecelerateInterpolator())
             .start()
+    }
+
+    private fun callErrorDialog(transaction: Transaction) {
+        val dialog = DeletionConfirmationDialogFragment("There was error with displaying a transaction: ${transaction.transactionName}. Do you want to delete it from the system?", "Yes", "No")
+        dialog.setOnDialogResultListener { isConfirmed -> if (isConfirmed) transaction.cancel( LocalDatabaseProvider(context)) }
+        dialog.show((context  as AppCompatActivity).supportFragmentManager, "Deletion Confirmation Dialog")
     }
 }
 

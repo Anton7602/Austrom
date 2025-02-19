@@ -8,11 +8,13 @@ import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.AustromApplication.Companion.activeCategories
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.TransactionExtendedRecyclerAdapter
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.ImportMappingDialogFragment
 import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.extensions.parseToLocalDate
+import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.SelectorButtonView
@@ -139,6 +141,7 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
     }
 
     private fun readTransactionFromCSVLine(line: Array<String>): Transaction {
+
         val assetTxt = if (fileMap["asset"]!=-1) line[fileMap["asset"]!!] else assetSelector.getValue()
         val targetTxt = if (fileMap["name"]!=-1) line[fileMap["name"]!!] else nameSelector.getValue()
         val amountTxt = if (fileMap["amount"]!=-1) line[fileMap["amount"]!!] else amountSelector.getValue()
@@ -147,11 +150,19 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
         val dateTxt = if (fileMap["date"]!=-1) {line[fileMap["date"]!!]} else dateSelector.getValue()
         val commentTxt = if (fileMap["comment"]!=-1) line[fileMap["comment"]!!] else commentSelector.getValue()
 
+        var activeCategory: Category? = null
+        if (amount>0) {
+            val possibleCategories = activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }
+            activeCategory = possibleCategories.find { l -> l.name.lowercase()==categoryTxt.lowercase() } ?: possibleCategories.find { l -> l.categoryId.lowercase()==categoryTxt.lowercase().lowercase() }
+        } else {
+            val possibleCategories = activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }
+            activeCategory = possibleCategories.find { l -> l.name.lowercase()==categoryTxt.lowercase() } ?: possibleCategories.find { l -> l.categoryId.lowercase()==categoryTxt.lowercase().lowercase() }
+        }
+
         return Transaction(
             assetId = AustromApplication.activeAssets.values.find { l -> l.assetName == assetTxt }?.assetId ?: assetTxt,
             transactionName = targetTxt,
-            categoryId = if (amount>0) AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }.find { l -> l.name == categoryTxt }?.categoryId ?: categoryTxt.toString() else
-                AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }.find { l -> l.name == categoryTxt }?.categoryId ?: categoryTxt.toString(),
+            categoryId = activeCategory?.categoryId ?: categoryTxt,
             amount =amount,
             transactionDate = dateTxt.parseToLocalDate() ?: LocalDate.now(),
             comment = commentTxt

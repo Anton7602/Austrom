@@ -18,6 +18,8 @@ fun String?.parseToLocalDate(): LocalDate? {
     if (this.isNullOrEmpty()) return null
     val dateFormats = listOf(
         "dd.MM.yyyy HH:mm:ss",
+        "dd.MM.yyyy HH:mm",
+        "dd.MM.yyyy H:mm",
         "dd.MM.yyyy",
         "yyyy.dd.MM",
         "yyyy-MM-dd",
@@ -25,7 +27,11 @@ fun String?.parseToLocalDate(): LocalDate? {
         "MM/dd/yyyy",
         "yyyy/MM/dd",
         "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-dd HH:mm",
+        "yyyy-MM-dd H:mm",
         "dd/MM/yyyy HH:mm:ss",
+        "dd/MM/yyyy HH:mm",
+        "dd/MM/yyyy H:mm",
         "MM-dd-yyyy",
         "yyyyMMdd"
     )

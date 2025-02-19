@@ -95,7 +95,9 @@ class ImportParametersActivity : AppCompatActivity() {
             is ImportMappingFragment -> fragment.setOnFragmentChangeRequestedListener{newFragment -> if (newFragment!=null) switchFragment(newFragment) else this.finish() }
             is TransactionApprovementFragment -> {
                 fragment.setOnFragmentChangeRequestedListener { newFragment -> if (newFragment!=null) switchFragment(newFragment) else this.finish() }
-                fragment.setOnImportCompletedListener { this.finish() }
+                fragment.setOnImportCompletedListener {
+                    this.finish()
+                }
             }
             is TransactionEditFragment -> fragment.setOnDialogResultListener{transaction, transactionList -> switchFragment(TransactionApprovementFragment(transactionList.toMutableList())) }
         }
