@@ -9,6 +9,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.AustromApplication.Companion.appUser
+import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
@@ -76,7 +77,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(locale.language))
             } else  {
                 requireActivity().recreate()
-            }}
+            }
+        }
         dialog.show(requireActivity().supportFragmentManager, "Language Selection Dialog")
     }
 

@@ -1,7 +1,9 @@
 package com.colleagues.austrom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -92,6 +94,9 @@ class AuthorizationQuickActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun setUpOrientationLimitations() { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
     // endregion
     private var promptResults: BiometricPromptManager.BiometricResult? = null
     private val promptManager by lazy{ BiometricPromptManager(this) }
@@ -102,6 +107,7 @@ class AuthorizationQuickActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        setUpOrientationLimitations()
         setContentView(R.layout.activity_authorization_quick)
         adjustInsets()
         bindViews()

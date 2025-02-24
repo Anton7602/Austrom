@@ -1,6 +1,8 @@
 package com.colleagues.austrom
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -106,6 +108,9 @@ class TransactionCreationActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun setUpOrientationLimitations() { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
     //endregion
     private var primarySelectedAsset: Asset? = null
     private var secondarySelectedAsset: Asset? = null
@@ -116,6 +121,7 @@ class TransactionCreationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        setUpOrientationLimitations()
         setContentView(R.layout.activity_transaction_creation)
         adjustInsets()
         bindViews()

@@ -147,7 +147,11 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
     fun validate(): TransactionValidationType {
         if (amount==0.0) return TransactionValidationType.AMOUNT_INVALID
         if (AustromApplication.activeAssets[assetId]==null) return TransactionValidationType.UNKNOWN_ASSET_INVALID
-        if (amount>0) {
+        if (transactionType()==TransactionType.TRANSFER) {
+            if (categoryId!=AustromApplication.activeCategories.values.firstOrNull { category -> category.transactionType==TransactionType.TRANSFER }?.categoryId) {
+                return TransactionValidationType.UNKNOWN_CATEGORY_INVALID
+            }
+        } else if (amount>0) {
             if (AustromApplication.activeCategories.filter { l -> l.value.transactionType==TransactionType.INCOME }[categoryId]==null) return TransactionValidationType.UNKNOWN_CATEGORY_INVALID
         } else {
             if (AustromApplication.activeCategories.filter { l -> l.value.transactionType==TransactionType.EXPENSE }[categoryId]==null) return TransactionValidationType.UNKNOWN_CATEGORY_INVALID
@@ -196,8 +200,8 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
 }
 
 enum class TransactionType(val transactionTypeNameId: Int = R.string.unresolved, val transactionTypeDescriptionResourceId: Int = R.string.unresolved, val transactionTypeIconResource: Int = R.drawable.ic_placeholder_icon) {
-    INCOME(R.string.income, R.string.income_desc, R.drawable.ic_transactiontype_income_temp),
     EXPENSE(R.string.expense, R.string.expense_desc, R.drawable.ic_transactiontype_expense_temp),
+    INCOME(R.string.income, R.string.income_desc, R.drawable.ic_transactiontype_income_temp),
     TRANSFER(R.string.transfer, R.string.transfer_desc, R.drawable.ic_transactiontype_transfer_temp)
 }
 

@@ -81,6 +81,7 @@
                     style="@style/DefaultEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="text|textCapSentences"
                     android:text="@string/transaction_name" />
 
             </com.google.android.material.textfield.TextInputLayout>

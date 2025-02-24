@@ -37,7 +37,8 @@
                         android:id="@+id/txteditdial_textField_txt"
                         style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:inputType="text|textCapSentences" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView

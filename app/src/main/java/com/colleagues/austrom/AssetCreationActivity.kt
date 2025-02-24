@@ -1,5 +1,7 @@
 package com.colleagues.austrom
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -71,6 +73,9 @@ class AssetCreationActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun setUpOrientationLimitations() { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
     //endregion
     private var assetNameTextListener: TextWatcher? = null
     private var visibleAssetTypes: MutableList<AssetType> = mutableListOf()
@@ -80,6 +85,7 @@ class AssetCreationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        setUpOrientationLimitations()
         setContentView(R.layout.activity_asset_creation)
         adjustInsets()
         bindViews()
@@ -89,7 +95,7 @@ class AssetCreationActivity : AppCompatActivity() {
 
         switchFieldVisibilities(selectedAssetType)
         backButton.setOnClickListener { finish() }
-        currencyTextView.text = selectedCurrency?.symbol.toString()
+        currencyTextView.text = selectedCurrency?.code.toString()
         currencyTextView.setOnClickListener { launchCurrencyDialog() }
         addAssetButton.setOnClickListener { addAsset() }
 

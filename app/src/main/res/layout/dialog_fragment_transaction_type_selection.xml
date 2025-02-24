@@ -54,6 +54,7 @@
                 android:id="@+id/trtypeseldial_assetHolder_rcv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                tools:itemCount="3"
                 tools:listitem="@layout/item_transaction_type" />
 
         </LinearLayout>

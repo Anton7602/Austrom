@@ -42,7 +42,7 @@
                         android:layout_height="0dp"
                         android:ems="10"
                         android:hint="@string/category_selection"
-                        android:inputType="text"
+                        android:inputType="text|textCapSentences"
                         android:paddingStart="50dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="50dp"

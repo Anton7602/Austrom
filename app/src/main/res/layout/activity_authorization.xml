@@ -68,10 +68,11 @@
             app:layout_constraintTop_toBottomOf="@+id/auth_label_txt">
 
             <com.google.android.material.textfield.TextInputEditText
-                style="@style/DefaultEditText"
                 android:id="@+id/auth_login_txt"
+                style="@style/DefaultEditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="text|textCapSentences" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

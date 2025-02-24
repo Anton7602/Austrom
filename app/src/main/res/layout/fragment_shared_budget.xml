@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_navigation_mainmenu_temp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -79,7 +80,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Active Users:"
+        android:text="@string/active_users"
         android:textAppearance="@style/SecondaryCardText"
         app:layout_constraintStart_toStartOf="@+id/shb_budgetInfo_crd"
         app:layout_constraintTop_toBottomOf="@+id/shb_budgetInfo_crd" />
@@ -101,7 +102,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Pending Invitations:"
+        android:text="@string/pending_invitations"
         android:textAppearance="@style/SecondaryCardText"
         app:layout_constraintStart_toStartOf="@+id/shb_activeUsers_rcv"
         app:layout_constraintTop_toBottomOf="@+id/shb_activeUsers_rcv" />

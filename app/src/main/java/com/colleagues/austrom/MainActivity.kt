@@ -1,6 +1,8 @@
 package com.colleagues.austrom
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -89,11 +91,15 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun setUpOrientationLimitations() { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
     //endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        setUpOrientationLimitations()
         setContentView(R.layout.activity_main)
         bindViews()
         adjustInsets()
@@ -108,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationBar.setOnItemSelectedListener { item -> handleBottomNavigationBarClick(item) }
         navigationLogOutButton.setOnClickListener { logOut() }
         onBackPressedDispatcher.addCallback(this) {}
-        if (supportFragmentManager.findFragmentById(R.id.main_fragmentHolder_frg)==null) switchFragment(BalanceFragment())
+        if (supportFragmentManager.findFragmentById(R.id.main_fragmentHolder_frg)==null) switchFragment(BalanceFragment()) else switchFragment(SettingsFragment())
     }
 
     private fun fillInDefaultUsers() {
@@ -164,7 +170,9 @@ class MainActivity : AppCompatActivity() {
             is OpsFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             is ImportFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             is PlanningFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
-            is SettingsFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
+            is SettingsFragment -> fragment.setOnNavigationDrawerOpenCalled {
+                drawerLayout.open()
+            }
             is SharedBudgetFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             is SharedBudgetJoinFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             is SharedBudgetEmptyFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }

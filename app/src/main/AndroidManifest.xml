@@ -35,7 +35,7 @@
         tools:targetApi="34">
         <activity
             android:name=".ExportActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".TransactionPropertiesActivityNew"
             android:exported="false" />
@@ -44,8 +44,7 @@
             android:exported="false" />
         <activity
             android:name=".AssetCreationActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:exported="false" />
         <activity
             android:name=".CategoryCreationActivity"
             android:exported="false" />

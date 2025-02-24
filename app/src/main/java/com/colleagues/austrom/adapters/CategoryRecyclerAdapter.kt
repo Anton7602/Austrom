@@ -43,6 +43,13 @@ class CategoryRecyclerAdapter(private val categories: MutableList<Category>, pri
                     activity.startActivity(Intent(activity, CategoryCreationActivity::class.java).putExtra("isExpenseCategory", (category.transactionType == TransactionType.EXPENSE)))
                 }
             }
+            holder.editButton.setOnClickListener {
+                if (category.categoryId.isNotEmpty()) {
+                    activity.startActivity(Intent(activity, CategoryCreationActivity::class.java).putExtra("CategoryId", categories[position].categoryId))
+                } else {
+                    activity.startActivity(Intent(activity, CategoryCreationActivity::class.java).putExtra("isExpenseCategory", (category.transactionType == TransactionType.EXPENSE)))
+                }
+            }
         } else {
             holder.categoryHolder.setOnClickListener {
                 returnClickedItem(category)

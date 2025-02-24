@@ -1,6 +1,8 @@
 package com.colleagues.austrom
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -70,12 +72,16 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun setUpOrientationLimitations() { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
     //endregion
     private lateinit var transaction: Transaction
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        setUpOrientationLimitations()
         setContentView(R.layout.activity_transaction_properties_new)
         adjustInsets()
         bindViews()
@@ -90,7 +96,6 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
         val imageFile = File(externalCacheDir, "${transaction.transactionId}.jpg")
 
         newImageActionButton.setText(if (imageFile.exists()) getString(R.string.show_image) else getString(R.string.add_image))
-
 
         commentActionButton.setOnClickListener { launchEditCommentDialog() }
         newImageActionButton.setOnClickListener { launchImageSelectionDialog() }
@@ -148,7 +153,7 @@ class TransactionPropertiesActivityNew : AppCompatActivity() {
         popup.menuInflater.inflate(menuRes, popup.menu)
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
-                R.id.transconmenu_edit -> {fragmentHolder.visibility = View.VISIBLE}
+                R.id.transconmenu_edit -> { fragmentHolder.visibility = View.VISIBLE}
                 R.id.transconmenu_delete -> { transaction.cancel(LocalDatabaseProvider(this), FirebaseDatabaseProvider(this)); this.finish() }
             }
             true

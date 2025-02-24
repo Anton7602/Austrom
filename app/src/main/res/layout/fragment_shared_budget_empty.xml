@@ -33,7 +33,7 @@
             android:id="@+id/textView12"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Your Budget - Anytime, Anywhere, Together!"
+            android:text="@string/your_budget_anytime_anywhere_together"
             android:textAlignment="center"
             android:textAppearance="@style/PrimaryCardText"
             android:textSize="18sp"
@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="32dp"
-            android:text="Create a budget that you can access from anywhere, allowing seamless collaboration and tracking on any device."
+            android:text="@string/create_a_budget_that_you_can_access_from_anywhere_allowing_seamless_collaboration_and_tracking_on_any_device"
             android:textAlignment="center"
             android:textAppearance="@style/PrimaryCardText"
             android:textColor="#E4FFFFFF" />
@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="32dp"
-            android:text="Or"
+            android:text="@string/or"
             android:textAlignment="center"
             android:textAppearance="@style/SecondaryCardText" />
 
@@ -89,7 +89,7 @@
             android:id="@+id/textView24"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ask you partner to invite you to their budget"
+            android:text="@string/ask_your_partner_to_invite_you_to_their_budget"
             android:textAlignment="center" />
 
     </LinearLayout>

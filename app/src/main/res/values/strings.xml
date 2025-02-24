@@ -461,4 +461,21 @@
     <string name="month">Month</string>
     <string name="year">Year</string>
     <string name="export_csv_file">Export CSV File</string>
+    <string name="email_or_password_is_incorrect">Email or password is incorrect</string>
+    <string name="ask_your_partner_to_invite_you_to_their_budget">Ask your partner to invite you to their budget</string>
+    <string name="or">Or</string>
+    <string name="your_budget_anytime_anywhere_together">Your Budget - Anytime, Anywhere, Together!</string>
+    <string name="create_a_budget_that_you_can_access_from_anywhere_allowing_seamless_collaboration_and_tracking_on_any_device">Create a budget that you can access from anywhere, allowing seamless collaboration and tracking on any device.</string>
+    <string name="invitation_recieved">Invitation Recieved</string>
+    <string name="you_ve_received_an_invitation_to_join_a_shared_budget_tap_below_to_view_the_details_and_accept_the_invitation">You\'ve received an invitation to join a Shared Budget. Tap below to view the details and accept the invitation!</string>
+    <string name="join">Join</string>
+    <string name="decline">Decline</string>
+    <string name="you_are_invited_to">You Are Invited To</string>
+    <string name="please_enter_an_8_digit_code_to_join">Please Enter an 8-digit code to join</string>
+    <string name="invitation_code_should_be_provided_to_you_by_the_person_who_sent_you_invitation_to_the_shared_budget">Invitation code should be provided to you by the person who sent you invitation to the Shared Budget</string>
+    <string name="invitation_sent">Invitation Sent</string>
+    <string name="provide_this_invitation_code_to_your_future_budget_partner_and_start_sharing_financial_info">Provide this invitation code to your future budget partner and start sharing financial info</string>
+    <string name="continue_label">Continue</string>
+    <string name="active_users">Active Users:</string>
+    <string name="pending_invitations">Pending Invitations:</string>
 </resources>

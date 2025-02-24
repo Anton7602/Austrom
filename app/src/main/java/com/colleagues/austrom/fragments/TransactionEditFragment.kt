@@ -74,8 +74,8 @@ class TransactionEditFragment(private val transaction: Transaction, private val 
         bindViews(view)
         setUpTransaction()
         setUpAutofill()
-        cancelButton.setOnClickListener { returnResult(transaction, transactionsToChange) }
-        saveButton.setOnClickListener {save()}
+        cancelButton.setOnClickListener { returnResult(transaction, transactionsToChange); setUpTransaction() }
+        saveButton.setOnClickListener { save() }
         nameCheckButtonSingle.setOnClickListener { switchNameChangeSelection(nameCheckButtonSingle) }
         nameCheckButtonMultiple.setOnClickListener { switchNameChangeSelection(nameCheckButtonMultiple) }
 

@@ -126,7 +126,7 @@
     <string name="add">Добавить</string>
     <string name="choose_period_start_date">Выберите Начальную Дату Периода</string>
     <string name="choose_period_end_date">Выберите Конечную Дату Периода</string>
-    <string name="email_of_invited_user">Email приглашённого пользователя</string>
+    <string name="email_of_invited_user">Email приглашаемого пользователя</string>
     <string name="hello_blank_fragment">Пустой Фрагмент</string>
     <string name="language_selection">Выбор Языка</string>
     <string name="select_from_gallery">Выбрать из Галереи</string>
@@ -460,4 +460,21 @@
     <string name="month">Месяц</string>
     <string name="year">Год</string>
     <string name="export_csv_file">Экспортировать CSV</string>
+    <string name="email_or_password_is_incorrect">Email или пароль введены неверно</string>
+    <string name="ask_your_partner_to_invite_you_to_their_budget">Попросите партнёра пригласить вас в существующий бюджет</string>
+    <string name="or">Или</string>
+    <string name="your_budget_anytime_anywhere_together">Ваш Бюджет - Всегда, Везде, Вместе</string>
+    <string name="create_a_budget_that_you_can_access_from_anywhere_allowing_seamless_collaboration_and_tracking_on_any_device">Создайте бюджет, который будет доступен вам в любой точке мира, доступен для совместного ведения и отслеживания на любом устройстве.</string>
+    <string name="invitation_recieved">Приглашение Получено</string>
+    <string name="you_ve_received_an_invitation_to_join_a_shared_budget_tap_below_to_view_the_details_and_accept_the_invitation">Вы получили приглашение присоединиться к Совместному Бюджету. Нажмите ниже чтобы узнать подробности и принять приглашение.</string>
+    <string name="join">Присоединиться</string>
+    <string name="decline">Отклонить</string>
+    <string name="you_are_invited_to">Вы приглашены в</string>
+    <string name="please_enter_an_8_digit_code_to_join">Введите 8-значный код чтобы присоединиться</string>
+    <string name="invitation_code_should_be_provided_to_you_by_the_person_who_sent_you_invitation_to_the_shared_budget">Код приглашения может быть предоставлен вам пользователем, отправившим приглашение в Совместный Бюджет</string>
+    <string name="invitation_sent">Приглашение Отправлено</string>
+    <string name="provide_this_invitation_code_to_your_future_budget_partner_and_start_sharing_financial_info">Отправьте код приглашения вашему партнёру по бюджету, чтобы совместно управлять финансовой информацией</string>
+    <string name="continue_label">Продолжить</string>
+    <string name="active_users">Активные Пользователи:</string>
+    <string name="pending_invitations">Отправленные Приглашения:</string>
 </resources>

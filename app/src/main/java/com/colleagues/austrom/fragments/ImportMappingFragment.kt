@@ -71,7 +71,10 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
             readCsvSchema(fileUri)
             selectorsList = listOf(assetSelector, nameSelector, amountSelector, dateSelector, categorySelector, commentSelector)
             if (csvColumnsList.isNotEmpty()) {
-                selectorsList.forEach { selector -> selector.setOnClickListener{ launchMappingDialog(selector)}; selector.setFieldValue("*Mapped To File - ${csvColumnsList.first()}") }
+                selectorsList.forEach { selector ->
+                    selector.setOnClickListener{ launchMappingDialog(selector)}
+                    selector.setFieldValue(getString(R.string.mapped_to_file, csvColumnsList.first()))
+                }
                 if (AustromApplication.activeAssets.isNotEmpty()) {
                     assetSelector.setFieldValue(AustromApplication.activeAssets[AustromApplication.appUser!!.primaryPaymentMethod]?.assetName
                         ?: AustromApplication.activeAssets.values.first().assetName)
@@ -89,7 +92,7 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
             nameSelector.id -> ImportMappingDialogFragment(csvColumnsList, listOf(), "name")
             amountSelector.id -> ImportMappingDialogFragment(csvColumnsList, listOf(), "amount")
             dateSelector.id -> ImportMappingDialogFragment(csvColumnsList, listOf(), "date")
-            categorySelector.id -> ImportMappingDialogFragment(csvColumnsList, AustromApplication.activeCategories.values.filter { it.transactionType!=TransactionType.TRANSFER }.map { it.name }, "category")
+            categorySelector.id -> ImportMappingDialogFragment(csvColumnsList, activeCategories.values.filter { it.transactionType!=TransactionType.TRANSFER }.map { it.name }, "category")
             commentSelector.id -> ImportMappingDialogFragment(csvColumnsList, listOf(), "comment", true)
             else -> null
         }
@@ -150,7 +153,7 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
         val dateTxt = if (fileMap["date"]!=-1) {line[fileMap["date"]!!]} else dateSelector.getValue()
         val commentTxt = if (fileMap["comment"]!=-1) line[fileMap["comment"]!!] else commentSelector.getValue()
 
-        var activeCategory: Category? = null
+        val activeCategory: Category?
         if (amount>0) {
             val possibleCategories = activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }
             activeCategory = possibleCategories.find { l -> l.name.lowercase()==categoryTxt.lowercase() } ?: possibleCategories.find { l -> l.categoryId.lowercase()==categoryTxt.lowercase().lowercase() }

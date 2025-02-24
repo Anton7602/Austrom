@@ -59,12 +59,13 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/catcr_categoryName_txt"
+            style="@style/DefaultEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/category_name"
+            android:inputType="text|textCapSentences"
             android:textAppearance="@style/PrimaryCardText"
-            android:textColor="@color/primaryTextColor"
-            style="@style/DefaultEditText"/>
+            android:textColor="@color/primaryTextColor" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

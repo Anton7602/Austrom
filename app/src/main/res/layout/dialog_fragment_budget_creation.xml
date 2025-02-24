@@ -37,7 +37,8 @@
                     android:id="@+id/bcdial_budgetName_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/budget_name" />
+                    android:hint="@string/budget_name"
+                    android:inputType="text|textCapSentences" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

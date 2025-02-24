@@ -34,10 +34,11 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/signUp_login_txt"
+                style="@style/DefaultEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login"
-                style="@style/DefaultEditText"
+                android:inputType="text|textCapSentences"
                 android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -53,10 +54,11 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/signUp_email_txt"
+                style="@style/DefaultEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
-                style="@style/DefaultEditText"
+                android:inputType="text|textCapSentences"
                 android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
 

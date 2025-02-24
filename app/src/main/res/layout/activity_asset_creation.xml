@@ -77,7 +77,8 @@
                     android:id="@+id/ascreat_assetName_txt"
                     style="@style/DefaultEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="text|textCapSentences" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
@@ -150,7 +151,8 @@
                     android:id="@+id/ascreat_bank_txt"
                     style="@style/DefaultEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="text|textCapSentences" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>

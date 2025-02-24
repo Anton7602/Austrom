@@ -2,6 +2,7 @@ package com.colleagues.austrom
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -82,6 +83,8 @@ class AssetPropertiesActivity : AppCompatActivity(){
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
+
+    private fun setUpOrientationLimitations() { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) }
     //endregion
     private lateinit var asset: Asset
     private var transactionsOfAsset: MutableList<Transaction> = mutableListOf()
@@ -89,6 +92,7 @@ class AssetPropertiesActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        setUpOrientationLimitations()
         setContentView(R.layout.activity_asset_properties)
         adjustInsets()
         bindViews()

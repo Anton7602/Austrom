@@ -1,7 +1,9 @@
 package com.colleagues.austrom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
@@ -54,11 +56,15 @@ class AuthorizationActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
     }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun setUpOrientationLimitations() { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
     // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        setUpOrientationLimitations()
         setContentView(R.layout.activity_authorization)
         adjustInsets()
         bindViews()
@@ -86,7 +92,7 @@ class AuthorizationActivity : AppCompatActivity() {
         val encryptionManager = EncryptionManager()
         val existingUser = dbProvider.getUserByEmail(loginTextBox.text.toString().lowercase())
         if (existingUser== null  || !encryptionManager.isPasswordFitsHash(passwordTextBox.text.toString(),existingUser.password)) {
-            Toast.makeText(this, "Email or password is incorrect", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.email_or_password_is_incorrect), Toast.LENGTH_LONG).show()
         } else {
             existingUser.password = passwordTextBox.text.toString()
             if (existingUser.tokenId!=null) {

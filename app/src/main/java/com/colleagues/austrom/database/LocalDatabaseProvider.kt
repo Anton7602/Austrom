@@ -171,9 +171,11 @@ class LocalDatabaseProvider(context: Context) {
 
     fun cancelTransaction(transaction: Transaction) {
         val activeAsset = this.getAssetById(transaction.assetId) ?: throw InvalidTransactionException("Transaction cancellation failed. Asset is unknown!", TransactionValidationType.UNKNOWN_ASSET_INVALID)
+        activeAsset.amount -= transaction.amount
         if (transaction.linkedTransactionId!=null) {
             val linkedTransaction = this.getTransactionByID(transaction.linkedTransactionId!!) ?: throw InvalidTransactionException("Transaction cancellation failed. Linked Transaction can't be found", TransactionValidationType.UNKNOWN_LINKED_TRANSACTION)
             val activeAssetOfLinkedTransaction = this.getAssetById(linkedTransaction.assetId) ?: throw InvalidTransactionException("Transaction cancellation failed. Asset of linked transaction is unknown!", TransactionValidationType.UNKNOWN_ASSET_INVALID)
+            activeAssetOfLinkedTransaction.amount -= linkedTransaction.amount
             runBlocking {
                 localDatabase.complexDao().cancelTransfer(localDatabase.transactionDao(), localDatabase.assetDao(), transaction, activeAsset, linkedTransaction, activeAssetOfLinkedTransaction)
             }

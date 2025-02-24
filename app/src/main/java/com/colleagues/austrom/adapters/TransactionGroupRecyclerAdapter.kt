@@ -22,6 +22,9 @@ class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMa
     fun setOnItemClickListener(l: ((Transaction, Int)->Unit)) { returnClickedItem = l }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionGroupViewHolder { return TransactionGroupViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_transaction_group, parent, false)) }
     override fun getItemCount(): Int { return groupedTransactions.size }
+    init {
+        groupedTransactions.forEach { group -> group.value.sortBy { transaction -> transaction.amount } }
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionGroupViewHolder, position: Int) {
