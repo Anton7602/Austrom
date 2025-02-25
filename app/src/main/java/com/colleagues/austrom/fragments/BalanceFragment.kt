@@ -17,6 +17,7 @@ import com.colleagues.austrom.adapters.AssetGroupRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.AssetFilter
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.AssetTypeSelectionDialogFragment
+import com.colleagues.austrom.extensions.setOnSafeClickListener
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 import com.colleagues.austrom.views.DateControllerView
@@ -44,7 +45,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         bindViews(view)
         totalAmountText.setValue(0.0, AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]!!)
         if (AustromApplication.activeAssets.isEmpty()) { updateAssetsList() }
-        addNewAssetButton.setOnClickListener { launchNewAssetCreationDialog()  }
+        addNewAssetButton.setOnSafeClickListener { launchNewAssetCreationDialog()  }
         callNavigationDrawerButton.setOnClickListener { requestNavigationDrawerOpen() }
     }
 

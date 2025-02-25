@@ -22,6 +22,7 @@ class TransactionApprovementFragment(private val transactionsList: MutableList<T
     private var changeFragment: (Fragment?) -> Unit = {}
     fun setOnImportCompletedListener(l: (()->Unit)) { completeImport = l }
     private var completeImport: () -> Unit = {}
+    private var isInProgress = false
 
     //region Binding
     private lateinit var transactionHolder: RecyclerView
@@ -71,8 +72,12 @@ class TransactionApprovementFragment(private val transactionsList: MutableList<T
         transactionHolder.layoutManager = LinearLayoutManager(requireActivity())
         val adapter = TransactionExtendedRecyclerAdapter(transactionsList, requireActivity(), true)
         adapter.setOnItemClickListenerAccept { transaction ->
-            transaction.submit(LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity()));
-            adapter.removeTransaction(transaction)
+            if (!isInProgress) {
+                isInProgress = true
+                transaction.submit(LocalDatabaseProvider(requireActivity()), FirebaseDatabaseProvider(requireActivity()));
+                adapter.removeTransaction(transaction)
+                isInProgress = false
+            }
             if (transactionsList.isEmpty()) {
                 completeImport
                 requireActivity().finish() //TODO("FIX LATER!!!")

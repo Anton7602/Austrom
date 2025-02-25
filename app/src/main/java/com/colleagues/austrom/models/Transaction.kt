@@ -127,7 +127,7 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
     fun addDetail(transactionDetail: TransactionDetail, dbProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider? = null) {
         dbProvider.writeNewTransactionDetail(transactionDetail)
         if (remoteDBProvider!=null) {
-            val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId!!)
+            val currentBudget = remoteDBProvider.getBudgetById(AustromApplication.appUser!!.activeBudgetId.toString())
             if (currentBudget!=null) {
                 remoteDBProvider.insertTransactionDetail(transactionDetail, currentBudget)
             }

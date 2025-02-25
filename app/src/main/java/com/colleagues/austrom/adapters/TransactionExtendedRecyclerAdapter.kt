@@ -2,6 +2,8 @@ package com.colleagues.austrom.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.extensions.setOnSafeClickListener
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
@@ -74,7 +77,6 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         holder.issueMessage.text = context.getString(R.string.no_issues_encountered)
         holder.actionButtonsHolder.visibility = if (isShowingActionButtons) View.VISIBLE else View.GONE
         holder.transactionHolderBackground.visibility = if (isShowingActionButtons) View.VISIBLE else View.GONE
-        //holder.categoryName.text = transaction.categoryId
         holder.comment.text = transaction.comment
         holder.amount.text = transaction.amount.toMoneyFormat()
         holder.date.text = transaction.transactionDate.toString()
@@ -100,14 +102,15 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         }
         holder.categoryName.text = activeCategory?.name ?: transaction.categoryId
 
+        holder.primaryParticipant.setTextColor(context.getColor(R.color.primaryTextColor))
+        holder.categoryName.setTextColor(context.getColor(R.color.primaryTextColor))
         if (!transaction.isValid()) {
             holder.isIssueEncountered = true
-            holder.issueMessage.text = when (transaction.validate()) {
-                TransactionValidationType.VALID -> "Unidentified Issue"
-                TransactionValidationType.UNKNOWN_ASSET_INVALID -> context.getString(R.string.asset_does_not_match_any_active_asset)
-                TransactionValidationType.UNKNOWN_CATEGORY_INVALID -> context.getString(R.string.category_does_not_match_any_of_existing)
-                TransactionValidationType.UNKNOWN_LINKED_TRANSACTION -> "Linked Transaction Issue"
-                TransactionValidationType.AMOUNT_INVALID -> "Amount Issue"
+            when (transaction.validate()) {
+                TransactionValidationType.UNKNOWN_ASSET_INVALID -> holder.primaryParticipant.setTextColor(context.getColor(R.color.expenseRed))
+                TransactionValidationType.UNKNOWN_CATEGORY_INVALID -> holder.categoryName.setTextColor(context.getColor(R.color.expenseRed))
+                //TransactionValidationType.AMOUNT_INVALID -> holder.amount.setTextColor(context.getColor(R.color.expenseRed))
+                else -> {}
             }
         }
 
@@ -117,14 +120,9 @@ class TransactionExtendedRecyclerAdapter(private val transactions: MutableList<T
         }
 
         holder.switchDisplayMode(context)
-        holder.cancelButton.setOnClickListener {
-            val index = transactions.indexOf(transaction)
-            transactions.remove(transaction)
-            this.notifyItemRemoved(index)
-            //receiver?.receiveValue(transaction.transactionId, "Transaction Imported")
-        }
-        holder.editButton.setOnClickListener { returnClickedItemEdit(transaction) }
-        holder.acceptButton.setOnClickListener { returnClickedItemAccept(transaction) }
+        holder.cancelButton.setOnSafeClickListener { removeTransaction(transaction) }
+        holder.editButton.setOnSafeClickListener { returnClickedItemEdit(transaction) }
+        holder.acceptButton.setOnSafeClickListener { if (!holder.isIssueEncountered) returnClickedItemAccept(transaction) }
     }
 
     fun removeTransaction(transaction: Transaction) {
