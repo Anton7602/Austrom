@@ -14,7 +14,9 @@
         style="@style/HeaderButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_navigation_mainmenu_temp" />
+        android:contentDescription="Menu"
+        android:src="@drawable/ic_navigation_mainmenu_temp"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/textView5"

@@ -100,9 +100,11 @@
         <Button
             android:id="@+id/auth_login_btn"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/blue"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:text="@string/sign_in"
             android:textSize="16sp"
             app:cornerRadius="8dp"

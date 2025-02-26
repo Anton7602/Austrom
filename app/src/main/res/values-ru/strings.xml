@@ -479,4 +479,5 @@
     <string name="pending_invitations">Отправленные Приглашения:</string>
     <string name="to_create_transaction_you_need_to_have_at_least_one_active_asset">Чтобы создать транзакцию вам необходим хотя бы один действующий актив</string>
     <string name="create_new_asset">Создать Новый Актив</string>
+    <string name="you_need_to_have_at_least_one_active_assets_to_be_able_to_import_transactions_from_external_sources">Вам необходим хотя бы один действующий актив, чтобы иметь возможность импортировать транзакции из внешних источников</string>
 </resources>

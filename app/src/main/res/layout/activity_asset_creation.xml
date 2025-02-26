@@ -78,7 +78,8 @@
                     style="@style/DefaultEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text|textCapSentences" />
+                    android:inputType="text|textCapSentences"
+                    tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
@@ -100,7 +101,8 @@
                         style="@style/DefaultEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number|numberDecimal" />
+                        android:inputType="number|numberDecimal"
+                        tools:ignore="TextContrastCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
@@ -120,7 +122,8 @@
                     android:textAppearance="@style/PrimaryCardText"
                     app:layout_constraintBottom_toBottomOf="@+id/trcreat_amount_til"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/trcreat_amount_til" />
+                    app:layout_constraintTop_toTopOf="@+id/trcreat_amount_til"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -136,7 +139,8 @@
                     style="@style/DefaultEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number|numberDecimal" />
+                    android:inputType="number|numberDecimal"
+                    tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -152,7 +156,8 @@
                     style="@style/DefaultEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text|textCapSentences" />
+                    android:inputType="text|textCapSentences"
+                    tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>

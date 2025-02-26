@@ -63,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="You need to have active assets to be able to import transactions from external sources"
+                android:text="@string/you_need_to_have_at_least_one_active_assets_to_be_able_to_import_transactions_from_external_sources"
                 android:textAppearance="@style/PrimaryCardText" />
 
             <Button
