@@ -27,7 +27,6 @@ import com.colleagues.austrom.AustromApplication.Companion.appUser
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.bottomsheetdialogs.AssetFilterDialogFragment
 import com.colleagues.austrom.dialogs.InvitationNotificationDialogFragment
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.SuggestQuickAccessDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
