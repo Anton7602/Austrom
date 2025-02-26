@@ -52,7 +52,7 @@ class SharedBudgetJoinFragment(private val budget: Budget) : Fragment(R.layout.f
         }
         if (invitation!=null && appUser!!.userId==(invitation.userId)) {
             budget.addUser(appUser!!, invitation.token, LocalDatabaseProvider(requireActivity()), remoteDBProvider)
-            remoteDBProvider.removeInvitation(appUser!!, budget)
+            remoteDBProvider.deleteInvitationToUser(appUser!!, budget)
             synchronizeWithBudget()
             (requireActivity() as MainActivity).switchFragment(SharedBudgetFragment(budget))
         }

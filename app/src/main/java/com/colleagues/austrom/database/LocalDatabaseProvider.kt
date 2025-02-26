@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import com.colleagues.austrom.AustromApplication.Companion.knownUsers
 import com.colleagues.austrom.extensions.toInt
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.InvalidTransactionException
@@ -350,6 +351,27 @@ class LocalDatabaseProvider(context: Context) {
             invitations = dao.getAllInvitations()
         }
         return invitations
+    }
+
+    fun getInvitationsOfBudget(budgetId: String): List<Invitation> {
+        val dao = localDatabase.invitationDao()
+        var invitations: List<Invitation>
+        runBlocking {
+            invitations = dao.getAllInvitationsOfBudget(budgetId)
+        }
+        return invitations
+    }
+
+    fun recallInvitationToUser(userId: String) {
+        runBlocking { localDatabase.invitationDao().deleteInvitationByUserId(userId) }
+    }
+
+    fun getInvitationByUserId(userId: String): Invitation? {
+        val invitation: Invitation?
+        runBlocking {
+            invitation = localDatabase.invitationDao().getInvitationById(userId)
+        }
+        return invitation
     }
     //endregion
 

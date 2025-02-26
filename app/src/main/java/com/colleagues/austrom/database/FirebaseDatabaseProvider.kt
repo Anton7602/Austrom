@@ -387,7 +387,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         }
     }
 
-    fun removeInvitation(user: User, budget: Budget) {
+    override fun deleteInvitationToUser(user: User, budget: Budget) {
         database.getReference("invitations").child(user.userId).child(budget.budgetId).setValue(null)
     }
 

@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.InvitationRecyclerAdapter
@@ -56,10 +57,11 @@ class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout
         dialog.setOnDialogResultListener { emailOfUser ->
             val user = remoteDBProvider.getUserByEmail(emailOfUser)
             if (user!=null) {
-                val invitation = activeBudget.inviteUser(user, LocalDatabaseProvider(requireActivity()), remoteDBProvider)
+                val invitation = activeBudget.inviteUser(user, LocalDatabaseProvider(requireActivity()), remoteDBProvider, emailOfUser)
                 val successDialog = InvitationSentDialogFragment(invitation.invitationCode)
                 successDialog.setOnDialogResultListener { result ->  }
                 successDialog.show(requireActivity().supportFragmentManager, "Confirmation Dialog")
+                setUpRecyclerViews()
             }
         }
         dialog.show(requireActivity().supportFragmentManager, "AssetTypeSelectionDialog")
@@ -72,7 +74,7 @@ class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout
 
     private fun setUpRecyclerViews() {
         invitationsRecycler.layoutManager = LinearLayoutManager(requireActivity())
-        val adapterInvite = InvitationRecyclerAdapter(LocalDatabaseProvider(requireActivity()).getInvitations())
+        val adapterInvite = InvitationRecyclerAdapter(LocalDatabaseProvider(requireActivity()).getInvitationsOfBudget(AustromApplication.appUser!!.activeBudgetId.toString()))
         invitationsRecycler.adapter = adapterInvite
 
         usersRecycler.layoutManager = LinearLayoutManager(requireActivity())

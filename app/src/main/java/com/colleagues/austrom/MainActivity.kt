@@ -198,7 +198,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun notifyAboutBudgetInvitation() {
-        val remoteDBProvider = FirebaseDatabaseProvider(this)
+        val remoteDBProvider= FirebaseDatabaseProvider(this)
         val invitingBudgetId = remoteDBProvider.getTopInvitingBudgetId(appUser!!)
         if (!intent.getBooleanExtra("newUser", false) && !invitingBudgetId.isNullOrEmpty()) {
             val budget = remoteDBProvider.getBudgetById(invitingBudgetId)
@@ -208,7 +208,7 @@ class MainActivity : AppCompatActivity() {
                     if (isAccepted)  {
                         switchFragment(SharedBudgetJoinFragment(budget))
                     } else {
-                        remoteDBProvider.removeInvitation(appUser!!, budget)
+                        remoteDBProvider.deleteInvitationToUser(appUser!!, budget)
                     }
                 }
                 dialog.show(supportFragmentManager, "Invitation Received Dialog")

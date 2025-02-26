@@ -63,11 +63,17 @@ class Budget(val budgetName: String, var budgetId: String = generateUniqueBudget
     }
 
 
-    fun inviteUser(user: User, localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider): Invitation {
-        val invitation = Invitation(user.userId, AustromApplication.appUser!!.tokenId.toString(), this.budgetId)
+    fun inviteUser(user: User, localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider, providedEmail: String? = null): Invitation {
+        val invitation = Invitation(user.userId, AustromApplication.appUser!!.tokenId.toString(), this.budgetId, providedEmail)
+        if (localDBProvider.getInvitationByUserId(user.userId)!=null) {this.recallInvitationToUser(user, localDBProvider, remoteDBProvider)}
         localDBProvider.insertInvitation(invitation)
         remoteDBProvider.sentBudgetInvite(invitation)
         return invitation
+    }
+
+    fun recallInvitationToUser(user: User, localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider) {
+        localDBProvider.recallInvitationToUser(user.userId)
+        remoteDBProvider.deleteInvitationToUser(user, this)
     }
 
     fun addUser(user: User, token: String, localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider) {
@@ -105,7 +111,8 @@ class Budget(val budgetName: String, var budgetId: String = generateUniqueBudget
 }
 
 @Entity
-class Invitation(@PrimaryKey(autoGenerate = false) val userId: String, val token: String, val budgetId: String, val invitationCode: String = generateInviteCode()) {
+class Invitation(@PrimaryKey(autoGenerate = false) val userId: String, val token: String, val budgetId: String,
+val providedEmail: String? = null, val invitationCode: String = generateInviteCode()) {
     companion object {
         private fun generateInviteCode(): String { return Random.nextInt(10000000, 100000000).toString() }
         fun deserialize(serializedInvitation: String, budgetId: String): Invitation {

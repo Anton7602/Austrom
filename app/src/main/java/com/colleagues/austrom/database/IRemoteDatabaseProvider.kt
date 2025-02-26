@@ -44,6 +44,7 @@ interface IRemoteDatabaseProvider {
     fun deleteCategoriesOfBudget(budget: Budget)
 
     fun sentBudgetInvite(invitation: Invitation)
+    fun deleteInvitationToUser(user: User, budget: Budget)
 //    fun getTransactionsOfUser(user: User) : MutableList<Transaction>
 //    fun getTransactionsOfBudget(budget: Budget) : MutableList<Transaction>
 //    fun getTransactionsOfAsset(asset: Asset): MutableList<Transaction>

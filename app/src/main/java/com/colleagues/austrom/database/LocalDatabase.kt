@@ -296,10 +296,16 @@ interface InvitationDao {
     suspend fun deleteInvitation(invitation: Invitation)
 
     @Query("SELECT * FROM Invitation WHERE userId = :invitationId")
-    suspend fun getInvitationById(invitationId: Long): Invitation?
+    suspend fun getInvitationById(invitationId: String): Invitation?
 
     @Query("SELECT * FROM Invitation")
     suspend fun getAllInvitations(): List<Invitation>
+
+    @Query("SELECT * FROM Invitation Where budgetId=:budgetId")
+    suspend fun getAllInvitationsOfBudget(budgetId: String): List<Invitation>
+
+    @Query("DELETE FROM Invitation Where userId=:userId")
+    suspend fun deleteInvitationByUserId(userId: String)
 }
 
 @Dao

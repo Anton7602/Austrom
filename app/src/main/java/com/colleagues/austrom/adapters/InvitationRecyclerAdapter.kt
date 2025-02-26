@@ -25,7 +25,7 @@ class InvitationRecyclerAdapter (private val invitations: List<Invitation>) : Re
 
     override fun onBindViewHolder(holder: InvitationViewHolder, position: Int) {
         val invitation = invitations[position]
-        holder.emailTextView.text = invitation.userId
+        holder.emailTextView.text = invitation.providedEmail
         holder.inviteCodeTextView.text = invitation.invitationCode
     }
 }
