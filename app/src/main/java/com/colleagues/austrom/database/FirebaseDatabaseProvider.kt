@@ -1,59 +1,56 @@
 package com.colleagues.austrom.database
 
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
-import com.colleagues.austrom.models.Currency
+import com.colleagues.austrom.models.Category
+import com.colleagues.austrom.models.Invitation
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.User
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
-class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatabaseProvider{
+class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemoteDatabaseProvider{
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
-    override fun createNewUser(user: User): String? {
+
+    //region User
+    override fun createNewUser(user: User) {
         val reference = database.getReference("users")
-        val key = reference.push().key
-        if (key == null) {
-            Log.w("Debug", "Couldn't get push key for the user")
-            return null
-        }
-        user.username = user.username?.lowercase()
-        user.email = user.email?.lowercase()
-        reference.child(key).setValue(user)
-        Log.w("Debug", "New user added to DB with key: $key")
-        return  key
+        val encryptionManager = EncryptionManager()
+        val password = user.password
+        user.password = encryptionManager.hashPassword(user.password)
+        reference.child(user.userId).setValue(user)
+        user.password = password
     }
 
     override fun updateUser(user: User) {
-        val userKey = user.userId
-        if (!userKey.isNullOrEmpty()) {
-            user.userId=null
-            user.username = user.username?.lowercase()
-            user.email = user.email?.lowercase()
-            database.getReference("users").child(userKey).setValue(user)
-            user.userId=userKey
-            Log.w("Debug", "User entry with key ${user.userId} updated")
-        } else {
-            Log.w("Debug", "Provided user without id. Update canceled")
+        val password = user.password
+        val token = user.tokenId
+        val encryptionManager = EncryptionManager()
+        if (token!=null) {
+            user.tokenId = encryptionManager.encrypt(token, encryptionManager.generateEncryptionKey(user.password, user.userId.toByteArray()))
         }
+        user.password = encryptionManager.hashPassword(user.password)
+        database.getReference("users").child(user.userId).setValue(user)
+        user.password = password
+        user.tokenId = token
     }
 
-    override fun deleteUser(user: User) {
-        if (user.userId!=null) {
-            database.getReference("users").child(user.userId!!).setValue(null)
-            Log.w("Debug", "User entry with key ${user.userId} deleted")
-        } else {
-            Log.w("Debug", "Provided user without id. Delete canceled")
-        }
-    }
+    override fun deleteUser(user: User) { database.getReference("users").child(user.userId).setValue(null) }
 
     override fun getUserByUserId(userId: String) : User? {
         var user : User? = null
@@ -70,9 +67,6 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
             try {
                 val snapshot = databaseQuery.get().await()
                 val user = snapshot.getValue(User::class.java)
-                if (user !=null) {
-                    user.userId = snapshot.key
-                }
                 user
             } catch (e: Exception) {
                 null
@@ -96,9 +90,6 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
                 val snapshot = databaseQuery.get().await()
                 if (snapshot.childrenCount>0) {
                     val user = snapshot.children.elementAt(0).getValue(User::class.java)
-                    if (user != null) {
-                        user.userId = snapshot.children.elementAt(0).key
-                    }
                     user
                 } else {
                     null
@@ -119,15 +110,12 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
 
     private suspend fun getUserByEmailAsync(email: String) : User? {
         val reference = database.getReference("users")
-        val databaseQuery = reference.orderByChild("email").equalTo(email).limitToFirst(1)
+        val databaseQuery = reference.orderByChild("email").equalTo(email.lowercase()).limitToFirst(1)
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()
                 if (snapshot.childrenCount>0) {
                     val user = snapshot.children.elementAt(0).getValue(User::class.java)
-                    if (user != null) {
-                        user.userId = snapshot.children.elementAt(0).key
-                    }
                     user
                 } else {
                     null
@@ -156,7 +144,6 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
                 for (child in snapshot.children) {
                     val user = child.getValue(User::class.java)
                     if (user!=null) {
-                        user.userId = child.key
                         usersList[child.key.toString()] = user
                     }
                 }
@@ -167,39 +154,12 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
             }
         }
     }
+    //endregion
 
-    override fun createNewBudget(budget: Budget) : String? {
-        val reference = database.getReference("budgets")
-        val key = reference.push().key
-        if (key == null) {
-            Log.w("Debug", "Couldn't get push key for the budget")
-            return null
-        }
-        reference.child(key).setValue(budget)
-        Log.w("Debug", "New budget added to DB with key: $key")
-        return  key
-    }
-
-    override fun updateBudget(budget: Budget) {
-        val budgetKey = budget.budgetId
-        if (!budgetKey.isNullOrEmpty()) {
-            budget.budgetId = null
-            database.getReference("budgets").child(budgetKey).setValue(budget)
-            budget.budgetId = budgetKey
-            Log.w("Debug", "Budget entry with key ${budget.budgetId} updated")
-        } else {
-            Log.w("Debug", "Provided budget without id. Update canceled")
-        }
-    }
-
-    override fun deleteBudget(budget: Budget) {
-        if (budget.budgetId!=null) {
-            database.getReference("budgets").child(budget.budgetId!!).setValue(null)
-            Log.w("Debug", "Budget entry with key ${budget.budgetId} deleted")
-        } else {
-            Log.w("Debug", "Provided budget without id. Delete canceled")
-        }
-    }
+    //region Budget
+    override fun createNewBudget(budget: Budget) { database.getReference("budgets").child(budget.budgetId).setValue(budget) }
+    override fun updateBudget(budget: Budget) { database.getReference("budgets").child(budget.budgetId).setValue(budget) }
+    override fun deleteBudget(budget: Budget) { database.getReference("budgets").child(budget.budgetId).setValue(null)  }
 
 
     override fun getBudgetById(budgetId: String) : Budget? {
@@ -218,9 +178,6 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
                 val snapshot = databaseQuery.get().await()
                 if (snapshot.childrenCount>0) {
                     val budget = snapshot.getValue(Budget::class.java)
-                    if (budget!=null) {
-                        budget.budgetId = snapshot.key
-                    }
                     budget
                 } else {
                     null
@@ -230,298 +187,295 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IDatab
             }
         }
     }
+    //endregion
 
-    override fun createNewAsset(asset: Asset): String? {
-        val reference = database.getReference("assets")
-        val key = reference.push().key
-        if (key == null) {
-            Log.w("Debug", "Couldn't get push key for the asset")
-            return null
-        }
-        reference.child(key).setValue(asset)
-        Log.w("Debug", "New asset added to DB with key: $key")
-        return key
-    }
-
-    override fun updateAsset(asset: Asset) {
-        val assetKey = asset.assetId
-        if (!assetKey.isNullOrEmpty()) {
-            asset.assetId = null
-            database.getReference("assets").child(assetKey).setValue(asset)
-            asset.assetId = assetKey
-            Log.w("Debug", "Asset entry with key ${asset.assetId} updated")
-        } else {
-            Log.w("Debug", "Provided asset without id. Update canceled")
+    //region Asset
+    override fun createNewAsset(asset: Asset, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("assets").child(budget.budgetId).child(asset.assetId)
+                .setValue(encryptionManager.encrypt(asset, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
         }
     }
 
-    override fun deleteAsset(asset: Asset) {
-        if (!asset.assetId.isNullOrEmpty()) {
-            database.getReference("assets").child(asset.assetId!!).setValue(null)
-            Log.w("Debug", "Asset entry with key ${asset.assetId} deleted")
-            val transactionsOfAsset = getTransactionsOfAsset(asset)
-            if (transactionsOfAsset.isNotEmpty()) {
-                val reference = database.getReference("transactions")
-                for (transaction in transactionsOfAsset) {
-                    reference.child(transaction.transactionId!!).setValue(null)
-                }
-            }
-        } else {
-            Log.w("Debug", "Provided asset without id. Delete canceled")
+    override fun updateAsset(asset: Asset, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("assets").child(budget.budgetId).child(asset.assetId)
+                .setValue(encryptionManager.encrypt(asset, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
         }
     }
 
-    override fun getAssetsOfUser(user: User): MutableMap<String, Asset> {
-        var assets : MutableMap<String, Asset> = mutableMapOf()
+    override fun deleteAsset(asset: Asset, budget: Budget) {
+        database.getReference("assets").child(budget.budgetId).child(asset.assetId).setValue("-")
+    }
+
+    override fun deleteAssetsOfBudget(budget: Budget) {
+        database.getReference("assets").child(budget.budgetId).setValue(null)
+    }
+    //endregion
+
+    //region Transaction
+    override fun insertTransaction(transaction: Transaction, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
+                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+
+    override fun updateTransaction(transaction: Transaction, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
+                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))+"|${transaction.version}")
+        }
+    }
+
+    override fun deleteTransaction(transaction: Transaction, budget: Budget) {
+        database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId).setValue("-")
+    }
+
+    fun conductTransaction(transaction: Transaction, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null && AustromApplication.activeAssets[transaction.assetId]!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId)
+                .setValue(encryptionManager.encrypt(transaction, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId))+"|${transaction.version}")
+            database.getReference("assets").child(budget.budgetId).child(transaction.assetId)
+                .setValue(encryptionManager.encrypt(AustromApplication.activeAssets[transaction.assetId]!!, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+
+    fun cancelTransaction(transaction: Transaction, budget: Budget, linkedTransaction: Transaction? = null) {
+        val encryptionManager = EncryptionManager()
+        database.getReference("transactions").child(budget.budgetId).child(transaction.transactionId).setValue("-")
+        if (linkedTransaction!=null) {
+            database.getReference("transactions").child(budget.budgetId).child(linkedTransaction.transactionId).setValue("-")
+        }
+        database.getReference("assets").child(budget.budgetId).child(transaction.assetId)
+            .setValue(encryptionManager.encrypt(AustromApplication.activeAssets[transaction.assetId]!!, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        if (linkedTransaction!=null) {
+            database.getReference("assets").child(budget.budgetId).child(linkedTransaction.assetId)
+                .setValue(encryptionManager.encrypt(AustromApplication.activeAssets[linkedTransaction.assetId]!!, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+
+    override fun deleteTransactionsOfBudget(budget: Budget) {
+        database.getReference("transactions").child(budget.budgetId).setValue(null)
+    }
+    //endregion
+
+    override fun insertCategory(category: Category, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("categories").child(budget.budgetId).child(category.categoryId)
+                .setValue(encryptionManager.encrypt(category, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+
+    override fun updateCategory(category: Category, budget: Budget) {
+        if (AustromApplication.appUser!!.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("categories").child(budget.budgetId).child(category.categoryId)
+                .setValue(encryptionManager.encrypt(category, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+
+    override fun deleteCategoriesOfBudget(budget: Budget) {
+        database.getReference("categories").child(budget.budgetId).setValue(null)
+    }
+
+    override fun deleteCategory(category: Category, budget: Budget) {
+        database.getReference("categories").child(budget.budgetId).child(category.categoryId).setValue("-")
+    }
+
+    //region TransactionDetail
+    override fun insertTransactionDetail(transactionDetail: TransactionDetail, budget: Budget) {
+        if (AustromApplication.appUser?.tokenId!=null) {
+            val encryptionManager = EncryptionManager()
+            database.getReference("transactionDetails").child(budget.budgetId).child(transactionDetail.transactionDetailId)
+                .setValue(encryptionManager.encrypt(transactionDetail, encryptionManager.convertStringToSecretKey(AustromApplication.appUser!!.tokenId)))
+        }
+    }
+
+    fun deleteTransactionDetail(transactionDetail: TransactionDetail) {
+        database.getReference("transactionDetails").child(transactionDetail.transactionDetailId).setValue(null)
+    }
+
+    override fun deleteTransactionDetailsOfBudget(budget: Budget) {
+        database.getReference("transactionDetails").child(budget.budgetId).setValue(null)
+    }
+    //endregion
+
+    override fun sentBudgetInvite(invitation: Invitation) {
+        val encryptionManager = EncryptionManager()
+        database.getReference("invitations").child(invitation.userId).child(invitation.budgetId)
+            .setValue(encryptionManager.encrypt(invitation, encryptionManager.generateEncryptionKey(invitation.invitationCode, invitation.invitationCode.toByteArray())))
+    }
+
+    fun isUserInvitedToBudgets(user: User): Boolean {
+        var isUserInvited = false
         activity?.lifecycleScope?.launch {
-            assets = getAssetsOfUserAsync(user)
+            isUserInvited = isUserInvitedToBudgetsAsync(user)
         }
-        return assets
+        return isUserInvited
     }
 
-
-    private fun getAssetsOfUserAsync(user: User) : MutableMap<String, Asset> {
-        val reference = database.getReference("assets")
-        val databaseQuery = reference.orderByChild("userId").equalTo(user.userId)
+    private fun isUserInvitedToBudgetsAsync(user: User): Boolean {
+        val reference = database.getReference("invitations")
+        val databaseQuery = reference.child(user.userId)
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()
-                val assetsList = mutableMapOf<String, Asset>()
-                for (child in snapshot.children) {
-                    val asset = child.getValue(Asset::class.java)
-                    if (asset!=null) {
-                        asset.assetId = child.key
-                        assetsList[child.key.toString()] = asset
-                    }
+                if (snapshot.childrenCount>0) {
+                    true
+                } else {
+                    false
                 }
-                assetsList
-            }
-            catch (e: Exception) {
-                mutableMapOf()
-            }
-        }
-    }
-
-    override fun getAssetsOfBudget(budget: Budget): MutableMap<String, Asset> {
-        var assets : MutableMap<String, Asset> = mutableMapOf()
-        activity?.lifecycleScope?.launch {
-            assets = getAssetsOfBudgetAsync(budget)
-        }
-        return assets
-    }
-
-    private fun getAssetsOfBudgetAsync(budget: Budget): MutableMap<String, Asset> {
-        val assetsList = mutableMapOf<String, Asset>()
-        val reference = database.getReference("assets")
-        return  runBlocking {
-            for (userId in budget.users!!) {
-                val databaseQuery = reference.orderByChild("userId").equalTo(userId)
-                try {
-                    val snapshot = databaseQuery.get().await()
-                    for (child in snapshot.children) {
-                        val asset = child.getValue(Asset::class.java)
-                        if (asset!=null) {
-                            asset.assetId = child.key.toString()
-                            assetsList[child.key.toString()] = asset
-                        }
-                    }
-                }
-                catch (e: Exception) {
-                    continue
-                }
-            }
-            assetsList
-        }
-    }
-
-    override fun writeNewTransaction(transaction: Transaction): String? {
-        val reference = database.getReference("transactions")
-        val key = reference.push().key
-        if (key == null) {
-            Log.w("Debug", "Couldn't get push key for the transaction")
-            return null
-        }
-        transaction.transactionDateInt = parseDateToIntDate(transaction.transactionDate!!)
-        val tempDateHolder = transaction.transactionDate
-        transaction.transactionDate = null
-        reference.child(key).setValue(transaction)
-        transaction.transactionDate = tempDateHolder
-        transaction.transactionDateInt = null
-        Log.w("Debug", "New transaction added to DB with key: $key")
-        return key
-    }
-
-    override fun updateTransaction(transaction: Transaction) {
-        val transactionKey = transaction.transactionId
-        if (!transactionKey.isNullOrEmpty()) {
-            val tempDateHolder = transaction.transactionDate
-            transaction.transactionDateInt = parseDateToIntDate(transaction.transactionDate!!)
-            transaction.transactionDate = null
-            transaction.transactionId = null
-            //transaction.comment = if (transaction.comment=="null") null else transaction.comment
-            database.getReference("transactions").child(transactionKey).setValue(transaction)
-            transaction.transactionId = transactionKey
-            transaction.transactionDate = tempDateHolder
-            transaction.transactionDateInt = null
-            Log.w("Debug", "Asset entry with key ${transaction.transactionId} updated")
-        } else {
-            Log.w("Debug", "Provided asset without id. Update canceled")
-        }
-    }
-
-    override fun deleteTransaction(transaction: Transaction) {
-        if (!transaction.transactionId.isNullOrEmpty()) {
-            database.getReference("transactions").child(transaction.transactionId!!).setValue(null)
-            Log.w("Debug", "Transaction entry with key ${transaction.transactionId} deleted")
-        } else {
-            Log.w("Debug", "Provided transaction without id. Delete canceled")
-        }
-    }
-
-    override fun getTransactionsOfUser(user: User): MutableList<Transaction> {
-        var transactions : MutableList<Transaction> = mutableListOf()
-        activity?.lifecycleScope?.launch {
-            transactions = getTransactionsOfUserAsync(user)
-        }
-        return transactions
-    }
-
-
-    private fun getTransactionsOfUserAsync(user: User) : MutableList<Transaction> {
-        val reference = database.getReference("transactions")
-        val databaseQuery = reference.orderByChild("userId").equalTo(user.userId)
-        return runBlocking {
-            try {
-                val snapshot = databaseQuery.get().await()
-                val transactionsList = mutableListOf<Transaction>()
-                for (child in snapshot.children) {
-                    val transaction = child.getValue(Transaction::class.java)
-                    if (transaction!=null) {
-                        transaction.transactionId = child.key
-                        transaction.transactionDate = parseIntDateToDate(transaction.transactionDateInt)
-                        transactionsList.add(transaction)
-                    }
-                }
-                transactionsList
-            }
-            catch (e: Exception) {
-                mutableListOf()
-            }
-        }
-    }
-
-    override fun getTransactionsOfBudget(budget: Budget): MutableList<Transaction> {
-        var transactions : MutableList<Transaction> = mutableListOf()
-        activity?.lifecycleScope?.launch {
-            transactions = getTransactionOfBudgetAsync(budget)
-        }
-        return transactions
-    }
-
-    private fun getTransactionOfBudgetAsync(budget: Budget): MutableList<Transaction> {
-        val transactionsList = mutableListOf<Transaction>()
-        val reference = database.getReference("transactions")
-        return runBlocking {
-            for (userId in budget.users!!) {
-                val databaseQuery = reference.orderByChild("userId").equalTo(userId)
-                try {
-                    val snapshot = databaseQuery.get().await()
-                    for (child in snapshot.children) {
-                        val transaction = child.getValue(Transaction::class.java)
-                        if (transaction!=null) {
-                            transaction.transactionId = child.key
-                            transaction.transactionDate = parseIntDateToDate(transaction.transactionDateInt)
-                            transactionsList.add(transaction)
-                        }
-                    }
-                }
-                catch (e: Exception) {
-                    continue
-                }
-            }
-            transactionsList
-        }
-    }
-
-    override fun getTransactionsOfAsset(asset: Asset): MutableList<Transaction> {
-        var transactions : MutableList<Transaction> = mutableListOf()
-        activity?.lifecycleScope?.launch {
-            transactions = getTransactionOfAssetAsync(asset)
-        }
-        return transactions
-    }
-
-    private fun getTransactionOfAssetAsync(asset: Asset): MutableList<Transaction> {
-        val transactionsList = mutableListOf<Transaction>()
-        val reference = database.getReference("transactions")
-        val databaseQuerySource = reference.orderByChild("sourceId").equalTo(asset.assetId)
-        val databaseQueryTarget = reference.orderByChild("targetId").equalTo(asset.assetId)
-        return runBlocking {
-            try {
-                val snapshotSource = databaseQuerySource.get().await()
-                for (child in snapshotSource.children) {
-                    val transaction = child.getValue(Transaction::class.java)
-                    if (transaction != null) {
-                        transaction.transactionId = child.key
-                        transaction.transactionDate =
-                            parseIntDateToDate(transaction.transactionDateInt)
-                        transactionsList.add(transaction)
-                    }
-                }
-                val snapshotTarget = databaseQueryTarget.get().await()
-                for (child in snapshotTarget.children) {
-                    val transaction = child.getValue(Transaction::class.java)
-                    if (transaction != null) {
-                        transaction.transactionId = child.key
-                        transaction.transactionDate =
-                            parseIntDateToDate(transaction.transactionDateInt)
-                        transactionsList.add(transaction)
-                    }
-                }
-                transactionsList
             } catch (e: Exception) {
-                mutableListOf()
+                false
             }
         }
     }
 
-    override fun getCurrencies(): MutableMap<String, Currency> {
-        var currencies : MutableMap<String, Currency> = mutableMapOf()
+    fun getTopInvitingBudgetId(user: User): String? {
+        var budgetId: String? = null
         activity?.lifecycleScope?.launch {
-            currencies = getCurrenciesAsync()
+            budgetId = getTopInvitingBudgetIdAsync(user)
         }
-        return currencies
+        return budgetId
     }
 
-    private fun getCurrenciesAsync(): MutableMap<String, Currency> {
-        val databaseQuery = database.getReference("currencies")
-        val currenciesList = mutableMapOf<String, Currency>()
+    private fun getTopInvitingBudgetIdAsync(user: User): String? {
+        val reference = database.getReference("invitations")
+        val databaseQuery = reference.child(user.userId)
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()
-                for (child in snapshot.children) {
-                    val currency = child.getValue(Currency::class.java)
-                    if (currency!=null) {
-                        currenciesList[child.key.toString()] = currency
-                    }
-                }
-                currenciesList
-            }
-            catch (e: Exception) {
-                mutableMapOf()
+                if (snapshot.childrenCount>0) {
+                    snapshot.children.first().key.toString()
+                } else null
+            } catch (e: Exception) {
+                null
             }
         }
     }
 
-    private fun parseDateToIntDate(date: LocalDate) : Int {
-        return (date.format(DateTimeFormatter.ofPattern("yyyyMMdd"))).toInt()
+    fun acceptInvitation(user: User, budget: Budget, invitationCode: String): Invitation? {
+        var invitation: Invitation? = null
+        activity?.lifecycleScope?.launch {
+            invitation = acceptInvitationAsync(user, budget, invitationCode)
+        }
+        return invitation
     }
 
-    private fun parseIntDateToDate(intDate: Int?) : LocalDate {
-        if (intDate==null || intDate.toString().length!=8) return LocalDate.now()
-        val year = intDate.toString().substring(0,4).toInt()
-        val month = intDate.toString().substring(4,6).toInt()
-        val day = intDate.toString().substring(6).toInt()
-        return LocalDate.of(year, month, day)
+    private fun acceptInvitationAsync(user: User, budget: Budget, invitationCode: String): Invitation? {
+        val reference = database.getReference("invitations")
+        val databaseQuery = reference.child(user.userId).child(budget.budgetId)
+        return runBlocking {
+            try {
+                val snapshot = databaseQuery.get().await()
+                if (snapshot.value.toString().isNotEmpty()) {
+                    val encryptionManager = EncryptionManager()
+                    encryptionManager.decryptInvitation(snapshot.value.toString(), budget, encryptionManager.generateEncryptionKey(invitationCode, invitationCode.toByteArray()))
+                } else {
+                    null
+                }
+            } catch(e: Exception) {
+                null
+            }
+        }
     }
+
+    override fun deleteInvitationToUser(user: User, budget: Budget) {
+        database.getReference("invitations").child(user.userId).child(budget.budgetId).setValue(null)
+    }
+
+
+//    override fun getCurrencies(): MutableMap<String, Currency> {
+//        var currencies : MutableMap<String, Currency> = mutableMapOf()
+//        activity?.lifecycleScope?.launch {
+//            currencies = getCurrenciesAsyncOld()
+//        }
+//        return currencies
+//    }
+//
+//    fun getCurrenciesAsyncOld(): MutableMap<String, Currency> {
+//        val databaseQuery = database.getReference("currencies")
+//        val currenciesList = mutableMapOf<String, Currency>()
+//        return runBlocking {
+//            try {
+//                val snapshot = databaseQuery.get().await()
+//                for (child in snapshot.children) {
+//                    val currency = child.getValue(Currency::class.java)
+//                    if (currency!=null) {
+//                        currenciesList[child.key.toString()] = currency
+//                    }
+//                }
+//                currenciesList
+//            }
+//            catch (e: Exception) {
+//                mutableMapOf()
+//            }
+//        }
+//    }
+
+    //Sync
+//    fun setCurrenciesListener(listener: ValueEventListener) { database.getReference("currencies").addValueEventListener(listener) }
+//    fun setUserListener(budget: Budget, listener: ValueEventListener) { database.getReference("budgets").child(budget.budgetId).child("users").addValueEventListener(listener) }
+//    fun setAssetListener(budget: Budget, listener: ValueEventListener) { database.getReference("assets").child(budget.budgetId).addValueEventListener(listener) }
+//    fun setTransactionListener(budget: Budget, listener: ValueEventListener) { database.getReference("transactions").child(budget.budgetId).addValueEventListener(listener) }
+//    fun setTransactionDetailListener(budget: Budget, listener: ValueEventListener) { database.getReference("transactionDetails").child(budget.budgetId).addValueEventListener(listener) }
+
+    suspend fun fetchCurrenciesData(processSnapshot: (DataSnapshot) -> Unit) { fetchDataSnapshot(database.getReference("currencies")) {dataSnapshot -> processSnapshot(dataSnapshot) } }
+    suspend fun fetchUserData(budget: Budget, processSnapshot: (DataSnapshot) -> Unit) {
+        fetchDataSnapshot(database.getReference("budgets").child(budget.budgetId).child("users"))  {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
+    suspend fun fetchCategoriesData(budget: Budget,processSnapshot: (DataSnapshot) -> Unit) {
+        fetchDataSnapshot(database.getReference("categories").child(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
+    suspend fun fetchAssetData(budget: Budget,processSnapshot: (DataSnapshot) -> Unit) {
+        fetchDataSnapshot(database.getReference("assets").child(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
+    suspend fun fetchTransactionData(budget: Budget,processSnapshot: (DataSnapshot) -> Unit) {
+        fetchDataSnapshot(database.getReference("transactions").child(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
+    suspend fun fetchTransactionDetailsData(budget: Budget,processSnapshot: (DataSnapshot) -> Unit) {
+        fetchDataSnapshot(database.getReference("transactionDetails").child(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
+
+
+    private suspend fun fetchDataSnapshot(databaseReference: DatabaseReference, processSnapshot: (DataSnapshot) -> Unit) {
+        suspendCancellableCoroutine { continuation ->
+            var isResumed = false
+
+            val listener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (!isResumed) {
+                        isResumed = true
+                        try {
+                            processSnapshot(dataSnapshot)
+                            continuation.resume(Unit)
+                        } catch (e: Exception) {
+                            continuation.resumeWithException(e)
+                        }
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    if (!isResumed) { // Check if the continuation has already been resumed
+                        isResumed = true
+                        continuation.resumeWithException(databaseError.toException())
+                    }
+                }
+            }
+
+            databaseReference.addValueEventListener(listener)
+
+            continuation.invokeOnCancellation {
+                databaseReference.removeEventListener(listener)
+            }
+        }
+    }
+//endregion
 }

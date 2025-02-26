@@ -5,6 +5,11 @@
     </style>
 
 
-    <style name="Theme.Austrom" parent="Base.Theme.Austrom" />
+    <!--<style name="Theme.Austrom" parent="Base.Theme.Austrom">-->
+    <style name="Theme.Austrom" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:navigationBarColor">@color/backgroundMain</item>
+        <item name="spinnerDropDownItemStyle">@style/DefaultSpinnerItemStyle</item>
+        <item name="textInputStyle">@style/DefaultTextInputLayout</item>
+    </style>
 
 </resources>

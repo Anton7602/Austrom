@@ -5,9 +5,8 @@
     android:id="@+id/imsedial_holder_crv"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/navigationBarColor"
-    app:cardCornerRadius="20dp"
-    tools:context=".dialogs.ImageSelectionDialogFragment">
+    app:cardCornerRadius="2dp"
+    tools:context=".dialogs.bottomsheetdialogs.ImageSelectionDialogFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,7 +21,7 @@
             android:elevation="8dp"
             android:padding="12dp"
             android:src="@drawable/ic_navigation_close_temp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
@@ -32,7 +31,6 @@
             android:contentDescription="SelectedImage"
             android:scaleType="fitXY"
             android:src="@drawable/ic_category_other_temp"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

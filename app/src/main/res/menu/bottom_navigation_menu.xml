@@ -11,7 +11,14 @@
         android:enabled="true"
         android:checkable="false"
         android:icon="@drawable/ic_navigation_budget_temp"
-        android:title="@string/budget" />
+        android:title="@string/analytics" />
+    <item
+        android:id="@+id/navbar_planning_mit"
+        android:enabled="true"
+        android:checkable="false"
+        android:icon="@drawable/ic_navigation_planning"
+        android:iconTint="@color/backgroundMain"
+        android:title="@string/planning" />
     <item
         android:id="@+id/navbar_ops_mit"
         android:enabled="true"

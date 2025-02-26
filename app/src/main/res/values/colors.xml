@@ -7,8 +7,35 @@
     <color name="grey">#FFE6E6E6</color>
     <color name="dark_grey">#929191</color>
     <color name="navigationBarColor">#FFF2ECf4</color>
-    <color name="accept_green">#FF00FF00</color>
-    <color name="dark_green">#FF006400</color>
-    <color name="decline_red">#FFFF0000</color>
 
+    <color name="backgroundMain">#FF0C0C0C</color>
+    <color name="backgroundCard">#FF121212</color>
+    <color name="backgroundText">#FF141416</color>
+    <color name="expenseRed">#FFD42222</color>
+    <color name="expenseRedBackground">#FFE12C2C</color>
+    <color name="transferYellow">#FFF0AA28</color>
+    <color name="transferYellowBackground">#FFF0AA28</color>
+    <color name="incomeGreen">#FF64A30E</color>
+    <color name="incomeGreenBackground">#FF72C82C</color>
+    <color name="transactionGrey">#FF6F737E</color>
+    <color name="primaryTextColor">#FFFFFFFF</color>
+    <color name="secondaryTextColor">#FF6F737E</color>
+    <color name="cardBorderStrokeColor">#05FFFFFF</color>
+    <color name="selectionColor">#FF0d99ff</color>
+    <color name="confirmationColor">#FF0d99ff</color>
+
+
+    <color name="backgroundDialogColor">#FF10111A</color>
+
+
+    <color name="diagramColor1">#E480F4</color>
+    <color name="diagramColor2">#6CC3F3</color>
+    <color name="diagramColor3">#7167ED</color>
+    <color name="diagramColor4">#D9455F</color>
+    <color name="diagramColor5">#6054EA</color>
+    <color name="diagramColor6">#F4B400</color>
+    <color name="diagramColor7">#DB4437</color>
+    <color name="diagramColor8">#0F9D58</color>
+    <color name="diagramColor9">#AB47BC</color>
+    <color name="diagramColor10">#FF7043</color>
 </resources>

@@ -1,27 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundMain"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".fragments.SharedBudgetEmptyFragment">
 
-    <Button
-        android:id="@+id/shbe_createBudget_btn"
-        android:layout_width="match_parent"
+    <ImageButton
+        style="@style/HeaderButtonStyle"
+        android:id="@+id/shbe_navDrawer_btn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:text="@string/create_budget" />
+        android:src="@drawable/ic_navigation_mainmenu_temp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/shbe_joinBudget_btn"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:text="@string/join_budget" />
-</LinearLayout>
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/your_budget_anytime_anywhere_together"
+            android:textAlignment="center"
+            android:textAppearance="@style/PrimaryCardText"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="32dp"
+            android:text="@string/create_a_budget_that_you_can_access_from_anywhere_allowing_seamless_collaboration_and_tracking_on_any_device"
+            android:textAlignment="center"
+            android:textAppearance="@style/PrimaryCardText"
+            android:textColor="#E4FFFFFF" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/shbe_createBudget_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:backgroundTint="#303035"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:text="@string/create_budget" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="32dp"
+            android:text="@string/or"
+            android:textAlignment="center"
+            android:textAppearance="@style/SecondaryCardText" />
+
+        <TextView
+            android:id="@+id/textView24"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ask_your_partner_to_invite_you_to_their_budget"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

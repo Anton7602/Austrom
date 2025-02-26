@@ -1,7 +1,9 @@
 package com.colleagues.austrom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
@@ -9,14 +11,16 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.models.User
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 class SignUpActivity : AppCompatActivity() {
+    //region Binding
     private lateinit var loginTextBox: TextInputEditText
     private lateinit var emailTextBox: TextInputEditText
     private lateinit var passwordTextBox: TextInputEditText
@@ -27,7 +31,19 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var emailTextLayout: TextInputLayout
     private lateinit var passwordTextLayout: TextInputLayout
     private lateinit var repeatPasswordTextLayout: TextInputLayout
-
+    private fun bindViews() {
+        signUpButton = findViewById(R.id.signUp_signUp_btn)
+        loginTextBox = findViewById(R.id.signUp_login_txt)
+        emailTextBox = findViewById(R.id.signUp_email_txt)
+        passwordTextBox = findViewById(R.id.signUp_password_txt)
+        repeatPasswordTextBox = findViewById(R.id.signUp_repeatPassword_txt)
+        loginTextLayout = findViewById(R.id.signUp_login_til)
+        emailTextLayout = findViewById(R.id.signUp_email_til)
+        passwordTextLayout = findViewById(R.id.signUp_password_til)
+        repeatPasswordTextLayout = findViewById(R.id.signUp_repeatPassword_til)
+    }
+    //endregion
+    //region Localization
     override fun attachBaseContext(newBase: Context?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             super.attachBaseContext(newBase)
@@ -35,16 +51,28 @@ class SignUpActivity : AppCompatActivity() {
             super.attachBaseContext(AustromApplication.updateBaseContextLocale(newBase))
         }
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_sign_up)
+    //endregion
+    //region Styling
+    private fun adjustInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars=AustromApplication.isApplicationThemeLight
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=AustromApplication.isApplicationThemeLight
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun setUpOrientationLimitations() { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
+    // endregion
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setUpOrientationLimitations()
+        setContentView(R.layout.activity_sign_up)
+        adjustInsets()
         bindViews()
 
         // booleans for all textBoxes checks are passed
@@ -52,14 +80,13 @@ class SignUpActivity : AppCompatActivity() {
         signUpButton.isEnabled = false
 
         signUpButton.setOnClickListener{
-            val provider : IDatabaseProvider = FirebaseDatabaseProvider(this)
+            val provider : IRemoteDatabaseProvider = FirebaseDatabaseProvider(this)
             val existingUser = provider.getUserByEmail(emailTextBox.text.toString().lowercase())
             if (existingUser == null) {
                 val newUser = User(
-                    null,
-                    loginTextBox.text.toString().lowercase(),
-                    emailTextBox.text.toString().lowercase(),
-                    passwordTextBox.text.toString())
+                    username = loginTextBox.text.toString(),
+                    email =  emailTextBox.text.toString().lowercase(),
+                    password = passwordTextBox.text.toString())
                 provider.createNewUser(newUser)
                 Toast.makeText(this, getString(R.string.user_successfully_added), Toast.LENGTH_LONG).show()
                 AustromApplication.appUser = newUser
@@ -70,10 +97,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        loginTextBox.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus)
-                checkLogin()
-        }
+        loginTextBox.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) checkLogin() }
         loginTextBox.setOnKeyListener { _, keyCode, event ->
             when {
                 //Check if it is the Enter-Key,      Check if the Enter Key was pressed down
@@ -85,10 +109,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        emailTextBox.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus)
-                checkEmail()
-        }
+        emailTextBox.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) checkEmail() }
         emailTextBox.setOnKeyListener { _, keyCode, event ->
             when {
                 //Check if it is the Enter-Key,      Check if the Enter Key was pressed down
@@ -100,10 +121,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        passwordTextBox.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus)
-                checkPassword()
-        }
+        passwordTextBox.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) checkPassword() }
         passwordTextBox.setOnKeyListener { _, keyCode, event ->
             when {
                 //Check if it is the Enter-Key,      Check if the Enter Key was pressed down
@@ -115,10 +133,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        repeatPasswordTextBox.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus)
-                checkRepeatPassword()
-        }
+        repeatPasswordTextBox.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) checkRepeatPassword() }
         repeatPasswordTextBox.setOnKeyListener { _, keyCode, event ->
             when {
                 //Check if it is the Enter-Key,      Check if the Enter Key was pressed down
@@ -129,18 +144,6 @@ class SignUpActivity : AppCompatActivity() {
                 else -> false
             }
         }
-    }
-
-    private fun bindViews() {
-        signUpButton = findViewById(R.id.signUp_signUp_btn)
-        loginTextBox = findViewById(R.id.signUp_login_txt)
-        emailTextBox = findViewById(R.id.signUp_email_txt)
-        passwordTextBox = findViewById(R.id.signUp_password_txt)
-        repeatPasswordTextBox = findViewById(R.id.signUp_repeatPassword_txt)
-        loginTextLayout = findViewById(R.id.signUp_login_til)
-        emailTextLayout = findViewById(R.id.signUp_email_til)
-        passwordTextLayout = findViewById(R.id.signUp_password_til)
-        repeatPasswordTextLayout = findViewById(R.id.signUp_repeatPassword_til)
     }
 
     private fun checkLogin() {

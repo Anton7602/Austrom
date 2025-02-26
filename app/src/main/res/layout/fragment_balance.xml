@@ -3,7 +3,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/backgroundMain">
+
+    <ImageButton
+        android:id="@+id/bal_navDrawer_btn"
+        style="@style/HeaderButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_navigation_mainmenu_temp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/total_balance"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bal_navDrawer_btn" />
+
+    <com.colleagues.austrom.views.MoneyFormatTextView
+        android:id="@+id/bal_totalAmout_mtxt"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        app:defaultAmount="0"
+        app:layout_constraintBottom_toTopOf="@+id/bal_assetHolder_rcv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:moneyPadding="8dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bal_assetHolder_rcv"
@@ -13,92 +49,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView4"
+        app:layout_constraintTop_toTopOf="@+id/guideline41"
         app:layout_constraintVertical_weight="4"
         tools:listitem="@layout/item_asset_group" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/bal_addNew_fab"
+    <ImageButton
+        android:id="@+id/bal_createNewAsset_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="-2dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/img_add_new_button_background"
+        android:contentDescription="@string/create_transaction"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_navigation_add_temp"
+        app:tint="@color/primaryTextColor" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline41"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        android:contentDescription="@string/add_new_asset"
-        android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_navigation_add_temp" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView4"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        app:cardBackgroundColor="@color/transparent"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bal_assetHolder_rcv"
-        app:layout_constraintDimensionRatio="w,"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_weight="1">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/total_balance"
-                android:textColor="@color/dark_grey"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="5:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/bal_totalAmount_txt"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:autoSizeTextType="uniform"
-                    android:maxLines="1"
-                    android:text="100 000.00 RUB"
-                    android:textAlignment="center"
-                    tools:ignore="HardcodedText" />
-
-                <TextView
-                    android:id="@+id/bal_baseCurrencySymbol_txt"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:autoSizeTextType="uniform"
-                    android:gravity="center|start"
-                    android:maxLines="1"
-                    android:text="RUB"
-                    android:textColor="@color/dark_grey"
-                    android:visibility="gone"
-                    tools:ignore="HardcodedText" />
-            </LinearLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

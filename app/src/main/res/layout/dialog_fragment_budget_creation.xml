@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".dialogs.BudgetCreationDialogFragment">
+    tools:context=".dialogs.bottomsheetdialogs.BudgetCreationDialogFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/bcdial_holder_crd"
@@ -37,7 +37,8 @@
                     android:id="@+id/bcdial_budgetName_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/budget_name" />
+                    android:hint="@string/budget_name"
+                    android:inputType="text|textCapSentences" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

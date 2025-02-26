@@ -1,12 +1,17 @@
 package com.colleagues.austrom.models
 
 import android.content.Context
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.colleagues.austrom.R
 
-class Currency(val code: String = "",
-               var name : String = "",
-               var symbol : String ="",
-               var exchangeRate : Double = 0.0) {
+@Entity
+class Currency(
+    @PrimaryKey
+    val code: String = "",
+    var name : String = "",
+    var symbol : String ="",
+    var exchangeRate : Double = 0.0) {
 
     companion object{
         fun switchRatesToNewBaseCurrency(currenciesList: MutableMap<String, Currency>, newBaseCurrencyCode: String?) : MutableMap<String, Currency> {
@@ -27,6 +32,16 @@ class Currency(val code: String = "",
                 }
             }
             return currenciesList
+        }
+
+        fun getSupportedCurrenciesList() : List<Currency> {
+            val currencies = mutableListOf<Currency>()
+            for (item in currenciesNamesResourcesMap) {
+                currencies.add(Currency(
+                    code = item.key,
+                ))
+            }
+            return currencies
         }
 
         private val currenciesNamesResourcesMap: Map<String, Int> = mapOf(

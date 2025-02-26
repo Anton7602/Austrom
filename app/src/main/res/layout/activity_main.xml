@@ -5,60 +5,38 @@
     android:id="@+id/main_drawerLayout_dly"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
+    android:background="@color/backgroundMain"
     tools:context=".MainActivity"
     tools:openDrawer="start">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_mainLayout_cly"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/main_toolbar_tbr"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/grey"
-            android:elevation="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/ic_placeholder_icon"
-            app:titleTextColor="@color/grey" />
-
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/main_fragmentHolder_frg"
-            android:name="com.colleagues.austrom.fragments.BalanceFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/main_bottomNav_bnv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/main_toolbar_tbr" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/main_bottomNav_bnv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/navigationBarColor"
+            android:background="@color/backgroundMain"
+            android:foregroundTint="@color/primaryTextColor"
+            app:itemTextColor="@color/primaryTextColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/bottom_navigation_menu">
 
         </com.google.android.material.bottomnavigation.BottomNavigationView>
-
-        <ImageButton
-            android:id="@+id/main_filter_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:contentDescription="@string/filter"
-            android:elevation="4dp"
-            android:padding="12dp"
-            app:layout_constraintBottom_toBottomOf="@+id/main_toolbar_tbr"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_navigation_filter_temp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

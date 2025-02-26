@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".dialogs.bottomsheetdialogs.AssetTypeSelectionDialogFragment">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/astypeseldial_holder_crv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/astypeseldial_transactiontype_crv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/transparent"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/astypeseldial_asset_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/transparent"
+                        android:drawableBottom="@android:drawable/button_onoff_indicator_off"
+                        android:drawableTint="@color/blue"
+                        android:padding="5dp"
+                        android:text="@string/asset"
+                        android:textColor="@color/black"
+                        app:cornerRadius="0dp" />
+
+                    <View
+                        android:id="@+id/divider17"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.01"
+                        android:background="@color/grey" />
+
+                    <Button
+                        android:id="@+id/astypeseldial_liability_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/transparent"
+                        android:drawableBottom="@android:drawable/button_onoff_indicator_off"
+                        android:drawableTint="@color/grey"
+                        android:padding="5dp"
+                        android:text="@string/liability"
+                        android:textColor="@color/black"
+                        app:cornerRadius="0dp" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/astypeseldial_assetHolder_rcv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_asset_type" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/astypeseldial_liabilityHolder_rcv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                tools:listitem="@layout/item_asset_type" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</FrameLayout>

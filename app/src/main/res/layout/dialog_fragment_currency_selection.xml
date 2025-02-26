@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".dialogs.CurrencySelectionDialogFragment">
+    tools:context=".dialogs.bottomsheetdialogs.CurrencySelectionDialogFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/csdial_holder_crv"
@@ -26,7 +26,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/navigationBarColor"
-                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -34,7 +34,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="20dp">
+                    android:paddingTop="4dp">
 
                     <EditText
                         android:id="@+id/csdial_search_txt"
@@ -42,13 +42,13 @@
                         android:layout_height="0dp"
                         android:ems="10"
                         android:hint="@string/currency_selection"
-                        android:inputType="text"
+                        android:inputType="text|textCapSentences"
                         android:paddingStart="50dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="50dp"
                         app:layout_constraintBottom_toBottomOf="@+id/csdial_decline_btn"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/csdial_decline_btn"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/csdial_decline_btn" />
 
                     <ImageButton
@@ -61,7 +61,7 @@
                         android:padding="12dp"
                         android:src="@drawable/ic_navigation_close_temp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
@@ -77,17 +77,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/csdial_searchHolder_crv"
                 tools:listitem="@layout/item_currency" />
 
-            <View
-                android:id="@+id/divider"
-                android:layout_width="409dp"
-                android:layout_height="1dp"
-                android:layout_marginBottom="2dp"
-                android:background="@color/dark_grey"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@+id/csdial_currencyholder_rcv"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

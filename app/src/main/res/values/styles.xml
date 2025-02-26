@@ -6,6 +6,93 @@
         <item name="android:elevation">2dp</item>
         <item name="android:layout_margin">2dp</item>
         <item name="android:backgroundTint">@color/transparent</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+    </style>
+
+    <style name="HeaderButtonStyle" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_marginStart">0dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:backgroundTint">@color/transparent</item>
+        <item name="tint">@color/secondaryTextColor</item>
+    </style>
+
+    <style name="DefaultSpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:background">@color/backgroundMain</item>
+    </style>
+
+    <style name="DefaultTextInputLayout" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="colorControlActivated">@color/primaryTextColor</item>
+        <item name="helperTextTextColor">@color/secondaryTextColor</item>
+        <item name="android:textColorHint">@color/secondaryTextColor</item>
+        <item name="hintTextColor">@color/secondaryTextColor</item>
+        <item name="boxStrokeColor">@color/transparent</item>
+        <item name="boxStrokeErrorColor">@color/transparent</item>
+    </style>
+
+    <style name="DefaultEditText" parent="Widget.Material3.TextInputEditText.FilledBox">
+        <item name="colorControlActivated">@color/primaryTextColor</item>
+        <item name="android:backgroundTint">@color/backgroundText</item>
+        <item name="android:background">@drawable/sh_category_deselected</item>
+        <item name="android:textAppearance">@style/PrimaryCardText</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:paddingTop">28dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="android:textCursorDrawable" />
+    </style>
+
+    <style name="ChipTransactionFilter" parent="Widget.Material3.Chip.Assist">
+        <item name="android:paddingVertical">4dp</item>
+        <item name="android:checkable">true</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/chip_filter_text_color</item>
+        <item name="chipBackgroundColor">@color/chip_filter_background_color</item>
+        <item name="chipCornerRadius">8dp</item>
+        <item name="chipMinHeight">0dp</item>
+        <item name="chipMinTouchTargetSize">0dp</item>
+        <item name="textEndPadding">8dp</item>
+    </style>
+
+    <style name="MainActionButton" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/backgroundText</item>
+        <item name="android:textAppearance">@style/PrimaryCardText</item>
+        <item name="android:textStyle">bold</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/backgroundText</item>
+    </style>
+
+    <style name="TabHeaderButton" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/transparent</item>
+        <item name="android:textAppearance">@style/PrimaryCardText</item>
+        <item name="android:drawableBottom">@android:drawable/button_onoff_indicator_off</item>
+        <item name="android:drawableTint">@color/blue</item>
+        <item name="android:padding">5dp</item>
+        <item name="cornerRadius">0dp</item>
+    </style>
+
+    <style name="PrimaryCardText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:fontFamily">@font/dm_sans</item>
+    </style>
+
+    <style name="SecondaryCardText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/secondaryTextColor</item>
+        <item name="android:fontFamily">@font/dm_sans_light</item>
+    </style>
+
+    <style name="PrimaryCardTextAutoscale" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:fontFamily">@font/dm_sans_light</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">11sp</item>
+    </style>
+
+    <style name="SecondaryCardTextAutoscale" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/secondaryTextColor</item>
+        <item name="android:fontFamily">@font/dm_sans_light</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">11sp</item>
     </style>
 </resources>

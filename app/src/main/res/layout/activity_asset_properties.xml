@@ -5,31 +5,38 @@
     android:id="@+id/asdet_mainHolder_cly"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
+    android:background="@color/backgroundMain"
     tools:context=".AssetPropertiesActivity">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/asdet_fragmentHolder_frh"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:elevation="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/asdet_back_btn"
+        style="@style/HeaderButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
         android:contentDescription="@string/back_button"
-        android:padding="8dp"
+        android:src="@drawable/ic_navigation_back_temp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_navigation_back_temp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/asdet_remove_btn"
+        style="@style/HeaderButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
         android:contentDescription="@string/delete"
-        android:padding="8dp"
-        android:src="@drawable/ic_navigation_delete_temp"
+        android:src="@drawable/ic_navigation_more_temp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/decline_red" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/asdet_assetCard_crd"
@@ -66,7 +73,7 @@
         android:layout_height="wrap_content"
         android:elevation="10dp"
         android:fontFamily="@font/inconsolata"
-        android:text="Card Balance"
+        android:text="@string/card_balance"
         app:layout_constraintBottom_toTopOf="@+id/asdet_balance_txt"
         app:layout_constraintStart_toStartOf="@+id/asdet_balance_txt" />
 
@@ -106,7 +113,7 @@
         android:layout_height="wrap_content"
         android:elevation="10dp"
         android:fontFamily="@font/inconsolata"
-        android:text="Card Holder"
+        android:text="@string/card_holder"
         app:layout_constraintBottom_toTopOf="@+id/asdet_owner_txt"
         app:layout_constraintStart_toStartOf="@+id/asdet_owner_txt" />
 
@@ -141,6 +148,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/is_primary_payment_method"
+        android:textColor="@color/primaryTextColor"
         app:layout_constraintEnd_toStartOf="@+id/asdet_isPrivate_chb"
         app:layout_constraintStart_toStartOf="@+id/asdet_assetCard_crd"
         app:layout_constraintTop_toBottomOf="@+id/asdet_assetCard_crd" />
@@ -150,6 +158,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/privateAsset"
+        android:textColor="@color/primaryTextColor"
         app:layout_constraintEnd_toEndOf="@+id/asdet_assetCard_crd"
         app:layout_constraintTop_toTopOf="@+id/asdet_isPrimary_chb" />
 
@@ -170,20 +179,12 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView14"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        app:cardBackgroundColor="@color/navigationBarColor"
-        app:cardElevation="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.cardview.widget.CardView
         android:id="@+id/cardView10"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:cardBackgroundColor="@color/navigationBarColor"
+        android:layout_marginBottom="-20dp"
+        android:background="@color/backgroundText"
+        app:cardBackgroundColor="@color/transparent"
         app:cardCornerRadius="20dp"
         app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -6,10 +6,10 @@
         android:icon="@drawable/ic_navigation_sharedbudget_temp"
         android:title="@string/shared_budget" />
     <item
-        android:id="@+id/nav_categories_mit"
+        android:id="@+id/nav_import_export_mit"
         android:checkable="false"
-        android:icon="@drawable/ic_navigation_categories_temp"
-        android:title="@string/categories" />
+        android:icon="@drawable/ic_transactiontype_income_temp"
+        android:title="@string/import_export" />
     <item
         android:id="@+id/nav_settings_mit"
         android:checkable="false"

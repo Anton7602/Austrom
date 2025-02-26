@@ -5,4 +5,79 @@
         <attr name="secondaryText" format="string" />
         <attr name="settingIcon" format="reference" />
     </declare-styleable>
+    <declare-styleable name="TransactionHeaderView">
+        <attr name="IncomeSum" format="float" />
+        <attr name="ExpenseSum" format="float" />
+        <attr name="CurrencySymbol" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="SelectorButtonView">
+        <attr name="fieldName" format="string" />
+        <attr name="fieldValue" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="DateControllerView">
+        <attr name="periodType" format="enum" >
+            <enum name="week" value="0"/>
+            <enum name="month" value="1"/>
+            <enum name="year" value="2"/>
+            <enum name="custom" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="PieChartDiagramView">
+        <attr name="pieChartMarginTextFirst" format="dimension"/>
+        <attr name="pieChartMarginTextSecond" format="dimension"/>
+        <attr name="pieChartMarginTextThird" format="dimension"/>
+        <attr name="pieChartMarginSmallCircle" format="dimension"/>
+        <attr name="pieChartCircleStrokeWidth" format="dimension"/>
+        <attr name="pieChartCirclePadding" format="dimension"/>
+        <attr name="pieChartCirclePaintRoundSize" format="boolean"/>
+        <attr name="pieChartCircleSectionSpace" format="float"/>
+        <attr name="pieChartTextCircleRadius" format="dimension"/>
+        <attr name="pieChartTextAmountSize" format="dimension"/>
+        <attr name="pieChartTextNumberSize" format="dimension"/>
+        <attr name="pieChartTextDescriptionSize" format="dimension"/>
+        <attr name="pieChartTextAmountColor" format="color"/>
+        <attr name="pieChartTextNumberColor" format="color"/>
+        <attr name="pieChartTextDescriptionColor" format="color"/>
+        <attr name="pieChartTextAmount" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="MoneyFormatTextView">
+        <attr name="moneyPadding" format="dimension"/>
+        <attr name="amountSize" format="dimension"/>
+        <attr name="currencySize" format="dimension"/>
+        <attr name="currencyMargin" format="dimension"/>
+        <attr name="amountColor" format="color"/>
+        <attr name="currencyColor" format="color"/>
+        <attr name="defaultAmount" format="float"/>
+        <attr name="currencyTextSizePercent" format="float"/>
+        <attr name="horizontalAlignment" format="enum">
+            <enum name="left" value="0"/>
+            <enum name="center" value="1"/>
+            <enum name="right" value="2"/>
+        </attr>
+        <attr name="verticalAlignment" format="enum">
+            <enum name="top" value="0"/>
+            <enum name="center" value="1"/>
+            <enum name="bottom" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="ActionButtonView">
+        <attr name="backgroundColor" format="color" />
+        <attr name="checkedBackgroundColor" format="color" />
+        <attr name="iconDrawable" format="reference" />
+        <attr name="checkedIconDrawable" format="reference" />
+        <attr name="iconTint" format="color" />
+        <attr name="checkedIconTint" format="color" />
+        <attr name="text" format="string" />
+        <attr name="checkedText" format="string" />
+        <attr name="checkable" format="boolean" />
+        <attr name="isChecked" format="boolean" />
+        <attr name="iconSizePercent" format="float"/>
+        <attr name="descriptionMargin" format="dimension"/>
+        <attr name="textSize" format="dimension"/>
+    </declare-styleable>
 </resources>

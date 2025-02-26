@@ -5,8 +5,18 @@
     android:id="@+id/set_mainHolder_lly"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundMain"
     android:orientation="vertical"
     tools:context=".fragments.SettingsFragment">
+
+    <ImageButton
+        android:id="@+id/set_navDrawer_btn"
+        style="@style/HeaderButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Menu"
+        android:src="@drawable/ic_navigation_mainmenu_temp"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/textView5"
@@ -24,7 +34,18 @@
         android:layout_height="wrap_content"
         app:primaryText="@string/base_currency"
         app:secondaryText="@string/USD"
-        app:settingIcon="@drawable/ic_settings_base_currency_temp" />
+        app:settingIcon="@drawable/ic_settings_base_currency_temp">
+
+    </com.colleagues.austrom.views.SettingsButtonView>
+
+    <com.colleagues.austrom.views.SettingsButtonView
+        android:id="@+id/set_categories_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        app:primaryText="@string/categories"
+        app:secondaryText="No Categories Present"
+        app:settingIcon="@drawable/ic_navigation_categories_temp" />
 
     <TextView
         android:id="@+id/textView6"
@@ -61,12 +82,6 @@
         app:primaryText="@string/language"
         app:secondaryText="@string/english"
         app:settingIcon="@drawable/ic_settings_local" />
-
-    <View
-        android:id="@+id/divider16"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey" />
 
     <com.colleagues.austrom.views.SettingsButtonView
         android:id="@+id/set_moneyFormat_btn"

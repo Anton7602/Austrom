@@ -5,18 +5,20 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Base64
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
-import com.colleagues.austrom.database.FirebaseDatabaseProvider
-import com.colleagues.austrom.database.IDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.managers.EncryptionManager
+import com.colleagues.austrom.managers.SyncManager
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
-import com.colleagues.austrom.models.Transaction
-import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.User
 import java.util.Locale
+import javax.crypto.SecretKey
+import javax.crypto.spec.SecretKeySpec
 
 class AustromApplication : Application() {
     private lateinit var sharedPreferences: SharedPreferences
@@ -25,36 +27,11 @@ class AustromApplication : Application() {
         var appUser : User? = null
         var activeAssets : MutableMap<String, Asset> = mutableMapOf()
         var activeCurrencies : MutableMap<String, Currency> = mutableMapOf()
+        var activeCategories: MutableMap<String, Category> = mutableMapOf()
         var knownUsers : MutableMap<String, User> = mutableMapOf()
-        var selectedTransaction: Transaction? = null
-        var selectedAsset: Asset? = null
         var supportedLanguages: List<Locale> = listOf(Locale("en"), Locale("ru"))
-        private var appLanguageCode: String? = null
-
-        fun getActiveExpenseCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.EXPENSE)}
-        fun getActiveTransferCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.TRANSFER)}
-        fun getActiveIncomeCategories(): List<Category> {return getActiveCategoriesOfType(TransactionType.INCOME)}
-
-        private fun getActiveCategoriesOfType(transactionType: TransactionType) : List<Category> {
-            val activeUser = appUser ?: return listOf()
-            val expenseCategories: MutableList<Category> = mutableListOf()
-            if (activeUser.activeBudgetId!=null) {
-                for (user in knownUsers) {
-                    for (category in user.value.categories) {
-                        if (!expenseCategories.contains(category) && category.transactionType==transactionType) {
-                            expenseCategories.add(category)
-                        }
-                    }
-                }
-            } else {
-                for (category in activeUser.categories) {
-                    if (!expenseCategories.contains(category) && category.transactionType == transactionType) {
-                        expenseCategories.add(category)
-                    }
-                }
-            }
-            return expenseCategories
-        }
+        var isApplicationThemeLight = false
+        var appLanguageCode: String? = null
 
         fun showKeyboard(activity: Activity, view: View) {
             view.requestFocus()
@@ -110,26 +87,6 @@ class AustromApplication : Application() {
 
     fun forgetRememberedPin() {
         sharedPreferences.edit().remove("appQuickPin").apply()
-    }
-
-    fun setNewBaseCurrency(currency: Currency) {
-        if (appUser!=null) {
-            val dbProvider: IDatabaseProvider = FirebaseDatabaseProvider(null)
-            appUser!!.baseCurrencyCode = currency.code
-            dbProvider.updateUser(appUser!!)
-            Currency.switchRatesToNewBaseCurrency(activeCurrencies, currency.code)
-        }
-    }
-
-    @SuppressLint("MutatingSharedPrefs")
-    fun setRememberedTarget(newTarget: String) {
-        val existingTargets = sharedPreferences.getStringSet("targetList", null) ?: mutableSetOf()
-        if (!existingTargets.contains(newTarget)) {
-            val editor = sharedPreferences.edit()
-            existingTargets.add(newTarget)
-            editor.putStringSet("targetList",existingTargets)
-            editor.apply()
-        }
     }
 
     fun getRememberedTargets(): List<String> {

@@ -1,15 +1,38 @@
 package com.colleagues.austrom.models
 
-import com.google.firebase.database.IgnoreExtraProperties
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.colleagues.austrom.AustromApplication.Companion.activeCurrencies
+import com.colleagues.austrom.AustromApplication.Companion.appUser
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.google.firebase.database.Exclude
+import java.util.UUID
 
-@IgnoreExtraProperties
-data class User(
-    var userId: String? = null,
-    var username: String? = null,
-    var email: String? = null,
-    val password: String? = null,
-    var activeBudgetId: String? = null,
-    var primaryPaymentMethod: String? = null,
-    var baseCurrencyCode: String = "USD",
-    var categories: MutableList<Category> = mutableListOf()
-)
+@Entity
+data class User private constructor(var username: String,
+                                    val email: String,
+                                    var password: String,
+                                    var baseCurrencyCode: String = "USD",
+                                    var activeBudgetId: String?=null,
+                                    var tokenId: String? = null,
+                                    var primaryPaymentMethod: String? = null,
+                                    @PrimaryKey(autoGenerate = false) @Exclude
+                                    var userId: String = generateUniqueUserId()) {
+
+    private constructor(): this("", "", "", "", null, null, null, "")
+    constructor(username: String, email: String, password: String, baseCurrencyCode: String = "USD"): this(username, email.lowercase(), password, baseCurrencyCode,null, null, generateUniqueUserId())
+
+    companion object {
+        fun generateUniqueUserId() : String {
+            return UUID.randomUUID().toString()
+        }
+    }
+
+    public fun setNewBaseCurrency(currency: Currency, localDBProvider: LocalDatabaseProvider, remoteDbProvider: IRemoteDatabaseProvider? = null) {
+        this.baseCurrencyCode = currency.code
+        localDBProvider.updateUser(this)
+        remoteDbProvider?.updateUser(this)
+        Currency.switchRatesToNewBaseCurrency(activeCurrencies, currency.code)
+    }
+}
