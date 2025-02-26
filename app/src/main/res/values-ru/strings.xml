@@ -477,4 +477,6 @@
     <string name="continue_label">Продолжить</string>
     <string name="active_users">Активные Пользователи:</string>
     <string name="pending_invitations">Отправленные Приглашения:</string>
+    <string name="to_create_transaction_you_need_to_have_at_least_one_active_asset">Чтобы создать транзакцию вам необходим хотя бы один действующий актив</string>
+    <string name="create_new_asset">Создать Новый Актив</string>
 </resources>

@@ -36,11 +36,13 @@ import com.colleagues.austrom.adapters.TransactionExtendedRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.parseToDouble
 import com.colleagues.austrom.extensions.parseToLocalDate
+import com.colleagues.austrom.extensions.setOnSafeClickListener
 import com.colleagues.austrom.fragments.BalanceFragment
 import com.colleagues.austrom.fragments.ImportMappingFragment
 import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.fragments.TransactionApprovementFragment
 import com.colleagues.austrom.fragments.TransactionEditFragment
+import com.colleagues.austrom.models.AssetType
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -53,11 +55,14 @@ import java.time.LocalDate
 
 class ImportParametersActivity : AppCompatActivity() {
     private lateinit var fragmentHolder: FragmentContainerView
+    private lateinit var noAssetFoundMessageCard: CardView
     private lateinit var backButton: ImageButton
-
+    private lateinit var createNewAssetButton: Button
     private fun bindViews() {
         fragmentHolder = findViewById(R.id.impact_fragmentHolder_fcv)
         backButton = findViewById(R.id.impact_back_btn)
+        noAssetFoundMessageCard = findViewById(R.id.impact_noAssetsFoundMessage_crv)
+        createNewAssetButton = findViewById(R.id.impact_createNewAsset_btn)
     }
 
     private fun adjustInsets() {
@@ -83,11 +88,30 @@ class ImportParametersActivity : AppCompatActivity() {
         adjustInsets()
         bindViews()
 
-        filePickerLauncher = initializeActivityForResult()
-        pickCsvFile()
-
+        checkIfAssetsAvailable()
+        createNewAssetButton.setOnSafeClickListener {
+            startActivity(Intent(this, AssetCreationActivity::class.java).putExtra("ListOfAvailableAssetTypes", arrayListOf(
+            AssetType.CARD.ordinal, AssetType.CREDIT_CARD.ordinal, AssetType.CASH.ordinal)))
+        }
         onBackPressedDispatcher.addCallback(this) { handleReturn() }
         backButton.setOnClickListener { handleReturn() }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        if (fragmentHolder.visibility==View.GONE) checkIfAssetsAvailable()
+    }
+
+    private fun checkIfAssetsAvailable() {
+        if (AustromApplication.activeAssets.isNotEmpty()) {
+            fragmentHolder.visibility = View.VISIBLE
+            noAssetFoundMessageCard.visibility = View.GONE
+            filePickerLauncher = initializeActivityForResult()
+            pickCsvFile()
+        } else {
+            fragmentHolder.visibility = View.GONE
+            noAssetFoundMessageCard.visibility = View.VISIBLE
+        }
     }
 
     private fun handleReturn() {

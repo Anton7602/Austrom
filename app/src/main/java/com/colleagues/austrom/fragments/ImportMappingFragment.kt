@@ -2,6 +2,7 @@ package com.colleagues.austrom.fragments
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
@@ -56,6 +57,7 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
     private var csvColumnsList: List<String> = listOf()
     private var selectorsList: List<SelectorButtonView> =  listOf()
     private var fileMap: MutableMap<String, Int> = mutableMapOf("asset" to -1, "name" to 0, "amount" to 0, "date" to 0, "category" to 0, "comment" to -1)
+    private var isDateDayBeforeMonth = true
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -131,6 +133,8 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
     }
 
     private fun readTransactionDataFromCSV(uri: Uri): MutableList<Transaction> {
+        isDateDayBeforeMonth = detectIsDayBeforeMonthInFile(uri)
+        Log.d("Debug", "I've finished analyzing. DayBeforeMonth is ${isDateDayBeforeMonth}")
         val csvReader = initializeCsvReader(uri) ?: return mutableListOf()
         var line: Array<String>?
         csvReader.readNext().also { line = it }
@@ -138,7 +142,6 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
         while (csvReader.readNext().also { line = it } != null) {
             importedTransactions.add(readTransactionFromCSVLine(line!!))
         }
-
         csvReader.close()
         return importedTransactions
     }
@@ -167,7 +170,7 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
             transactionName = targetTxt,
             categoryId = activeCategory?.categoryId ?: categoryTxt,
             amount =amount,
-            transactionDate = dateTxt.parseToLocalDate() ?: LocalDate.now(),
+            transactionDate = dateTxt.parseToLocalDate(isDateDayBeforeMonth) ?: LocalDate.now(),
             comment = commentTxt
         )
     }
@@ -189,5 +192,38 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
             reader.close()
             csvSeparator = separatorCounts.maxByOrNull { it.value }?.key ?: ','
         }
+    }
+
+    private fun detectIsDayBeforeMonthInFile(uri: Uri): Boolean {
+        if (fileMap["date"]==-1) return true
+        val csvReader = initializeCsvReader(uri) ?: return true
+        var line: Array<String>?
+        csvReader.readNext().also { line = it }
+        while (csvReader.readNext().also { line = it } != null) {
+            var dateString = line?.get(fileMap["date"]!!).toString()
+            if (dateString.contains('-')) dateString = dateString.replace('-','.')
+            if (dateString.contains('/')) dateString = dateString.replace('/','.')
+            if (dateString.contains('\\')) dateString = dateString.replace('\\','.')
+            if (dateString.contains(':')) dateString = dateString.substring(0, dateString.lastIndexOf(' '))
+            Log.d("Debug", "Analyzing Date String: ${dateString}")
+            try {
+                val numbers = dateString.split('.').toMutableList()
+                if (numbers.count()==3) {
+                    for (i in 0..2) { if (numbers[i].length==4) { numbers.removeAt(i); break } }
+                    if (numbers.count()==3) numbers.removeAt(2)
+                    if (numbers.count()==2) {
+                        if (numbers[0].toInt()>12 && numbers[1].toInt()<12) return true
+                        if (numbers[0].toInt()<12 && numbers[1].toInt()>12) return false
+                    }
+                } else if (numbers.count()==1) {
+                    val number1 = numbers[0].substring(0,2).toInt()
+                    val number2 = numbers[0].substring(2,4).toInt()
+                    if (number1>12 && number2<12) return true
+                    if (number1<12 && number2>12) return false
+                }
+            } catch (ex: Exception) {return true}
+        }
+        csvReader.close()
+        return true
     }
 }

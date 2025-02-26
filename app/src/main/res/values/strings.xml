@@ -478,4 +478,6 @@
     <string name="continue_label">Continue</string>
     <string name="active_users">Active Users:</string>
     <string name="pending_invitations">Pending Invitations:</string>
+    <string name="to_create_transaction_you_need_to_have_at_least_one_active_asset">To create transaction you need to have at least one active asset</string>
+    <string name="create_new_asset">Create New Asset</string>
 </resources>

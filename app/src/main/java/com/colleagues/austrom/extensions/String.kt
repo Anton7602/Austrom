@@ -73,10 +73,5 @@ fun String?.parseToLocalDate(isDayBeforeMonth: Boolean = true): LocalDate? {
     }
 }
 
-fun String?.substringBeforeLastPipe(): String? {
-    return this?.substringBeforeLast('|')
-}
-
-fun String?.intAfterLastPipe(): Int? {
-    return this?.substringAfterLast('|')?.toIntOrNull()
-}
+fun String?.substringBeforeLastPipe(): String? { return this?.substringBeforeLast('|') }
+fun String?.intAfterLastPipe(): Int? { return this?.substringAfterLast('|')?.toIntOrNull() }
