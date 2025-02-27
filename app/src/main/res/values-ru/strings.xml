@@ -480,4 +480,7 @@
     <string name="to_create_transaction_you_need_to_have_at_least_one_active_asset">Чтобы создать транзакцию вам необходим хотя бы один действующий актив</string>
     <string name="create_new_asset">Создать Новый Актив</string>
     <string name="you_need_to_have_at_least_one_active_assets_to_be_able_to_import_transactions_from_external_sources">Вам необходим хотя бы один действующий актив, чтобы иметь возможность импортировать транзакции из внешних источников</string>
+    <string name="you_re_already_a_part_of">"Вы уже состоите в бюджете %1$s! "</string>
+    <string name="if_you_accept_this_invitation_you_will_leave_the_budget_you_are_currently_in">Если вы примете это приглашение, то покинете бюджет в котором сейчас состоите!</string>
+    <string name="invalid_invitation_code">Неверный Код Приглашения</string>
 </resources>

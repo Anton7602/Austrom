@@ -16,6 +16,7 @@ import com.colleagues.austrom.extensions.intAfterLastPipe
 import com.colleagues.austrom.extensions.substringBeforeLastPipe
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
+import com.colleagues.austrom.models.Invitation
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.User
 import com.google.firebase.database.ValueEventListener
@@ -38,41 +39,28 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
 
     private suspend fun syncAll() {
         syncCurrenciesRemoteToLocal()
+        //syncSentBudgetInvitations()
+        syncReceivedInvitations()
         syncUsersRemoteToLocal()
         syncAssetsRemoteToLocal()
         syncCategoriesRemoteToLocal()
         syncTransactionsRemoteToLocal()
         syncTransactionsDetailsRemoteToLocal()
-
     }
 
-    private suspend fun syncCurrenciesRemoteToLocal() {
-        if (remoteDBProvider is FirebaseDatabaseProvider) setCurrenciesListener(remoteDBProvider)
-    }
+    private suspend fun syncCurrenciesRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setCurrenciesListener(remoteDBProvider) }
+    private suspend fun syncReceivedInvitations() {if (remoteDBProvider is FirebaseDatabaseProvider) setReceivedInvitationListener(remoteDBProvider) }
+    private suspend fun syncSentBudgetInvitations() {if (remoteDBProvider is FirebaseDatabaseProvider)  setSentInvitationsListener(remoteDBProvider) }
+    private suspend fun syncUsersRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setUsersListener(remoteDBProvider) }
+    private suspend fun syncAssetsRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setAssetListener(remoteDBProvider) }
+    private suspend fun syncCategoriesRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setCategoriesListener(remoteDBProvider) }
+    private suspend fun syncTransactionsRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setTransactionListener(remoteDBProvider) }
+    private suspend fun syncTransactionsDetailsRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setTransactionDetailListener(remoteDBProvider) }
 
-    private suspend fun syncUsersRemoteToLocal() {
-        if (remoteDBProvider is FirebaseDatabaseProvider) setUsersListener(remoteDBProvider)
-    }
-
-    private suspend fun syncAssetsRemoteToLocal() {
-        if (remoteDBProvider is FirebaseDatabaseProvider) setAssetListener(remoteDBProvider)
-    }
-
-    private suspend fun syncCategoriesRemoteToLocal() {
-        if (remoteDBProvider is FirebaseDatabaseProvider) setCategoriesListener(remoteDBProvider)
-    }
-
-    private suspend fun syncTransactionsRemoteToLocal() {
-        if (remoteDBProvider is FirebaseDatabaseProvider) setTransactionListener(remoteDBProvider)
-    }
-
-    private suspend fun syncTransactionsDetailsRemoteToLocal() {
-        if (remoteDBProvider is FirebaseDatabaseProvider) setTransactionDetailListener(remoteDBProvider)
-    }
-
-    private suspend fun setCurrenciesListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
+    private suspend fun setCurrenciesListener(firebaseDatabaseProvider: FirebaseDatabaseProvider)
+    {
         firebaseDatabaseProvider.fetchCurrenciesData { dataSnapshot ->
-            Log.d("Debug", "Started Syncing Currencies")
+            Log.d("Synchronization", "Started Syncing Currencies")
             val currencies = mutableMapOf<String, Currency>()
             for (snapshotItem in dataSnapshot.children) {
                 val currency = snapshotItem.getValue(Currency::class.java)
@@ -85,7 +73,48 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
             currencies.forEach { currency ->
                 localDBProvider.writeCurrency(currency.value)
             }
-            Log.d("Debug", "Finished Syncing Currencies")
+            Log.d("Synchronization", "Finished Syncing Currencies")
+        }
+    }
+
+    private suspend fun setReceivedInvitationListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
+        firebaseDatabaseProvider.fetchReceivedInvitationsData(appUser!!) { dataSnapshot ->
+            Log.d("Synchronization", "Started Syncing Received Invitations")
+            localDBProvider.recallInvitationsToUser(appUser!!.userId)
+            //val encryptionManager = EncryptionManager()
+            dataSnapshot.children.forEach { snapshotItem ->
+                val invitingBudget = firebaseDatabaseProvider.getBudgetById(snapshotItem.key.toString())
+                if (invitingBudget!=null) {
+                    //val invitation = encryptionManager.decryptInvitation(snapshotItem.getValue(String::class.java).toString(), invitingBudget,
+                        //encryptionManager.convertStringToSecretKey(appUser!!.tokenId))
+                    val invitation = Invitation(
+                        userId = appUser!!.userId,
+                        budgetId = invitingBudget.budgetId,
+                        token = snapshotItem.getValue(String::class.java).toString(),
+                        providedEmail = appUser!!.email,
+                        invitationCode = ""
+                    )
+                    if (localDBProvider.getInvitationsByUserIdAndBudgetId(appUser!!.userId, invitingBudget.budgetId)==null) {
+                        localDBProvider.insertInvitation(invitation)
+                    }
+                }
+            }
+            Log.d("Synchronization", "Finished Syncing Received Invitations")
+        }
+    }
+
+    private suspend fun setSentInvitationsListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
+        if (budget==null) return
+        firebaseDatabaseProvider.fetchSentInvitationsData(budget) { dataSnapshot ->
+            Log.d("Synchronization", "Started Syncing Invitations")
+            val invitations = mutableListOf<Invitation>()
+            val encryptionManager = EncryptionManager()
+            dataSnapshot.children.forEach { snapshotItem ->
+                invitations.add(encryptionManager.decryptInvitation(snapshotItem.getValue(String::class.java).toString(), budget,
+                    encryptionManager.convertStringToSecretKey(appUser!!.tokenId)))
+                Log.d("Synchronization", "Found Invitation To User: ${invitations.last().userId}")
+            }
+            Log.d("Synchronization", "Finished Syncing Invitations")
         }
     }
 
@@ -95,7 +124,7 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
             return
         }
         firebaseDatabaseProvider.fetchUserData(budget) { dataSnapshot ->
-            Log.d("Debug", "Started Syncing Users")
+            Log.d("Synchronization", "Started Syncing Users")
             val budgetUserKeys = mutableListOf<String>()
             for (snapshotItem in dataSnapshot.children) {
                 val userID = snapshotItem.getValue(String::class.java)
@@ -121,14 +150,14 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                 localDBProvider.deleteUser(user)
                 knownUsers.remove(id)
             }}
-            Log.d("Debug", "Finished Syncing Users")
+            Log.d("Synchronization", "Finished Syncing Users")
         }
     }
 
     private suspend fun setAssetListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
         if (budget==null) return
         firebaseDatabaseProvider.fetchAssetData(budget) {dataSnapshot ->
-            Log.d("Debug", "Started Syncing Assets")
+            Log.d("Synchronization", "Started Syncing Assets")
             val encryptionManager = EncryptionManager()
             for (snapshotItem in dataSnapshot.children) {
                 val localAsset = localDBProvider.getAssetById(snapshotItem.key.toString())
@@ -148,14 +177,14 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                     AustromApplication.activeAssets[asset.assetId] = asset
                 }
             }
-            Log.d("Debug", "Finished Syncing Assets")
+            Log.d("Synchronization", "Finished Syncing Assets")
         }
     }
 
     private suspend fun setCategoriesListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
         if (budget==null) return
         firebaseDatabaseProvider.fetchCategoriesData(budget) {dataSnapshot ->
-            Log.d("Debug", "Started Syncing Categories")
+            Log.d("Synchronization", "Started Syncing Categories")
             val encryptionManager = EncryptionManager()
             val remoteCategoriesId = mutableListOf<String>()
             dataSnapshot.children.forEach {snapshotItem ->
@@ -187,14 +216,14 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                     if (activeCategories.containsKey(category.categoryId)) activeCategories.remove(category.categoryId)
                 }
             }
-            Log.d("Debug", "Finished Syncing Categories")
+            Log.d("Synchronization", "Finished Syncing Categories")
         }
     }
 
     private suspend fun setTransactionListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
         if (budget==null) return
         firebaseDatabaseProvider.fetchTransactionData(budget) {dataSnapshot ->
-            Log.d("Debug", "Started Syncing Transactions")
+            Log.d("Synchronization", "Started Syncing Transactions")
             val encryptionManager = EncryptionManager()
             for (snapshotItem in dataSnapshot.children) {
                 val localTransaction = localDBProvider.getTransactionByID(snapshotItem.key.toString())
@@ -224,14 +253,14 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                     }
                 }
             }
-            Log.d("Debug", "Finished Syncing Transactions")
+            Log.d("Synchronization", "Finished Syncing Transactions")
         }
     }
 
     private suspend fun setTransactionDetailListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
         if (budget==null) return
         firebaseDatabaseProvider.fetchTransactionDetailsData(budget) {dataSnapshot ->
-            Log.d("Debug", "Started Syncing Transaction Details")
+            Log.d("Synchronization", "Started Syncing Transaction Details")
             val encryptionManager = EncryptionManager()
             for (snapshotItem in dataSnapshot.children) {
                 val localTransactionDetail = localDBProvider.getTransactionDetailById(snapshotItem.key.toString())
@@ -247,7 +276,7 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                     }
                 }
             }
-            Log.d("Debug", "Finished Syncing Transaction Details")
+            Log.d("Synchronization", "Finished Syncing Transaction Details")
         }
     }
 }

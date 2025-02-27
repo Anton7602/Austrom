@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import com.colleagues.austrom.AustromApplication.Companion.knownUsers
 import com.colleagues.austrom.extensions.toInt
 import com.colleagues.austrom.models.Asset
-import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.InvalidTransactionException
@@ -362,16 +361,28 @@ class LocalDatabaseProvider(context: Context) {
         return invitations
     }
 
-    fun recallInvitationToUser(userId: String) {
-        runBlocking { localDatabase.invitationDao().deleteInvitationByUserId(userId) }
-    }
-
-    fun getInvitationByUserId(userId: String): Invitation? {
-        val invitation: Invitation?
+    fun getInvitationsByUserId(userId: String): List<Invitation> {
+        val invitation: List<Invitation>
         runBlocking {
-            invitation = localDatabase.invitationDao().getInvitationById(userId)
+            invitation = localDatabase.invitationDao().getInvitationsByUserId(userId)
         }
         return invitation
+    }
+
+    fun getInvitationsByUserIdAndBudgetId(userId: String, budgetId: String): Invitation? {
+        val invitation: Invitation?
+        runBlocking {
+            invitation = localDatabase.invitationDao().getInvitationsByUserIdAndBudgetId(userId, budgetId)
+        }
+        return invitation
+    }
+
+    fun recallInvitationToBudgetToUser(budgetId: String, userId: String) {
+        runBlocking { localDatabase.invitationDao().deleteInvitationToBudgetByUserId(budgetId, userId) }
+    }
+
+    fun recallInvitationsToUser(userId: String) {
+        runBlocking { localDatabase.invitationDao().deleteInvitationByUserId(userId) }
     }
     //endregion
 

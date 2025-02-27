@@ -295,14 +295,20 @@ interface InvitationDao {
     @Delete
     suspend fun deleteInvitation(invitation: Invitation)
 
-    @Query("SELECT * FROM Invitation WHERE userId = :invitationId")
-    suspend fun getInvitationById(invitationId: String): Invitation?
+    @Query("SELECT * FROM Invitation WHERE userId = :userId")
+    suspend fun getInvitationsByUserId(userId: String): List<Invitation>
+
+    @Query("SELECT * FROM Invitation WHERE userId = :userId AND budgetId=:budgetId")
+    suspend fun getInvitationsByUserIdAndBudgetId(userId: String, budgetId: String): Invitation?
 
     @Query("SELECT * FROM Invitation")
     suspend fun getAllInvitations(): List<Invitation>
 
     @Query("SELECT * FROM Invitation Where budgetId=:budgetId")
     suspend fun getAllInvitationsOfBudget(budgetId: String): List<Invitation>
+
+    @Query("DELETE FROM Invitation Where userId=:userId AND budgetId=:budgetId")
+    suspend fun deleteInvitationToBudgetByUserId(budgetId: String,userId: String)
 
     @Query("DELETE FROM Invitation Where userId=:userId")
     suspend fun deleteInvitationByUserId(userId: String)

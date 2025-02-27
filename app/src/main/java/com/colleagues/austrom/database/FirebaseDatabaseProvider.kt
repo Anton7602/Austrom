@@ -15,6 +15,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -443,9 +444,16 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
     suspend fun fetchTransactionDetailsData(budget: Budget,processSnapshot: (DataSnapshot) -> Unit) {
         fetchDataSnapshot(database.getReference("transactionDetails").child(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
     }
+    suspend fun fetchSentInvitationsData(budget: Budget, processSnapshot: (DataSnapshot) -> Unit) {
+        fetchDataSnapshot(database.getReference("invitations").orderByChild("a").equalTo(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
+
+    suspend fun fetchReceivedInvitationsData(user: User, processSnapshot: (DataSnapshot) -> Unit) {
+        fetchDataSnapshot(database.getReference("invitations").child(user.userId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
 
 
-    private suspend fun fetchDataSnapshot(databaseReference: DatabaseReference, processSnapshot: (DataSnapshot) -> Unit) {
+    private suspend fun fetchDataSnapshot(databaseReference: Query, processSnapshot: (DataSnapshot) -> Unit) {
         suspendCancellableCoroutine { continuation ->
             var isResumed = false
 
@@ -463,7 +471,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
-                    if (!isResumed) { // Check if the continuation has already been resumed
+                    if (!isResumed) {
                         isResumed = true
                         continuation.resumeWithException(databaseError.toException())
                     }
