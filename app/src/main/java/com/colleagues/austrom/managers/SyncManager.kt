@@ -1,6 +1,7 @@
 package com.colleagues.austrom.managers
 
 import android.content.Context
+import android.provider.ContactsContract.Data
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Entity
@@ -9,6 +10,7 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.AustromApplication.Companion.activeCategories
 import com.colleagues.austrom.AustromApplication.Companion.appUser
 import com.colleagues.austrom.AustromApplication.Companion.knownUsers
+import com.colleagues.austrom.database.DataSnapshotDescription
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
@@ -55,7 +57,7 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
     private suspend fun syncCategoriesRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setCategoriesListener(remoteDBProvider) }
     private suspend fun syncTransactionsRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setTransactionListener(remoteDBProvider) }
     private suspend fun syncTransactionsDetailsRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setTransactionDetailListener(remoteDBProvider) }
-    private fun syncSentBudgetInvitations() {if (remoteDBProvider is FirebaseDatabaseProvider)  setSentInvitationsListener(remoteDBProvider) }
+    private suspend fun syncSentBudgetInvitations() {if (remoteDBProvider is FirebaseDatabaseProvider)  setSentInvitationsListener(remoteDBProvider) }
 
     private suspend fun setCurrenciesListener(firebaseDatabaseProvider: FirebaseDatabaseProvider)
     {
@@ -78,29 +80,38 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
     }
 
     private suspend fun setReceivedInvitationListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
-        firebaseDatabaseProvider.fetchReceivedInvitationsData(appUser!!) { dataSnapshot ->
+        localDBProvider.recallInvitationsToUser(appUser!!.userId)
+        firebaseDatabaseProvider.fetchReceivedInvitationsData(appUser!!) { dataSnapshot, snapshotDescription ->
             Log.d("Synchronization", "Started Syncing Received Invitations")
-            localDBProvider.recallInvitationsToUser(appUser!!.userId)
-            dataSnapshot.children.forEach { snapshotItem ->
-                val invitingBudget = firebaseDatabaseProvider.getBudgetById(snapshotItem.key.toString())
+            //dataSnapshot.children.forEach { snapshotItem ->
+                val invitingBudget = firebaseDatabaseProvider.getBudgetById(dataSnapshot.key.toString())
                 if (invitingBudget!=null) {
-                    val invitation = Invitation(
-                        userId = appUser!!.userId,
-                        budgetId = invitingBudget.budgetId,
-                        token = snapshotItem.getValue(String::class.java).toString(),
-                        providedEmail = appUser!!.email,
-                        invitationCode = ""
-                    )
-                    if (localDBProvider.getInvitationsByUserIdAndBudgetId(appUser!!.userId, invitingBudget.budgetId)==null) {
-                        localDBProvider.insertInvitation(invitation)
-                    }
+                    when (snapshotDescription) {
+                        DataSnapshotDescription.ADDED -> {
+                            val invitation = Invitation(
+                                userId = appUser!!.userId,
+                                budgetId = invitingBudget.budgetId,
+                                token = dataSnapshot.getValue(String::class.java).toString(),
+                                providedEmail = appUser!!.email,
+                                invitationCode = ""
+                            )
+                            if (localDBProvider.getInvitationsByUserIdAndBudgetId(appUser!!.userId, invitingBudget.budgetId)==null) {
+                                localDBProvider.insertInvitation(invitation)
+                            }
+                        }
+                        DataSnapshotDescription.REMOVED -> {
+                            invitingBudget.recallInvitationToUser(appUser!!, localDBProvider, remoteDBProvider)
+                        }
+                        else -> {}}
+                } else {
+                    remoteDBProvider.deleteInvitationToUser(appUser!!.userId, dataSnapshot.key.toString())
                 }
-            }
+            //}
             Log.d("Synchronization", "Finished Syncing Received Invitations")
         }
     }
 
-    private fun setSentInvitationsListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
+    private suspend fun setSentInvitationsListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
         if (budget==null) return
         val localSentInvitations = localDBProvider.getInvitationsOfBudget(budget.budgetId)
         localSentInvitations.forEach { invitation ->
@@ -112,7 +123,7 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
         firebaseDatabaseProvider.fetchSentInvitationsData(budget) { dataSnapshot, action ->
             Log.d("Synchronization", "Started Syncing Invitations")
             when (action) {
-                "Added" -> {
+                DataSnapshotDescription.ADDED -> {
                     if (localDBProvider.getInvitationsByUserIdAndBudgetId(dataSnapshot.key.toString(), budget.budgetId)==null) {
                         val invitedUser =  firebaseDatabaseProvider.getUserByUserId(dataSnapshot.key.toString())
                         if (invitedUser!=null) {
@@ -134,7 +145,7 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                         }
                     }
                 }
-                "Removed" -> {
+                DataSnapshotDescription.REMOVED -> {
                     localDBProvider.recallInvitationToBudgetToUser(budget.budgetId, dataSnapshot.key.toString())
                 }
                 else  -> {}

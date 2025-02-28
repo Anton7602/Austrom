@@ -76,7 +76,7 @@ class Budget(val budgetName: String, var budgetId: String = generateUniqueBudget
     }
 
     fun recallInvitationToUser(user: User, localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider) {
-        localDBProvider.recallInvitationToBudgetToUser(user.userId, this.budgetId)
+        localDBProvider.recallInvitationToBudgetToUser(this.budgetId, user.userId)
         remoteDBProvider.deleteInvitationToUser(user, this)
     }
 

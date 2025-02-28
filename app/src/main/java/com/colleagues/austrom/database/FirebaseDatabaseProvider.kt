@@ -411,6 +411,10 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         database.getReference("invitations").child(user.userId).child(budget.budgetId).setValue(null)
     }
 
+    override fun deleteInvitationToUser(userId: String, budgetId: String) {
+        database.getReference("invitations").child(userId).child(budgetId).setValue(null)
+    }
+
 
 //    override fun getCurrencies(): MutableMap<String, Currency> {
 //        var currencies : MutableMap<String, Currency> = mutableMapOf()
@@ -463,20 +467,11 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
     suspend fun fetchTransactionDetailsData(budget: Budget,processSnapshot: (DataSnapshot) -> Unit) {
         fetchDataSnapshot(database.getReference("transactionDetails").child(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
     }
-    fun fetchSentInvitationsData(budget: Budget, processSnapshot: (DataSnapshot, String) -> Unit) {
-        //fetchDataSnapshot(
-        database.getReference("invitations").orderByChild(budget.budgetId).startAt(true).addChildEventListener(object : ChildEventListener{
-            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) { processSnapshot(dataSnapshot, "Added") }
-            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) { processSnapshot(dataSnapshot, "Changed") }
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) { processSnapshot(dataSnapshot, "Removed") }
-            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) { processSnapshot(dataSnapshot, "Moved") }
-            override fun onCancelled(error: DatabaseError) {  }
-
-        })
-        //) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    suspend fun fetchSentInvitationsData(budget: Budget, processSnapshot: (DataSnapshot, DataSnapshotDescription) -> Unit) {
+        fetchChildDataSnapshot(database.getReference("invitations").orderByChild(budget.budgetId).startAt(true)) {dataSnapshot, snapshotDescription -> processSnapshot(dataSnapshot, snapshotDescription) }
     }
-    suspend fun fetchReceivedInvitationsData(user: User, processSnapshot: (DataSnapshot) -> Unit) {
-        fetchDataSnapshot(database.getReference("invitations").child(user.userId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    suspend fun fetchReceivedInvitationsData(user: User, processSnapshot: (DataSnapshot, DataSnapshotDescription) -> Unit) {
+        fetchChildDataSnapshot(database.getReference("invitations").child(user.userId)) {dataSnapshot, snapshotDescription -> processSnapshot(dataSnapshot,snapshotDescription) }
     }
 
 
@@ -513,6 +508,55 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         }
     }
 
+    private suspend fun fetchChildDataSnapshot(databaseQuery: Query, processSnapshot: (DataSnapshot, DataSnapshotDescription) -> Unit) {
+        //suspendCancellableCoroutine { continuation ->
+            val listener = object : ChildEventListener {
+                override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                    try {
+                        processSnapshot(dataSnapshot, DataSnapshotDescription.ADDED)
+                        //continuation.resume(Unit)
+                    } catch (e: Exception) {
+                        //continuation.resumeWithException(e)
+                    }
+                }
 
+                override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                    try {
+                        processSnapshot(dataSnapshot, DataSnapshotDescription.CHANGED)
+                        //continuation.resume(Unit)
+                    } catch (e: Exception) {
+                        //continuation.resumeWithException(e)
+                    }
+                }
+
+                override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+                    try {
+                        processSnapshot(dataSnapshot, DataSnapshotDescription.REMOVED)
+                        //continuation.resume(Unit)
+                    } catch (e: Exception) {
+                        //continuation.resumeWithException(e)
+                    }
+                }
+
+                override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                    try {
+                        processSnapshot(dataSnapshot, DataSnapshotDescription.MOVED)
+                        //continuation.resume(Unit)
+                    } catch (e: Exception) {
+                        //continuation.resumeWithException(e)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    //continuation.resumeWithException(error.toException())
+                }
+
+            }
+            databaseQuery.addChildEventListener(listener)
+            //continuation.invokeOnCancellation { databaseQuery.removeEventListener(listener) }
+        //}
+    }
 //endregion
 }
+
+enum class DataSnapshotDescription() { ADDED, CHANGED, MOVED, REMOVED, CANCELLED }

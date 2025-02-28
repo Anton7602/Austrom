@@ -109,6 +109,7 @@
         android:textAlignment="center"
         android:textAppearance="@style/PrimaryCardText"
         android:textColor="@color/expenseRedBackground"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/budjoin_joinBudget_btn"
         app:layout_constraintEnd_toEndOf="@+id/budjoin_joinBudget_btn"
         app:layout_constraintStart_toStartOf="@+id/budjoin_joinBudget_btn" />
