@@ -39,23 +39,23 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
 
     private suspend fun syncAll() {
         syncCurrenciesRemoteToLocal()
-        //syncSentBudgetInvitations()
         syncReceivedInvitations()
         syncUsersRemoteToLocal()
         syncAssetsRemoteToLocal()
         syncCategoriesRemoteToLocal()
         syncTransactionsRemoteToLocal()
         syncTransactionsDetailsRemoteToLocal()
+        syncSentBudgetInvitations()
     }
 
     private suspend fun syncCurrenciesRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setCurrenciesListener(remoteDBProvider) }
     private suspend fun syncReceivedInvitations() {if (remoteDBProvider is FirebaseDatabaseProvider) setReceivedInvitationListener(remoteDBProvider) }
-    private suspend fun syncSentBudgetInvitations() {if (remoteDBProvider is FirebaseDatabaseProvider)  setSentInvitationsListener(remoteDBProvider) }
     private suspend fun syncUsersRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setUsersListener(remoteDBProvider) }
     private suspend fun syncAssetsRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setAssetListener(remoteDBProvider) }
     private suspend fun syncCategoriesRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setCategoriesListener(remoteDBProvider) }
     private suspend fun syncTransactionsRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setTransactionListener(remoteDBProvider) }
     private suspend fun syncTransactionsDetailsRemoteToLocal() { if (remoteDBProvider is FirebaseDatabaseProvider) setTransactionDetailListener(remoteDBProvider) }
+    private fun syncSentBudgetInvitations() {if (remoteDBProvider is FirebaseDatabaseProvider)  setSentInvitationsListener(remoteDBProvider) }
 
     private suspend fun setCurrenciesListener(firebaseDatabaseProvider: FirebaseDatabaseProvider)
     {
@@ -81,12 +81,9 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
         firebaseDatabaseProvider.fetchReceivedInvitationsData(appUser!!) { dataSnapshot ->
             Log.d("Synchronization", "Started Syncing Received Invitations")
             localDBProvider.recallInvitationsToUser(appUser!!.userId)
-            //val encryptionManager = EncryptionManager()
             dataSnapshot.children.forEach { snapshotItem ->
                 val invitingBudget = firebaseDatabaseProvider.getBudgetById(snapshotItem.key.toString())
                 if (invitingBudget!=null) {
-                    //val invitation = encryptionManager.decryptInvitation(snapshotItem.getValue(String::class.java).toString(), invitingBudget,
-                        //encryptionManager.convertStringToSecretKey(appUser!!.tokenId))
                     val invitation = Invitation(
                         userId = appUser!!.userId,
                         budgetId = invitingBudget.budgetId,
@@ -103,16 +100,44 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
         }
     }
 
-    private suspend fun setSentInvitationsListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
+    private fun setSentInvitationsListener(firebaseDatabaseProvider: FirebaseDatabaseProvider) {
         if (budget==null) return
-        firebaseDatabaseProvider.fetchSentInvitationsData(budget) { dataSnapshot ->
+        val localSentInvitations = localDBProvider.getInvitationsOfBudget(budget.budgetId)
+        localSentInvitations.forEach { invitation ->
+            if (!firebaseDatabaseProvider.isUserInvitedToBudget(invitation.userId, invitation.budgetId)) {
+                localDBProvider.recallInvitationToBudgetToUser(budget.budgetId, invitation.userId)
+            }
+        }
+
+        firebaseDatabaseProvider.fetchSentInvitationsData(budget) { dataSnapshot, action ->
             Log.d("Synchronization", "Started Syncing Invitations")
-            val invitations = mutableListOf<Invitation>()
-            val encryptionManager = EncryptionManager()
-            dataSnapshot.children.forEach { snapshotItem ->
-                invitations.add(encryptionManager.decryptInvitation(snapshotItem.getValue(String::class.java).toString(), budget,
-                    encryptionManager.convertStringToSecretKey(appUser!!.tokenId)))
-                Log.d("Synchronization", "Found Invitation To User: ${invitations.last().userId}")
+            when (action) {
+                "Added" -> {
+                    if (localDBProvider.getInvitationsByUserIdAndBudgetId(dataSnapshot.key.toString(), budget.budgetId)==null) {
+                        val invitedUser =  firebaseDatabaseProvider.getUserByUserId(dataSnapshot.key.toString())
+                        if (invitedUser!=null) {
+                            localDBProvider.insertInvitation(Invitation(
+                                userId = dataSnapshot.key.toString(),
+                                budgetId = budget.budgetId,
+                                token = "",
+                                providedEmail =invitedUser.email,
+                                invitationCode = "********"
+                            ))
+                        } else {
+                            val dummyUser = User(
+                                username = "",
+                                email = "",
+                                password = ""
+                            )
+                            dummyUser.userId=dataSnapshot.key.toString()
+                            firebaseDatabaseProvider.deleteInvitationToUser(dummyUser, budget)
+                        }
+                    }
+                }
+                "Removed" -> {
+                    localDBProvider.recallInvitationToBudgetToUser(budget.budgetId, dataSnapshot.key.toString())
+                }
+                else  -> {}
             }
             Log.d("Synchronization", "Finished Syncing Invitations")
         }

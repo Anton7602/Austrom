@@ -312,6 +312,12 @@ interface InvitationDao {
 
     @Query("DELETE FROM Invitation Where userId=:userId")
     suspend fun deleteInvitationByUserId(userId: String)
+
+    @Query("SELECT * FROM Invitation Where budgetId=:budgetId")
+    fun getSentInvitationsOfBudget(budgetId: String): LiveData<List<Invitation>>
+
+    @Query("SELECT * FROM Invitation Where userId=:userId")
+    fun getReceivedInvitationsOfUser(userId: String): LiveData<List<Invitation>>
 }
 
 @Dao

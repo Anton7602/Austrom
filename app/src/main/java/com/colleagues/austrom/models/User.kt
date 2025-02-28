@@ -17,7 +17,7 @@ data class User private constructor(var username: String,
                                     var activeBudgetId: String?=null,
                                     var tokenId: String? = null,
                                     var primaryPaymentMethod: String? = null,
-                                    @PrimaryKey(autoGenerate = false) @Exclude
+                                    @PrimaryKey(autoGenerate = false)
                                     var userId: String = generateUniqueUserId()) {
 
     private constructor(): this("", "", "", "", null, null, null, "")
@@ -29,7 +29,7 @@ data class User private constructor(var username: String,
         }
     }
 
-    public fun setNewBaseCurrency(currency: Currency, localDBProvider: LocalDatabaseProvider, remoteDbProvider: IRemoteDatabaseProvider? = null) {
+    fun setNewBaseCurrency(currency: Currency, localDBProvider: LocalDatabaseProvider, remoteDbProvider: IRemoteDatabaseProvider? = null) {
         this.baseCurrencyCode = currency.code
         localDBProvider.updateUser(this)
         remoteDbProvider?.updateUser(this)

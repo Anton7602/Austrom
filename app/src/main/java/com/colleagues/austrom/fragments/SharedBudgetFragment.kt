@@ -61,7 +61,7 @@ class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout
                 val successDialog = InvitationSentDialogFragment(invitation.invitationCode)
                 successDialog.setOnDialogResultListener { result ->  }
                 successDialog.show(requireActivity().supportFragmentManager, "Confirmation Dialog")
-                setUpRecyclerViews()
+                //setUpRecyclerViews()
             }
         }
         dialog.show(requireActivity().supportFragmentManager, "AssetTypeSelectionDialog")
@@ -73,12 +73,16 @@ class SharedBudgetFragment(private val activeBudget: Budget) : Fragment(R.layout
     }
 
     private fun setUpRecyclerViews() {
+        val localDbProvider = LocalDatabaseProvider(requireActivity())
         invitationsRecycler.layoutManager = LinearLayoutManager(requireActivity())
-        val adapterInvite = InvitationRecyclerAdapter(LocalDatabaseProvider(requireActivity()).getInvitationsOfBudget(AustromApplication.appUser!!.activeBudgetId.toString()))
-        invitationsRecycler.adapter = adapterInvite
+        localDbProvider.getSentInvitationsOfBudgetAsync(activeBudget).observe(viewLifecycleOwner) { invitationList ->
+            invitationsRecycler.adapter = InvitationRecyclerAdapter(invitationList)
+        }
+        //val adapterInvite = InvitationRecyclerAdapter(localDbProvider.getInvitationsOfBudget(AustromApplication.appUser!!.activeBudgetId.toString()))
+        //invitationsRecycler.adapter = adapterInvite
 
         usersRecycler.layoutManager = LinearLayoutManager(requireActivity())
-        val adapterUser = UserRecyclerAdapter(LocalDatabaseProvider(requireActivity()).getAllUsers().values.toList())
+        val adapterUser = UserRecyclerAdapter(localDbProvider.getAllUsers().values.toList())
         usersRecycler.adapter = adapterUser
     }
 }

@@ -72,6 +72,12 @@
         <item name="cornerRadius">0dp</item>
     </style>
 
+    <style name="RoundImageButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/sh_icon_background</item>
+        <item name="android:backgroundTint">@color/backgroundCard</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
     <style name="PrimaryCardText" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/primaryTextColor</item>
         <item name="android:fontFamily">@font/dm_sans</item>

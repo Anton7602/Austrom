@@ -86,11 +86,19 @@
             android:textAppearance="@style/SecondaryCardText" />
 
         <TextView
-            android:id="@+id/textView24"
+            android:id="@+id/shbe_inviteAdvice_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/ask_your_partner_to_invite_you_to_their_budget"
             android:textAlignment="center" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/shbe_availableInvitations_rcv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="16dp"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_received_invitation" />
 
     </LinearLayout>
 

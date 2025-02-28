@@ -46,7 +46,7 @@ class SharedBudgetJoinFragment(private val budget: Budget) : Fragment(R.layout.f
             val remoteDBProvider = FirebaseDatabaseProvider(requireActivity())
             val budget = remoteDBProvider.getBudgetById(appUser!!.activeBudgetId.toString())
             if (budget!=null) {
-                var warningText = getString(R.string.you_re_already_a_part_of, budget.budgetName) + "\n" + getString(R.string.if_you_accept_this_invitation_you_will_leave_the_budget_you_are_currently_in)
+                val warningText = getString(R.string.you_re_already_a_part_of, budget.budgetName) + "\n" + getString(R.string.if_you_accept_this_invitation_you_will_leave_the_budget_you_are_currently_in)
                 budgetChangeWarningText.text = warningText
                 budgetChangeWarningText.visibility = View.VISIBLE
             }

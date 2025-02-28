@@ -484,4 +484,5 @@
     <string name="you_re_already_a_part_of">"You're already a part of %1$s! "</string>
     <string name="if_you_accept_this_invitation_you_will_leave_the_budget_you_are_currently_in">If you accept this invitation, you will leave the budget you are currently in.</string>
     <string name="invalid_invitation_code">Invalid Invitation Code</string>
+    <string name="join_one_of_the_following_budgets_you_ve_been_invited_to">Join one of the following budgets you\'ve been invited to</string>
 </resources>

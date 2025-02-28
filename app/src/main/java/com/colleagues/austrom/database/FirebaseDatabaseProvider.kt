@@ -1,5 +1,6 @@
 package com.colleagues.austrom.database
 
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.colleagues.austrom.AustromApplication
@@ -11,6 +12,7 @@ import com.colleagues.austrom.models.Invitation
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.User
+import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -328,11 +330,28 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         return runBlocking {
             try {
                 val snapshot = databaseQuery.get().await()
-                if (snapshot.childrenCount>0) {
-                    true
-                } else {
-                    false
-                }
+                snapshot.childrenCount>0
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
+    fun isUserInvitedToBudget(userId: String, budgetId: String): Boolean {
+        var isUserInvited = false
+        activity?.lifecycleScope?.launch {
+            isUserInvited = isUserInvitedToBudgetAsync(userId, budgetId)
+        }
+        return isUserInvited
+    }
+
+    private fun isUserInvitedToBudgetAsync(userId: String, budgetId: String): Boolean {
+        val reference = database.getReference("invitations")
+        val databaseQuery = reference.child(userId).child(budgetId)
+        return runBlocking {
+            try {
+                val snapshot = databaseQuery.get().await()
+                snapshot.childrenCount>0
             } catch (e: Exception) {
                 false
             }
@@ -444,16 +463,24 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
     suspend fun fetchTransactionDetailsData(budget: Budget,processSnapshot: (DataSnapshot) -> Unit) {
         fetchDataSnapshot(database.getReference("transactionDetails").child(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
     }
-    suspend fun fetchSentInvitationsData(budget: Budget, processSnapshot: (DataSnapshot) -> Unit) {
-        fetchDataSnapshot(database.getReference("invitations").orderByChild("a").equalTo(budget.budgetId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
-    }
+    fun fetchSentInvitationsData(budget: Budget, processSnapshot: (DataSnapshot, String) -> Unit) {
+        //fetchDataSnapshot(
+        database.getReference("invitations").orderByChild(budget.budgetId).startAt(true).addChildEventListener(object : ChildEventListener{
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) { processSnapshot(dataSnapshot, "Added") }
+            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) { processSnapshot(dataSnapshot, "Changed") }
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) { processSnapshot(dataSnapshot, "Removed") }
+            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) { processSnapshot(dataSnapshot, "Moved") }
+            override fun onCancelled(error: DatabaseError) {  }
 
+        })
+        //) {dataSnapshot -> processSnapshot(dataSnapshot) }
+    }
     suspend fun fetchReceivedInvitationsData(user: User, processSnapshot: (DataSnapshot) -> Unit) {
         fetchDataSnapshot(database.getReference("invitations").child(user.userId)) {dataSnapshot -> processSnapshot(dataSnapshot) }
     }
 
 
-    private suspend fun fetchDataSnapshot(databaseReference: Query, processSnapshot: (DataSnapshot) -> Unit) {
+    private suspend fun fetchDataSnapshot(databaseReference: DatabaseReference, processSnapshot: (DataSnapshot) -> Unit) {
         suspendCancellableCoroutine { continuation ->
             var isResumed = false
 
@@ -485,5 +512,7 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
             }
         }
     }
+
+
 //endregion
 }

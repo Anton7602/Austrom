@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import com.colleagues.austrom.AustromApplication.Companion.knownUsers
 import com.colleagues.austrom.extensions.toInt
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.InvalidTransactionException
@@ -383,6 +384,14 @@ class LocalDatabaseProvider(context: Context) {
 
     fun recallInvitationsToUser(userId: String) {
         runBlocking { localDatabase.invitationDao().deleteInvitationByUserId(userId) }
+    }
+
+    fun getSentInvitationsOfBudgetAsync(budget: Budget) : LiveData<List<Invitation>> {
+        return localDatabase.invitationDao().getSentInvitationsOfBudget(budget.budgetId)
+    }
+
+    fun getReceivedInvitationsOfUserAsync(user: User) : LiveData<List<Invitation>> {
+        return localDatabase.invitationDao().getReceivedInvitationsOfUser(user.userId)
     }
     //endregion
 

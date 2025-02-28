@@ -208,7 +208,7 @@ class MainActivity : AppCompatActivity() {
                     if (isAccepted)  {
                         switchFragment(SharedBudgetJoinFragment(budget))
                     } else {
-                        remoteDBProvider.deleteInvitationToUser(appUser!!, budget)
+                        budget.recallInvitationToUser(appUser!!, LocalDatabaseProvider(this), remoteDBProvider)
                     }
                 }
                 dialog.show(supportFragmentManager, "Invitation Received Dialog")
