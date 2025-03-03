@@ -6,24 +6,23 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.AustromApplication.Companion.activeCategories
+import com.colleagues.austrom.MainActivity
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.VerticalBarChartAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
-import com.colleagues.austrom.dialogs.bottomsheetdialogs.AssetTypeSelectionDialogFragment
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.PeriodTypeSelectionDialogFragment
 import com.colleagues.austrom.dialogs.sidesheetdialogs.AnalyticsSelectionDialogFragment
+import com.colleagues.austrom.extensions.setOnSafeClickListener
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.DateControllerView
 import com.colleagues.austrom.views.PieChartDiagramView
-import com.google.android.material.sidesheet.SideSheetDialog
 import java.time.LocalDate
 import kotlin.math.absoluteValue
 
-class BudgetFragment : Fragment(R.layout.fragment_budget) {
+class AnalyticsSplitByCategoryFragment : Fragment(R.layout.fragment_analytics_split_by_category) {
     fun setOnNavigationDrawerOpenCalled(l: ()->Unit) { requestNavigationDrawerOpen = l }
     private var requestNavigationDrawerOpen: ()->Unit = {}
     //region Binding
@@ -50,8 +49,14 @@ class BudgetFragment : Fragment(R.layout.fragment_budget) {
     override fun onStart() {
         super.onStart()
         setUpDateController()
-        testButton.setOnClickListener { AnalyticsSelectionDialogFragment(requireActivity()).show() }
-        callNavDrawerButton.setOnClickListener { requestNavigationDrawerOpen() }
+        testButton.setOnSafeClickListener { launchAnalyticsSelectionDialog() }
+        callNavDrawerButton.setOnSafeClickListener { requestNavigationDrawerOpen() }
+    }
+
+    private fun launchAnalyticsSelectionDialog() {
+        val dialog = AnalyticsSelectionDialogFragment(requireActivity())
+        dialog.setOnAnalyticsSelectedListener { selectedFragment -> (requireActivity() as MainActivity).switchFragment(selectedFragment) }
+        dialog.show()
     }
 
     private fun calculateTransactionsSums(transactions: List<Transaction>) : List<Pair<Double, String>> {

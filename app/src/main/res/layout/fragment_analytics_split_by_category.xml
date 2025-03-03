@@ -19,6 +19,25 @@
         app:layout_constraintStart_toEndOf="@+id/bud_navDrawer_btn"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/bud_testSheetBtn_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/HeaderButtonStyle"
+        app:srcCompat="@drawable/ic_assettype_loan_temp" />
+
+    <ImageButton
+        android:id="@+id/bud_navDrawer_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/HeaderButtonStyle"
+        app:srcCompat="@drawable/ic_navigation_mainmenu_temp" />
+
     <com.colleagues.austrom.views.PieChartDiagramView
         android:id="@+id/bud_chart_pch"
         android:layout_width="0dp"
@@ -48,23 +67,6 @@
         app:layout_constraintTop_toBottomOf="@+id/bud_chart_pch"
         tools:listitem="@layout/item_vertical_bar_chart" />
 
-    <ImageButton
-        android:id="@+id/bud_testSheetBtn_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/HeaderButtonStyle"
-        app:srcCompat="@drawable/ic_assettype_loan_temp" />
 
-    <ImageButton
-        android:id="@+id/bud_navDrawer_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/HeaderButtonStyle"
-        app:srcCompat="@drawable/ic_navigation_mainmenu_temp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

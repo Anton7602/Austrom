@@ -6,14 +6,11 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -30,8 +27,9 @@ import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.InvitationNotificationDialogFragment
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.SuggestQuickAccessDialogFragment
 import com.colleagues.austrom.extensions.startWithUppercase
+import com.colleagues.austrom.fragments.AnalyticsNetWorthHistoryFragment
 import com.colleagues.austrom.fragments.BalanceFragment
-import com.colleagues.austrom.fragments.BudgetFragment
+import com.colleagues.austrom.fragments.AnalyticsSplitByCategoryFragment
 import com.colleagues.austrom.fragments.ImportFragment
 import com.colleagues.austrom.fragments.OpsFragment
 import com.colleagues.austrom.fragments.PlanningFragment
@@ -148,7 +146,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleBottomNavigationBarClick(pressedButton: MenuItem): Boolean {
         when(pressedButton.itemId) {
             R.id.navbar_balance_mit -> switchFragment(BalanceFragment())
-            R.id.navbar_budget_mit -> switchFragment(BudgetFragment())
+            R.id.navbar_budget_mit -> switchFragment(AnalyticsSplitByCategoryFragment())
             R.id.navbar_planning_mit -> switchFragment(PlanningFragment())
             R.id.navbar_ops_mit -> switchFragment(OpsFragment())
             else -> return false
@@ -165,13 +163,12 @@ class MainActivity : AppCompatActivity() {
         transaction.replace(R.id.main_fragmentHolder_frg, fragment)
         when (fragment) {
             is BalanceFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
-            is BudgetFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
+            is AnalyticsSplitByCategoryFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
+            is AnalyticsNetWorthHistoryFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             is OpsFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             is ImportFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             is PlanningFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
-            is SettingsFragment -> fragment.setOnNavigationDrawerOpenCalled {
-                drawerLayout.open()
-            }
+            is SettingsFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             is SharedBudgetFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             is SharedBudgetJoinFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }
             is SharedBudgetEmptyFragment -> fragment.setOnNavigationDrawerOpenCalled { drawerLayout.open() }

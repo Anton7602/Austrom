@@ -47,3 +47,4 @@ fun LocalDate.getFirstDayOfYear(): LocalDate {return this.withDayOfYear(1)}
 fun LocalDate.getLastDayOfYear(): LocalDate {return this.withDayOfYear(this.lengthOfYear())}
 fun LocalDate.serialize() : String { return this.format(DateTimeFormatter.ISO_LOCAL_DATE) }
 fun LocalDate.toInt(): Int { return this.year * 10000 + this.monthValue * 100 + this.dayOfMonth }
+

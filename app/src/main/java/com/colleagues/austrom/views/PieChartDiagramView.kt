@@ -40,12 +40,12 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
             paint.isAntiAlias = true
             paint.style = Paint.Style.STROKE
             paint.strokeWidth = stroke
-            paint.isDither = true;
+            paint.isDither = true
 
             if (paintRound) {
-                paint.strokeJoin = Paint.Join.ROUND;
-                paint.strokeCap = Paint.Cap.ROUND;
-                paint.pathEffect = CornerPathEffect(8F);
+                paint.strokeJoin = Paint.Join.ROUND
+                paint.strokeCap = Paint.Cap.ROUND
+                paint.pathEffect = CornerPathEffect(8F)
             }
         }
     }
@@ -56,7 +56,6 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
         private const val DEFAULT_MARGIN_TEXT_3 = 2
         private const val DEFAULT_MARGIN_SMALL_CIRCLE = 12
         private const val TEXT_WIDTH_PERCENT = 0.05
-        private const val CIRCLE_WIDTH_PERCENT = 0.95
         const val DEFAULT_VIEW_SIZE_HEIGHT = 150
         const val DEFAULT_VIEW_SIZE_WIDTH = 250
     }
@@ -149,7 +148,6 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
         drawCircle(canvas)
         drawText(canvas)
     }
@@ -253,58 +251,37 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
 
     private fun getTextViewHeight(maxWidth: Int): Int {
         var textHeight = 0
-        // Проходимся по всем данным, которые передали в View
         dataList.forEach {
-            // Создаем объект StaticLayout для значения данных
             val textLayoutNumber = getMultilineText(
                 text = it.first.toString(),
                 textPaint = numberTextPaint,
                 width = maxWidth
             )
-            // Создаем объект StaticLayout для описания значения данных
             val textLayoutDescription = getMultilineText(
                 text = it.second,
                 textPaint = descriptionTextPain,
                 width = maxWidth
             )
-            // Сохраняем объекты в список для отрисовки
             textRowList.apply {
                 add(textLayoutNumber)
                 add(textLayoutDescription)
             }
-            // Складываем высоты текстов
             textHeight += textLayoutNumber.height + textLayoutDescription.height
         }
         return textHeight
     }
 
     private fun calculateViewHeight(heightMeasureSpec: Int, textWidth: Int): Int {
-        // Получаем высоту, которую нам предлагает parent layout
         val initSizeHeight = resolveDefaultSize(heightMeasureSpec, DEFAULT_VIEW_SIZE_HEIGHT)
-//        // Высчитываем высоту текста с учетом отступов
-//        textHeight = (dataList.size * marginText + getTextViewHeight(textWidth)).toInt()
-//
-//        // Добавляем к значению высоты вертикальные padding View
-//        val textHeightWithPadding = textHeight + paddingTop + paddingBottom
-        //return if (textHeightWithPadding > initSizeHeight) textHeightWithPadding else initSizeHeight
         return initSizeHeight
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-
-        // Очищаем список строк для текста
         textRowList.clear()
 
-        // Получаем ширину View
         val initSizeWidth = resolveDefaultSize(widthMeasureSpec, DEFAULT_VIEW_SIZE_WIDTH)
-
-        // Высчитываем ширину, которую будет занимать текст
         val textTextWidth = (initSizeWidth * TEXT_WIDTH_PERCENT)
-
-        // Вычисляем необходимую высоту для нашей View
         val initSizeHeight = calculateViewHeight(heightMeasureSpec, textTextWidth.toInt())
-
-        // Координаты X и Y откуда будет происходить отрисовка текста
         textStartX = initSizeWidth - textTextWidth.toFloat()
         textStartY = initSizeHeight.toFloat() / 2 - textHeight / 2
 
@@ -324,10 +301,8 @@ class PieChartDiagramView @JvmOverloads constructor(context: Context, attrs: Att
         }
 
         textAmountY = circleCenterY
-        // Создаем контейнер для отображения текста в центре круговой диаграммы
         val sizeTextAmountNumber = getWidthOfAmountText(totalAmount.toMoneyFormat()+" "+AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]?.symbol, amountTextPaint )
 
-        // Расчет координат для отображения текста в центре круговой диаграммы
         textAmountXNumber = circleCenterX -  sizeTextAmountNumber.width() / 2
         textAmountXDescription = circleCenterX - getWidthOfAmountText(textAmountStr, descriptionTextPain).width() / 2
         textAmountYDescription = circleCenterY + sizeTextAmountNumber.height() + marginTextThird
