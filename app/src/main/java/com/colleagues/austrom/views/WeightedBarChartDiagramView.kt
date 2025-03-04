@@ -1,11 +1,14 @@
 package com.colleagues.austrom.views
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.CornerPathEffect
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.LinearInterpolator
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.roundToAFirstDigit
@@ -19,9 +22,9 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
     private val barPaintNeutral = Paint().apply {color = context.getColor(R.color.secondaryTextColor); style = Paint.Style.FILL; strokeWidth = 2f }
     private val barPaintPositive = Paint().apply {color = context.getColor(R.color.incomeGreenChart); style = Paint.Style.FILL; strokeCap=Paint.Cap.ROUND; strokeJoin = Paint.Join.ROUND; pathEffect = CornerPathEffect(8F) }
     private val barPaintNegative = Paint().apply {color = context.getColor(R.color.expenseRedChart); style = Paint.Style.FILL; strokeCap=Paint.Cap.ROUND; strokeJoin = Paint.Join.ROUND; pathEffect = CornerPathEffect(8F) }
-    private val axisPaint = Paint().apply { color = context.getColor(R.color.secondaryTextColor); strokeWidth = 4f }
+    private val axisPaint = Paint().apply { color = context.getColor(R.color.chartGrid); strokeWidth = 4f }
     private val labelPaint = Paint().apply {color = context.getColor(R.color.secondaryTextColor); textSize = 30f}
-    private val gridPaint = Paint().apply {color = context.getColor(R.color.secondaryTextColor); strokeWidth = 2f }
+    private val gridPaint = Paint().apply {color = context.getColor(R.color.chartGrid); strokeWidth = 2f }
 
     private var minNetWorth = 0.0
     private var maxNetWorth = 0.0
@@ -35,6 +38,8 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
     private val barSpacing = 10f
     private val padding = 50f
 
+    private var animationDrawCoordinate: Int = 0
+
     fun setData(transactions: List<Transaction>, startDate: LocalDate, endDate: LocalDate, endNetWorth: Double) {
         this.transactions = transactions
         this.startDate = startDate
@@ -44,12 +49,25 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
         invalidate()
     }
 
+    private fun startAnimation() {
+        val animator = ValueAnimator.ofInt(0, width).apply {
+            duration = 1000
+            interpolator = LinearInterpolator()
+            addUpdateListener { valueAnimator ->
+                animationDrawCoordinate = valueAnimator.animatedValue as Int
+                invalidate()
+            }
+        }
+        animator.start()
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val days = (startDate..endDate).toList()
         val totalWidth = (days.size * (barWidth + barSpacing) + padding * 2).toInt()
         val totalHeight = MeasureSpec.getSize(heightMeasureSpec)
 
         setMeasuredDimension(totalWidth, totalHeight)
+        startAnimation()
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -64,11 +82,9 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
         val graphHeight = height - 2 * padding
         val graphWidth = days.size * (barWidth + barSpacing)
 
-        // Draw grid and axis
         drawGridAndAxis(canvas, graphHeight, graphWidth)
 
         if (transactions.isEmpty()) return
-        // Draw bars
         var currentX = barSpacing
         for (day in days) {
             if ((day.dayOfMonth-1)%4==0) {
@@ -78,22 +94,20 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
             val startNetWorth = netWorthMap[day] ?: 0.0
             val endNetWorth = netWorthMap[day.plusDays(1)] ?: startNetWorth
 
+
+            val barPaint = if (endNetWorth >= startNetWorth) barPaintPositive else barPaintNegative
             val startY = mapValueToY(startNetWorth, minNetWorth, maxNetWorth, graphHeight)
             val endY = mapValueToY(endNetWorth, minNetWorth, maxNetWorth, graphHeight)
 
-            val barPaint = if (endNetWorth >= startNetWorth) barPaintPositive else barPaintNegative
-
-            if (startY==endY) {
-                canvas.drawLine(currentX, startY, currentX+barWidth, startY, barPaintNeutral)
-            } else {
-                canvas.drawRect(
-                    currentX,
-                    startY,
-                    currentX + barWidth,
-                    endY,
-                    barPaint
-                )
+            if (currentX<animationDrawCoordinate) {
+                if (startY==endY) {
+                    canvas.drawLine(currentX, startY, currentX+barWidth, startY, barPaintNeutral)
+                } else {
+                    val percent = if (animationDrawCoordinate>currentX && animationDrawCoordinate<currentX+barWidth) (animationDrawCoordinate-currentX)/barWidth else 1f
+                    canvas.drawRect(currentX, startY,currentX + barWidth,startY+(endY-startY)*percent,barPaint)
+                }
             }
+
             currentX += barWidth + barSpacing
         }
     }
@@ -114,7 +128,7 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
             val y = mapValueToY(value, minNetWorth, maxNetWorth, graphHeight)
 
             canvas.drawLine(0f, y, width.toFloat(), y, gridPaint)
-            canvas.drawText("%.2f".format(value), 100f, y, labelPaint)
+            canvas.drawText("%.2f".format(value), 10f, y, labelPaint)
         }
     }
 
