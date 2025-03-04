@@ -231,6 +231,14 @@ class LocalDatabaseProvider(context: Context) {
         return transaction
     }
 
+    fun getTransactionBetweenDates(dateStart: LocalDate, dateEnd: LocalDate): List<Transaction> {
+        val transactions: List<Transaction>
+        runBlocking {
+            transactions = localDatabase.transactionDao().getTransactionBetweenDates(dateStart, dateEnd)
+        }
+        return transactions
+    }
+
     fun getTransactionsByTransactionFilterAsync(transactionFilter: TransactionFilter): LiveData<List<Transaction>> {
         return localDatabase.transactionDao().getTransactionsByCategoryAndDate(knownUsers.values.map { l -> l.userId }, transactionFilter.categories, transactionFilter.dateFrom!!.toInt(), transactionFilter.dateTo!!.toInt())
     }

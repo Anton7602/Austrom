@@ -2,16 +2,16 @@ package com.colleagues.austrom.views
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.CornerPathEffect
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.extensions.roundToAFirstDigit
+import com.colleagues.austrom.extensions.toDayAndShortMonthNameFormat
 import com.colleagues.austrom.models.Transaction
 import java.time.LocalDate
-import kotlin.math.max
-import kotlin.math.min
 
 class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): View(context, attrs, defStyleAttr) {
 
@@ -22,6 +22,9 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
     private val axisPaint = Paint().apply { color = context.getColor(R.color.secondaryTextColor); strokeWidth = 4f }
     private val labelPaint = Paint().apply {color = context.getColor(R.color.secondaryTextColor); textSize = 30f}
     private val gridPaint = Paint().apply {color = context.getColor(R.color.secondaryTextColor); strokeWidth = 2f }
+
+    private var minNetWorth = 0.0
+    private var maxNetWorth = 0.0
 
     private var transactions: List<Transaction> = emptyList()
     private var startDate: LocalDate = LocalDate.now()
@@ -37,7 +40,16 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
         this.startDate = startDate
         this.endDate = endDate
         this.endNetWorth = endNetWorth
+        requestLayout()
         invalidate()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val days = (startDate..endDate).toList()
+        val totalWidth = (days.size * (barWidth + barSpacing) + padding * 2).toInt()
+        val totalHeight = MeasureSpec.getSize(heightMeasureSpec)
+
+        setMeasuredDimension(totalWidth, totalHeight)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -46,19 +58,23 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
         val days = (startDate..endDate).toList()
         val netWorthMap = calculateNetWorthPerDay(days)
 
-        val minNetWorth = netWorthMap.values.minOrNull() ?: 0.0
-        val maxNetWorth = netWorthMap.values.maxOrNull() ?: 0.0
+        minNetWorth = netWorthMap.values.minOrNull() ?: 0.0
+        maxNetWorth = netWorthMap.values.maxOrNull() ?: 0.0
 
         val graphHeight = height - 2 * padding
         val graphWidth = days.size * (barWidth + barSpacing)
 
         // Draw grid and axis
-        //drawGridAndAxis(canvas, minNetWorth, maxNetWorth, graphHeight, graphWidth)
+        drawGridAndAxis(canvas, graphHeight, graphWidth)
 
         if (transactions.isEmpty()) return
         // Draw bars
-        var currentX = padding
+        var currentX = barSpacing
         for (day in days) {
+            if ((day.dayOfMonth-1)%4==0) {
+                canvas.drawText(day.dayOfMonth.toString(),currentX,height.toFloat(),labelPaint)
+                canvas.drawLine(currentX+barWidth/2,0f, currentX+barWidth/2, mapValueToY(minNetWorth, minNetWorth, maxNetWorth, graphHeight), axisPaint)
+            }
             val startNetWorth = netWorthMap[day] ?: 0.0
             val endNetWorth = netWorthMap[day.plusDays(1)] ?: startNetWorth
 
@@ -78,22 +94,27 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
                     barPaint
                 )
             }
-
             currentX += barWidth + barSpacing
         }
     }
 
-    private fun drawGridAndAxis(canvas: Canvas, minNetWorth: Double, maxNetWorth: Double, graphHeight: Float, graphWidth: Float) {
-        canvas.drawLine(padding, padding, padding, height - padding, axisPaint)
-        canvas.drawLine(padding, height - padding, width.toFloat(), height - padding, axisPaint)
+    private fun drawGridAndAxis(canvas: Canvas, graphHeight: Float, graphWidth: Float) {
+        canvas.drawLine(0f, height - padding, width.toFloat(), height - padding, axisPaint)
 
-        val step = (maxNetWorth - minNetWorth) / 5
-        for (i in 0..5) {
-            val value = minNetWorth + i * step
+        val stepHeight = ((maxNetWorth - minNetWorth) / 5).roundToAFirstDigit()
+        if (stepHeight==0.0) return
+        minNetWorth -= minNetWorth%stepHeight
+        var numberOfSteps = 4
+        while (minNetWorth+numberOfSteps*stepHeight<maxNetWorth) {
+            numberOfSteps++
+            if (minNetWorth+numberOfSteps*stepHeight>maxNetWorth) maxNetWorth=minNetWorth+numberOfSteps*stepHeight
+        }
+        for (i in 0..numberOfSteps) {
+            val value = minNetWorth + i * stepHeight
             val y = mapValueToY(value, minNetWorth, maxNetWorth, graphHeight)
 
-            canvas.drawLine(padding, y, width.toFloat(), y, gridPaint)
-            canvas.drawText("%.2f".format(value), 10f, y, labelPaint)
+            canvas.drawLine(0f, y, width.toFloat(), y, gridPaint)
+            canvas.drawText("%.2f".format(value), 100f, y, labelPaint)
         }
     }
 
@@ -107,7 +128,11 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
 
         for (day in days.reversed()) {
             val dailyTransactions = transactions.filter { it.transactionDate == day }
-            val dailyChange = dailyTransactions.sumOf { it.amount }
+            var dailyChange = 0.0
+            dailyTransactions.forEach { val transactionCurrency = AustromApplication.activeAssets[it.assetId]?.currencyCode ?: return@forEach
+                dailyChange+=if (transactionCurrency==AustromApplication.appUser!!.baseCurrencyCode) it.amount else
+                it.amount/(AustromApplication.activeCurrencies[transactionCurrency]?.exchangeRate ?: 1.0)
+            }
             currentNetWorth -= dailyChange
             netWorthMap[day] = currentNetWorth
         }

@@ -174,6 +174,9 @@ interface TransactionDao {
     @Query("SELECT * FROM `Transaction` as Trn WHERE userId IN (:users) AND transactionDate = :date AND amount = :amount")
     suspend fun getCollidingTransaction(users: List<String>, date: LocalDate, amount: Double): List<Transaction>
 
+    @Query("SELECT * FROM `Transaction` as Trn WHERE transactionDate BETWEEN :dateStart AND :dateEnd")
+    suspend fun getTransactionBetweenDates(dateStart: LocalDate, dateEnd: LocalDate): List<Transaction>
+
     @Query("""
         SELECT transactionName
         FROM `Transaction`

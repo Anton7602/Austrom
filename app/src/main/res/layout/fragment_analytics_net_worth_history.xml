@@ -31,19 +31,33 @@
 
     <ImageButton
         android:id="@+id/nwhist_navDrawer_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         style="@style/HeaderButtonStyle"
-        app:srcCompat="@drawable/ic_navigation_mainmenu_temp" />
-
-    <com.colleagues.austrom.views.WeightedBarChartDiagramView
-        android:id="@+id/nwhist_barChart_wbch"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_navigation_mainmenu_temp" />
+
+    <HorizontalScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline56"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nwhist_dateController_dcon" />
+        app:layout_constraintTop_toBottomOf="@+id/nwhist_dateController_dcon">
+
+        <com.colleagues.austrom.views.WeightedBarChartDiagramView
+            android:id="@+id/nwhist_barChart_wbch"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </HorizontalScrollView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline56"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
