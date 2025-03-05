@@ -51,6 +51,15 @@ class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode:
     }
 
     companion object{
+        fun getSumOfAssets(assets: List<Asset>): Double {
+            var sum = 0.0
+            for (asset in AustromApplication.activeAssets) {
+                sum += if (asset.value.currencyCode==AustromApplication.appUser?.baseCurrencyCode)
+                    asset.value.amount else asset.value.amount/(AustromApplication.activeCurrencies[asset.value.currencyCode]?.exchangeRate ?: 1.0)
+            }
+            return sum
+        }
+
         fun generateUniqueAssetKey() : String {
             return UUID.randomUUID().toString()
         }

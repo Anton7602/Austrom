@@ -22,6 +22,7 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.dpToPx
 import com.colleagues.austrom.extensions.toDayAndShortMonthNameFormat
+import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType
@@ -48,10 +49,11 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
     private lateinit var holderCardView: CardView
     private lateinit var mainLayoutCardView: CardView
     private lateinit var mainLayout: ConstraintLayout
-    private lateinit var filterLayout: ConstraintLayout
+    private lateinit var filterLayout: LinearLayout
     private lateinit var confirmFilterButton: ActionButtonView
     private lateinit var expenseChipGroup: ChipGroup
     private lateinit var incomeChipGroup: ChipGroup
+    private lateinit var assetChipGroup: ChipGroup
     private lateinit var frameLayout: FrameLayout
 
     private lateinit var expenseChip: Chip
@@ -60,6 +62,7 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
     private lateinit var datesHeaderChip: Chip
     private lateinit var expenseHeaderChip: Chip
     private lateinit var incomeHeaderChip: Chip
+    private lateinit var assetChip: Chip
     private lateinit var datesChip: Chip
     private fun bindViews(view: View) {
         incomeSumMoneyFormatTextView = view.findViewById(R.id.trlistheadview_income_monf)
@@ -80,6 +83,8 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         datesHeaderChip = view.findViewById(R.id.trlistheadview_dateHeader_chp)
         expenseHeaderChip = view.findViewById(R.id.trlistheadview_expenseHeader_chp)
         incomeHeaderChip = view.findViewById(R.id.trlistheadview_incomeHeader_chp)
+        assetChip = view.findViewById(R.id.trlistheadview_assetFilter_chp)
+        assetChipGroup = view.findViewById(R.id.trlistheadview_assetFilter_chg)
     }
     //endregion
     private var incomeSum: Double = 0.0
@@ -87,6 +92,7 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
     private var currencySymbol: String = "$"
     private var collapsedHeight: Int = 0
     private var transactionFilter: TransactionFilter = TransactionFilter(mutableListOf(),
+        mutableListOf(),
         LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()),
         LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()))
 
@@ -123,6 +129,7 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         attributes.recycle()
         setUpCategoriesInChips(AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }, expenseChipGroup, expenseChip, expenseHeaderChip)
         setUpCategoriesInChips(AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }, incomeChipGroup, incomeChip, incomeHeaderChip)
+        setUpAssetsInChips(AustromApplication.activeAssets.values.toList(), assetChipGroup, assetChip)
         transactionFilter.categories.add(AustromApplication.activeCategories.values.first{ l-> l.transactionType==TransactionType.TRANSFER}.categoryId)
 
         expenseChip.setOnClickListener {_ -> handleCategoryHeaderClick(expenseChip, expenseChipGroup, expenseHeaderChip) }
@@ -135,6 +142,17 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
             else
                 transactionFilter.categories.remove(Category.defaultTransferCategories.first().categoryId)
         }
+        assetChip.setOnClickListener { _ -> handleAssetHeaderClick(assetChip, assetChipGroup) }
+    }
+
+    private fun handleAssetHeaderClick(chip: Chip, chipGroup: ChipGroup) {
+        chipGroup.children.forEach { view ->
+            if (view is Chip) {
+                view.isChecked = chip.isChecked
+                if (chip.isChecked) transactionFilter.assets.add(view.tag.toString()) else transactionFilter.assets.remove(view.tag.toString())
+            }
+        }
+        returnFilter(transactionFilter)
     }
 
     private fun handleCategoryHeaderClick(chip: Chip, chipGroup: ChipGroup, secondaryChip: Chip? = null) {
@@ -193,6 +211,40 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
                 }
             })
             transactionFilter.categories.add(category.categoryId)
+        }
+    }
+
+    private fun setUpAssetsInChips(assets: List<Asset>, chipGroup: ChipGroup, chipHeader: Chip) {
+        assets.forEach { asset ->
+            chipGroup.addView(Chip(context).apply {
+                layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                shapeAppearanceModel = ShapeAppearanceModel.builder().setAllCornerSizes(context.dpToPx(8)).build()
+                chipIcon = ContextCompat.getDrawable(context, R.drawable.ic_assettype_card_temp)
+                chipBackgroundColor = (context.getColorStateList(R.color.chip_filter_background_color))
+                setChipIconTintResource(R.color.chip_filter_text_color)
+                setTextColor(context.getColorStateList(R.color.chip_filter_text_color))
+                setPadding(0,context.dpToPx(0).toInt(),0,context.dpToPx(0).toInt())
+                textAlignment = TEXT_ALIGNMENT_CENTER
+                setEnsureMinTouchTargetSize(false)
+                minimumHeight = 0
+                text = asset.assetName
+                isChipIconVisible = true
+                isCheckable = true
+                isChecked = true
+                tag = asset.assetId
+                setOnClickListener { chip ->
+                    if (this.isChecked) {
+                        transactionFilter.assets.add(chip.tag.toString())
+                        chipHeader.isChecked = true
+                    } else {
+                        transactionFilter.assets.remove(chip.tag.toString())
+                        chipHeader.isChecked = false
+                        chipGroup.children.forEach { view -> if (view is Chip && view.isChecked) chipHeader.isChecked = true; }
+                    }
+                    returnFilter(transactionFilter)
+                }
+            })
+            transactionFilter.assets.add(asset.assetId)
         }
     }
 

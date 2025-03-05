@@ -165,6 +165,15 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
     }
 
     companion object{
+        fun getSumOfTransactions(transactions: List<Transaction>): Double {
+            var sum = 0.0
+            transactions.forEach {
+                val transactionCurrency = AustromApplication.activeAssets[it.assetId]?.currencyCode ?: throw InvalidTransactionException(TransactionValidationType.AMOUNT_INVALID)
+                sum+=if (transactionCurrency==AustromApplication.appUser!!.baseCurrencyCode) it.amount else it.amount/(AustromApplication.activeCurrencies[transactionCurrency]?.exchangeRate ?: 1.0)
+            }
+            return sum
+        }
+
         fun groupTransactionsByDate(transactions: MutableList<Transaction>) : MutableMap<LocalDate, MutableList<Transaction>> {
             transactions.sortByDescending { it.transactionDate }
             val groupedTransactions = mutableMapOf<LocalDate, MutableList<Transaction>>()
@@ -219,4 +228,4 @@ class InvalidTransactionException(message: String, validationType: TransactionVa
     }, validationType)
 }
 
-class TransactionFilter(val categories: MutableList<String>, var dateFrom: LocalDate?, var dateTo: LocalDate?)
+class TransactionFilter(val categories: MutableList<String>,val assets: MutableList<String>, var dateFrom: LocalDate?, var dateTo: LocalDate?)

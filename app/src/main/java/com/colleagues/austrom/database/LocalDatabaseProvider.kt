@@ -240,7 +240,15 @@ class LocalDatabaseProvider(context: Context) {
     }
 
     fun getTransactionsByTransactionFilterAsync(transactionFilter: TransactionFilter): LiveData<List<Transaction>> {
-        return localDatabase.transactionDao().getTransactionsByCategoryAndDate(knownUsers.values.map { l -> l.userId }, transactionFilter.categories, transactionFilter.dateFrom!!.toInt(), transactionFilter.dateTo!!.toInt())
+        return localDatabase.transactionDao().getTransactionsByCategoryAndDate(
+            users = knownUsers.values.map { l -> l.userId },
+            categoryIds = transactionFilter.categories,
+            ignoreCategories = transactionFilter.categories.isEmpty(),
+            assetIds = transactionFilter.assets,
+            ignoreAssets = transactionFilter.assets.isEmpty(),
+            startDate = transactionFilter.dateFrom!!.toInt(),
+            endDate = transactionFilter.dateTo!!.toInt()
+        )
     }
 
     fun isCollidingTransactionExist(transaction: Transaction): Boolean {

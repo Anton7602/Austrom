@@ -1,11 +1,13 @@
 package com.colleagues.austrom.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.AustromApplication.Companion.activeCategories
 import com.colleagues.austrom.MainActivity
@@ -14,10 +16,13 @@ import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.PeriodTypeSelectionDialogFragment
 import com.colleagues.austrom.dialogs.sidesheetdialogs.AnalyticsSelectionDialogFragment
 import com.colleagues.austrom.extensions.setOnSafeClickListener
+import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.DateControllerView
+import com.colleagues.austrom.views.MoneyFormatTextView
 import com.colleagues.austrom.views.WeightedBarChartDiagramView
 import java.time.LocalDate
 
@@ -29,11 +34,15 @@ class AnalyticsNetWorthHistoryFragment : Fragment(R.layout.fragment_analytics_ne
     private lateinit var testButton: ImageButton
     private lateinit var callNavDrawerButton: ImageButton
     private lateinit var dateController: DateControllerView
+    private lateinit var finalSumMoneyFormat: MoneyFormatTextView
+    private lateinit var changePerPeriodTextView: TextView
     private fun bindViews(view: View) {
         weightedBarChart = view.findViewById(R.id.nwhist_barChart_wbch)
         testButton = view.findViewById(R.id.nwhist_testSheetBtn_btn)
         callNavDrawerButton = view.findViewById(R.id.nwhist_navDrawer_btn)
         dateController = view.findViewById(R.id.nwhist_dateController_dcon)
+        finalSumMoneyFormat = view.findViewById(R.id.nwhist_finalSum_monf)
+        changePerPeriodTextView = view.findViewById(R.id.nwhist_moneyChange_txt)
     }
     //endregion
 
@@ -44,12 +53,22 @@ class AnalyticsNetWorthHistoryFragment : Fragment(R.layout.fragment_analytics_ne
 
     override fun onStart() {
         super.onStart()
-        val localDBProvider = LocalDatabaseProvider(requireActivity())
         setUpDateController()
         testButton.setOnSafeClickListener { launchAnalyticsSelectionDialog() }
         callNavDrawerButton.setOnSafeClickListener { requestNavigationDrawerOpen() }
-        weightedBarChart.setData(localDBProvider.getTransactionsOfUser(AustromApplication.appUser!!), dateController.getSelectedDatesRange().first,
-            dateController.getSelectedDatesRange().second, calculateFinalDateNetWorth(dateController.getSelectedDatesRange().second))
+        setUpBoxChart(LocalDatabaseProvider(requireActivity()).getTransactionsOfUser(AustromApplication.appUser!!))
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setUpBoxChart(transactionList: List<Transaction>) {
+        val localDBProvider = LocalDatabaseProvider(requireActivity())
+        val finalNetWorth = calculateFinalDateNetWorth(dateController.getSelectedDatesRange().second)
+        val changeDuringPeriod = Transaction.getSumOfTransactions(localDBProvider.getTransactionBetweenDates(dateController.getSelectedDatesRange().first,
+            dateController.getSelectedDatesRange().second))
+        finalSumMoneyFormat.setValue(finalNetWorth)
+        changePerPeriodTextView.setTextColor(if (changeDuringPeriod>0) requireContext().getColor(R.color.incomeGreenBackground) else (requireContext().getColor(R.color.expenseRedBackground)) )
+        changePerPeriodTextView.text = "${if (changeDuringPeriod>0) "+" else ""} ${changeDuringPeriod.toMoneyFormat()} (${if (changeDuringPeriod>0) "+" else ""} ${"%.2f".format((changeDuringPeriod/(finalNetWorth-changeDuringPeriod))*100)} %)"
+        weightedBarChart.setData(transactionList, dateController.getSelectedDatesRange().first, dateController.getSelectedDatesRange().second, finalNetWorth)
     }
 
     private fun launchAnalyticsSelectionDialog() {
@@ -59,17 +78,16 @@ class AnalyticsNetWorthHistoryFragment : Fragment(R.layout.fragment_analytics_ne
     }
 
     private fun calculateFinalDateNetWorth(endDate: LocalDate): Double {
-        var currentSum = 0.0
-        for (asset in AustromApplication.activeAssets) {
-            currentSum += if (asset.value.currencyCode==AustromApplication.appUser?.baseCurrencyCode) {
-                asset.value.amount
-            } else {
-                asset.value.amount/(AustromApplication.activeCurrencies[asset.value.currencyCode]?.exchangeRate ?: 1.0)
-            }
-        }
-        val transactionMadeFromEndDate = LocalDatabaseProvider(requireActivity()).getTransactionBetweenDates(endDate, LocalDate.now())
-        val sumOfTransactionsSince = transactionMadeFromEndDate.sumOf { it.amount }
+        val localDBProvider = LocalDatabaseProvider(requireActivity())
+        val currentSum = Asset.getSumOfAssets(AustromApplication.activeAssets.values.toList())
+        val sumOfTransactionsSince = Transaction.getSumOfTransactions(localDBProvider.getTransactionBetweenDates(endDate, LocalDate.now()))
+        //finalSumMoneyFormat.setValue(currentSum-sumOfTransactionsSince)
         return currentSum-sumOfTransactionsSince
+    }
+
+    private fun calculateNetWorthChangeBetweenDates(startDate: LocalDate, endDate: LocalDate) {
+        val localDBProvider = LocalDatabaseProvider(requireActivity())
+        val transactionsWithinPeriod = localDBProvider.getTransactionBetweenDates(dateController.getSelectedDatesRange().first, dateController.getSelectedDatesRange().second)
     }
 
     private fun setUpDateController() {
@@ -77,12 +95,10 @@ class AnalyticsNetWorthHistoryFragment : Fragment(R.layout.fragment_analytics_ne
         dateController.setDatesRangeChangedListener { dateRange ->
             localDBProvider.getTransactionsByTransactionFilterAsync(
                 TransactionFilter(
-                    activeCategories.values.map { l -> l.categoryId }.toMutableList(),
-                    dateRange.first, dateRange.second)
-            ).observe(viewLifecycleOwner) { transactionList ->
-                weightedBarChart.setData(transactionList, dateController.getSelectedDatesRange().first,
-                    dateController.getSelectedDatesRange().second, calculateFinalDateNetWorth(dateController.getSelectedDatesRange().second))
-            }
+                    mutableListOf(), mutableListOf(),
+                    dateRange.first, dateRange.second
+                )
+            ).observe(viewLifecycleOwner) { transactionList ->setUpBoxChart(transactionList) }
         }
 
         dateController.setPeriodTypeChangeRequestedListener { launchPeriodTypeSelectionDialog() }
@@ -91,9 +107,7 @@ class AnalyticsNetWorthHistoryFragment : Fragment(R.layout.fragment_analytics_ne
 
     private fun launchPeriodTypeSelectionDialog() {
         val dialog = PeriodTypeSelectionDialogFragment()
-        dialog.setOnDialogResultListener { periodType -> dateController.setPeriodType(periodType) }
+        dialog.setOnDialogResultListener { periodType -> dateController.setPeriodType(periodType); dialog.dismiss(); }
         dialog.show(requireActivity().supportFragmentManager, "Date Period Type Selection")
     }
-
-
 }

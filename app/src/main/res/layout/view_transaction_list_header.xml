@@ -253,16 +253,18 @@
             </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:id="@+id/trlistheadview_filterLayout_cly"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:visibility="gone">
 
             <ScrollView
                 android:id="@+id/scrollView3"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_weight="1"
                 app:layout_constraintBottom_toTopOf="@+id/trlistheadview_confirmFilter_abtn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -369,12 +371,46 @@
                         app:chipIconEnabled="true"
                         app:chipIconTint="@color/chip_filter_text_color" />
 
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/trlistheadview_assetFilter_chp"
+                        style="@style/ChipTransactionFilter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:checked="true"
+                        android:paddingVertical="6dp"
+                        android:text="@string/assets"
+                        app:chipEndPadding="8dp"
+                        app:chipIcon="@drawable/ic_assettype_card_temp"
+                        app:chipIconTint="@color/chip_filter_text_color" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/divider6"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/primaryTextColor" />
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/trlistheadview_assetFilter_chg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp">
+
+                        </com.google.android.material.chip.ChipGroup>
+                    </LinearLayout>
+
                 </LinearLayout>
             </ScrollView>
 
             <com.colleagues.austrom.views.ActionButtonView
                 android:id="@+id/trlistheadview_confirmFilter_abtn"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:backgroundColor="@color/backgroundMain"
                 app:iconDrawable="@drawable/ic_navigation_done_temp"
@@ -383,7 +419,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:text=" " />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 

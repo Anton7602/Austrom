@@ -83,8 +83,9 @@ class AnalyticsSplitByCategoryFragment : Fragment(R.layout.fragment_analytics_sp
         val localDBProvider = LocalDatabaseProvider(requireActivity())
         dateController.setDatesRangeChangedListener { dateRange ->
             localDBProvider.getTransactionsByTransactionFilterAsync(
-                TransactionFilter(activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }.map { l -> l.categoryId }.toMutableList(),
-                    dateRange.first, dateRange.second)).observe(viewLifecycleOwner) { transactionList ->
+                TransactionFilter(
+                    activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }.map { l -> l.categoryId }.toMutableList(),
+                    mutableListOf(), dateRange.first, dateRange.second)).observe(viewLifecycleOwner) { transactionList ->
                         val calculatedSumsOfTransactions = calculateTransactionsSums(transactionList)
                         pieChart.setChartData(calculatedSumsOfTransactions)
                         setUpRecyclerView(calculatedSumsOfTransactions)

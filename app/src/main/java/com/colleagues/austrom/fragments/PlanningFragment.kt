@@ -70,7 +70,7 @@ class PlanningFragment : Fragment(R.layout.fragment_planning) {
         dateController.setDatesRangeChangedListener { dateRange ->
             localDBProvider.getTransactionsByTransactionFilterAsync(
                 TransactionFilter(activeCategories.values.filter { l -> l.transactionType == TransactionType.EXPENSE }
-                        .map { l -> l.categoryId }.toMutableList(), dateRange.first, dateRange.second)
+                        .map { l -> l.categoryId }.toMutableList(), mutableListOf(), dateRange.first, dateRange.second)
             ).observe(viewLifecycleOwner) { transactionList -> setUpRecyclerView(splitTransactionsByCategories(transactionList))}
         }
         dateController.setDate(LocalDate.now())

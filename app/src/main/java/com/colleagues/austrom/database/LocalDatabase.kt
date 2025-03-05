@@ -206,9 +206,13 @@ interface TransactionDao {
 
     @Query("""
         SELECT * FROM `Transaction`
-        WHERE userId IN (:users) AND categoryId IN (:categoryIds) AND transactionDate BETWEEN :startDate AND :endDate
+        WHERE userId IN (:users) 
+        AND (:ignoreCategories OR categoryId IN (:categoryIds)) 
+        AND (:ignoreAssets OR assetId IN (:assetIds))
+        AND transactionDate BETWEEN :startDate AND :endDate
     """)
-    fun getTransactionsByCategoryAndDate(users: List<String>, categoryIds: List<String>, startDate: Int, endDate: Int): LiveData<List<Transaction>>
+    fun getTransactionsByCategoryAndDate(users: List<String>?, categoryIds: List<String>?, assetIds: List<String>?, startDate: Int, endDate: Int,
+    ignoreCategories: Boolean, ignoreAssets: Boolean): LiveData<List<Transaction>>
 
     @Query("""SELECT Trn.categoryId FROM `Transaction` as Trn
         WHERE Trn.transactionName=:transactionName
