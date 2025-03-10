@@ -9,10 +9,13 @@ import android.util.Base64
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.managers.EncryptionManager
 import com.colleagues.austrom.managers.SyncManager
 import com.colleagues.austrom.models.Asset
+import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Currency
 import com.colleagues.austrom.models.User
@@ -26,6 +29,7 @@ class AustromApplication : Application() {
     companion object{
         var appUser : User? = null
         var activeAssets : MutableMap<String, Asset> = mutableMapOf()
+        var activeBudget: Budget? = null
         var activeCurrencies : MutableMap<String, Currency> = mutableMapOf()
         var activeCategories: MutableMap<String, Category> = mutableMapOf()
         var knownUsers : MutableMap<String, User> = mutableMapOf()
@@ -65,33 +69,21 @@ class AustromApplication : Application() {
         appLanguageCode = sharedPreferences.getString("language", null)
     }
 
-    fun setRememberedUser(newUserId: String) {
-        sharedPreferences.edit().putString("appUserId",newUserId).apply()
-    }
+    fun setRememberedUser(newUserId: String) { sharedPreferences.edit().putString("appUserId",newUserId).apply() }
+    fun getRememberedUser() : String? { return sharedPreferences.getString("appUserId", null) }
+    fun forgetRememberedUser() { sharedPreferences.edit().remove("appUserId").apply() }
 
-    fun getRememberedUser() : String? {
-        return sharedPreferences.getString("appUserId", null)
-    }
+    fun setRememberedPin(newPin: String) { sharedPreferences.edit().putString("appQuickPin",newPin).apply() }
+    fun getRememberedPin() : String? { return sharedPreferences.getString("appQuickPin", null) }
+    fun forgetRememberedPin() { sharedPreferences.edit().remove("appQuickPin").apply() }
 
-    fun forgetRememberedUser() {
-        sharedPreferences.edit().remove("appUserId").apply()
-    }
+    fun setRememberedBudgetId(newBudgetId: String) { sharedPreferences.edit().putString("budgetId", newBudgetId).apply() }
+    fun getRememberedBudgetId(): String? { return sharedPreferences.getString("budgetId", null) }
+    fun forgetRememberedBudgetId() { sharedPreferences.edit().remove("budgetId").apply() }
 
-    fun setRememberedPin(newPin: String) {
-        sharedPreferences.edit().putString("appQuickPin",newPin).apply()
-    }
-
-    fun getRememberedPin() : String? {
-        return sharedPreferences.getString("appQuickPin", null)
-    }
-
-    fun forgetRememberedPin() {
-        sharedPreferences.edit().remove("appQuickPin").apply()
-    }
-
-    fun getRememberedTargets(): List<String> {
-        return sharedPreferences.getStringSet("targetList", null)?.toList() ?: listOf()
-    }
+    fun setRememberedBudgetName(newBudgetName: String) { sharedPreferences.edit().putString("budgetName", newBudgetName).apply() }
+    fun getRememberedBudgetName(): String? { return sharedPreferences.getString("budgetName", null) }
+    fun forgetRememberedBudgetName() { sharedPreferences.edit().remove("budgetName").apply() }
 
     fun setApplicationLanguage(languageCode: String) {
         appLanguageCode = languageCode

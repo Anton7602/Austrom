@@ -18,6 +18,7 @@ import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.managers.EncryptionManager
+import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.User
 import com.google.android.material.textfield.TextInputEditText
 
@@ -76,10 +77,16 @@ class AuthorizationActivity : AppCompatActivity() {
         forgotPasswordButton.setOnClickListener{ startActivity(Intent(this, PasswordRecoveryActivity::class.java)) }
     }
 
-    private fun launchMainActivity(user: User) {
+    private fun launchMainActivity(user: User, budget: Budget? =null) {
         AustromApplication.appUser = user
+        AustromApplication.activeBudget = budget
+        val austromApplication = application as AustromApplication
         val intent = Intent(this, MainActivity::class.java)
-        val rememberedUser = (application as AustromApplication).getRememberedUser()
+        val rememberedUser = austromApplication.getRememberedUser()
+        if (budget!=null && austromApplication.getRememberedBudgetId()==null) {
+            austromApplication.setRememberedBudgetId(budget.budgetId)
+            austromApplication.setRememberedBudgetName(budget.budgetName)
+        }
         if (rememberedUser== null || rememberedUser!=user.userId) {
             (application as AustromApplication).setRememberedUser(user.userId)
             intent.putExtra("newUser", true)
@@ -88,12 +95,13 @@ class AuthorizationActivity : AppCompatActivity() {
     }
 
     private fun logInUser() {
-        val dbProvider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(this)
+        val remoteDBProvider: IRemoteDatabaseProvider = FirebaseDatabaseProvider(this)
         val encryptionManager = EncryptionManager()
-        val existingUser = dbProvider.getUserByEmail(loginTextBox.text.toString().lowercase())
+        val existingUser = remoteDBProvider.getUserByEmail(loginTextBox.text.toString().lowercase())
         if (existingUser== null  || !encryptionManager.isPasswordFitsHash(passwordTextBox.text.toString(),existingUser.password)) {
             Toast.makeText(this, getString(R.string.email_or_password_is_incorrect), Toast.LENGTH_LONG).show()
         } else {
+            val existingBudget = if (existingUser.activeBudgetId!=null) remoteDBProvider.getBudgetById(existingUser.activeBudgetId!!) else null
             existingUser.password = passwordTextBox.text.toString()
             if (existingUser.tokenId!=null) {
                 existingUser.tokenId = encryptionManager.decrypt(existingUser.tokenId!!, encryptionManager.generateEncryptionKey(existingUser.password, existingUser.userId.toByteArray()))
@@ -102,7 +110,7 @@ class AuthorizationActivity : AppCompatActivity() {
             if (localProvider.getUserByUserId(existingUser.userId)==null) {
                 localProvider.writeNewUser(existingUser)
             }
-            launchMainActivity(existingUser)
+            launchMainActivity(existingUser, existingBudget)
         }
     }
 

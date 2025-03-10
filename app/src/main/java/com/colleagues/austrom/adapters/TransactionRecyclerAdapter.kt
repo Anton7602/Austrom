@@ -58,14 +58,14 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>, pr
                             TransactionValidationType.UNKNOWN_CATEGORY_INVALID
                         )
                     holder.amount.text =
-                        if (transaction.amount > 0) "-${transaction.amount.absoluteValue.toMoneyFormat()}" else "+${transaction.amount.absoluteValue.toMoneyFormat()}"
+                        if (transaction.amount < 0) "-${transaction.amount.absoluteValue.toMoneyFormat()}" else "+${transaction.amount.absoluteValue.toMoneyFormat()}"
                     holder.amount.setTextColor(context.getColor(R.color.transferYellow))
                     holder.currencySymbol.text =
                         AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
                     holder.currencySymbol.setTextColor(context.getColor(R.color.transferYellow))
                     holder.primaryParticipant.text = transaction.transactionName
                     holder.secondaryParticipant.text =
-                        if (transaction.amount > 0) "${context.getString(R.string.fromAsset)} ${asset.assetName}" else "${
+                        if (transaction.amount < 0) "${context.getString(R.string.fromAsset)} ${asset.assetName}" else "${
                             context.getString(R.string.toAsset)
                         } ${asset.assetName}"
                 }
@@ -102,6 +102,7 @@ class TransactionRecyclerAdapter(private val transactions: List<Transaction>, pr
                     holder.primaryParticipant.text = transaction.transactionName
                 }
             }
+            if (holder.secondaryParticipant.text.toString().length>20) holder.secondaryParticipant.text = holder.secondaryParticipant.text.toString().substring(0,20)+"."
             holder.categoryName.text = category.name
             holder.categoryImage.setImageResource(category.imgReference.resourceId)
         } catch (ex: InvalidTransactionException) {

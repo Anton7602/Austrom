@@ -195,22 +195,43 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun notifyAboutBudgetInvitation() {
-        val remoteDBProvider= FirebaseDatabaseProvider(this)
-        val invitingBudgetId = remoteDBProvider.getTopInvitingBudgetId(appUser!!)
-        if (!intent.getBooleanExtra("newUser", false) && !invitingBudgetId.isNullOrEmpty()) {
-            val budget = remoteDBProvider.getBudgetById(invitingBudgetId)
-            if (budget!=null) {
-                val dialog = InvitationNotificationDialogFragment()
-                dialog.setOnDialogResultListener { isAccepted ->
-                    if (isAccepted)  {
-                        switchFragment(SharedBudgetJoinFragment(budget))
-                    } else {
-                        budget.recallInvitationToUser(appUser!!, LocalDatabaseProvider(this), remoteDBProvider)
+        val localDBProvider = LocalDatabaseProvider(this)
+        localDBProvider.getReceivedInvitationsOfUserAsync(appUser!!).observe(this) { invitations ->
+            if (invitations.isNotEmpty()) {
+                val remoteDBProvider = FirebaseDatabaseProvider(this)
+                val invitingBudgetId = remoteDBProvider.getTopInvitingBudgetId(appUser!!)
+                if (!intent.getBooleanExtra("newUser", false) && !invitingBudgetId.isNullOrEmpty()) {
+                    val budget = remoteDBProvider.getBudgetById(invitingBudgetId)
+                    if (budget != null) {
+                        val dialog = InvitationNotificationDialogFragment()
+                        dialog.setOnDialogResultListener { isAccepted ->
+                            if (isAccepted) {
+                                switchFragment(SharedBudgetJoinFragment(budget))
+                            } else {
+                                budget.recallInvitationToUser(appUser!!, LocalDatabaseProvider(this), remoteDBProvider)
+                            }
+                        }
+                        dialog.show(supportFragmentManager, "Invitation Received Dialog")
                     }
                 }
-                dialog.show(supportFragmentManager, "Invitation Received Dialog")
             }
         }
+//        val remoteDBProvider= FirebaseDatabaseProvider(this)
+//        val invitingBudgetId = remoteDBProvider.getTopInvitingBudgetId(appUser!!)
+//        if (!intent.getBooleanExtra("newUser", false) && !invitingBudgetId.isNullOrEmpty()) {
+//            val budget = remoteDBProvider.getBudgetById(invitingBudgetId)
+//            if (budget!=null) {
+//                val dialog = InvitationNotificationDialogFragment()
+//                dialog.setOnDialogResultListener { isAccepted ->
+//                    if (isAccepted) {
+//                        switchFragment(SharedBudgetJoinFragment(budget))
+//                    } else {
+//                        budget.recallInvitationToUser(appUser!!, LocalDatabaseProvider(this), remoteDBProvider)
+//                    }
+//                }
+//                dialog.show(supportFragmentManager, "Invitation Received Dialog")
+//            }
+//        }
     }
 
     private fun synchronizeWithBudget() { SyncManager(this, LocalDatabaseProvider(this), FirebaseDatabaseProvider(this)).sync() }

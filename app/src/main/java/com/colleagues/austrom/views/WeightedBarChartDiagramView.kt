@@ -5,18 +5,17 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.CornerPathEffect
 import android.graphics.Paint
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.roundToAFirstDigit
 import com.colleagues.austrom.extensions.spToPx
-import com.colleagues.austrom.extensions.toDayAndShortMonthNameFormat
 import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Transaction
 import java.time.LocalDate
+import kotlin.math.max
 
 class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): View(context, attrs, defStyleAttr) {
 
@@ -37,20 +36,26 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
     private var endDate: LocalDate = LocalDate.now()
     private var endNetWorth: Double = 0.0
 
-    private val barWidth = 25f
-    private val barSpacing = 10f
-    private val padding = 50f
+    private var barWidth = 25f
+    private var barSpacing = 8f
+
+    private val minBarWidth = 20f
+    private val minBarSpacing = 4f
+
+    private val verticalPadding = 50f
 
     private var animationDrawCoordinate: Int = 0
+    private var labelXBound: Rect = Rect()
+    private var netWorthMap: MutableMap<LocalDate, Double> = mutableMapOf()
 
     fun setData(transactions: List<Transaction>, startDate: LocalDate, endDate: LocalDate, endNetWorth: Double) {
         this.transactions = transactions
         this.startDate = startDate
         this.endDate = endDate
         this.endNetWorth = endNetWorth
+        netWorthMap = calculateNetWorthPerDay((startDate..endDate).toList())
         requestLayout()
         invalidate()
-        startAnimation()
     }
 
     override fun onFinishInflate() {
@@ -60,7 +65,7 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
 
     private fun startAnimation() {
         val days = (startDate..endDate).toList()
-        val animator = ValueAnimator.ofInt(0, (days.size * (barWidth + barSpacing) + padding * 2).toInt()).apply {
+        val animator = ValueAnimator.ofInt(0, (days.size * (barWidth + barSpacing)).toInt()).apply {
             duration = (days.count()*50).toLong()
             interpolator = LinearInterpolator()
             addUpdateListener { valueAnimator ->
@@ -73,31 +78,34 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val days = (startDate..endDate).toList()
-        val totalWidth = (days.size * (barWidth + barSpacing) + padding * 2).toInt()
+        val totalWidth = if (days.size<=31) (this.parent as View).width else (days.size * (barWidth + barSpacing)).toInt()
+        barWidth = max((totalWidth/days.size)*0.8f, minBarWidth)
+        barSpacing = max((totalWidth/days.size)*0.2f, minBarSpacing)
+        minNetWorth = netWorthMap.values.minOrNull() ?: 0.0
+        maxNetWorth = netWorthMap.values.maxOrNull() ?: 0.0
         val totalHeight = MeasureSpec.getSize(heightMeasureSpec)
         //animationDrawCoordinate = totalWidth
         setMeasuredDimension(totalWidth, totalHeight)
+        startAnimation()
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
         val days = (startDate..endDate).toList()
-        val netWorthMap = calculateNetWorthPerDay(days)
 
-        minNetWorth = netWorthMap.values.minOrNull() ?: 0.0
-        maxNetWorth = netWorthMap.values.maxOrNull() ?: 0.0
-
-        val graphHeight = height - 2 * padding
+        val graphHeight = height - 2 * verticalPadding
         val graphWidth = days.size * (barWidth + barSpacing)
 
         drawGridAndAxis(canvas, graphHeight, graphWidth)
 
         if (transactions.isEmpty()) return
         var currentX = barSpacing
+
         for (day in days) {
-            if ((day.dayOfMonth-1)%4==0) {
-                canvas.drawText(day.dayOfMonth.toString(),currentX,height.toFloat(),labelPaintX)
+            if ((day.dayOfMonth-1)%3==0) {
+                val labelText = day.dayOfMonth.toString()
+                labelPaintX.getTextBounds(labelText, 0, labelText.length, labelXBound)
+                canvas.drawText(labelText,currentX+(barWidth/2)-labelXBound.width()/2, height.toFloat(),labelPaintX)
                 canvas.drawLine(currentX+barWidth/2,0f, currentX+barWidth/2, mapValueToY(minNetWorth, minNetWorth, maxNetWorth, graphHeight), axisPaint)
             }
             val startNetWorth = netWorthMap[day] ?: 0.0
@@ -122,7 +130,7 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
     }
 
     private fun drawGridAndAxis(canvas: Canvas, graphHeight: Float, graphWidth: Float) {
-        canvas.drawLine(0f, height - padding, width.toFloat(), height - padding, axisPaint)
+        canvas.drawLine(0f, height - verticalPadding, width.toFloat(), height - verticalPadding, axisPaint)
 
         val stepHeight = ((maxNetWorth - minNetWorth) / 5).roundToAFirstDigit()
         if (stepHeight==0.0) return
@@ -142,10 +150,10 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
     }
 
     private fun mapValueToY(value: Double, min: Double, max: Double, graphHeight: Float): Float {
-        return (height - padding) - ((value - min) / (max - min) * graphHeight).toFloat()
+        return (height - verticalPadding) - ((value - min) / (max - min) * graphHeight).toFloat()
     }
 
-    private fun calculateNetWorthPerDay(days: List<LocalDate>): Map<LocalDate, Double> {
+    private fun calculateNetWorthPerDay(days: List<LocalDate>): MutableMap<LocalDate, Double> {
         val netWorthMap = mutableMapOf<LocalDate, Double>()
         var currentNetWorth = endNetWorth
 
@@ -154,7 +162,6 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
             currentNetWorth -= dailyChange
             netWorthMap[day] = currentNetWorth
         }
-
         return netWorthMap
     }
 

@@ -3,6 +3,7 @@ package com.colleagues.austrom.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.AustromApplication.Companion.appUser
 import com.colleagues.austrom.database.IRemoteDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.managers.EncryptionManager
@@ -29,7 +30,8 @@ class Budget(val budgetName: String, var budgetId: String = generateUniqueBudget
 
             AustromApplication.activeAssets.values.forEach{ asset -> remoteDBProvider.createNewAsset(asset, budget) }
             AustromApplication.activeCategories.values.forEach { category -> remoteDBProvider.insertCategory(category, budget) }
-            val transactions = localDBProvider.getTransactionsOfUser(AustromApplication.appUser!!)
+            AustromApplication.activeBudget = budget
+            val transactions = localDBProvider.getTransactionsOfUser(appUser!!)
             transactions.forEach { transaction ->
                 remoteDBProvider.insertTransaction(transaction, budget)
                 localDBProvider.getTransactionDetailsOfTransaction(transaction).forEach { transactionDetail ->
@@ -59,14 +61,20 @@ class Budget(val budgetName: String, var budgetId: String = generateUniqueBudget
     }
 
     fun leave(remoteDBProvider: IRemoteDatabaseProvider) {
-        removeUser(AustromApplication.appUser!!, remoteDBProvider)
+        removeUser(appUser!!, remoteDBProvider)
+        AustromApplication.activeBudget = null
+    }
+
+    fun join(token: String, localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider) {
+        addUser(appUser!!, token, localDBProvider, remoteDBProvider)
+        AustromApplication.activeBudget = this
     }
 
 
     fun inviteUser(user: User, localDBProvider: LocalDatabaseProvider, remoteDBProvider: IRemoteDatabaseProvider, providedEmail: String? = null): Invitation {
         val invitation = Invitation(
             userId = user.userId,
-            token = AustromApplication.appUser!!.tokenId.toString(),
+            token = appUser!!.tokenId.toString(),
             budgetId = this.budgetId,
             providedEmail = providedEmail)
         if (localDBProvider.getInvitationsByUserIdAndBudgetId(user.userId, this.budgetId)!=null) {this.recallInvitationToUser(user, localDBProvider, remoteDBProvider)}
@@ -90,7 +98,7 @@ class Budget(val budgetName: String, var budgetId: String = generateUniqueBudget
 
         mergeCategories(localDBProvider, remoteDBProvider)
         AustromApplication.activeAssets.values.forEach{ asset -> remoteDBProvider.createNewAsset(asset, this) }
-        val transactions = localDBProvider.getTransactionsOfUser(AustromApplication.appUser!!)
+        val transactions = localDBProvider.getTransactionsOfUser(appUser!!)
         transactions.forEach { transaction ->
             remoteDBProvider.insertTransaction(transaction, this)
             localDBProvider.getTransactionDetailsOfTransaction(transaction).forEach { transactionDetail ->

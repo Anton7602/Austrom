@@ -28,6 +28,7 @@ import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.managers.BiometricPromptManager
+import com.colleagues.austrom.models.Budget
 import com.colleagues.austrom.models.User
 import kotlinx.coroutines.launch
 import java.time.LocalTime
@@ -102,6 +103,7 @@ class AuthorizationQuickActivity : AppCompatActivity() {
     private val promptManager by lazy{ BiometricPromptManager(this) }
     private lateinit var authorizingUser: User
     private lateinit var pin: String
+    private var authorizingBudget: Budget? = null
     private var input = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,6 +114,7 @@ class AuthorizationQuickActivity : AppCompatActivity() {
         adjustInsets()
         bindViews()
         initializeAuthorizingUser()
+        initializeAuthorizingBudget()
         initializeBiometricAuthentication()
         username.text = authorizingUser.username.startWithUppercase()
         timeOfDay.text = generateGreetings()
@@ -133,6 +136,7 @@ class AuthorizationQuickActivity : AppCompatActivity() {
 
     private fun launchMainActivity() {
         AustromApplication.appUser = authorizingUser
+        AustromApplication.activeBudget = authorizingBudget
         startActivity(Intent(applicationContext, MainActivity::class.java))
     }
 
@@ -189,6 +193,14 @@ class AuthorizationQuickActivity : AppCompatActivity() {
             getString(R.string.good_morning)
         } else {
             getString(R.string.good_night)
+        }
+    }
+
+    private fun initializeAuthorizingBudget() {
+        val storedBudgetId = (application as AustromApplication).getRememberedBudgetId()
+        if (!storedBudgetId.isNullOrEmpty()) {
+            authorizingBudget = Budget(budgetId = storedBudgetId,
+                budgetName = (application as AustromApplication).getRememberedBudgetName().toString())
         }
     }
 
