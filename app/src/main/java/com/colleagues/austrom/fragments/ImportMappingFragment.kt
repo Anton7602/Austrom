@@ -53,7 +53,8 @@ class ImportMappingFragment(private val fileUri: Uri? = null) : Fragment(R.layou
     }
     //endregion
     private var csvSeparator: Char = ','
-    private var charset = "windows-1251"
+    //private var charset = "windows-1251"
+    private var charset = "UTF-8"
     private var csvColumnsList: List<String> = listOf()
     private var selectorsList: List<SelectorButtonView> =  listOf()
     private var fileMap: MutableMap<String, Int> = mutableMapOf("asset" to -1, "name" to 0, "amount" to 0, "date" to 0, "category" to 0, "comment" to -1)

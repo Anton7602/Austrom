@@ -38,9 +38,11 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
 
     private var barWidth = 25f
     private var barSpacing = 8f
+    private var verticalAxisStepHeight = 0.0
 
     private val minBarWidth = 20f
     private val minBarSpacing = 4f
+    private val minNumberOfVerticalGridLines = 6
 
     private val verticalPadding = 50f
 
@@ -54,6 +56,8 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
         this.endDate = endDate
         this.endNetWorth = endNetWorth
         netWorthMap = calculateNetWorthPerDay((startDate..endDate).toList())
+        minNetWorth = netWorthMap.values.minOrNull() ?: 0.0
+        maxNetWorth = netWorthMap.values.maxOrNull() ?: 0.0
         requestLayout()
         invalidate()
     }
@@ -81,9 +85,8 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
         val totalWidth = if (days.size<=31) (this.parent as View).width else (days.size * (minBarWidth + minBarSpacing)).toInt()
         barWidth = max((totalWidth/days.size)*0.8f, minBarWidth)
         barSpacing = max((totalWidth/days.size)*0.2f, minBarSpacing)
-        minNetWorth = netWorthMap.values.minOrNull() ?: 0.0
-        maxNetWorth = netWorthMap.values.maxOrNull() ?: 0.0
         val totalHeight = MeasureSpec.getSize(heightMeasureSpec)
+        verticalAxisStepHeight = ((maxNetWorth - minNetWorth) / minNumberOfVerticalGridLines).roundToAFirstDigit()
         //animationDrawCoordinate = totalWidth
         setMeasuredDimension(totalWidth, totalHeight)
         startAnimation()
@@ -131,19 +134,16 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
 
     private fun drawGridAndAxis(canvas: Canvas, graphHeight: Float, graphWidth: Float) {
         canvas.drawLine(0f, height - verticalPadding, width.toFloat(), height - verticalPadding, axisPaint)
-
-        val stepHeight = ((maxNetWorth - minNetWorth) / 5).roundToAFirstDigit()
-        if (stepHeight==0.0) return
-        minNetWorth -= minNetWorth%stepHeight
-        var numberOfSteps = 4
-        while (minNetWorth+numberOfSteps*stepHeight<maxNetWorth) {
+        var numberOfSteps = minNumberOfVerticalGridLines
+        if (verticalAxisStepHeight==0.0) return
+        minNetWorth -= minNetWorth%verticalAxisStepHeight
+        while (minNetWorth+numberOfSteps*verticalAxisStepHeight<maxNetWorth) {
             numberOfSteps++
-            if (minNetWorth+numberOfSteps*stepHeight>maxNetWorth) maxNetWorth=minNetWorth+numberOfSteps*stepHeight
+            if (minNetWorth+numberOfSteps*verticalAxisStepHeight>maxNetWorth) maxNetWorth=minNetWorth+numberOfSteps*verticalAxisStepHeight
         }
         for (i in 0..numberOfSteps) {
-            val value = minNetWorth + i * stepHeight
+            val value = minNetWorth + i * verticalAxisStepHeight
             val y = mapValueToY(value, minNetWorth, maxNetWorth, graphHeight)
-
             canvas.drawLine(0f, y, width.toFloat(), y, gridPaint)
             canvas.drawText(value.toMoneyFormat().substring(0, value.toMoneyFormat().indexOf('.')), 5f, y, labelPaintY)
         }
