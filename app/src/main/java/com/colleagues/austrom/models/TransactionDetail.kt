@@ -6,6 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.parseToDouble
+import java.time.LocalDate
 import java.util.UUID
 
 @Entity(foreignKeys = [ForeignKey(entity = Transaction::class,

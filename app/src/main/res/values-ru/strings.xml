@@ -485,4 +485,5 @@
     <string name="invalid_invitation_code">Неверный Код Приглашения</string>
     <string name="join_one_of_the_following_budgets_you_ve_been_invited_to">Присоединитесь к одному из бюджетов в который вы были приглашены</string>
     <string name="assets">Активы</string>
+    <string name="at">в</string>
 </resources>

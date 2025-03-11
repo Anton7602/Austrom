@@ -237,6 +237,9 @@ interface TransactionDetailsDao {
     @Query ("SELECT * FROM TransactionDetail as Trd WHERE Trd.transactionId =:transactionId")
     suspend fun getTransactionDetailsOfTransaction(transactionId: String): List<TransactionDetail>
 
+    @Query ("SELECT * FROM TransactionDetail as Trd WHERE Trd.transactionId IN (:transactionIds)")
+    suspend fun getTransactionDetailsOfTransactions(transactionIds: List<String>): List<TransactionDetail>
+
     @Query ("SELECT * FROM TransactionDetail as Trd WHERE Trd.transactionDetailId =:transactionDetailId")
     suspend fun getTransactionDetailById(transactionDetailId: String): TransactionDetail?
 

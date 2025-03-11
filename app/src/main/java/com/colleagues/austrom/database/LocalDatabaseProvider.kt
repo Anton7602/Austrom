@@ -307,6 +307,15 @@ class LocalDatabaseProvider(context: Context) {
         return transactionDetails
     }
 
+    fun getTransactionDetailsOfTransactions(transactions: List<Transaction>): List<TransactionDetail> {
+        val dao = localDatabase.transactionDetailDao()
+        var transactionDetails: List<TransactionDetail>
+        runBlocking {
+            transactionDetails = dao.getTransactionDetailsOfTransactions(transactions.map { it.transactionId }).toList()
+        }
+        return transactionDetails
+    }
+
     fun getTransactionDetailById(transactionDetailId: String) : TransactionDetail? {
         val dao = localDatabase.transactionDetailDao()
         var transactionDetail: TransactionDetail? = null

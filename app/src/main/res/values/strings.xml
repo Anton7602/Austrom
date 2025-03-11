@@ -486,4 +486,5 @@
     <string name="invalid_invitation_code">Invalid Invitation Code</string>
     <string name="join_one_of_the_following_budgets_you_ve_been_invited_to">Join one of the following budgets you\'ve been invited to</string>
     <string name="assets">Assets</string>
+    <string name="at">at</string>
 </resources>

@@ -15,6 +15,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_navigation_mainmenu_temp" />
 
+    <ImageButton
+        android:id="@+id/ops_switchListMode_btn"
+        style="@style/HeaderButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_category_cashback_temp" />
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"

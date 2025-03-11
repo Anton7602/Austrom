@@ -22,3 +22,5 @@ fun Double.roundToAFirstDigit(): Double {
     val scale = 10.0.pow(floor(log10(abs(this))))
     return Math.round(this / scale) * scale
 }
+
+fun Double.equalTo(number: Double, tolerance: Double = 1e-3): Boolean { return abs(this - number) < tolerance }

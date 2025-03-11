@@ -78,7 +78,7 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val days = (startDate..endDate).toList()
-        val totalWidth = if (days.size<=31) (this.parent as View).width else (days.size * (barWidth + barSpacing)).toInt()
+        val totalWidth = if (days.size<=31) (this.parent as View).width else (days.size * (minBarWidth + minBarSpacing)).toInt()
         barWidth = max((totalWidth/days.size)*0.8f, minBarWidth)
         barSpacing = max((totalWidth/days.size)*0.2f, minBarSpacing)
         minNetWorth = netWorthMap.values.minOrNull() ?: 0.0
