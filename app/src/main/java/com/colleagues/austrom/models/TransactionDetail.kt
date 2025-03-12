@@ -4,10 +4,12 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.parseToDouble
 import java.time.LocalDate
 import java.util.UUID
+import kotlin.math.cos
 
 @Entity(foreignKeys = [ForeignKey(entity = Transaction::class,
         parentColumns = ["transactionId"],
@@ -19,6 +21,11 @@ class TransactionDetail(val transactionId: String, val name: String, val cost: D
     var transactionDetailId: String = generateUniqueTransactionKey()) {
 
     fun serialize(): String {return "$transactionDetailId,$transactionId,$name,$cost,$quantity,$typeOfQuantity,$categoryName" }
+
+    fun costInBaseCurrency(transaction: Transaction): Double {
+        val transactionsAsset = AustromApplication.activeAssets[transaction.assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
+        return if (transactionsAsset.currencyCode== AustromApplication.appUser!!.baseCurrencyCode) cost else cost/(AustromApplication.activeCurrencies[transactionsAsset.currencyCode]?.exchangeRate ?: 1.0)
+    }
 
     companion object{
         fun generateUniqueTransactionKey() : String {

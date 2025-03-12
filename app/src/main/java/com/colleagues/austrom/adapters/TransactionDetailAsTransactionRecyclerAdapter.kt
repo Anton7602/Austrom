@@ -24,7 +24,7 @@ import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.models.TransactionValidationType
 import kotlin.math.absoluteValue
 
-class TransactionDetailAsTransactionRecyclerAdapter(private val transactions: Map<String, Transaction>, private val transactionDetails: List<TransactionDetail>, private val context: Context) : RecyclerView.Adapter<TransactionDetailAsTransactionRecyclerAdapter.TransactionDetailAsTransactionViewHolder>() {
+class TransactionDetailAsTransactionRecyclerAdapter(private val transactionDetailsMap: Map<Transaction, List<TransactionDetail>>, private val context: Context) : RecyclerView.Adapter<TransactionDetailAsTransactionRecyclerAdapter.TransactionDetailAsTransactionViewHolder>() {
     class TransactionDetailAsTransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val categoryName: TextView = itemView.findViewById(R.id.tritem_categoryName_txt)
         val categoryImage: ImageView = itemView.findViewById(R.id.tritem_categoryIcon_img)
@@ -34,11 +34,18 @@ class TransactionDetailAsTransactionRecyclerAdapter(private val transactions: Ma
         val primaryParticipant: TextView = itemView.findViewById(R.id.tritem_targetName_txt)
         val transactionHolder: CardView = itemView.findViewById(R.id.tritem_transactionHolder_cdv)
     }
+    private var transactions: Map<String, Transaction> = mapOf()
+    private var transactionDetails: List<TransactionDetail> = listOf()
     private var returnClickedItem: (transaction: TransactionDetail, index: Int)->Unit = { _, _ ->}
     fun setOnItemClickListener(l: ((TransactionDetail, Int)->Unit)) { returnClickedItem = l }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionDetailAsTransactionViewHolder { return TransactionDetailAsTransactionViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_transaction, parent, false)) }
     override fun getItemCount(): Int { return transactionDetails.size }
+    init {
+        transactionDetails = transactionDetailsMap.values.flatten()
+        transactions = transactionDetailsMap.keys.associateBy { it.transactionId }
+    }
+
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionDetailAsTransactionViewHolder, position: Int) {
@@ -61,7 +68,7 @@ class TransactionDetailAsTransactionRecyclerAdapter(private val transactions: Ma
 
                 TransactionType.EXPENSE -> {
                     category = AustromApplication.activeCategories[transaction.categoryId] ?: throw InvalidTransactionException("Category used in transaction is not recognized", TransactionValidationType.UNKNOWN_CATEGORY_INVALID)
-                    holder.amount.text = transactionDetail.cost.toMoneyFormat()
+                    holder.amount.text = (-transactionDetail.cost).toMoneyFormat()
                     holder.amount.setTextColor(context.getColor(R.color.expenseRed))
                     holder.currencySymbol.setTextColor(context.getColor(R.color.expenseRed))
                     holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
@@ -75,7 +82,7 @@ class TransactionDetailAsTransactionRecyclerAdapter(private val transactions: Ma
                     holder.amount.setTextColor(context.getColor(R.color.incomeGreen))
                     holder.currencySymbol.setTextColor(context.getColor(R.color.incomeGreen))
                     holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol
-                    holder.secondaryParticipant.text = "${context.getString(R.string.at)} ${asset.assetName}"
+                    holder.secondaryParticipant.text = "${context.getString(R.string.from)} ${transaction.transactionName}"
                     holder.primaryParticipant.text = transactionDetail.name
                 }
             }

@@ -8,7 +8,9 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.extensions.equalTo
 import com.colleagues.austrom.extensions.serialize
+import com.colleagues.austrom.models.Transaction.Companion.generateUniqueTransactionKey
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -30,6 +32,16 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
     var isPrivate: Boolean = false,
     var version: Int = 0 )  {
 
+    override fun equals(other: Any?): Boolean {
+        if (other !is Transaction) return false
+        return (this.transactionId==other.transactionId)
+    }
+
+    override fun hashCode(): Int {
+        return transactionId.hashCode()
+    }
+
+    fun isCollidingWith(transaction: Transaction?): Boolean { return (transaction!=null && assetId==transaction.assetId && amount.equalTo(transaction.amount) && transactionDate==transaction.transactionDate && transactionName==transaction.transactionName) }
     fun transactionType(): TransactionType { return if (linkedTransactionId!=null) TransactionType.TRANSFER else if (amount<0) TransactionType.EXPENSE else TransactionType.INCOME }
     fun sumOfTransactionDetailsAmounts(localDBProvider: LocalDatabaseProvider): Double { return localDBProvider.getTransactionDetailsOfTransaction(this).sumOf {it.cost} }
     fun serialize(): String { return "$transactionId,$amount,$categoryId,$assetId,${transactionDate.serialize()},$transactionName,$comment,$userId,$linkedTransactionId,$isPrivate" }
@@ -135,7 +147,7 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
         //TODO("Validate and finish")
     }
 
-    fun getAmountInBaseCurrency(): Double {
+    fun amountInBaseCurrency(): Double {
         val transactionsAsset = AustromApplication.activeAssets[assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
         return if (transactionsAsset.currencyCode==AustromApplication.appUser!!.baseCurrencyCode) amount else amount/(AustromApplication.activeCurrencies[transactionsAsset.currencyCode]?.exchangeRate ?: 1.0)
     }
@@ -213,11 +225,7 @@ enum class TransactionType(val transactionTypeNameId: Int = R.string.unresolved,
     INCOME(R.string.income, R.string.income_desc, R.drawable.ic_transactiontype_income_temp),
     TRANSFER(R.string.transfer, R.string.transfer_desc, R.drawable.ic_transactiontype_transfer_temp)
 }
-
-enum class TransactionValidationType{
-    VALID, UNKNOWN_ASSET_INVALID, UNKNOWN_CATEGORY_INVALID, UNKNOWN_LINKED_TRANSACTION, AMOUNT_INVALID
-}
-
+enum class TransactionValidationType{  VALID, UNKNOWN_ASSET_INVALID, UNKNOWN_CATEGORY_INVALID, UNKNOWN_LINKED_TRANSACTION, AMOUNT_INVALID }
 class InvalidTransactionException(message: String, validationType: TransactionValidationType) : Exception(message) {
     constructor(validationType: TransactionValidationType): this(when(validationType) {
         TransactionValidationType.VALID -> "CRITICAL ERROR!!! Transaction type valid but InvalidTransactionException thrown."
@@ -228,4 +236,9 @@ class InvalidTransactionException(message: String, validationType: TransactionVa
     }, validationType)
 }
 
-class TransactionFilter(val categories: MutableList<String>,val assets: MutableList<String>, var dateFrom: LocalDate?, var dateTo: LocalDate?)
+data class TransactionFilter(val categories: MutableList<String>,val assets: MutableList<String>, var dateFrom: LocalDate?, var dateTo: LocalDate?)
+data class TransactionWithDetails(val assetId: String, var amount: Double, var categoryId: String, var transactionDate: LocalDate, var transactionName: String, var comment: String? = null,
+                                  var transactionId: String = generateUniqueTransactionKey(), var userId: String = AustromApplication.appUser!!.userId, var linkedTransactionId: String? = null,
+                                  var isPrivate: Boolean = false, var version: Int = 0, val name: String?, val cost: Double?, val quantity: Double? = null, val typeOfQuantity: QuantityUnit? = null,
+                                  val categoryName: String? = null, var transactionDetailId: String?
+)

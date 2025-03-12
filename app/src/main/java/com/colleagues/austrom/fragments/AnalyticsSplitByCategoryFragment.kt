@@ -64,9 +64,9 @@ class AnalyticsSplitByCategoryFragment : Fragment(R.layout.fragment_analytics_sp
         val dataSet = mutableListOf<Pair<Double, String>>()
         transactions.forEach { transaction ->
             if (transactionsByCategories.containsKey(transaction.categoryId)) {
-                transactionsByCategories[transaction.categoryId] = transactionsByCategories[transaction.categoryId]!! +  transaction.getAmountInBaseCurrency().absoluteValue
+                transactionsByCategories[transaction.categoryId] = transactionsByCategories[transaction.categoryId]!! +  transaction.amountInBaseCurrency().absoluteValue
             } else {
-                transactionsByCategories[transaction.categoryId] = transaction.getAmountInBaseCurrency().absoluteValue
+                transactionsByCategories[transaction.categoryId] = transaction.amountInBaseCurrency().absoluteValue
             }
         }
         transactionsByCategories.forEach { (categoryId, transactionsSum) -> dataSet.add(Pair(transactionsSum, activeCategories[categoryId]!!.name)) }

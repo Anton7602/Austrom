@@ -39,7 +39,7 @@ class PlanningGraphRecyclerAdapter(private val context: Context, private val dat
     override fun onBindViewHolder(holder: PlanningGraphViewHolder, position: Int) {
         val item = dataSet[position]
         holder.categoryNameTextView.text = item.first.name
-        val sum = item.second.sumOf { l -> l.getAmountInBaseCurrency() }.absoluteValue
+        val sum = item.second.sumOf { l -> l.amountInBaseCurrency() }.absoluteValue
         val localDBProvider = LocalDatabaseProvider(context)
         val plannedValue = localDBProvider.getPlan(date,periodType,item.first)?.planValue ?: 10000.0
         holder.plannedExpenseTextView.setValue(plannedValue)

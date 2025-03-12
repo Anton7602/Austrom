@@ -2,7 +2,11 @@ package com.colleagues.austrom.database
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.switchMap
 import com.colleagues.austrom.AustromApplication.Companion.knownUsers
+import com.colleagues.austrom.R
+import com.colleagues.austrom.extensions.equalTo
 import com.colleagues.austrom.extensions.toInt
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Budget
@@ -20,8 +24,9 @@ import com.colleagues.austrom.models.User
 import com.colleagues.austrom.views.PeriodType
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
+import kotlin.math.absoluteValue
 
-class LocalDatabaseProvider(context: Context) {
+class LocalDatabaseProvider(private var context: Context) {
     private val localDatabase = LocalDatabase.getDatabase(context)
 
     //region User
@@ -249,6 +254,69 @@ class LocalDatabaseProvider(context: Context) {
             startDate = transactionFilter.dateFrom!!.toInt(),
             endDate = transactionFilter.dateTo!!.toInt()
         )
+    }
+
+    fun getTransactionWithTransactionDetailsByTransactionFilter(transactionFilter: TransactionFilter): LiveData<Map<Transaction, MutableList<TransactionDetail>>> {
+        return localDatabase.transactionDao().getTransactionDetailsByCategoryAndDate(
+            users = knownUsers.values.map { l -> l.userId },
+            categoryIds = transactionFilter.categories,
+            ignoreCategories = transactionFilter.categories.isEmpty(),
+            assetIds = transactionFilter.assets,
+            ignoreAssets = transactionFilter.assets.isEmpty(),
+            startDate = transactionFilter.dateFrom!!.toInt(),
+            endDate = transactionFilter.dateTo!!.toInt()
+        ).switchMap { transactionsWithDetails ->
+            val transactionDetailsMap = mutableMapOf<Transaction, MutableList<TransactionDetail>>()
+            transactionsWithDetails.sortedByDescending { it.transactionDate }.forEach { transactionWithDetail ->
+                val transaction = Transaction(
+                    assetId = transactionWithDetail.assetId,
+                    amount = transactionWithDetail.amount,
+                    categoryId = transactionWithDetail.categoryId,
+                    transactionDate = transactionWithDetail.transactionDate,
+                    transactionName = transactionWithDetail.transactionName,
+                    comment = transactionWithDetail.comment,
+                    transactionId = transactionWithDetail.transactionId,
+                    userId = transactionWithDetail.userId,
+                    linkedTransactionId = transactionWithDetail.linkedTransactionId,
+                    isPrivate = transactionWithDetail.isPrivate,
+                    version = transactionWithDetail.version
+                )
+                if (!transactionDetailsMap.containsKey(transaction)) {
+                    transactionDetailsMap[transaction] = mutableListOf()
+                }
+                transactionDetailsMap[transaction]?.add(if (transactionWithDetail.transactionDetailId==null) {
+                    TransactionDetail(
+                        transactionId = transactionWithDetail.transactionId,
+                        name = context.getString(R.string.unallocated_balance),
+                        cost = transactionWithDetail.amount,
+                        categoryName = transactionWithDetail.categoryId
+                    )
+                } else  {
+                    TransactionDetail(
+                        transactionId = transactionWithDetail.transactionId,
+                        name = transactionWithDetail.name.toString(),
+                        cost = transactionWithDetail.cost ?: 0.0,
+                        quantity = transactionWithDetail.quantity,
+                        typeOfQuantity = transactionWithDetail.typeOfQuantity,
+                        categoryName = transactionWithDetail.categoryName,
+                        transactionDetailId = transactionWithDetail.transactionDetailId.toString()
+                    )
+                })
+            }
+            transactionDetailsMap.forEach {transactionMap ->
+                val transactionDetailsSum = transactionMap.value.sumOf { it.cost }
+                if (!transactionMap.key.amount.absoluteValue.equalTo(transactionDetailsSum.absoluteValue)) {
+                    transactionMap.value.add(
+                        TransactionDetail(
+                            transactionId = transactionMap.key.transactionId,
+                            name = context.getString(R.string.unallocated_balance),
+                            cost = if (transactionMap.key.amount>=0) transactionMap.key.amount-transactionDetailsSum else transactionMap.key.amount+transactionDetailsSum,
+                            categoryName = transactionMap.key.categoryId
+                        ))
+                }
+            }
+            MutableLiveData(transactionDetailsMap)
+        }
     }
 
     fun isCollidingTransactionExist(transaction: Transaction): Boolean {

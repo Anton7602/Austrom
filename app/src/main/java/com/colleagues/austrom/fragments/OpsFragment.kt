@@ -16,7 +16,6 @@ import com.colleagues.austrom.adapters.TransactionDetailAsTransactionGroupRecycl
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.TransactionTypeSelectionDialogFragment
-import com.colleagues.austrom.extensions.equalTo
 import com.colleagues.austrom.extensions.setOnSafeClickListener
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
@@ -94,12 +93,20 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         localDBProvider.getTransactionsByTransactionFilterAsync(transactionFilter).observe(viewLifecycleOwner) {transactionList ->
             if (!isListShowsTransactionDetails) {
                 setUpTransactionRecyclerView(transactionList.toMutableList())
-            } else {
-                setUpTransactionDetailsRecyclerView(transactionList.toMutableList())
+                calculateTransactionsAmountSums(transactionList)
+                if (lastSelectedIndex!=0 && (transactionHolder.adapter as TransactionGroupRecyclerAdapter).itemCount>lastSelectedIndex) {
+                    transactionHolder.scrollToPosition(lastSelectedIndex)
+                }
             }
-            calculateTransactionsAmountSums(transactionList)
-            if (lastSelectedIndex!=0 && (transactionHolder.adapter as TransactionGroupRecyclerAdapter).itemCount>lastSelectedIndex) {
-                transactionHolder.scrollToPosition(lastSelectedIndex)
+        }
+
+        localDBProvider.getTransactionWithTransactionDetailsByTransactionFilter(transactionFilter).observe(viewLifecycleOwner) { transactionDetailsMap ->
+            if (isListShowsTransactionDetails) {
+                setUpTransactionDetailsRecyclerView(transactionDetailsMap)
+                calculateTransactionsAmountSums(transactionDetailsMap)
+                if (lastSelectedIndex!=0 && (transactionHolder.adapter as TransactionDetailAsTransactionGroupRecyclerAdapter).itemCount>lastSelectedIndex) {
+                    transactionHolder.scrollToPosition(lastSelectedIndex)
+                }
             }
         }
     }
@@ -111,12 +118,34 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
             val transactionsAsset = AustromApplication.activeAssets[transaction.assetId]
             if (transaction.transactionType() == TransactionType.EXPENSE) {
                 if (transactionsAsset!=null) {
-                    expenseSum+= transaction.getAmountInBaseCurrency()
+                    expenseSum+= transaction.amountInBaseCurrency()
                 }
             }
             if (transaction.transactionType() == TransactionType.INCOME) {
                 if (transactionsAsset!=null) {
-                    incomeSum+= transaction.getAmountInBaseCurrency()
+                    incomeSum+= transaction.amountInBaseCurrency()
+                }
+            }
+        }
+        transactionsHeader.setIncome(incomeSum)
+        transactionsHeader.setExpense(expenseSum)
+    }
+
+    private fun calculateTransactionsAmountSums(transactionDetailsMap: Map<Transaction, List<TransactionDetail>>) {
+        var incomeSum = 0.0
+        var expenseSum = 0.0
+        transactionDetailsMap.forEach{ transaction ->
+            transaction.value.forEach { transactionDetail ->
+                val transactionsAsset = AustromApplication.activeAssets[transaction.key.assetId]
+                if (transaction.key.transactionType() == TransactionType.EXPENSE) {
+                    if (transactionsAsset!=null) {
+                        expenseSum-= transactionDetail.costInBaseCurrency(transaction.key).absoluteValue
+                    }
+                }
+                if (transaction.key.transactionType() == TransactionType.INCOME) {
+                    if (transactionsAsset!=null) {
+                        incomeSum+= transactionDetail.costInBaseCurrency(transaction.key).absoluteValue
+                    }
                 }
             }
         }
@@ -135,12 +164,9 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         transactionHolder.adapter = adapter
     }
 
-    private fun setUpTransactionDetailsRecyclerView(transactionList: MutableList<Transaction>) {
-        val localDBProvider = LocalDatabaseProvider(requireActivity())
-        val transactionMap: Map<String, Transaction> = transactionList.associateBy { it.transactionId }
-        val transactionsDetails = localDBProvider.getTransactionDetailsOfTransactions(transactionList)
+    private fun setUpTransactionDetailsRecyclerView(transactionDetailsMap: Map<Transaction, List<TransactionDetail>>) {
         transactionHolder.layoutManager = LinearLayoutManager(activity)
-        val adapter = TransactionDetailAsTransactionGroupRecyclerAdapter(transactionMap, groupUpTransactionDetails(transactionsDetails, transactionList), (requireActivity() as AppCompatActivity))
+        val adapter = TransactionDetailAsTransactionGroupRecyclerAdapter(groupUpTransactionDetails(transactionDetailsMap), (requireActivity() as AppCompatActivity))
         adapter.setOnItemClickListener { transactionDetail, index ->
             lastSelectedIndex = index
             requireActivity().startActivity(Intent(requireActivity(), TransactionPropertiesActivityNew::class.java).putExtra("transactionId", transactionDetail.transactionId))
@@ -148,26 +174,17 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         transactionHolder.adapter = adapter
     }
 
-    private fun groupUpTransactionDetails(transactionDetails: List<TransactionDetail>, transactions: MutableList<Transaction>): Map<LocalDate, MutableList<TransactionDetail>> {
-        val result = mutableMapOf<LocalDate, MutableList<TransactionDetail>>()
-        transactions.forEach { transaction ->
-            val transactionDetailsOfThisTransaction = transactionDetails.filter { it.transactionId==transaction.transactionId }.toMutableList()
-            if (transactionDetailsOfThisTransaction.isEmpty() || !transactionDetailsOfThisTransaction.sumOf { it.cost }.absoluteValue.equalTo(transaction.amount.absoluteValue)) {
-                transactionDetailsOfThisTransaction.add(TransactionDetail(
-                    transactionId = transaction.transactionId,
-                    name = getString(R.string.unallocated_balance),
-                    cost = if (transaction.amount>=0) transaction.amount-transactionDetailsOfThisTransaction.sumOf { it.cost }
-                    else transaction.amount+transactionDetailsOfThisTransaction.sumOf { it.cost },
-                ))
-            }
-            transactionDetailsOfThisTransaction.forEach { transactionDetail ->
-                if (result.containsKey(transaction.transactionDate)) {
-                    result[transaction.transactionDate]!!.add(transactionDetail)
-                } else {
-                    result[transaction.transactionDate] = mutableListOf(transactionDetail)
-                }
+    private fun groupUpTransactionDetails(transactionDetailsMap: Map<Transaction, List<TransactionDetail>>): Map<LocalDate, Map<Transaction, List<TransactionDetail>>> {
+        val result = mutableMapOf<LocalDate, MutableMap<Transaction, List<TransactionDetail>>>()
+        transactionDetailsMap.forEach { transactionMap ->
+            if (!result.containsKey(transactionMap.key.transactionDate)) {
+                result[transactionMap.key.transactionDate] = mutableMapOf(Pair(transactionMap.key, transactionMap.value))
+            } else {
+                result[transactionMap.key.transactionDate]!![transactionMap.key] = transactionMap.value
             }
         }
         return result
     }
+
+
 }

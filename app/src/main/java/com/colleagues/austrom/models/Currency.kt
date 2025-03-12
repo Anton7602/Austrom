@@ -3,6 +3,7 @@ package com.colleagues.austrom.models
 import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 
 @Entity

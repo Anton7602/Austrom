@@ -15,7 +15,7 @@ import com.colleagues.austrom.models.TransactionDetail
 import java.time.LocalDate
 
 
-class TransactionDetailAsTransactionGroupRecyclerAdapter(private val transactions: Map<String, Transaction>, private val groupedTransactionsDetails: Map<LocalDate, MutableList<TransactionDetail>>, private val context: Context) : RecyclerView.Adapter<TransactionDetailAsTransactionGroupRecyclerAdapter.TransactionDetailAsTransactionGroupViewHolder>(){
+class TransactionDetailAsTransactionGroupRecyclerAdapter(private val groupedTransactionsDetailsMap: Map<LocalDate, Map<Transaction, List<TransactionDetail>>>, private val context: Context) : RecyclerView.Adapter<TransactionDetailAsTransactionGroupRecyclerAdapter.TransactionDetailAsTransactionGroupViewHolder>(){
     class TransactionDetailAsTransactionGroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val transactionGroupName: TextView = itemView.findViewById(R.id.trgritem_date_txt)
         val transactionHolderRecyclerView: RecyclerView = itemView.findViewById(R.id.trgritem_transactionholder_rcv)
@@ -24,15 +24,14 @@ class TransactionDetailAsTransactionGroupRecyclerAdapter(private val transaction
     fun setOnItemClickListener(l: ((TransactionDetail, Int)->Unit)) { returnClickedItem = l }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionDetailAsTransactionGroupViewHolder { return TransactionDetailAsTransactionGroupViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_transaction_group, parent, false)) }
-    override fun getItemCount(): Int { return groupedTransactionsDetails.size }
-    init { groupedTransactionsDetails.forEach { group -> group.value.sortBy { it.cost } } }
+    override fun getItemCount(): Int { return groupedTransactionsDetailsMap.size }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionDetailAsTransactionGroupViewHolder, position: Int) {
-        val transactionDate = groupedTransactionsDetails.keys.elementAt(position)
+        val transactionDate = groupedTransactionsDetailsMap.keys.elementAt(position)
         holder.transactionGroupName.text = transactionDate.toDayOfWeekAndShortDateFormat()
         holder.transactionHolderRecyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = TransactionDetailAsTransactionRecyclerAdapter(transactions, groupedTransactionsDetails.values.elementAt(position), context)
+        val adapter = TransactionDetailAsTransactionRecyclerAdapter(groupedTransactionsDetailsMap[transactionDate]!!, context)
         adapter.setOnItemClickListener { transactionDetail, _ -> returnClickedItem(transactionDetail, position) }
         holder.transactionHolderRecyclerView.adapter = adapter
     }

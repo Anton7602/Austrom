@@ -24,6 +24,7 @@ import com.colleagues.austrom.models.Plan
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
+import com.colleagues.austrom.models.TransactionWithDetails
 import com.colleagues.austrom.models.User
 import com.colleagues.austrom.views.PeriodType
 import java.time.Instant
@@ -213,6 +214,18 @@ interface TransactionDao {
     """)
     fun getTransactionsByCategoryAndDate(users: List<String>?, categoryIds: List<String>?, assetIds: List<String>?, startDate: Int, endDate: Int,
     ignoreCategories: Boolean, ignoreAssets: Boolean): LiveData<List<Transaction>>
+
+    @Query("""
+        SELECT Trn.*, TrDet.transactionDetailId, TrDet.name, TrDet.cost, TrDet.quantity, TrDet.transactionDetailId, TrDet.typeOfQuantity, TrDet.categoryName 
+        FROM `Transaction` as Trn
+        LEFT JOIN TransactionDetail as TrDet ON Trn.transactionId = TrDet.transactionId
+        WHERE Trn.userId IN (:users) 
+        AND (:ignoreCategories OR Trn.categoryId IN (:categoryIds)) 
+        AND (:ignoreAssets OR Trn.assetId IN (:assetIds))
+        AND Trn.transactionDate BETWEEN :startDate AND :endDate
+    """)
+    fun getTransactionDetailsByCategoryAndDate(users: List<String>?, categoryIds: List<String>?, assetIds: List<String>?, startDate: Int, endDate: Int,
+                                               ignoreCategories: Boolean, ignoreAssets: Boolean): LiveData<List<TransactionWithDetails>>
 
     @Query("""SELECT Trn.categoryId FROM `Transaction` as Trn
         WHERE Trn.transactionName=:transactionName
