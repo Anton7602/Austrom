@@ -175,6 +175,14 @@
                     app:text="All Category" />
             </LinearLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/trdet_transactionDetails_rcv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_transaction_detail_edit" />
+
         </LinearLayout>
     </ScrollView>
 

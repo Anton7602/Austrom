@@ -166,6 +166,11 @@ class TransactionCreationActivity : AppCompatActivity() {
         val amount = amountTxt.text.toString().parseToDouble()?.absoluteValue
         if (amount==null || amount>Double.MAX_VALUE) {  amountTxt.error = getString(R.string.invalid_transaction_amount_provided); return false}
         if (amount == 0.0) {  amountTxt.error = getString(R.string.transaction_amount_cannot_be_zero); return false}
+        if (secondaryAmountHolder.visibility == View.VISIBLE) {
+            val secondaryAmount = secondaryAmountTxt.text.toString().parseToDouble()?.absoluteValue
+            if (secondaryAmount==null || secondaryAmount>Double.MAX_VALUE) { secondaryAmountTxt.error= getString(R.string.invalid_received_transaction_amount_provided); return false }
+            if (secondaryAmount== 0.0) {secondaryAmountTxt.error = getString(R.string.transaction_amount_cannot_be_zero); return false}
+        }
         if (transactionType==TransactionType.EXPENSE && amount>primarySelectedAsset!!.amount) { amountTxt.error = getString(R.string.transaction_amount_is_greater_than_assets_balance); return false }
         val name = transactionNameTxt.text.toString()
         if (name.isEmpty() && transactionType!=TransactionType.TRANSFER) { transactionNameTxt.error = getString(R.string.name_cannot_be_empty); return false }

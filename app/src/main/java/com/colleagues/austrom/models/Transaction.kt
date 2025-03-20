@@ -99,7 +99,7 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
     fun removeTransactionDetails(localDBProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider?) {
         if (remoteDBProvider!=null) {
             val transactionDetails = localDBProvider.getTransactionDetailsOfTransaction(this)
-            transactionDetails.forEach { transactionDetail -> remoteDBProvider.deleteTransactionDetail(transactionDetail) }
+            transactionDetails.forEach { transactionDetail -> if (AustromApplication.activeBudget!=null) remoteDBProvider.deleteTransactionDetail(AustromApplication.activeBudget!!, transactionDetail) }
         }
         localDBProvider.removeTransactionDetailsOfTransaction(this)
     }

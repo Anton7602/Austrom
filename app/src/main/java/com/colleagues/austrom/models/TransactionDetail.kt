@@ -6,6 +6,8 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.parseToDouble
 import java.time.LocalDate
 import java.util.UUID
@@ -25,6 +27,11 @@ class TransactionDetail(val transactionId: String, val name: String, val cost: D
     fun costInBaseCurrency(transaction: Transaction): Double {
         val transactionsAsset = AustromApplication.activeAssets[transaction.assetId] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID)
         return if (transactionsAsset.currencyCode== AustromApplication.appUser!!.baseCurrencyCode) cost else cost/(AustromApplication.activeCurrencies[transactionsAsset.currencyCode]?.exchangeRate ?: 1.0)
+    }
+
+    fun delete(localDBProvider: LocalDatabaseProvider, remoteDBProvider: FirebaseDatabaseProvider? = null) {
+        if (AustromApplication.activeBudget!=null) remoteDBProvider?.deleteTransactionDetail(AustromApplication.activeBudget!!, this)
+        localDBProvider.removeTransactionDetail(this)
     }
 
     companion object{

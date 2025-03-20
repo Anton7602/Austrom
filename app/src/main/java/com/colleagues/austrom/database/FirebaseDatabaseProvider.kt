@@ -301,8 +301,8 @@ class FirebaseDatabaseProvider(private val activity: FragmentActivity?) : IRemot
         }
     }
 
-    fun deleteTransactionDetail(transactionDetail: TransactionDetail) {
-        database.getReference("transactionDetails").child(transactionDetail.transactionDetailId).setValue(null)
+    fun deleteTransactionDetail(budget: Budget, transactionDetail: TransactionDetail) {
+        database.getReference("transactionDetails").child(budget.budgetId).child(transactionDetail.transactionDetailId).setValue(null)
     }
 
     override fun deleteTransactionDetailsOfBudget(budget: Budget) {

@@ -357,14 +357,7 @@ class LocalDatabaseProvider(private var context: Context) {
         }
     }
 
-    fun removeTransactionDetail(transactionDetail: TransactionDetail) {
-        //TODO("Write Query for this One")
-//        val dao = localDatabase.transactionDetailDao()
-//        runBlocking {
-//            dao.insertTransactionDetail(transactionDetail)
-//        }
-//        return transactionDetail.transactionDetailId
-    }
+    fun removeTransactionDetail(transactionDetail: TransactionDetail) { runBlocking { localDatabase.transactionDetailDao().deleteTransactionDetail(transactionDetail) } }
 
     fun getTransactionDetailsOfTransaction(transaction: Transaction) : List<TransactionDetail> {
         val dao = localDatabase.transactionDetailDao()

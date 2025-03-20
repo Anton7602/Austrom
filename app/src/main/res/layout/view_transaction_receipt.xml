@@ -15,7 +15,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/imageView17"
@@ -51,12 +51,13 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
-                        android:autoSizeMaxTextSize="20sp"
-                        android:autoSizeTextType="uniform"
+                        android:autoSizeTextType="none"
                         android:gravity="bottom|end"
+                        android:maxLines="1"
                         android:text="Source"
                         android:textAppearance="@style/PrimaryCardTextAutoscale"
                         android:textColor="@color/black"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -74,13 +75,13 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
-                        android:autoSizeMaxTextSize="20sp"
-                        android:autoSizeMinTextSize="10sp"
-                        android:autoSizeTextType="uniform"
+                        android:autoSizeTextType="none"
                         android:gravity="bottom|start"
+                        android:maxLines="1"
                         android:text="Target"
                         android:textAppearance="@style/PrimaryCardTextAutoscale"
                         android:textColor="@color/black"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -256,6 +257,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:nestedScrollingEnabled="false"
                     tools:listitem="@layout/item_transaction_detail_new">
 
                 </androidx.recyclerview.widget.RecyclerView>
@@ -335,9 +337,7 @@
                 android:id="@+id/tranrecview_footer_lly"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline46"
                 app:layout_constraintStart_toStartOf="@+id/guideline45"
                 app:layout_constraintTop_toBottomOf="@+id/tranrecview_body_lly">
@@ -356,6 +356,36 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="5"
+                    app:amountColor="@color/black"
+                    app:currencyColor="@color/black"
+                    app:currencyTextSizePercent="0.9"
+                    app:horizontalAlignment="right" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tranrecview_footer_received_lly"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/guideline46"
+                app:layout_constraintStart_toStartOf="@+id/guideline45"
+                app:layout_constraintTop_toBottomOf="@+id/tranrecview_footer_lly">
+
+                <TextView
+                    android:id="@+id/textView24"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingVertical="5dp"
+                    android:text="Total Received Amount"
+                    android:textAppearance="@style/SecondaryCardTextAutoscale" />
+
+                <com.colleagues.austrom.views.MoneyFormatTextView
+                    android:id="@+id/tranrecview_totalRecievedAmount_monf"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     app:amountColor="@color/black"
                     app:currencyColor="@color/black"
                     app:currencyTextSizePercent="0.9"

@@ -487,4 +487,5 @@
     <string name="join_one_of_the_following_budgets_you_ve_been_invited_to">Join one of the following budgets you\'ve been invited to</string>
     <string name="assets">Assets</string>
     <string name="at">at</string>
+    <string name="invalid_received_transaction_amount_provided">Invalid received transaction amount provided</string>
 </resources>

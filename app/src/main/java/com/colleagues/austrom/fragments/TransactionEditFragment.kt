@@ -10,9 +10,13 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.AustromApplication.Companion.activeCategories
 import com.colleagues.austrom.R
+import com.colleagues.austrom.adapters.TransactionDetailEditRecyclerAdapter
+import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.CategorySelectionDialogFragment
 import com.colleagues.austrom.extensions.parseToDouble
@@ -47,6 +51,7 @@ class TransactionEditFragment(private val transaction: Transaction, private val 
     private lateinit var cancelButton: Button
     private lateinit var saveButton: Button
     private lateinit var currencySymbolTextView: TextView
+    private lateinit var detailsHolder: RecyclerView
     private fun bindViews(view: View) {
         amountTextView = view.findViewById(R.id.tredit_amount_txt)
         dateSelector = view.findViewById(R.id.tredit_date_sel)
@@ -62,6 +67,7 @@ class TransactionEditFragment(private val transaction: Transaction, private val 
         cancelButton = view.findViewById(R.id.tredit_cancel_btn)
         saveButton = view.findViewById(R.id.tredit_save_btn)
         currencySymbolTextView = view.findViewById(R.id.tredit_currencySymbol_txt)
+        detailsHolder = view.findViewById(R.id.trdet_transactionDetails_rcv)
     }
     //endregion
     private var selectedDate: LocalDate? = transaction.transactionDate
@@ -74,6 +80,8 @@ class TransactionEditFragment(private val transaction: Transaction, private val 
         bindViews(view)
         setUpTransaction()
         setUpAutofill()
+        setUpRecyclerView()
+
         cancelButton.setOnClickListener { returnResult(transaction, transactionsToChange); setUpTransaction() }
         saveButton.setOnClickListener { save() }
         nameCheckButtonSingle.setOnClickListener { switchNameChangeSelection(nameCheckButtonSingle) }
@@ -94,6 +102,15 @@ class TransactionEditFragment(private val transaction: Transaction, private val 
                 categoryChangeDescription.text = generateCategoryChangeTip()
             }
         })
+    }
+
+    private fun setUpRecyclerView() {
+        val localDBProvider = LocalDatabaseProvider(requireActivity())
+        val remoteDBProvider = FirebaseDatabaseProvider(requireActivity())
+        detailsHolder.layoutManager = LinearLayoutManager(requireActivity())
+        val adapter = TransactionDetailEditRecyclerAdapter(localDBProvider.getTransactionDetailsOfTransaction(transaction).toMutableList(), requireActivity())
+        adapter.setOnItemClickListener { transactionDetail -> transactionDetail.delete(localDBProvider, remoteDBProvider); adapter.removeItem(transactionDetail) }
+        detailsHolder.adapter = adapter
     }
 
     private fun updateTransactionsList() {

@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.extensions.equalTo
 import com.colleagues.austrom.models.InvalidTransactionException
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
@@ -34,7 +35,7 @@ class TransactionDetailRecyclerAdapter(private val transaction: Transaction, pri
         val transactionDetail = transactionDetails[position]
 //        val categoryName = transactionDetail.categoryName ?: transaction.categoryId
         holder.itemName.text = transactionDetail.name
-        holder.quantityHolder.visibility = if (transactionDetail.quantity==null) View.GONE else View.VISIBLE
+        holder.quantityHolder.visibility = if (transactionDetail.quantity==null || transactionDetail.quantity.equalTo(0.0)) View.GONE else View.VISIBLE
         holder.quantity.text = transactionDetail.quantity.toString()
         holder.quantityType.text = if (transactionDetail.typeOfQuantity!=null) context.getString(transactionDetail.typeOfQuantity.shortNameResourceId) else ""
         holder.costField.setValue(transactionDetail.cost, AustromApplication.activeCurrencies[AustromApplication.activeAssets[transaction.assetId]?.currencyCode] ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_ASSET_INVALID))

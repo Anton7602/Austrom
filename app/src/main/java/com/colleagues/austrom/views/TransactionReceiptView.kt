@@ -1,6 +1,7 @@
 package com.colleagues.austrom.views
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -16,11 +17,14 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.adapters.TransactionDetailRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.extensions.equalTo
 import com.colleagues.austrom.extensions.startWithUppercase
 import com.colleagues.austrom.extensions.toDayOfWeekAndLongDateFormat
+import com.colleagues.austrom.models.InvalidTransactionException
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionType
+import com.colleagues.austrom.models.TransactionValidationType
 import kotlin.math.absoluteValue
 
 class TransactionReceiptView(context: Context, attrs: AttributeSet): CardView(context, attrs) {
@@ -35,7 +39,9 @@ class TransactionReceiptView(context: Context, attrs: AttributeSet): CardView(co
     private lateinit var headerLayout: LinearLayout
     private lateinit var bodyLayout: LinearLayout
     private lateinit var footerLayout: LinearLayout
+    private lateinit var footerLayoutReceived: LinearLayout
     private lateinit var totalAmountTextView: MoneyFormatTextView
+    private lateinit var totalAmountReceivedTextView: MoneyFormatTextView
     private lateinit var editedDetailLayout: LinearLayout
     private lateinit var editedDetailName: TextView
     private lateinit var editedDetailAmount: TextView
@@ -50,9 +56,11 @@ class TransactionReceiptView(context: Context, attrs: AttributeSet): CardView(co
         commentTextView = view.findViewById(R.id.tranrecview_comment_txt)
         transactionDetailsRecyclerView = view.findViewById(R.id.tranrecview_transactionDetails_rcv)
         totalAmountTextView = view.findViewById(R.id.tranrecview_totalAmount_monf)
+        totalAmountReceivedTextView = view.findViewById(R.id.tranrecview_totalRecievedAmount_monf)
         headerLayout = view.findViewById(R.id.tranrecview_header_lly)
         bodyLayout = view.findViewById(R.id.tranrecview_body_lly)
         footerLayout = view.findViewById(R.id.tranrecview_footer_lly)
+        footerLayoutReceived = view.findViewById(R.id.tranrecview_footer_received_lly)
         editedDetailLayout = view.findViewById(R.id.tranrecview_editedDetailHolder_lly)
         editedDetailName = view.findViewById(R.id.tranrecview_itemName_txt)
         editedDetailAmount = view.findViewById(R.id.tranrecview_quantity_txt)
@@ -70,17 +78,26 @@ class TransactionReceiptView(context: Context, attrs: AttributeSet): CardView(co
         bindViews(view)
     }
 
+    @SuppressLint("SetTextI18n")
     fun fillInTransaction(newTransaction: Transaction) {
         transaction = newTransaction
         val dbProvider = LocalDatabaseProvider(context)
         transactionDetails = dbProvider.getTransactionDetailsOfTransaction(newTransaction).toMutableList()
         sourceNameTextView.text = if (newTransaction.transactionType()==TransactionType.INCOME) newTransaction.transactionName else  AustromApplication.activeAssets[newTransaction.assetId]?.assetName
         targetNameTextView.text = if (newTransaction.transactionType() == TransactionType.INCOME) AustromApplication.activeAssets[newTransaction.assetId]?.assetName else newTransaction.transactionName
+        if (sourceNameTextView.text.toString().length>15) sourceNameTextView.text = "${sourceNameTextView.text.toString().substring(0,13)}..."
+        if (targetNameTextView.text.toString().length>15) targetNameTextView.text = "${targetNameTextView.text.toString().substring(0,13)}..."
         dateTextView.text = newTransaction.transactionDate.toDayOfWeekAndLongDateFormat()
         ownerTextView.text = AustromApplication.knownUsers[newTransaction.userId]?.username.startWithUppercase()
         categoryTextView.text = AustromApplication.activeCategories[newTransaction.categoryId]?.name
         commentTextView.visibility = if (newTransaction.comment.isNullOrEmpty()) View.GONE else View.VISIBLE
         commentTextView.text = newTransaction.comment
+
+        if (newTransaction.linkedTransactionId!=null) {
+            val localDBProvider = LocalDatabaseProvider(context)
+            val linkedTransaction = localDBProvider.getTransactionByID(newTransaction.linkedTransactionId.toString()) ?: throw InvalidTransactionException(TransactionValidationType.UNKNOWN_LINKED_TRANSACTION)
+            val linkedAsset = AustromApplication.activeAssets[linkedTransaction.assetId]
+        }
 
         if (transactionDetails.isNotEmpty()) {
             transactionDetailsRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -88,7 +105,7 @@ class TransactionReceiptView(context: Context, attrs: AttributeSet): CardView(co
         }
 
         val unallocatedBalance = newTransaction.amount.absoluteValue-transactionDetails.sumOf { it.cost }
-        isFullyDetailed = unallocatedBalance==0.0
+        isFullyDetailed = unallocatedBalance.equalTo(0.0)
         editedDetailLayout.visibility = if (unallocatedBalance==0.0) View.GONE else View.VISIBLE
         updateEditedTransactionDetail(resources.getString(R.string.unallocated_balance), 0.0, "", unallocatedBalance)
         totalAmountTextView.setValue(newTransaction.amount.absoluteValue, AustromApplication.activeAssets[newTransaction.assetId]!!.currencyCode)
