@@ -41,12 +41,14 @@
 
             <com.colleagues.austrom.views.MoneyFormatTextView
                 android:id="@+id/trdetedit_amount_monf"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="20dp"
                 app:amountColor="@color/secondaryTextColor"
                 app:currencyColor="@color/secondaryTextColor"
                 app:currencyTextSizePercent="1"
                 app:defaultAmount="1234"
+                app:horizontalAlignment="left"
+                app:layout_constraintEnd_toEndOf="@+id/trdetedit_detailName_txt"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/trdetedit_detailName_txt" />
         </androidx.constraintlayout.widget.ConstraintLayout>
