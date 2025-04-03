@@ -227,6 +227,12 @@ interface TransactionDao {
     fun getTransactionDetailsByCategoryAndDate(users: List<String>?, categoryIds: List<String>?, assetIds: List<String>?, startDate: Int, endDate: Int,
                                                ignoreCategories: Boolean, ignoreAssets: Boolean): LiveData<List<TransactionWithDetails>>
 
+    @Query("SELECT * FROM 'Transaction' ORDER BY transactionDate ASC LIMIT 1")
+    fun getEarliestTransaction(): Transaction?
+
+    @Query("SELECT * FROM 'Transaction' ORDER BY transactionDate DESC LIMIT 1")
+    fun getLatestTransaction(): Transaction?
+
     @Query("""SELECT Trn.categoryId FROM `Transaction` as Trn
         WHERE Trn.transactionName=:transactionName
         GROUP BY transactionName, categoryId

@@ -236,7 +236,7 @@ class InvalidTransactionException(message: String, validationType: TransactionVa
     }, validationType)
 }
 
-data class TransactionFilter(val categories: MutableList<String>,val assets: MutableList<String>, var dateFrom: LocalDate?, var dateTo: LocalDate?)
+data class TransactionFilter(val categories: MutableList<String>,val assets: MutableList<String>, val names: MutableList<String>, var dateFrom: LocalDate?, var dateTo: LocalDate?)
 data class TransactionWithDetails(val assetId: String, var amount: Double, var categoryId: String, var transactionDate: LocalDate, var transactionName: String, var comment: String? = null,
                                   var transactionId: String = generateUniqueTransactionKey(), var userId: String = AustromApplication.appUser!!.userId, var linkedTransactionId: String? = null,
                                   var isPrivate: Boolean = false, var version: Int = 0, val name: String?, val cost: Double?, val quantity: Double? = null, val typeOfQuantity: QuantityUnit? = null,

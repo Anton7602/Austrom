@@ -9,18 +9,21 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
+import com.colleagues.austrom.AustromApplication.Companion.activeCategories
 import com.colleagues.austrom.R
 import com.colleagues.austrom.TransactionCreationActivity
 import com.colleagues.austrom.TransactionPropertiesActivityNew
 import com.colleagues.austrom.adapters.TransactionDetailAsTransactionGroupRecyclerAdapter
 import com.colleagues.austrom.adapters.TransactionGroupRecyclerAdapter
 import com.colleagues.austrom.database.LocalDatabaseProvider
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.PeriodTypeSelectionDialogFragment
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.TransactionTypeSelectionDialogFragment
 import com.colleagues.austrom.extensions.setOnSafeClickListener
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType
+import com.colleagues.austrom.views.DateControllerView
 import com.colleagues.austrom.views.TransactionHeaderView
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.time.Instant
@@ -37,12 +40,14 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
     private lateinit var createNewTransactionButton: ImageButton
     private lateinit var callNavDrawerButton: ImageButton
     private lateinit var switchListDisplayModeButton: ImageButton
+    private lateinit var dateController: DateControllerView
     private fun bindViews(view: View) {
         transactionHolder = view.findViewById(R.id.ops_transactionHolder_rcv)
         transactionsHeader = view.findViewById(R.id.ops_transactionsHeader_trhed)
         createNewTransactionButton = view.findViewById(R.id.ops_createNewTransaction_btn)
         callNavDrawerButton = view.findViewById(R.id.ops_navDrawer_btn)
         switchListDisplayModeButton = view.findViewById(R.id.ops_switchListMode_btn)
+        dateController = view.findViewById(R.id.ops_dateController_dctr)
     }
     //endregion
     private var lastSelectedIndex: Int = 0
@@ -50,10 +55,28 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        setUpDateController()
         setUpTransactionHeader()
         createNewTransactionButton.setOnClickListener { launchNewTransactionCreationDialog() }
         callNavDrawerButton.setOnClickListener { requestNavigationDrawerOpen() }
         switchListDisplayModeButton.setOnSafeClickListener { isListShowsTransactionDetails = !isListShowsTransactionDetails; applyTransactionFilter(transactionsHeader.getTransactionFilter()) }
+    }
+
+    private fun setUpDateController() {
+        dateController.setDatesRangeChangedListener { dateRange ->
+            val transactionFilter = transactionsHeader.getTransactionFilter()
+            transactionFilter.dateFrom = dateRange.first
+            transactionFilter.dateTo = dateRange.second
+            applyTransactionFilter(transactionFilter)
+        }
+        dateController.setPeriodTypeChangeRequestedListener { launchPeriodTypeSelectionDialog() }
+        dateController.setDate(LocalDate.now())
+    }
+
+    private fun launchPeriodTypeSelectionDialog() {
+        val dialog = PeriodTypeSelectionDialogFragment()
+        dialog.setOnDialogResultListener { periodType -> dateController.setPeriodType(periodType) }
+        dialog.show(requireActivity().supportFragmentManager, "Date Period Type Selection")
     }
 
     private fun launchNewTransactionCreationDialog() {
@@ -69,6 +92,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         transactionsHeader.setOnFilterChangedListener { transactionFilter ->applyTransactionFilter(transactionFilter) }
         transactionsHeader.setOnDatesRequestedListener { setUpDatePicker() }
         transactionsHeader.setCurrencySymbol(AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]!!.symbol)
+        transactionsHeader.setRequestDialogCall { dialog -> dialog.show(requireActivity().supportFragmentManager, "TransactionHeaderPickerDialog") }
         applyTransactionFilter(transactionsHeader.getTransactionFilter())
     }
 
@@ -92,8 +116,9 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         val localDBProvider = LocalDatabaseProvider(requireActivity())
         localDBProvider.getTransactionsByTransactionFilterAsync(transactionFilter).observe(viewLifecycleOwner) {transactionList ->
             if (!isListShowsTransactionDetails) {
-                setUpTransactionRecyclerView(transactionList.toMutableList())
-                calculateTransactionsAmountSums(transactionList)
+                val filteredTransaction = filterTransactionByNames(transactionFilter, transactionList)
+                setUpTransactionRecyclerView(filteredTransaction.toMutableList())
+                calculateTransactionsAmountSums(filteredTransaction)
                 if (lastSelectedIndex!=0 && (transactionHolder.adapter as TransactionGroupRecyclerAdapter).itemCount>lastSelectedIndex) {
                     transactionHolder.scrollToPosition(lastSelectedIndex)
                 }
@@ -102,13 +127,41 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
 
         localDBProvider.getTransactionWithTransactionDetailsByTransactionFilter(transactionFilter).observe(viewLifecycleOwner) { transactionDetailsMap ->
             if (isListShowsTransactionDetails) {
-                setUpTransactionDetailsRecyclerView(transactionDetailsMap)
-                calculateTransactionsAmountSums(transactionDetailsMap)
+                val filteredTransactionDetailsMap = filterTransactionDetailsByName(transactionFilter, transactionDetailsMap)
+                setUpTransactionDetailsRecyclerView(filteredTransactionDetailsMap)
+                calculateTransactionsAmountSums(filteredTransactionDetailsMap)
                 if (lastSelectedIndex!=0 && (transactionHolder.adapter as TransactionDetailAsTransactionGroupRecyclerAdapter).itemCount>lastSelectedIndex) {
                     transactionHolder.scrollToPosition(lastSelectedIndex)
                 }
             }
         }
+    }
+
+    private fun filterTransactionByNames(transactionFilter: TransactionFilter, transactionList: List<Transaction>): List<Transaction> {
+        if (transactionFilter.names.isEmpty()) return transactionList
+        val filteredTransactions = mutableListOf<Transaction>()
+        transactionList.forEach { transaction -> for (name in transactionFilter.names) { if (transaction.transactionName.lowercase().contains(name.lowercase())) {filteredTransactions.add(transaction); break; }}}
+        return filteredTransactions
+    }
+
+    private fun filterTransactionDetailsByName(transactionFilter: TransactionFilter, transactionDetailsMap: Map<Transaction, List<TransactionDetail>>) : Map<Transaction, List<TransactionDetail>> {
+        if (transactionFilter.names.isEmpty()) return transactionDetailsMap
+        val filteredTransactionDetails = mutableMapOf<Transaction, MutableList<TransactionDetail>>()
+        transactionDetailsMap.forEach { entry ->
+            entry.value.forEach { transactionDetail ->
+                for (name in transactionFilter.names) {
+                    if (entry.key.transactionName.lowercase().contains(name.lowercase()) || transactionDetail.name.lowercase().contains(name.lowercase())) {
+                        if (filteredTransactionDetails.containsKey(entry.key)) {
+                            filteredTransactionDetails[entry.key]!!.add(transactionDetail)
+                        } else {
+                            filteredTransactionDetails[entry.key] = mutableListOf(transactionDetail)
+                        }
+                        break
+                    }
+                }
+            }
+        }
+        return filteredTransactionDetails
     }
 
     private fun calculateTransactionsAmountSums(transactionList: List<Transaction>) {

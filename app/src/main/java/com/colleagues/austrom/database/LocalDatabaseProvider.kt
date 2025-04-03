@@ -256,6 +256,19 @@ class LocalDatabaseProvider(private var context: Context) {
         )
     }
 
+    fun getTransactionsMinMaxDatePeriod(): Pair<LocalDate, LocalDate> {
+        var minTransactionDate = LocalDate.now()
+        var maxTransactionDate = LocalDate.now()
+        runBlocking {
+            val transactionDao = localDatabase.transactionDao()
+            val earliestTransaction = transactionDao.getEarliestTransaction()
+            val latestTransaction = transactionDao.getLatestTransaction()
+            if (earliestTransaction!=null) minTransactionDate = earliestTransaction.transactionDate
+            if (latestTransaction!=null && latestTransaction.transactionDate>maxTransactionDate) maxTransactionDate = latestTransaction.transactionDate
+        }
+        return Pair(minTransactionDate, maxTransactionDate)
+    }
+
     fun getTransactionWithTransactionDetailsByTransactionFilter(transactionFilter: TransactionFilter): LiveData<Map<Transaction, MutableList<TransactionDetail>>> {
         return localDatabase.transactionDao().getTransactionDetailsByCategoryAndDate(
             users = knownUsers.values.map { l -> l.userId },

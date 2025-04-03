@@ -488,4 +488,6 @@
     <string name="assets">Assets</string>
     <string name="at">at</string>
     <string name="invalid_received_transaction_amount_provided">Invalid received transaction amount provided</string>
+    <string name="entire_period">Entire Period</string>
+    <string name="custom">Custom</string>
 </resources>

@@ -19,12 +19,14 @@ class PeriodTypeSelectionDialogFragment() : BottomSheetDialogFragment(){
     private lateinit var week: Button
     private lateinit var month: Button
     private lateinit var year: Button
+    private lateinit var allTime: Button
     private lateinit var custom: Button
     private fun bindViews(view: View) {
         dialogHolder = view.findViewById(R.id.datetypesel_holder_crv)
         week = view.findViewById(R.id.datetypesel_week_btn)
         month = view.findViewById(R.id.datetypesel_month_btn)
         year = view.findViewById(R.id.datetypesel_year_btn)
+        allTime = view.findViewById(R.id.datetypesel_allTime_btn)
         custom = view.findViewById(R.id.datetypesel_custom_btn)
     }
     ///endregion
@@ -32,11 +34,11 @@ class PeriodTypeSelectionDialogFragment() : BottomSheetDialogFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background_colorless)
-
+        dialogHolder.setBackgroundResource(R.drawable.sh_bottomsheet_background)
         week.setOnClickListener{returnResult(PeriodType.WEEK)}
         month.setOnClickListener{returnResult(PeriodType.MONTH)}
         year.setOnClickListener{returnResult(PeriodType.YEAR)}
+        allTime.setOnClickListener { returnResult(PeriodType.ALL) }
         custom.setOnClickListener{returnResult(PeriodType.CUSTOM)}
     }
 

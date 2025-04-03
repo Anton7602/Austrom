@@ -10,6 +10,7 @@
         android:id="@+id/datetypesel_holder_crv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/backgroundCard"
         app:cardCornerRadius="20dp">
 
         <LinearLayout
@@ -23,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:text="@string/week"
-                android:textColor="@color/selectionColor" />
+                android:textColor="@color/primaryTextColor" />
 
             <Button
                 android:id="@+id/datetypesel_month_btn"
@@ -31,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:text="@string/month"
-                android:textColor="@color/selectionColor" />
+                android:textColor="@color/primaryTextColor" />
 
             <Button
                 android:id="@+id/datetypesel_year_btn"
@@ -39,15 +40,23 @@
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:text="@string/year"
-                android:textColor="@color/selectionColor" />
+                android:textColor="@color/primaryTextColor" />
+
+            <Button
+                android:id="@+id/datetypesel_allTime_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:text="@string/entire_period"
+                android:textColor="@color/primaryTextColor" />
 
             <Button
                 android:id="@+id/datetypesel_custom_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
-                android:text="Custom"
-                android:textColor="@color/selectionColor" />
+                android:text="@string/custom"
+                android:textColor="@color/primaryTextColor" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

@@ -1,5 +1,6 @@
 <resources>
     <string name="appLogo">AppLogo</string>
+    <string name="app_name">Austrom</string>
     <string name="forgot_password">Забыл пароль</string>
     <string name="sign_in">Войти</string>
     <string name="login">Логин</string>
@@ -94,7 +95,7 @@
     <string name="notes">Заметки</string>
     <string name="cancel_transaction">Отменить Транзакцию</string>
     <string name="transaction_details">Детали Транзакции</string>
-    <string name="unallocated_balance">Нераспределёно</string>
+    <string name="unallocated_balance">Нераспределено</string>
     <string name="total">Итого:</string>
     <string name="not_yet_implemented">Функция ещё не реализована</string>
     <string name="user_successfully_added">Пользователь успешно добавлен</string>
@@ -486,4 +487,6 @@
     <string name="assets">Активы</string>
     <string name="at">в</string>
     <string name="invalid_received_transaction_amount_provided">Введена некорректная полученная сумма транзакции</string>
+    <string name="entire_period">Весь Период</string>
+    <string name="custom">Пользовательский</string>
 </resources>

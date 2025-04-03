@@ -9,7 +9,10 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.colleagues.austrom.R
+import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.getFirstDayOfMonth
 import com.colleagues.austrom.extensions.getFirstDayOfWeek
 import com.colleagues.austrom.extensions.getFirstDayOfYear
@@ -18,6 +21,11 @@ import com.colleagues.austrom.extensions.getLastDayOfWeek
 import com.colleagues.austrom.extensions.getLastDayOfYear
 import com.colleagues.austrom.extensions.getLocalizedMonthName
 import com.colleagues.austrom.extensions.getLocalizedWeekName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -43,11 +51,15 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
     private var selectedStartDate: LocalDate = LocalDate.now()
     private var selectedEndDate: LocalDate = LocalDate.now()
     private var selectedPeriodType: PeriodType = PeriodType.MONTH
+    private var minMaxDatesPair: Pair<LocalDate, LocalDate> = Pair(LocalDate.now(), LocalDate.now())
 
     init {
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(R.layout.view_date_controller, this, true)
         bindViews(view)
+        CoroutineScope(Dispatchers.IO).launch {
+            minMaxDatesPair = LocalDatabaseProvider(context).getTransactionsMinMaxDatePeriod()
+        }
 
         val attributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.DateControllerView)
         selectedPeriodType = PeriodType.entries.getOrNull(attributes.getInt(R.styleable.DateControllerView_periodType, 1)) ?: selectedPeriodType
@@ -61,9 +73,14 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
         textHolderLayout.setOnClickListener { requestPeriodTypeChange() }
     }
 
+    private fun updateMinMaxDatesPair() {
+
+    }
+
     fun setDate(newStartDate: LocalDate, newEndDate: LocalDate? = null) {
         selectedStartDate = newStartDate
         setUpDateVisibleName()
+
         notifyDatesChanged(getSelectedDatesRange())
     }
 
@@ -73,6 +90,7 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
             PeriodType.WEEK -> { periodTypeTextView.text = context.getString(R.string.week) }
             PeriodType.MONTH -> { periodTypeTextView.text = context.getString(R.string.month) }
             PeriodType.YEAR -> { periodTypeTextView.text = context.getString(R.string.year) }
+            PeriodType.ALL -> {periodTypeTextView.text = context.getString(R.string.entire_period)}
             PeriodType.CUSTOM -> { periodTypeTextView.text = context.getString(R.string.period) }
         }
         setDate(selectedStartDate)
@@ -83,6 +101,7 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
             PeriodType.WEEK -> { Pair(selectedStartDate.getFirstDayOfWeek(), selectedStartDate.getLastDayOfWeek()) }
             PeriodType.MONTH -> { Pair(selectedStartDate.getFirstDayOfMonth(), selectedStartDate.getLastDayOfMonth()) }
             PeriodType.YEAR -> { Pair(selectedStartDate.getFirstDayOfYear(), selectedStartDate.getLastDayOfYear()) }
+            PeriodType.ALL -> { minMaxDatesPair }
             PeriodType.CUSTOM -> { Pair(selectedStartDate, selectedEndDate) }
         }
     }
@@ -94,6 +113,7 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
             PeriodType.WEEK -> { periodNameTextView.text = selectedStartDate.getLocalizedWeekName() }
             PeriodType.MONTH -> { periodNameTextView.text = selectedStartDate.getLocalizedMonthName() }
             PeriodType.YEAR -> { periodNameTextView.text = selectedStartDate.format(DateTimeFormatter.ofPattern("yyyy")) }
+            PeriodType.ALL -> { periodNameTextView.text = "" }
             PeriodType.CUSTOM -> { periodNameTextView.text = "" }
         }
     }
@@ -103,6 +123,7 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
             PeriodType.WEEK -> { selectedStartDate.minusWeeks(1) }
             PeriodType.MONTH -> { selectedStartDate.minusMonths(1) }
             PeriodType.YEAR -> { selectedStartDate.minusYears(1) }
+            PeriodType.ALL -> {selectedStartDate}
             PeriodType.CUSTOM -> { selectedStartDate }
         })
     }
@@ -112,11 +133,12 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
             PeriodType.WEEK -> { selectedStartDate.plusWeeks(1) }
             PeriodType.MONTH -> { selectedStartDate.plusMonths(1) }
             PeriodType.YEAR -> { selectedStartDate.plusYears(1) }
+            PeriodType.ALL -> { selectedStartDate }
             PeriodType.CUSTOM -> { selectedStartDate }
         })
     }
 }
 
 enum class PeriodType{
-    WEEK, MONTH, YEAR, CUSTOM
+    WEEK, MONTH, YEAR, ALL, CUSTOM
 }

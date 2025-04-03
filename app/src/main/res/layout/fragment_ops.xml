@@ -25,6 +25,7 @@
         app:srcCompat="@drawable/ic_category_cashback_temp" />
 
     <LinearLayout
+        android:id="@+id/linearLayout5"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -64,5 +65,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_navigation_add_temp"
         app:tint="@color/primaryTextColor" />
+
+    <com.colleagues.austrom.views.DateControllerView
+        android:id="@+id/ops_dateController_dctr"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ops_navDrawer_btn"
+        app:layout_constraintEnd_toStartOf="@+id/ops_switchListMode_btn"
+        app:layout_constraintStart_toEndOf="@+id/ops_navDrawer_btn"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

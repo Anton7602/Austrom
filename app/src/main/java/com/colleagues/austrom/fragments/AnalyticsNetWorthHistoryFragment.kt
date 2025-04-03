@@ -95,7 +95,7 @@ class AnalyticsNetWorthHistoryFragment : Fragment(R.layout.fragment_analytics_ne
         dateController.setDatesRangeChangedListener { dateRange ->
             localDBProvider.getTransactionsByTransactionFilterAsync(
                 TransactionFilter(
-                    mutableListOf(), mutableListOf(),
+                    mutableListOf(), mutableListOf(), mutableListOf(),
                     dateRange.first, dateRange.second
                 )
             ).observe(viewLifecycleOwner) { transactionList ->setUpBoxChart(transactionList) }
