@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.models.Transaction
-import java.time.LocalDate
+import com.colleagues.austrom.views.MoneyFormatTextView
 
-class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMap<LocalDate, MutableList<Transaction>>, private val context: Context) : RecyclerView.Adapter<TransactionGroupRecyclerAdapter.TransactionGroupViewHolder>(){
+class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMap<String, MutableList<Transaction>>, private val context: Context) : RecyclerView.Adapter<TransactionGroupRecyclerAdapter.TransactionGroupViewHolder>(){
     class TransactionGroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val transactionGroupName: TextView = itemView.findViewById(R.id.trgritem_date_txt)
         val transactionHolderRecyclerView: RecyclerView= itemView.findViewById(R.id.trgritem_transactionholder_rcv)
+        val transactionGroupSumHolder: MoneyFormatTextView= itemView.findViewById(R.id.trgritem_sumHolder_mfor)
     }
     private var returnClickedItem: (transaction: Transaction, index: Int)->Unit = {_,_ ->}
     fun setOnItemClickListener(l: ((Transaction, Int)->Unit)) { returnClickedItem = l }
@@ -28,9 +29,13 @@ class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMa
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionGroupViewHolder, position: Int) {
-        val transactionDate = groupedTransactions.keys.elementAt(position)
-        holder.transactionGroupName.text = transactionDate.toDayOfWeekAndShortDateFormat()
+        holder.transactionGroupName.text = groupedTransactions.keys.elementAt(position)
         holder.transactionHolderRecyclerView.layoutManager = LinearLayoutManager(context)
+        val transactionsSum = groupedTransactions.values.elementAt(position).sumOf { transaction -> transaction.amount }
+        val moneyColor = if (transactionsSum>0) context.getColor(R.color.incomeGreen) else if (transactionsSum<0) context.getColor(R.color.expenseRed) else context.getColor(R.color.transferYellow)
+        holder.transactionGroupSumHolder.setAmountColor(moneyColor)
+        holder.transactionGroupSumHolder.setCurrencyColor(moneyColor)
+        holder.transactionGroupSumHolder.setValue(transactionsSum)
         val adapter = TransactionRecyclerAdapter(groupedTransactions.values.elementAt(position), context)
         adapter.setOnItemClickListener { transaction, _ -> returnClickedItem(transaction, position) }
         holder.transactionHolderRecyclerView.adapter = adapter

@@ -85,6 +85,7 @@ class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode:
                     "CASH" -> AssetType.CASH
                     "DEPOSIT" -> AssetType.DEPOSIT
                     "INVESTMENT" -> AssetType.INVESTMENT
+                    "REAL_ESTATE" -> AssetType.REAL_ESTATE
                     "CREDIT_CARD" -> AssetType.CREDIT_CARD
                     "LOAN" -> AssetType.LOAN
                     "MORTAGE" -> AssetType.MORTAGE
@@ -109,6 +110,7 @@ enum class AssetType(val stringResourceId: Int = R.string.unresolved, val string
     CASH(R.string.cash, R.string.cash_desc, R.drawable.ic_assettype_cash_temp),
     DEPOSIT(R.string.deposit, R.string.deposit_desc, R.drawable.ic_assettype_deposit_temp),
     INVESTMENT(R.string.investment, R.string.investment_desc, R.drawable.ic_assettype_investment_temp),
+    REAL_ESTATE(R.string.real_estate, R.string.real_estate_desc, R.drawable.ic_assettype_realestate_temp),
 
     CREDIT_CARD(R.string.credit_card, R.string.credit_card_desc, R.drawable.ic_assettype_card_temp, true),
     LOAN(R.string.loan, R.string.loan_desc, R.drawable.ic_assettype_loan_temp, true),

@@ -52,7 +52,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
             if (assetType.isLiability)
                 startAssetCreationActivity(assetType, arrayListOf(AssetType.CREDIT_CARD.ordinal, AssetType.LOAN.ordinal, AssetType.MORTAGE.ordinal))
             else
-                startAssetCreationActivity(assetType, arrayListOf(AssetType.CARD.ordinal, AssetType.CASH.ordinal, AssetType.DEPOSIT.ordinal, AssetType.INVESTMENT.ordinal,))
+                startAssetCreationActivity(assetType, arrayListOf(AssetType.CARD.ordinal, AssetType.CASH.ordinal, AssetType.DEPOSIT.ordinal, AssetType.INVESTMENT.ordinal, AssetType.REAL_ESTATE.ordinal))
         }
         dialog.show(requireActivity().supportFragmentManager, "AssetTypeSelectionDialog")
     }

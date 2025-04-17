@@ -162,4 +162,13 @@ class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: Att
         if (withAnimation) startAnimation(currentValue.toFloat(), value.toFloat())
         invalidate()
     }
+
+    fun setAmountColor(color: Int) {
+        moneyAmountColor = color
+        amountTextPaint.color = moneyAmountColor
+    }
+    fun setCurrencyColor(color: Int) {
+        currencyColor = color
+        amountTextPaint.color = currencyColor
+    }
 }

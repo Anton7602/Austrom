@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".dialogs.bottomsheetdialogs.GroupBySelectionDialogFragment">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/groupbysel_holder_crv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/backgroundCard"
+        app:cardCornerRadius="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/groupbysel_byDate_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:text="@string/by_date"
+                android:textColor="@color/primaryTextColor" />
+
+            <Button
+                android:id="@+id/groupbysel_byCategory_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:text="@string/by_category"
+                android:textColor="@color/primaryTextColor" />
+
+            <Button
+                android:id="@+id/groupbysel_byName_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:text="@string/by_name"
+                android:textColor="@color/primaryTextColor" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

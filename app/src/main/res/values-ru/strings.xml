@@ -489,4 +489,11 @@
     <string name="invalid_received_transaction_amount_provided">Введена некорректная полученная сумма транзакции</string>
     <string name="entire_period">Весь Период</string>
     <string name="custom">Пользовательский</string>
+    <string name="group_by">Группировка</string>
+    <string name="by_date">По Дате</string>
+    <string name="by_category">По Категории</string>
+    <string name="by_name">По Имени</string>
+    <string name="unspecified">Неопределённый</string>
+    <string name="real_estate">Недвижимость</string>
+    <string name="real_estate_desc">Имущество, состоящее из земли и зданий, предлагающее потенциал для роста стоимости.</string>
 </resources>

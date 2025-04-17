@@ -19,9 +19,11 @@ import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.PeriodTypeSelectionDialogFragment
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.TransactionTypeSelectionDialogFragment
 import com.colleagues.austrom.extensions.setOnSafeClickListener
+import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.models.TransactionFilter
+import com.colleagues.austrom.models.TransactionGroupByType
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.DateControllerView
 import com.colleagues.austrom.views.TransactionHeaderView
@@ -52,6 +54,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
     //endregion
     private var lastSelectedIndex: Int = 0
     private var isListShowsTransactionDetails = false
+    private var groupByState: TransactionGroupByType = TransactionGroupByType.BY_DATE
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
@@ -91,6 +94,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
     private fun setUpTransactionHeader() {
         transactionsHeader.setOnFilterChangedListener { transactionFilter ->applyTransactionFilter(transactionFilter) }
         transactionsHeader.setOnDatesRequestedListener { setUpDatePicker() }
+        transactionsHeader.setOnGroupByTypeChangedListener { groupByType -> groupByState = groupByType; applyTransactionFilter(transactionsHeader.getTransactionFilter()) }
         transactionsHeader.setCurrencySymbol(AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]!!.symbol)
         transactionsHeader.setRequestDialogCall { dialog -> dialog.show(requireActivity().supportFragmentManager, "TransactionHeaderPickerDialog") }
         applyTransactionFilter(transactionsHeader.getTransactionFilter())
@@ -207,7 +211,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
     }
 
     private fun setUpTransactionRecyclerView(transactionList: MutableList<Transaction>) {
-        val groupedTransactions = Transaction.groupTransactionsByDate(transactionList)
+        val groupedTransactions = Transaction.groupTransactionsBy(transactionList, groupByState)
         transactionHolder.layoutManager = LinearLayoutManager(activity)
         val adapter = TransactionGroupRecyclerAdapter(groupedTransactions, (requireActivity() as AppCompatActivity))
         adapter.setOnItemClickListener { transaction, index ->
@@ -219,7 +223,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
 
     private fun setUpTransactionDetailsRecyclerView(transactionDetailsMap: Map<Transaction, List<TransactionDetail>>) {
         transactionHolder.layoutManager = LinearLayoutManager(activity)
-        val adapter = TransactionDetailAsTransactionGroupRecyclerAdapter(groupUpTransactionDetails(transactionDetailsMap), (requireActivity() as AppCompatActivity))
+        val adapter = TransactionDetailAsTransactionGroupRecyclerAdapter(groupUpTransactionDetails(transactionDetailsMap, groupByState), (requireActivity() as AppCompatActivity))
         adapter.setOnItemClickListener { transactionDetail, index ->
             lastSelectedIndex = index
             requireActivity().startActivity(Intent(requireActivity(), TransactionPropertiesActivityNew::class.java).putExtra("transactionId", transactionDetail.transactionId))
@@ -227,17 +231,38 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         transactionHolder.adapter = adapter
     }
 
-    private fun groupUpTransactionDetails(transactionDetailsMap: Map<Transaction, List<TransactionDetail>>): Map<LocalDate, Map<Transaction, List<TransactionDetail>>> {
-        val result = mutableMapOf<LocalDate, MutableMap<Transaction, List<TransactionDetail>>>()
-        transactionDetailsMap.forEach { transactionMap ->
-            if (!result.containsKey(transactionMap.key.transactionDate)) {
-                result[transactionMap.key.transactionDate] = mutableMapOf(Pair(transactionMap.key, transactionMap.value))
-            } else {
-                result[transactionMap.key.transactionDate]!![transactionMap.key] = transactionMap.value
+    private fun groupUpTransactionDetails(transactionDetailsMap: Map<Transaction, List<TransactionDetail>>, transactionGroupByType: TransactionGroupByType): Map<String, Map<Transaction, List<TransactionDetail>>> {
+        val result = mutableMapOf<String, MutableMap<Transaction, List<TransactionDetail>>>()
+        when (transactionGroupByType) {
+
+            TransactionGroupByType.BY_DATE -> {
+                transactionDetailsMap.forEach { transactionMap ->
+                    if (!result.containsKey(transactionMap.key.transactionDate.toDayOfWeekAndShortDateFormat())) {
+                        result[transactionMap.key.transactionDate.toDayOfWeekAndShortDateFormat()] = mutableMapOf()
+                    }
+                    result[transactionMap.key.transactionDate.toDayOfWeekAndShortDateFormat()]!![transactionMap.key] = transactionMap.value
+                }
+            }
+
+            TransactionGroupByType.BY_CATEGORY -> {
+                transactionDetailsMap.forEach { transactionMap ->
+                    if (!result.containsKey(activeCategories[transactionMap.key.categoryId]!!.name)) {
+                        result[activeCategories[transactionMap.key.categoryId]!!.name] = mutableMapOf()
+                    }
+                    result[activeCategories[transactionMap.key.categoryId]!!.name]!![transactionMap.key] = transactionMap.value
+                }
+            }
+
+            TransactionGroupByType.BY_NAME -> {
+                transactionDetailsMap.forEach { transactionMap ->
+                    if (!result.containsKey(transactionMap.key.transactionName)) {
+                        result[transactionMap.key.transactionName] = mutableMapOf()
+                    }
+                    result[transactionMap.key.transactionName]!![transactionMap.key] = transactionMap.value
+                }
             }
         }
+
         return result
     }
-
-
 }

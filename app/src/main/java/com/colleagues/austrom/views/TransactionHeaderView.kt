@@ -22,12 +22,14 @@ import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.AssetPickerDialogFragment
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.CategoryPickerDialogFragment
+import com.colleagues.austrom.dialogs.bottomsheetdialogs.GroupBySelectionDialogFragment
 import com.colleagues.austrom.dialogs.bottomsheetdialogs.NamePickerDialogFragment
 import com.colleagues.austrom.extensions.dpToPx
 import com.colleagues.austrom.extensions.toDayAndShortMonthNameFormat
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.TransactionFilter
+import com.colleagues.austrom.models.TransactionGroupByType
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
@@ -46,9 +48,12 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
     private var requestDates: ()->Unit = {}
     fun setOnFilterChangedListener(l: ((TransactionFilter)->Unit)) { returnFilter = l }
     private var returnFilter: (TransactionFilter)->Unit = {}
+    fun setOnGroupByTypeChangedListener(l: ((TransactionGroupByType)->Unit)) { returnGroupByType = l }
+    private var returnGroupByType: (TransactionGroupByType)->Unit = {}
 
     fun setRequestDialogCall(l: ((BottomSheetDialogFragment)->Unit)) { showDialog = l }
     private var showDialog: (BottomSheetDialogFragment)->Unit = {}
+
     //region Binding
     private lateinit var incomeSumMoneyFormatTextView: MoneyFormatTextView
     private lateinit var expenseSumMoneyFormatTextView: MoneyFormatTextView
@@ -62,6 +67,7 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
     private lateinit var incomeHeaderChip: Chip
     private lateinit var transferHeaderChip: Chip
     private lateinit var assetHeaderChip: Chip
+    private lateinit var groupByChip: Chip
     private lateinit var nameHeaderChip: Chip
     private fun bindViews(view: View) {
         incomeSumMoneyFormatTextView = view.findViewById(R.id.trlistheadview_income_monf)
@@ -73,6 +79,7 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         datesHeaderChip = view.findViewById(R.id.trlistheadview_dateHeader_chp)
         expenseHeaderChip = view.findViewById(R.id.trlistheadview_expenseHeader_chp)
         incomeHeaderChip = view.findViewById(R.id.trlistheadview_incomeHeader_chp)
+        groupByChip = view.findViewById(R.id.trlistheadview_groupByHeader_chp)
         transferHeaderChip = view.findViewById(R.id.trlistheadview_transferHeader_chp)
         assetHeaderChip = view.findViewById(R.id.trlistheadview_assetHeader_chp)
         nameHeaderChip = view.findViewById(R.id.trlistheadview_nameHeader_chp)
@@ -121,6 +128,7 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         incomeHeaderChip.setOnClickListener { chip -> launchCategoryPickerDialog(AustromApplication.activeCategories.values.filter { l -> l.transactionType==TransactionType.INCOME }, chip as Chip)}
         transferHeaderChip.setOnClickListener { chip -> handleTransferHeaderChipClick() }
         assetHeaderChip.setOnClickListener { chip -> launchAssetPickerDialog() }
+        groupByChip.setOnClickListener { chip -> launchGroupByPickerDialog() }
         nameHeaderChip.setOnClickListener { chip -> launchNamePickerDialog() }
     }
 
@@ -128,6 +136,13 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         if (transferHeaderChip.isChecked) transactionFilter.categories.add(AustromApplication.activeCategories.values.first { l -> l.transactionType==TransactionType.TRANSFER }.categoryId)
         else transactionFilter.categories.remove(AustromApplication.activeCategories.values.first { l -> l.transactionType==TransactionType.TRANSFER }.categoryId)
         returnFilter(transactionFilter)
+    }
+
+    private fun launchGroupByPickerDialog() {
+        groupByChip.isChecked = true
+        val dialog = GroupBySelectionDialogFragment()
+        dialog.setOnDialogResultListener { groupByType -> returnGroupByType(groupByType) }
+        showDialog(dialog)
     }
 
     private fun launchNamePickerDialog() {

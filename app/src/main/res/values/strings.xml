@@ -490,4 +490,11 @@
     <string name="invalid_received_transaction_amount_provided">Invalid received transaction amount provided</string>
     <string name="entire_period">Entire Period</string>
     <string name="custom">Custom</string>
+    <string name="group_by">Group By</string>
+    <string name="by_date">By Date</string>
+    <string name="by_category">By Category</string>
+    <string name="by_name">By Name</string>
+    <string name="unspecified">Unspecified</string>
+    <string name="real_estate">Real Estate</string>
+    <string name="real_estate_desc">Property consisting of land and buildings, offering potential for value appreciation.</string>
 </resources>

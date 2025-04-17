@@ -10,6 +10,7 @@ import com.colleagues.austrom.database.FirebaseDatabaseProvider
 import com.colleagues.austrom.database.LocalDatabaseProvider
 import com.colleagues.austrom.extensions.equalTo
 import com.colleagues.austrom.extensions.serialize
+import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.models.Transaction.Companion.generateUniqueTransactionKey
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -186,14 +187,46 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
             return sum
         }
 
-        fun groupTransactionsByDate(transactions: MutableList<Transaction>) : MutableMap<LocalDate, MutableList<Transaction>> {
+        fun groupTransactionsBy(transactions: MutableList<Transaction>, groupByType: TransactionGroupByType): MutableMap<String, MutableList<Transaction>> {
+            return when(groupByType) {
+                TransactionGroupByType.BY_DATE -> groupTransactionsByDate(transactions)
+                TransactionGroupByType.BY_CATEGORY -> groupTransactionsByCategory(transactions)
+                TransactionGroupByType.BY_NAME -> groupTransactionsByName(transactions)
+            }
+        }
+
+        private fun groupTransactionsByDate(transactions: MutableList<Transaction>) : MutableMap<String, MutableList<Transaction>> {
             transactions.sortByDescending { it.transactionDate }
-            val groupedTransactions = mutableMapOf<LocalDate, MutableList<Transaction>>()
+            val groupedTransactions = mutableMapOf<String, MutableList<Transaction>>()
             for (transaction in transactions){
-                if (!groupedTransactions.containsKey(transaction.transactionDate)) {
-                    groupedTransactions[transaction.transactionDate] = mutableListOf()
+                if (!groupedTransactions.containsKey(transaction.transactionDate.toDayOfWeekAndShortDateFormat())) {
+                    groupedTransactions[transaction.transactionDate.toDayOfWeekAndShortDateFormat()] = mutableListOf()
                 }
-                groupedTransactions[transaction.transactionDate]!!.add(transaction)
+                groupedTransactions[transaction.transactionDate.toDayOfWeekAndShortDateFormat()]!!.add(transaction)
+            }
+            return  groupedTransactions
+        }
+
+        private fun groupTransactionsByCategory(transactions: MutableList<Transaction>) : MutableMap<String, MutableList<Transaction>> {
+            //transactions.sortBy { it.categoryId }
+            val groupedTransactions = mutableMapOf<String, MutableList<Transaction>>()
+            for (transaction in transactions){
+                if (!groupedTransactions.containsKey(AustromApplication.activeCategories[transaction.categoryId]!!.name)) {
+                    groupedTransactions[AustromApplication.activeCategories[transaction.categoryId]!!.name] = mutableListOf()
+                }
+                groupedTransactions[AustromApplication.activeCategories[transaction.categoryId]!!.name]!!.add(transaction)
+            }
+            return  groupedTransactions
+        }
+
+        private fun groupTransactionsByName(transactions: MutableList<Transaction>) : MutableMap<String, MutableList<Transaction>> {
+            transactions.sortBy { it.transactionName }
+            val groupedTransactions = mutableMapOf<String, MutableList<Transaction>>()
+            for (transaction in transactions){
+                if (!groupedTransactions.containsKey(transaction.transactionName)) {
+                    groupedTransactions[transaction.transactionName] = mutableListOf()
+                }
+                groupedTransactions[transaction.transactionName]!!.add(transaction)
             }
             return  groupedTransactions
         }
@@ -242,3 +275,5 @@ data class TransactionWithDetails(val assetId: String, var amount: Double, var c
                                   var isPrivate: Boolean = false, var version: Int = 0, val name: String?, val cost: Double?, val quantity: Double? = null, val typeOfQuantity: QuantityUnit? = null,
                                   val categoryName: String? = null, var transactionDetailId: String?
 )
+
+enum class TransactionGroupByType{ BY_DATE, BY_CATEGORY, BY_NAME }

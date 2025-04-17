@@ -42,7 +42,7 @@ class TransactionDetailAsTransactionRecyclerAdapter(private val transactionDetai
         LayoutInflater.from(parent.context).inflate(R.layout.item_transaction, parent, false)) }
     override fun getItemCount(): Int { return transactionDetails.size }
     init {
-        transactionDetails = transactionDetailsMap.values.flatten()
+        transactionDetails = transactionDetailsMap.values.flatten().sortedBy { it.cost }
         transactions = transactionDetailsMap.keys.associateBy { it.transactionId }
     }
 
@@ -68,7 +68,7 @@ class TransactionDetailAsTransactionRecyclerAdapter(private val transactionDetai
 
                 TransactionType.EXPENSE -> {
                     category = AustromApplication.activeCategories[transaction.categoryId] ?: throw InvalidTransactionException("Category used in transaction is not recognized", TransactionValidationType.UNKNOWN_CATEGORY_INVALID)
-                    holder.amount.text = (-transactionDetail.cost).toMoneyFormat()
+                    holder.amount.text = transactionDetail.cost.toMoneyFormat()
                     holder.amount.setTextColor(context.getColor(R.color.expenseRed))
                     holder.currencySymbol.setTextColor(context.getColor(R.color.expenseRed))
                     holder.currencySymbol.text = AustromApplication.activeCurrencies[asset.currencyCode]?.symbol

@@ -32,6 +32,7 @@ import com.colleagues.austrom.fragments.AssetEditFragment
 import com.colleagues.austrom.fragments.TransactionEditFragment
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionGroupByType
 
 class AssetPropertiesActivity : AppCompatActivity(){
     //region Binding
@@ -183,7 +184,7 @@ class AssetPropertiesActivity : AppCompatActivity(){
         transactionsOfAsset = dbProvider.getTransactionsOfAsset(asset)
         noTransactionsText.visibility = if (transactionsOfAsset.isEmpty()) {View.VISIBLE} else {View.GONE}
         transactionHolder.layoutManager = LinearLayoutManager(this)
-        val groupedTransactions = Transaction.groupTransactionsByDate(transactionsOfAsset)
+        val groupedTransactions = Transaction.groupTransactionsBy(transactionsOfAsset, TransactionGroupByType.BY_DATE)
         val adapter = TransactionGroupRecyclerAdapter(groupedTransactions, this)
         adapter.setOnItemClickListener { transaction, _ -> startActivity(Intent(this, TransactionPropertiesActivityNew::class.java).putExtra("transactionId", transaction.transactionId)) }
         transactionHolder.adapter = adapter

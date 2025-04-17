@@ -308,7 +308,7 @@ class LocalDatabaseProvider(private var context: Context) {
                     TransactionDetail(
                         transactionId = transactionWithDetail.transactionId,
                         name = transactionWithDetail.name.toString(),
-                        cost = transactionWithDetail.cost ?: 0.0,
+                        cost = if (transactionWithDetail.amount>=0) transactionWithDetail.cost ?: 0.0 else -(transactionWithDetail.cost ?: 0.0),
                         quantity = transactionWithDetail.quantity,
                         typeOfQuantity = transactionWithDetail.typeOfQuantity,
                         categoryName = transactionWithDetail.categoryName,
@@ -323,7 +323,7 @@ class LocalDatabaseProvider(private var context: Context) {
                         TransactionDetail(
                             transactionId = transactionMap.key.transactionId,
                             name = context.getString(R.string.unallocated_balance),
-                            cost = if (transactionMap.key.amount>=0) transactionMap.key.amount-transactionDetailsSum else transactionMap.key.amount+transactionDetailsSum,
+                            cost = transactionMap.key.amount-transactionDetailsSum,
                             categoryName = transactionMap.key.categoryId
                         ))
                 }

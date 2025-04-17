@@ -27,6 +27,7 @@ import com.colleagues.austrom.dialogs.bottomsheetdialogs.IconSelectionDialogFrag
 import com.colleagues.austrom.managers.Icon
 import com.colleagues.austrom.models.Category
 import com.colleagues.austrom.models.Transaction
+import com.colleagues.austrom.models.TransactionGroupByType
 import com.colleagues.austrom.models.TransactionType
 import com.google.android.material.textfield.TextInputEditText
 
@@ -90,7 +91,7 @@ class CategoryCreationActivity : AppCompatActivity() {
             transactionsOfCategory = dbProvider.getTransactionOfCategory(category!!)
             //noTransactionsText.visibility = if (transactionsOfAsset.isEmpty()) {View.VISIBLE} else {View.GONE}
             transactionHolder.layoutManager = LinearLayoutManager(this)
-            val groupedTransactions = Transaction.groupTransactionsByDate(transactionsOfCategory)
+            val groupedTransactions = Transaction.groupTransactionsBy(transactionsOfCategory, TransactionGroupByType.BY_DATE)
             val adapter = TransactionGroupRecyclerAdapter(groupedTransactions, this)
             adapter.setOnItemClickListener { transaction, _ -> startActivity(Intent(this, TransactionPropertiesActivityNew::class.java).putExtra("transactionId", transaction.transactionId)) }
             transactionHolder.adapter = adapter
