@@ -8,12 +8,12 @@ import kotlin.math.floor
 import kotlin.math.log10
 import kotlin.math.pow
 
-//TODO("TESTING REQUIRED!!")
 fun Double.toMoneyFormat(): String {
     val symbols = DecimalFormatSymbols(Locale.US).apply {
         decimalSeparator = '.'
         groupingSeparator = ' '
     }
+    if (this== this.toLong().toDouble()) return DecimalFormat("#,##0", symbols).format(this)
     val decimalFormat = DecimalFormat("#,##0.00", symbols)
     return decimalFormat.format(this)
 }

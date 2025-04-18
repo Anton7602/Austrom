@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.text.TextPaint
 import android.util.AttributeSet
+import androidx.core.content.res.ResourcesCompat
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.BaseView
@@ -53,9 +54,10 @@ class MoneyFormatTextView @JvmOverloads constructor(context: Context, attrs: Att
             percentOfCurrencyTextSize = typeArray.getFloat(R.styleable.MoneyFormatTextView_currencyTextSizePercent, 0.5F)
             typeArray.recycle()
         }
+        val font = ResourcesCompat.getFont(context, R.font.dm_sans_light)!!
 
-        initPaints(amountTextPaint, amountTextSize, moneyAmountColor)
-        initPaints(currencyTextPaint, currencyTextSize, currencyColor)
+        initPaints(amountTextPaint, amountTextSize, moneyAmountColor, font)
+        initPaints(currencyTextPaint, currencyTextSize, currencyColor, font)
     }
 
     override fun onDraw(canvas: Canvas) {

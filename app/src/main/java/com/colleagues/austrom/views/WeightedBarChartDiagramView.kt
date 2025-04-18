@@ -10,6 +10,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
 import com.colleagues.austrom.R
+import com.colleagues.austrom.extensions.getLastDayOfMonth
+import com.colleagues.austrom.extensions.getLocalizedMonthName
 import com.colleagues.austrom.extensions.roundToAFirstDigit
 import com.colleagues.austrom.extensions.spToPx
 import com.colleagues.austrom.extensions.toMoneyFormat
@@ -106,10 +108,15 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
 
         for (day in days) {
             if ((day.dayOfMonth-1)%3==0) {
-                val labelText = day.dayOfMonth.toString()
-                labelPaintX.getTextBounds(labelText, 0, labelText.length, labelXBound)
-                canvas.drawText(labelText,currentX+(barWidth/2)-labelXBound.width()/2, height.toFloat(),labelPaintX)
-                canvas.drawLine(currentX+barWidth/2,0f, currentX+barWidth/2, mapValueToY(minNetWorth, minNetWorth, maxNetWorth, graphHeight), axisPaint)
+                val labelText = if (days.first().monthValue==days.last().monthValue) day.dayOfMonth.toString()
+                else if (day.dayOfMonth==1) day.getLocalizedMonthName().substring(0,3)
+                else if (day.dayOfMonth == day.getLastDayOfMonth().dayOfMonth) ""
+                else day.dayOfMonth.toString()
+                if (labelText.isNotEmpty()) {
+                    labelPaintX.getTextBounds(labelText, 0, labelText.length, labelXBound)
+                    canvas.drawText(labelText,currentX+(barWidth/2)-labelXBound.width()/2, height.toFloat(),labelPaintX)
+                    canvas.drawLine(currentX+barWidth/2,0f, currentX+barWidth/2, mapValueToY(minNetWorth, minNetWorth, maxNetWorth, graphHeight), axisPaint)
+                }
             }
             val startNetWorth = netWorthMap[day] ?: 0.0
             val endNetWorth = netWorthMap[day.plusDays(1)] ?: startNetWorth
@@ -145,7 +152,7 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
             val value = minNetWorth + i * verticalAxisStepHeight
             val y = mapValueToY(value, minNetWorth, maxNetWorth, graphHeight)
             canvas.drawLine(0f, y, width.toFloat(), y, gridPaint)
-            canvas.drawText(value.toMoneyFormat().substring(0, value.toMoneyFormat().indexOf('.')), 5f, y, labelPaintY)
+            canvas.drawText(value.toMoneyFormat(), 5f, y, labelPaintY)
         }
     }
 

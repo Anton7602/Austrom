@@ -19,7 +19,7 @@ class Category(var name: String,
     var type: String? = null) {
 
     constructor(name: String, imgReference: Icon, transactionType: TransactionType): this(name, imgReference, transactionType, generateCategoryId())
-    fun serialize(): String { return "$categoryId,$name,${imgReference.resourceId},${transactionType},$userId"}
+    fun serialize(): String { return "$categoryId,$name,$imgReference,${transactionType},$userId"}
 
     override fun toString(): String {
         return this.name
@@ -45,7 +45,7 @@ class Category(var name: String,
             return Category(
                 categoryId = dataParts[0],
                 name = dataParts[1],
-                imgReference = IconManager().getIconByResourceId(dataParts[2].toInt()) ?: Icon.I0,
+                imgReference = IconManager().getIconByResourceId(dataParts[2]) ?: Icon.I0,
                 transactionType = when (dataParts[3]) {
                     "EXPENSE" -> TransactionType.EXPENSE
                     "INCOME" -> TransactionType.INCOME

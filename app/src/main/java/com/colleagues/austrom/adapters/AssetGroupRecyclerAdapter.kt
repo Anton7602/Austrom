@@ -26,6 +26,9 @@ class AssetGroupRecyclerAdapter(private var assetTypes: Map<AssetType, MutableLi
     fun setOnItemClickListener(l: ((Asset)->Unit)) { returnClickedItem = l }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AssetGroupViewHolder { return AssetGroupViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_asset_group, parent, false)) }
     override fun getItemCount(): Int { return assetTypes.size  }
+    init {
+        assetTypes = assetTypes.toSortedMap(compareBy { it.ordinal })
+    }
 
     override fun onBindViewHolder(holder: AssetGroupViewHolder, position: Int) {
         holder.assetTypeName.text = context.getString(assetTypes.keys.elementAt(position).stringResourceId).uppercase()

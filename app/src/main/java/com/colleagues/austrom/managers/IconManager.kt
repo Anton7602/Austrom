@@ -8,8 +8,8 @@ class IconManager {
         return Icon.entries
     }
 
-    fun getIconByResourceId(resourceId: Int): Icon? {
-        Icon.entries.forEach { icon -> if (icon.resourceId==resourceId) return icon }
+    fun getIconByResourceId(resourceId: String): Icon? {
+        Icon.entries.forEach { icon -> if (icon.toString()==resourceId) return icon }
         return null
     }
 }

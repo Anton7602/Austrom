@@ -28,11 +28,10 @@
                 android:id="@+id/trgritem_date_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:text="Transaction Group Title"
                 android:textAppearance="@style/PrimaryCardText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.1"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="HardcodedText" />
 
@@ -53,12 +52,40 @@
                 android:layout_marginTop="-1dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="-1dp"
+                app:amountSize="14sp"
+                app:currencyMargin="4dp"
+                app:currencySize="12sp"
                 app:currencyTextSizePercent="1"
                 app:horizontalAlignment="right"
                 app:layout_constraintBottom_toBottomOf="@+id/trgritem_date_txt"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/trgritem_date_txt"
+                app:layout_constraintTop_toTopOf="parent"
+                app:moneyPadding="4dp" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/trgritem_date_txt"
+                app:layout_constraintDimensionRatio="h,1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/trgritem_date_txt"
+                app:srcCompat="@drawable/ic_navigation_down_temp"
+                app:tint="@color/secondaryTextColor" />
+
+            <Button
+                android:id="@+id/trgritem_collapseButton_btn"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/transparent"
+                android:padding="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/trgritem_transactionholder_rcv"
+                app:layout_constraintEnd_toEndOf="@+id/trgritem_date_txt"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

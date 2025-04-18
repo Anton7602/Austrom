@@ -5,10 +5,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.R
+import com.colleagues.austrom.extensions.setOnSafeClickListener
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionDetail
 import com.colleagues.austrom.views.MoneyFormatTextView
@@ -19,6 +22,7 @@ class TransactionDetailAsTransactionGroupRecyclerAdapter(private val groupedTran
         val transactionGroupName: TextView = itemView.findViewById(R.id.trgritem_date_txt)
         val transactionHolderRecyclerView: RecyclerView = itemView.findViewById(R.id.trgritem_transactionholder_rcv)
         val transactionGroupSumHolder: MoneyFormatTextView = itemView.findViewById(R.id.trgritem_sumHolder_mfor)
+        val transactionCollapseButton: Button = itemView.findViewById(R.id.trgritem_collapseButton_btn)
     }
     init {
         //groupedTransactionsDetailsMap.forEach { group -> group.value.sortBy { transaction -> transaction.amount } }
@@ -43,5 +47,6 @@ class TransactionDetailAsTransactionGroupRecyclerAdapter(private val groupedTran
         val adapter = TransactionDetailAsTransactionRecyclerAdapter(groupedTransactionsDetailsMap[transactionGroupHeader]!!, context)
         adapter.setOnItemClickListener { transactionDetail, _ -> returnClickedItem(transactionDetail, position) }
         holder.transactionHolderRecyclerView.adapter = adapter
+        holder.transactionCollapseButton.setOnSafeClickListener { holder.transactionHolderRecyclerView.visibility = if (holder.transactionHolderRecyclerView.visibility==View.VISIBLE) View.GONE else View.VISIBLE }
     }
 }

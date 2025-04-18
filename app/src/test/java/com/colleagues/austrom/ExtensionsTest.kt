@@ -1,5 +1,6 @@
 package com.colleagues.austrom
 import com.colleagues.austrom.extensions.parseToLocalDate
+import com.colleagues.austrom.extensions.toMoneyFormat
 import org.junit.Test
 import org.junit.Assert.*
 import java.time.LocalDate
@@ -29,4 +30,19 @@ class ExtensionsTest {
     @Test fun testFormat_InvalidDate() { testParseToLocalDate("invalid-date", null) }
     @Test fun testParseToLocalDate_NullString() {  testParseToLocalDate(null, null) }
     @Test fun testParseToLocalDate_DayBeforeMonth() { testParseToLocalDate("02-25-2025", LocalDate.of(2025, 2, 25), false) }
+
+
+    private fun testTurnToMoneyFormat(input: Double, expected: String) { assertEquals(expected, input.toMoneyFormat()) }
+    @Test fun testPositiveWholeNumber() { testTurnToMoneyFormat(100.0, "100")  }
+    @Test fun testPositiveDecimalNumber() { testTurnToMoneyFormat(1234.56, "1 234.56") }
+    @Test fun testPositiveDecimalNumberWithFewerDigits() { testTurnToMoneyFormat(12.3, "12.30") }
+    @Test fun testPositiveDecimalNumberWithMoreDigits() { testTurnToMoneyFormat(98765.4321, "98 765.43") }
+    @Test fun testZero() { testTurnToMoneyFormat(0.0, "0") }
+    @Test fun testNegativeWholeNumber() { testTurnToMoneyFormat(-50.0, "-50") }
+    @Test fun testNegativeDecimalNumber() { testTurnToMoneyFormat(-678.90, "-678.90") }
+    @Test fun testNegativeDecimalNumberWithFewerDigits() { testTurnToMoneyFormat(-1.2, "-1.20") }
+    @Test fun testNegativeDecimalNumberWithMoreDigits() { testTurnToMoneyFormat(-3456.789, "-3 456.79") }
+    @Test fun testLargePositiveNumber() { testTurnToMoneyFormat(1000000.0, "1 000 000") }
+    @Test fun testSmallPositiveDecimal() { testTurnToMoneyFormat(0.01, "0.01")  }
+    @Test fun testSmallNegativeDecimal() { testTurnToMoneyFormat(-0.05, "-0.05")  }
 }

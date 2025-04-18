@@ -3,15 +3,20 @@ package com.colleagues.austrom.extensions
 import android.content.Context
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 
 abstract class BaseView@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
 
+    protected fun initPaints(textPaint: TextPaint, textSize: Float, textColor: Int, font: Typeface) {
+        initPaints(textPaint,textSize, textColor)
+        textPaint.typeface = font
+    }
+
     protected fun initPaints(textPaint: TextPaint, textSize: Float, textColor: Int) {
-        textPaint.color = textColor
-        textPaint.isAntiAlias = true
+        initPaints(textPaint, textColor)
         textPaint.textSize = textSize
     }
 
