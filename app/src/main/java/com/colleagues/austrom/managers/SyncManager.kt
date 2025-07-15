@@ -202,7 +202,7 @@ class SyncManager(val context: Context, private val localDBProvider: LocalDataba
                     if (AustromApplication.activeAssets.containsKey(localAsset.assetId)) {
                         AustromApplication.activeAssets.remove(localAsset.assetId)
                     }
-                } else {
+                } else if (snapshotItem.value!="-") {
                     val asset = encryptionManager.decryptAsset(snapshotItem.getValue(String::class.java).toString(),
                         encryptionManager.convertStringToSecretKey(appUser!!.tokenId))
                     if (localAsset!=null) {
