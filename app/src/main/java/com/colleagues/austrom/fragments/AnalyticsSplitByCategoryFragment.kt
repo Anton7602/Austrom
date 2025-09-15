@@ -25,18 +25,21 @@ import kotlin.math.absoluteValue
 class AnalyticsSplitByCategoryFragment : Fragment(R.layout.fragment_analytics_split_by_category) {
     fun setOnNavigationDrawerOpenCalled(l: ()->Unit) { requestNavigationDrawerOpen = l }
     private var requestNavigationDrawerOpen: ()->Unit = {}
+    private var includeNotSpentCategory: Boolean = true
     //region Binding
     private lateinit var pieChart: PieChartDiagramView
     private lateinit var barChart: RecyclerView
     private lateinit var testButton: ImageButton
     private lateinit var callNavDrawerButton: ImageButton
     private lateinit var dateController: DateControllerView
+    private lateinit var switchUnspentButton: ImageButton
     private fun bindViews(view: View) {
         pieChart = view.findViewById(R.id.bud_chart_pch)
         barChart = view.findViewById(R.id.bud_bar_chart_rcv)
         testButton = view.findViewById(R.id.bud_testSheetBtn_btn)
         callNavDrawerButton = view.findViewById(R.id.bud_navDrawer_btn)
         dateController = view.findViewById(R.id.bud_dateController_dcon)
+        switchUnspentButton = view.findViewById(R.id.bud_switchUnspent_btn)
     }
     //endregion
 
@@ -51,6 +54,12 @@ class AnalyticsSplitByCategoryFragment : Fragment(R.layout.fragment_analytics_sp
         setUpDateController()
         testButton.setOnSafeClickListener { launchAnalyticsSelectionDialog() }
         callNavDrawerButton.setOnSafeClickListener { requestNavigationDrawerOpen() }
+        switchUnspentButton.setOnSafeClickListener { switchUnspentVisibility() }
+    }
+
+    private fun switchUnspentVisibility() {
+        includeNotSpentCategory = !includeNotSpentCategory
+        updatePieChart()
     }
 
     private fun launchAnalyticsSelectionDialog() {
@@ -62,14 +71,24 @@ class AnalyticsSplitByCategoryFragment : Fragment(R.layout.fragment_analytics_sp
     private fun calculateTransactionsSums(transactions: List<Transaction>) : List<Pair<Double, String>> {
         val transactionsByCategories = mutableMapOf<String, Double>()
         val dataSet = mutableListOf<Pair<Double, String>>()
+        var incomeSum = 0.0
+        var expenseSum = 0.0
         transactions.forEach { transaction ->
-            if (transactionsByCategories.containsKey(transaction.categoryId)) {
-                transactionsByCategories[transaction.categoryId] = transactionsByCategories[transaction.categoryId]!! +  transaction.amountInBaseCurrency().absoluteValue
+            if (transaction.transactionType()==TransactionType.EXPENSE) {
+                if (transactionsByCategories.containsKey(transaction.categoryId)) {
+                    transactionsByCategories[transaction.categoryId] = transactionsByCategories[transaction.categoryId]!! +  transaction.amountInBaseCurrency().absoluteValue
+                } else {
+                    transactionsByCategories[transaction.categoryId] = transaction.amountInBaseCurrency().absoluteValue
+                }
+                expenseSum+=transaction.amountInBaseCurrency()
             } else {
-                transactionsByCategories[transaction.categoryId] = transaction.amountInBaseCurrency().absoluteValue
+                incomeSum+=transaction.amountInBaseCurrency()
             }
         }
         transactionsByCategories.forEach { (categoryId, transactionsSum) -> dataSet.add(Pair(transactionsSum, activeCategories[categoryId]!!.name)) }
+        if (includeNotSpentCategory && incomeSum.absoluteValue>expenseSum.absoluteValue) {
+            dataSet.add(Pair((incomeSum.absoluteValue-expenseSum.absoluteValue), getString(R.string.savings)))
+        }
         return dataSet.sortedByDescending { l->l.first }
     }
 
@@ -80,20 +99,22 @@ class AnalyticsSplitByCategoryFragment : Fragment(R.layout.fragment_analytics_sp
     }
 
     private fun setUpDateController() {
-        val localDBProvider = LocalDatabaseProvider(requireActivity())
-        dateController.setDatesRangeChangedListener { dateRange ->
-            localDBProvider.getTransactionsByTransactionFilterAsync(
-                TransactionFilter(
-                    activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE }.map { l -> l.categoryId }.toMutableList(),
-                    mutableListOf(), mutableListOf(), dateRange.first, dateRange.second)).observe(viewLifecycleOwner) { transactionList ->
-                        val calculatedSumsOfTransactions = calculateTransactionsSums(transactionList)
-                        pieChart.setChartData(calculatedSumsOfTransactions)
-                        setUpRecyclerView(calculatedSumsOfTransactions)
-            }
-        }
-
+        dateController.setDatesRangeChangedListener { _ -> updatePieChart() }
         dateController.setPeriodTypeChangeRequestedListener { launchPeriodTypeSelectionDialog() }
         dateController.setDate(LocalDate.now())
+    }
+
+    private fun updatePieChart() {
+        val dateRange = dateController.getSelectedDatesRange()
+        val localDBProvider = LocalDatabaseProvider(requireActivity())
+        localDBProvider.getTransactionsByTransactionFilterAsync(
+            TransactionFilter(
+                activeCategories.values.filter { l -> l.transactionType==TransactionType.EXPENSE || l.transactionType==TransactionType.INCOME }.map { l -> l.categoryId }.toMutableList(),
+                mutableListOf(), mutableListOf(), dateRange.first, dateRange.second)).observe(viewLifecycleOwner) { transactionList ->
+            val calculatedSumsOfTransactions = calculateTransactionsSums(transactionList)
+            pieChart.setChartData(calculatedSumsOfTransactions)
+            setUpRecyclerView(calculatedSumsOfTransactions)
+        }
     }
 
     private fun launchPeriodTypeSelectionDialog() {

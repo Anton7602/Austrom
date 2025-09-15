@@ -496,4 +496,6 @@
     <string name="unspecified">Неопределённый</string>
     <string name="real_estate">Недвижимость</string>
     <string name="real_estate_desc">Имущество, состоящее из земли и зданий, предлагающее потенциал для роста стоимости.</string>
+    <string name="asset_type">Тип Актива</string>
+    <string name="savings">Сбережения</string>
 </resources>

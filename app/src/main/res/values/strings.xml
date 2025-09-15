@@ -497,4 +497,6 @@
     <string name="unspecified">Unspecified</string>
     <string name="real_estate">Real Estate</string>
     <string name="real_estate_desc">Property consisting of land and buildings, offering potential for value appreciation.</string>
+    <string name="asset_type">Asset Type</string>
+    <string name="savings">Savings</string>
 </resources>

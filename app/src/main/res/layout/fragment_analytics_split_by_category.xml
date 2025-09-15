@@ -67,6 +67,16 @@
         app:layout_constraintTop_toBottomOf="@+id/bud_chart_pch"
         tools:listitem="@layout/item_vertical_bar_chart" />
 
+    <ImageButton
+        android:id="@+id/bud_switchUnspent_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/transparent"
+        android:tint="@color/primaryTextColor"
+        app:layout_constraintBottom_toBottomOf="@+id/bud_chart_pch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bud_chart_pch"
+        app:srcCompat="@drawable/ic_category_cashback_temp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
