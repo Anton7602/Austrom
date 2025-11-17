@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
 import com.colleagues.austrom.extensions.setOnSafeClickListener
 import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
@@ -35,7 +36,14 @@ class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMa
     override fun onBindViewHolder(holder: TransactionGroupViewHolder, position: Int) {
         holder.transactionGroupName.text = groupedTransactions.keys.elementAt(position)
         holder.transactionHolderRecyclerView.layoutManager = LinearLayoutManager(context)
-        val transactionsSum = groupedTransactions.values.elementAt(position).sumOf { transaction -> transaction.amount }
+        val transactionsSum = groupedTransactions.values.elementAt(position).sumOf { transaction ->
+            val currencyCode = AustromApplication.activeAssets[transaction.assetId]?.currencyCode
+            if (currencyCode!= null && currencyCode != AustromApplication.appUser?.baseCurrencyCode) {
+                transaction.amount/(AustromApplication.activeCurrencies[currencyCode]?.exchangeRate ?: 1.0)
+            } else {
+                transaction.amount
+            }
+        }
         val moneyColor = if (transactionsSum>0) context.getColor(R.color.incomeGreen) else if (transactionsSum<0) context.getColor(R.color.expenseRed) else context.getColor(R.color.transferYellow)
         holder.transactionGroupSumHolder.setAmountColor(moneyColor)
         holder.transactionGroupSumHolder.setCurrencyColor(moneyColor)

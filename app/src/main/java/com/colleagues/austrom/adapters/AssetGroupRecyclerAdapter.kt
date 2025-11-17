@@ -14,7 +14,7 @@ import com.colleagues.austrom.extensions.toMoneyFormat
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 
-class AssetGroupRecyclerAdapter(private var assetTypes: Map<AssetType, MutableList<Asset>>, private val context: Context) : RecyclerView.Adapter<AssetGroupRecyclerAdapter.AssetGroupViewHolder>() {
+class AssetGroupRecyclerAdapter(private var assetTypes: Map<String, MutableList<Asset>>, private val context: Context) : RecyclerView.Adapter<AssetGroupRecyclerAdapter.AssetGroupViewHolder>() {
     class AssetGroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val assetTypeName: TextView = itemView.findViewById(R.id.assgritem_assettype_txt)
         val assetTypeSum: TextView= itemView.findViewById(R.id.assgritem_sumamount_txt)
@@ -27,11 +27,12 @@ class AssetGroupRecyclerAdapter(private var assetTypes: Map<AssetType, MutableLi
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AssetGroupViewHolder { return AssetGroupViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_asset_group, parent, false)) }
     override fun getItemCount(): Int { return assetTypes.size  }
     init {
-        assetTypes = assetTypes.toSortedMap(compareBy { it.ordinal })
+        //assetTypes = assetTypes.toSortedMap(compareBy { it.ordinal })
     }
 
     override fun onBindViewHolder(holder: AssetGroupViewHolder, position: Int) {
-        holder.assetTypeName.text = context.getString(assetTypes.keys.elementAt(position).stringResourceId).uppercase()
+        //holder.assetTypeName.text = context.getString(assetTypes.keys.elementAt(position).stringResourceId).uppercase()
+        holder.assetTypeName.text = assetTypes.keys.elementAt(position)
         holder.assetTypeCurrencySymbol.text = AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]?.symbol
         var sum = 0.0
         for (asset in assetTypes.values.elementAt(position)) {
