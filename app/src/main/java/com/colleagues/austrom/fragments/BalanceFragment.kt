@@ -20,6 +20,7 @@ import com.colleagues.austrom.extensions.setOnSafeClickListener
 import com.colleagues.austrom.models.Asset
 import com.colleagues.austrom.models.AssetType
 import com.colleagues.austrom.views.MoneyFormatTextView
+import com.google.android.material.chip.Chip
 
 class BalanceFragment : Fragment(R.layout.fragment_balance) {
     //region Binding
@@ -27,23 +28,34 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     private lateinit var addNewAssetButton: ImageButton
     private lateinit var totalAmountText: MoneyFormatTextView
     private lateinit var callNavigationDrawerButton: ImageButton
+    private lateinit var assetTypeChip: Chip
     private fun bindViews(view: View) {
         assetHolderRecyclerView = view.findViewById(R.id.bal_assetHolder_rcv)
         addNewAssetButton = view.findViewById(R.id.bal_createNewAsset_btn)
         totalAmountText = view.findViewById(R.id.bal_totalAmout_mtxt)
         callNavigationDrawerButton = view.findViewById(R.id.bal_navDrawer_btn)
+        assetTypeChip = view.findViewById(R.id.bal_assetGrouping_chp)
     }
     //endregion
     fun setOnNavigationDrawerOpenCalled(l: ()->Unit) { requestNavigationDrawerOpen = l }
     private var requestNavigationDrawerOpen: ()->Unit = {}
+    private var isGroupedByAssetType = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        assetTypeChip.isCheckable = false
         totalAmountText.setValue(0.0, AustromApplication.activeCurrencies[AustromApplication.appUser?.baseCurrencyCode]!!)
         if (AustromApplication.activeAssets.isEmpty()) { updateAssetsList() }
         addNewAssetButton.setOnSafeClickListener { launchNewAssetCreationDialog()  }
         callNavigationDrawerButton.setOnClickListener { requestNavigationDrawerOpen() }
+        assetTypeChip.setOnSafeClickListener { launchAssetGroupTypeSelection() }
+    }
+
+    private fun launchAssetGroupTypeSelection() {
+        isGroupedByAssetType = !isGroupedByAssetType
+        assetTypeChip.text = if (isGroupedByAssetType) requireContext().getString(R.string.asset_type) else requireContext().getString(R.string.currency)
+        setUpRecyclerView(AustromApplication.activeAssets, isGroupedByAssetType)
     }
 
     private fun launchNewAssetCreationDialog() {
@@ -62,7 +74,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         localDBProvider.getAssetsByAssetFilterAsync().observe(viewLifecycleOwner) {assetList ->
             AustromApplication.activeAssets = mutableMapOf()
             assetList.forEach { asset -> AustromApplication.activeAssets[asset.assetId] = asset }
-            setUpRecyclerView(AustromApplication.activeAssets)
+            setUpRecyclerView(AustromApplication.activeAssets, isGroupedByAssetType)
             calculateTotalAmount(AustromApplication.activeAssets)
         }
 //        val user = AustromApplication.appUser
@@ -94,9 +106,9 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun setUpRecyclerView(assetList: MutableMap<String, Asset>) {
+    private fun setUpRecyclerView(assetList: MutableMap<String, Asset>, isAssetsGroupedByType: Boolean) {
         assetHolderRecyclerView.layoutManager = LinearLayoutManager(activity)
-        val groupedAssets = Asset.groupAssetsByType(assetList)
+        val groupedAssets = if (isAssetsGroupedByType) Asset.groupAssetsByType(assetList, requireContext()) else Asset.groupAssetsByCurrency(assetList, requireContext())
         val adapter = AssetGroupRecyclerAdapter(groupedAssets, (requireActivity() as AppCompatActivity))
         adapter.setOnItemClickListener { asset -> requireActivity().startActivity(Intent(activity, AssetPropertiesActivity::class.java).putExtra("assetId", asset.assetId)) }
         assetHolderRecyclerView.adapter = adapter

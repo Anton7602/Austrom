@@ -1,10 +1,9 @@
 package com.colleagues.austrom.extensions
 
-import android.content.Context
 import com.colleagues.austrom.AustromApplication
-import com.colleagues.austrom.R
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.TemporalAdjusters
@@ -47,4 +46,26 @@ fun LocalDate.getFirstDayOfYear(): LocalDate {return this.withDayOfYear(1)}
 fun LocalDate.getLastDayOfYear(): LocalDate {return this.withDayOfYear(this.lengthOfYear())}
 fun LocalDate.serialize() : String { return this.format(DateTimeFormatter.ISO_LOCAL_DATE) }
 fun LocalDate.toInt(): Int { return this.year * 10000 + this.monthValue * 100 + this.dayOfMonth }
+
+fun LocalDate.getListOfDaysTillDate(otherDate: LocalDate): List<LocalDate> {
+    val days = mutableListOf<LocalDate>()
+    var current = this
+    while (current <= otherDate) {
+        days.add(current)
+        current = current.plusDays(1)
+    }
+    return days
+}
+
+fun LocalDate.getListOfMonthTillDate(otherDate: LocalDate): List<YearMonth> {
+    val months = mutableListOf<YearMonth>()
+    var currentYearMonth = YearMonth.from(this)
+    val endYearMonth = YearMonth.from(otherDate)
+
+    while (currentYearMonth <= endYearMonth) {
+        months.add(currentYearMonth)
+        currentYearMonth = currentYearMonth.plusMonths(1)
+    }
+    return months
+}
 

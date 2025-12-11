@@ -45,6 +45,14 @@ class Currency(
             return currencies
         }
 
+        fun getCurrencyName(currency: Currency, context: Context): String { return getCurrencyName(currency.code, context) }
+
+        fun getCurrencyName(currencyCode: String, context: Context): String {
+            return if (currenciesNamesResourcesMap.containsKey(currencyCode)) {
+                context.getString(currenciesNamesResourcesMap[currencyCode]!!)
+            } else currencyCode
+        }
+
         private val currenciesNamesResourcesMap: Map<String, Int> = mapOf(
             Pair("ADA", R.string.ADA),
             Pair("AED", R.string.AED),

@@ -10,9 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         app:cardBackgroundColor="@color/transparent"
         app:cardCornerRadius="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,7 +21,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="16dp">
+            android:paddingBottom="4dp">
 
             <TextView
                 android:id="@+id/assgritem_assettype_txt"
@@ -79,11 +77,11 @@
                 android:backgroundTint="@color/transparent"
                 android:contentDescription="Expand"
                 android:padding="12dp"
-                android:tint="@color/primaryTextColor"
                 app:layout_constraintBottom_toBottomOf="@+id/assgritem_assettype_txt"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/assgritem_assettype_txt"
                 app:srcCompat="@drawable/ic_navigation_up_temp"
+                app:tint="@color/primaryTextColor"
                 tools:ignore="HardcodedText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

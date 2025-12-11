@@ -187,12 +187,15 @@ class Transaction(val assetId: String, var amount: Double, var categoryId: Strin
             return sum
         }
 
-        fun groupTransactionsBy(transactions: MutableList<Transaction>, groupByType: TransactionGroupByType): MutableMap<String, MutableList<Transaction>> {
-            return when(groupByType) {
+        fun groupTransactionsBy(transactions: MutableList<Transaction>, groupByType: TransactionGroupByType, sortByAmount: Boolean = false): MutableMap<String, MutableList<Transaction>> {
+            val groupedTransactions =  when(groupByType) {
                 TransactionGroupByType.BY_DATE -> groupTransactionsByDate(transactions)
                 TransactionGroupByType.BY_CATEGORY -> groupTransactionsByCategory(transactions)
                 TransactionGroupByType.BY_NAME -> groupTransactionsByName(transactions)
             }
+
+
+            return if (!sortByAmount) groupedTransactions else groupedTransactions.entries.sortedBy { it.value.sumOf { it.amount } }.associate { it.key to it.value }.toMutableMap()
         }
 
         private fun groupTransactionsByDate(transactions: MutableList<Transaction>) : MutableMap<String, MutableList<Transaction>> {

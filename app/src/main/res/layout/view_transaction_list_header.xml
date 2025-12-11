@@ -136,6 +136,18 @@
                                     app:layout_constraintTop_toBottomOf="@+id/trlistheadview_expenseFilter_chp" />
 
                                 <com.google.android.material.chip.Chip
+                                    android:id="@+id/trlistheadview_sortByHeader_chp"
+                                    style="@style/ChipTransactionFilter"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:checked="true"
+                                    android:text="@string/sort_by"
+                                    app:chipIcon="@drawable/ic_navigation_down_temp"
+                                    app:chipIconTint="@color/chip_filter_text_color"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/trlistheadview_expenseFilter_chp" />
+
+                                <com.google.android.material.chip.Chip
                                     android:id="@+id/trlistheadview_nameHeader_chp"
                                     style="@style/ChipTransactionFilter"
                                     android:layout_width="wrap_content"

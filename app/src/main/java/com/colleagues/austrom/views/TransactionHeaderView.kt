@@ -51,8 +51,13 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
     fun setOnGroupByTypeChangedListener(l: ((TransactionGroupByType)->Unit)) { returnGroupByType = l }
     private var returnGroupByType: (TransactionGroupByType)->Unit = {}
 
+    fun setOnSortByTypeChangedListener(l: ((Boolean)->Unit)) { returnSortByType = l }
+    private var returnSortByType: (Boolean)->Unit = {}
+
     fun setRequestDialogCall(l: ((BottomSheetDialogFragment)->Unit)) { showDialog = l }
     private var showDialog: (BottomSheetDialogFragment)->Unit = {}
+
+
 
     //region Binding
     private lateinit var incomeSumMoneyFormatTextView: MoneyFormatTextView
@@ -68,6 +73,7 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
     private lateinit var transferHeaderChip: Chip
     private lateinit var assetHeaderChip: Chip
     private lateinit var groupByChip: Chip
+    private lateinit var sortByChip: Chip
     private lateinit var nameHeaderChip: Chip
     private fun bindViews(view: View) {
         incomeSumMoneyFormatTextView = view.findViewById(R.id.trlistheadview_income_monf)
@@ -80,6 +86,7 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         expenseHeaderChip = view.findViewById(R.id.trlistheadview_expenseHeader_chp)
         incomeHeaderChip = view.findViewById(R.id.trlistheadview_incomeHeader_chp)
         groupByChip = view.findViewById(R.id.trlistheadview_groupByHeader_chp)
+        sortByChip = view.findViewById(R.id.trlistheadview_sortByHeader_chp)
         transferHeaderChip = view.findViewById(R.id.trlistheadview_transferHeader_chp)
         assetHeaderChip = view.findViewById(R.id.trlistheadview_assetHeader_chp)
         nameHeaderChip = view.findViewById(R.id.trlistheadview_nameHeader_chp)
@@ -129,6 +136,7 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         transferHeaderChip.setOnClickListener { chip -> handleTransferHeaderChipClick() }
         assetHeaderChip.setOnClickListener { chip -> launchAssetPickerDialog() }
         groupByChip.setOnClickListener { chip -> launchGroupByPickerDialog() }
+        sortByChip.setOnClickListener { chip -> returnSortByType(!sortByChip.isChecked) }
         nameHeaderChip.setOnClickListener { chip -> launchNamePickerDialog() }
     }
 

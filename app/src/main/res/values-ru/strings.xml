@@ -498,4 +498,5 @@
     <string name="real_estate_desc">Имущество, состоящее из земли и зданий, предлагающее потенциал для роста стоимости.</string>
     <string name="asset_type">Тип Актива</string>
     <string name="savings">Сбережения</string>
+    <string name="sort_by">Сортировка</string>
 </resources>

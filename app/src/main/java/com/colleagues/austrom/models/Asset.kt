@@ -1,5 +1,6 @@
 package com.colleagues.austrom.models
 
+import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.colleagues.austrom.AustromApplication
@@ -64,15 +65,55 @@ class Asset(var assetName: String, val assetTypeId: AssetType, val currencyCode:
             return UUID.randomUUID().toString()
         }
 
-        fun groupAssetsByType(assets: MutableMap<String, Asset>) : MutableMap<AssetType, MutableList<Asset>> {
-            val groupedAssets = mutableMapOf<AssetType, MutableList<Asset>>()
+        fun groupAssetsByType(assets: MutableMap<String, Asset>, context: Context? = null) : MutableMap<String, MutableList<Asset>> {
+            val groupedAssets = mutableMapOf<String, MutableList<Asset>>()
             for (asset in assets) {
-                if (!groupedAssets.containsKey(asset.value.assetTypeId)) {
-                    groupedAssets[asset.value.assetTypeId] = mutableListOf()
+                val assetTypeName = context?.getString(asset.value.assetTypeId.stringResourceId) ?: asset.value.assetTypeId.toString()
+                if (!groupedAssets.containsKey(assetTypeName)) {
+                    groupedAssets[assetTypeName] = mutableListOf()
                 }
-                groupedAssets[asset.value.assetTypeId]!!.add(asset.value)
+                groupedAssets[assetTypeName]!!.add(asset.value)
             }
-            return  groupedAssets
+
+            return  sortAssetGroupsByAmount(groupedAssets)
+        }
+
+        fun groupAssetsByCurrency(assets: MutableMap<String, Asset>, context: Context? = null) : MutableMap<String, MutableList<Asset>> {
+            val groupedAssets = mutableMapOf<String, MutableList<Asset>>()
+            for (asset in assets) {
+                val currencyName = if (context!=null) Currency.getCurrencyName(asset.value.currencyCode, context) else asset.value.currencyCode
+                if (!groupedAssets.containsKey(currencyName)) {
+                    groupedAssets[currencyName] = mutableListOf()
+                }
+                groupedAssets[currencyName]!!.add(asset.value)
+            }
+            return  sortAssetGroupsByAmount(groupedAssets)
+        }
+
+        private fun sortAssetGroupsByAmount(assets: MutableMap<String, MutableList<Asset>>) : MutableMap<String, MutableList<Asset>> {
+            val sortedAssetGroups = assets.entries
+                .sortedByDescending { (_, assets) ->
+                    assets.sumOf { asset ->
+                        if (asset.currencyCode == AustromApplication.appUser!!.baseCurrencyCode) {
+                            asset.amount
+                        } else {
+                            val exchangeRate = AustromApplication.activeCurrencies[asset.currencyCode]?.exchangeRate
+                                ?: throw IllegalArgumentException("Exchange rate not found for currency: ${asset.currencyCode}")
+                            asset.amount / exchangeRate
+                        }
+                    }
+                }
+                .associate { it.key to it.value }.toMutableMap()
+            sortedAssetGroups.forEach { (group, assetList) ->
+                sortedAssetGroups[group] = assetList.sortedByDescending {asset -> if (asset.currencyCode == AustromApplication.appUser!!.baseCurrencyCode) {
+                    asset.amount
+                } else {
+                    val exchangeRate = AustromApplication.activeCurrencies[asset.currencyCode]?.exchangeRate
+                        ?: throw IllegalArgumentException("Exchange rate not found for currency: ${asset.currencyCode}")
+                    asset.amount / exchangeRate
+                }}.toMutableList()
+            }
+            return  sortedAssetGroups
         }
 
         fun deserialize(serializedAsset: String): Asset {

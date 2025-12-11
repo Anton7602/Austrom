@@ -55,6 +55,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
     private var lastSelectedIndex: Int = 0
     private var isListShowsTransactionDetails = false
     private var groupByState: TransactionGroupByType = TransactionGroupByType.BY_DATE
+    private var sortByAmount: Boolean = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
@@ -95,6 +96,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         transactionsHeader.setOnFilterChangedListener { transactionFilter ->applyTransactionFilter(transactionFilter) }
         transactionsHeader.setOnDatesRequestedListener { setUpDatePicker() }
         transactionsHeader.setOnGroupByTypeChangedListener { groupByType -> groupByState = groupByType; applyTransactionFilter(transactionsHeader.getTransactionFilter()) }
+        transactionsHeader.setOnSortByTypeChangedListener { sortByType -> sortByAmount = sortByType; applyTransactionFilter(transactionsHeader.getTransactionFilter()) }
         transactionsHeader.setCurrencySymbol(AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]!!.symbol)
         transactionsHeader.setRequestDialogCall { dialog -> dialog.show(requireActivity().supportFragmentManager, "TransactionHeaderPickerDialog") }
         applyTransactionFilter(transactionsHeader.getTransactionFilter())
@@ -211,7 +213,7 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
     }
 
     private fun setUpTransactionRecyclerView(transactionList: MutableList<Transaction>) {
-        val groupedTransactions = Transaction.groupTransactionsBy(transactionList, groupByState)
+        val groupedTransactions = Transaction.groupTransactionsBy(transactionList, groupByState, sortByAmount)
         transactionHolder.layoutManager = LinearLayoutManager(activity)
         val adapter = TransactionGroupRecyclerAdapter(groupedTransactions, (requireActivity() as AppCompatActivity))
         adapter.setOnItemClickListener { transaction, index ->

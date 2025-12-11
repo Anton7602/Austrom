@@ -6,14 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colleagues.austrom.AustromApplication
 import com.colleagues.austrom.R
+import com.colleagues.austrom.extensions.setCombinedClickListeners
+import com.colleagues.austrom.extensions.setOnDoubleClickListener
 import com.colleagues.austrom.extensions.setOnSafeClickListener
-import com.colleagues.austrom.extensions.toDayOfWeekAndShortDateFormat
 import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.views.MoneyFormatTextView
 
@@ -31,6 +31,7 @@ class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMa
     init {
         groupedTransactions.forEach { group -> group.value.sortBy { transaction -> transaction.amount } }
     }
+    private var globalTransactionVisibilityState = View.VISIBLE
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionGroupViewHolder, position: Int) {
@@ -51,6 +52,21 @@ class TransactionGroupRecyclerAdapter(private val groupedTransactions: MutableMa
         val adapter = TransactionRecyclerAdapter(groupedTransactions.values.elementAt(position), context)
         adapter.setOnItemClickListener { transaction, _ -> returnClickedItem(transaction, position) }
         holder.transactionHolderRecyclerView.adapter = adapter
-        holder.transactionCollapseButton.setOnSafeClickListener { holder.transactionHolderRecyclerView.visibility = if (holder.transactionHolderRecyclerView.visibility==View.VISIBLE) View.GONE else View.VISIBLE }
+        holder.transactionHolderRecyclerView.visibility = globalTransactionVisibilityState
+//        holder.transactionCollapseButton.setOnSafeClickListener { holder.transactionHolderRecyclerView.visibility = if (holder.transactionHolderRecyclerView.visibility==View.VISIBLE) View.GONE else View.VISIBLE }
+//        holder.transactionCollapseButton.setOnDoubleClickListener {
+//            globalTransactionVisibilityState = holder.transactionHolderRecyclerView.visibility
+//            notifyItemRangeChanged(0, groupedTransactions.keys.count())
+//        }
+        holder.transactionCollapseButton.setCombinedClickListeners(
+            onSingleClick = {
+                holder.transactionHolderRecyclerView.visibility = if (holder.transactionHolderRecyclerView.visibility==View.VISIBLE) View.GONE else View.VISIBLE
+                            },
+            onDoubleClick = {
+                holder.transactionHolderRecyclerView.visibility = if (holder.transactionHolderRecyclerView.visibility==View.VISIBLE) View.GONE else View.VISIBLE
+                globalTransactionVisibilityState = holder.transactionHolderRecyclerView.visibility
+                notifyItemRangeChanged(0, groupedTransactions.keys.count())
+            }
+        )
     }
 }
