@@ -23,8 +23,12 @@ import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.DateControllerView
 import com.colleagues.austrom.views.MoneyFormatTextView
+import com.colleagues.austrom.views.PeriodType
 import com.colleagues.austrom.views.WeightedBarChartDiagramView
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 
 class AnalyticsNetWorthHistoryFragment : Fragment(R.layout.fragment_analytics_net_worth_history) {
     fun setOnNavigationDrawerOpenCalled(l: ()->Unit) { requestNavigationDrawerOpen = l }
@@ -107,7 +111,23 @@ class AnalyticsNetWorthHistoryFragment : Fragment(R.layout.fragment_analytics_ne
 
     private fun launchPeriodTypeSelectionDialog() {
         val dialog = PeriodTypeSelectionDialogFragment()
-        dialog.setOnDialogResultListener { periodType -> dateController.setPeriodType(periodType); dialog.dismiss(); }
+        dialog.setOnDialogResultListener { periodType -> if (periodType!=PeriodType.CUSTOM) dateController.setPeriodType(periodType) else setUpDatePicker(); dialog.dismiss();  }
         dialog.show(requireActivity().supportFragmentManager, "Date Period Type Selection")
+    }
+
+    private fun setUpDatePicker() {
+        val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText("Select Date Range")
+            .build()
+        dateRangePicker.show(requireActivity().supportFragmentManager, "DATE_PICKER")
+        dateRangePicker.addOnPositiveButtonClickListener { selection ->
+            val startDate = Instant.ofEpochMilli(selection.first)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+            val endDate = Instant.ofEpochMilli(selection.second)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+            dateController.setPeriodType(PeriodType.CUSTOM, startDate, endDate)
+        }
     }
 }

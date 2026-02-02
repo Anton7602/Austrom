@@ -62,7 +62,7 @@ class BalanceFragment : Fragment(R.layout.fragment_balance) {
         val dialog = AssetTypeSelectionDialogFragment()
         dialog.setOnDialogResultListener { assetType ->
             if (assetType.isLiability)
-                startAssetCreationActivity(assetType, arrayListOf(AssetType.CREDIT_CARD.ordinal, AssetType.LOAN.ordinal, AssetType.MORTAGE.ordinal))
+                startAssetCreationActivity(assetType, arrayListOf(AssetType.CREDIT_CARD.ordinal, AssetType.LOAN.ordinal, AssetType.MORTGAGE.ordinal))
             else
                 startAssetCreationActivity(assetType, arrayListOf(AssetType.CARD.ordinal, AssetType.CASH.ordinal, AssetType.DEPOSIT.ordinal, AssetType.INVESTMENT.ordinal, AssetType.REAL_ESTATE.ordinal))
         }

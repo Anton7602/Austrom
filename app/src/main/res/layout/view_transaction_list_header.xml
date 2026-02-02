@@ -59,22 +59,6 @@
                                 app:singleLine="true">
 
                                 <com.google.android.material.chip.Chip
-                                    android:id="@+id/trlistheadview_dateHeader_chp"
-                                    style="@style/ChipTransactionFilter"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="24dp"
-                                    android:checked="true"
-                                    android:paddingVertical="4dp"
-                                    android:text="13 Nov - 13 Dec"
-                                    android:visibility="gone"
-                                    app:chipIcon="@drawable/ic_navigation_calendar_temp"
-                                    app:chipIconEnabled="false"
-                                    app:chipIconTint="@color/chip_filter_text_color"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent" />
-
-                                <com.google.android.material.chip.Chip
                                     android:id="@+id/trlistheadview_expenseHeader_chp"
                                     style="@style/ChipTransactionFilter"
                                     android:layout_width="wrap_content"

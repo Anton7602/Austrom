@@ -26,6 +26,7 @@ import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionGroupByType
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.DateControllerView
+import com.colleagues.austrom.views.PeriodType
 import com.colleagues.austrom.views.TransactionHeaderView
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.time.Instant
@@ -77,9 +78,11 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         dateController.setDate(LocalDate.now())
     }
 
+
+
     private fun launchPeriodTypeSelectionDialog() {
         val dialog = PeriodTypeSelectionDialogFragment()
-        dialog.setOnDialogResultListener { periodType -> dateController.setPeriodType(periodType) }
+        dialog.setOnDialogResultListener { periodType -> if (periodType!=PeriodType.CUSTOM) dateController.setPeriodType(periodType) else setUpDatePicker(); dialog.dismiss(); }
         dialog.show(requireActivity().supportFragmentManager, "Date Period Type Selection")
     }
 
@@ -94,7 +97,6 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
 
     private fun setUpTransactionHeader() {
         transactionsHeader.setOnFilterChangedListener { transactionFilter ->applyTransactionFilter(transactionFilter) }
-        transactionsHeader.setOnDatesRequestedListener { setUpDatePicker() }
         transactionsHeader.setOnGroupByTypeChangedListener { groupByType -> groupByState = groupByType; applyTransactionFilter(transactionsHeader.getTransactionFilter()) }
         transactionsHeader.setOnSortByTypeChangedListener { sortByType -> sortByAmount = sortByType; applyTransactionFilter(transactionsHeader.getTransactionFilter()) }
         transactionsHeader.setCurrencySymbol(AustromApplication.activeCurrencies[AustromApplication.appUser!!.baseCurrencyCode]!!.symbol)
@@ -114,7 +116,8 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
             val endDate = Instant.ofEpochMilli(selection.second)
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate()
-            transactionsHeader.setFilterDates(startDate, endDate)
+            //transactionsHeader.setFilterDates(startDate, endDate)
+            dateController.setPeriodType(PeriodType.CUSTOM, startDate, endDate)
         }
     }
 
@@ -266,5 +269,10 @@ class OpsFragment : Fragment(R.layout.fragment_ops){
         }
 
         return result
+    }
+
+    override fun onResume() {
+        super.onResume()
+        applyTransactionFilter(transactionsHeader.getTransactionFilter())
     }
 }

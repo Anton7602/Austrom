@@ -18,8 +18,12 @@ import com.colleagues.austrom.models.Transaction
 import com.colleagues.austrom.models.TransactionFilter
 import com.colleagues.austrom.models.TransactionType
 import com.colleagues.austrom.views.DateControllerView
+import com.colleagues.austrom.views.PeriodType
 import com.colleagues.austrom.views.PieChartDiagramView
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import kotlin.math.absoluteValue
 
 class AnalyticsSplitByCategoryFragment : Fragment(R.layout.fragment_analytics_split_by_category) {
@@ -119,7 +123,23 @@ class AnalyticsSplitByCategoryFragment : Fragment(R.layout.fragment_analytics_sp
 
     private fun launchPeriodTypeSelectionDialog() {
         val dialog = PeriodTypeSelectionDialogFragment()
-        dialog.setOnDialogResultListener { periodType -> dateController.setPeriodType(periodType) }
+        dialog.setOnDialogResultListener { periodType -> if (periodType!=PeriodType.CUSTOM) dateController.setPeriodType(periodType) else setUpDatePicker(); dialog.dismiss(); }
         dialog.show(requireActivity().supportFragmentManager, "Date Period Type Selection")
+    }
+
+    private fun setUpDatePicker() {
+        val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText("Select Date Range")
+            .build()
+        dateRangePicker.show(requireActivity().supportFragmentManager, "DATE_PICKER")
+        dateRangePicker.addOnPositiveButtonClickListener { selection ->
+            val startDate = Instant.ofEpochMilli(selection.first)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+            val endDate = Instant.ofEpochMilli(selection.second)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+            dateController.setPeriodType(PeriodType.CUSTOM, startDate, endDate)
+        }
     }
 }

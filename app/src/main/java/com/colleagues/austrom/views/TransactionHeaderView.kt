@@ -44,8 +44,6 @@ import java.util.Locale
 
 @SuppressLint("SetTextI18n")
 class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(context, attrs) {
-    fun setOnDatesRequestedListener(l: (()->Unit)) { requestDates = l }
-    private var requestDates: ()->Unit = {}
     fun setOnFilterChangedListener(l: ((TransactionFilter)->Unit)) { returnFilter = l }
     private var returnFilter: (TransactionFilter)->Unit = {}
     fun setOnGroupByTypeChangedListener(l: ((TransactionGroupByType)->Unit)) { returnGroupByType = l }
@@ -67,7 +65,6 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
     private lateinit var mainLayout: ConstraintLayout
     private lateinit var frameLayout: FrameLayout
 
-    private lateinit var datesHeaderChip: Chip
     private lateinit var expenseHeaderChip: Chip
     private lateinit var incomeHeaderChip: Chip
     private lateinit var transferHeaderChip: Chip
@@ -82,7 +79,6 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         mainLayout = view.findViewById(R.id.trlistheadview_mainLayout_cly)
         mainLayoutCardView = view.findViewById(R.id.trlistheadview_mainHolder_cdv)
         frameLayout = view.findViewById(R.id.trlistheadview_frameLayout_fly)
-        datesHeaderChip = view.findViewById(R.id.trlistheadview_dateHeader_chp)
         expenseHeaderChip = view.findViewById(R.id.trlistheadview_expenseHeader_chp)
         incomeHeaderChip = view.findViewById(R.id.trlistheadview_incomeHeader_chp)
         groupByChip = view.findViewById(R.id.trlistheadview_groupByHeader_chp)
@@ -121,10 +117,6 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
         expenseSumMoneyFormatTextView.setValue(expenseSum, currencySymbol)
 
         mainLayoutCardView.setBackgroundResource(R.drawable.sh_transaction_header_background)
-
-        datesHeaderChip.isCheckable = false
-        datesHeaderChip.text = "${transactionFilter.dateFrom?.toDayAndShortMonthNameFormat()} - ${transactionFilter.dateTo?.toDayAndShortMonthNameFormat()}"
-        datesHeaderChip.setOnClickListener { requestDates() }
 
         attributes.recycle()
         transactionFilter.categories.addAll(AustromApplication.activeCategories.values.map{ l-> l.categoryId})
@@ -195,8 +187,6 @@ class TransactionHeaderView (context: Context, attrs: AttributeSet) : CardView(c
     fun setFilterDates(startDate: LocalDate, endDate: LocalDate) {
         transactionFilter.dateFrom = startDate
         transactionFilter.dateTo = endDate
-        datesHeaderChip.text = "${transactionFilter.dateFrom?.toDayAndShortMonthNameFormat()} - ${transactionFilter.dateTo?.toDayAndShortMonthNameFormat()}"
-        datesHeaderChip.isChecked = true
         returnFilter(transactionFilter)
     }
 

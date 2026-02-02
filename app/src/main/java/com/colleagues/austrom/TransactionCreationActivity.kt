@@ -125,9 +125,9 @@ class TransactionCreationActivity : AppCompatActivity() {
         setContentView(R.layout.activity_transaction_creation)
         adjustInsets()
         bindViews()
-        setUpRecyclerViews()
-        setUpAutofill()
         readFromIntent()
+        setUpRecyclerViews()
+        //setUpAutofill()
 
         if (AustromApplication.activeAssets.size<2) { transferChip.visibility = View.GONE }
 
@@ -204,6 +204,8 @@ class TransactionCreationActivity : AppCompatActivity() {
             secondaryTransaction.submit(dbProvider, FirebaseDatabaseProvider(this))
         }
         primaryTransaction.submit(dbProvider, FirebaseDatabaseProvider(this))
+        AustromApplication.appUser?.primaryPaymentMethod =primarySelectedAsset!!.assetId
+        dbProvider.updateUser(AustromApplication.appUser!!)
         this.finish()
     }
 

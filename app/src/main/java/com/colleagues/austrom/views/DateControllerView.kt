@@ -19,6 +19,7 @@ import com.colleagues.austrom.extensions.getFirstDayOfYear
 import com.colleagues.austrom.extensions.getLastDayOfMonth
 import com.colleagues.austrom.extensions.getLastDayOfWeek
 import com.colleagues.austrom.extensions.getLastDayOfYear
+import com.colleagues.austrom.extensions.getListOfDaysTillDate
 import com.colleagues.austrom.extensions.getLocalizedMonthName
 import com.colleagues.austrom.extensions.getLocalizedWeekName
 import kotlinx.coroutines.CoroutineScope
@@ -58,7 +59,7 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
         val view = layoutInflater.inflate(R.layout.view_date_controller, this, true)
         bindViews(view)
         CoroutineScope(Dispatchers.IO).launch {
-            minMaxDatesPair = LocalDatabaseProvider(context).getTransactionsMinMaxDatePeriod()
+           updateMinMaxDatesPair()
         }
 
         val attributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.DateControllerView)
@@ -74,26 +75,51 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
     }
 
     private fun updateMinMaxDatesPair() {
-
+        minMaxDatesPair = LocalDatabaseProvider(context).getTransactionsMinMaxDatePeriod()
     }
 
     fun setDate(newStartDate: LocalDate, newEndDate: LocalDate? = null) {
+        if (selectedPeriodType==PeriodType.CUSTOM && newEndDate==null) return
         selectedStartDate = newStartDate
-        setUpDateVisibleName()
+        selectedEndDate = newEndDate
+            ?: when (selectedPeriodType){
+                PeriodType.WEEK -> { selectedStartDate.getLastDayOfWeek() }
+                PeriodType.MONTH -> { selectedStartDate.getLastDayOfMonth() }
+                PeriodType.YEAR -> { selectedStartDate.getLastDayOfYear() }
+                PeriodType.ALL -> { minMaxDatesPair.second }
+                PeriodType.CUSTOM -> { newStartDate }
+            }
 
+        setUpDateVisibleName()
         notifyDatesChanged(getSelectedDatesRange())
     }
 
-    fun setPeriodType(periodType: PeriodType) {
+    fun setPeriodType(periodType: PeriodType, newStartDate: LocalDate?=null, newEndDate: LocalDate? = null) {
+        if (periodType==PeriodType.CUSTOM && (newStartDate==null || newEndDate==null)) return
         selectedPeriodType = periodType
-        when (periodType) {
-            PeriodType.WEEK -> { periodTypeTextView.text = context.getString(R.string.week) }
-            PeriodType.MONTH -> { periodTypeTextView.text = context.getString(R.string.month) }
-            PeriodType.YEAR -> { periodTypeTextView.text = context.getString(R.string.year) }
-            PeriodType.ALL -> {periodTypeTextView.text = context.getString(R.string.entire_period)}
-            PeriodType.CUSTOM -> { periodTypeTextView.text = context.getString(R.string.period) }
+        if (periodType==PeriodType.ALL) {
+            previousButton.visibility = View.GONE
+            nextButton.visibility = View.GONE
+        } else {
+            previousButton.visibility = View.VISIBLE
+            nextButton.visibility = View.VISIBLE
         }
-        setDate(selectedStartDate)
+        selectedStartDate = when (selectedPeriodType){
+            PeriodType.WEEK -> { selectedStartDate.getFirstDayOfWeek() }
+            PeriodType.MONTH -> { selectedStartDate.getFirstDayOfMonth() }
+            PeriodType.YEAR -> { selectedStartDate.getFirstDayOfYear() }
+            PeriodType.ALL -> { minMaxDatesPair.first }
+            PeriodType.CUSTOM -> { newStartDate!! }
+        }
+        selectedEndDate = when (selectedPeriodType){
+            PeriodType.WEEK -> { selectedStartDate.getLastDayOfWeek() }
+            PeriodType.MONTH -> { selectedStartDate.getLastDayOfMonth() }
+            PeriodType.YEAR -> { selectedStartDate.getLastDayOfYear() }
+            PeriodType.ALL -> { minMaxDatesPair.second }
+            PeriodType.CUSTOM -> { newEndDate!! }
+        }
+        setUpDateVisibleName()
+        notifyDatesChanged(getSelectedDatesRange())
     }
 
     fun getSelectedDatesRange(): Pair<LocalDate, LocalDate> {
@@ -110,11 +136,18 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
 
     private fun setUpDateVisibleName() {
         when (selectedPeriodType) {
+            PeriodType.WEEK -> { periodTypeTextView.text = context.getString(R.string.week) }
+            PeriodType.MONTH -> { periodTypeTextView.text = context.getString(R.string.month) }
+            PeriodType.YEAR -> { periodTypeTextView.text = context.getString(R.string.year) }
+            PeriodType.ALL -> {periodTypeTextView.text = context.getString(R.string.entire_period)}
+            PeriodType.CUSTOM -> { periodTypeTextView.text = context.getString(R.string.period) }
+        }
+        when (selectedPeriodType) {
             PeriodType.WEEK -> { periodNameTextView.text = selectedStartDate.getLocalizedWeekName() }
             PeriodType.MONTH -> { periodNameTextView.text = selectedStartDate.getLocalizedMonthName() }
             PeriodType.YEAR -> { periodNameTextView.text = selectedStartDate.format(DateTimeFormatter.ofPattern("yyyy")) }
-            PeriodType.ALL -> { periodNameTextView.text = "" }
-            PeriodType.CUSTOM -> { periodNameTextView.text = "" }
+            PeriodType.ALL -> { periodNameTextView.text = "${minMaxDatesPair.first.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}-${minMaxDatesPair.second.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}" }
+            PeriodType.CUSTOM -> { periodNameTextView.text = "${selectedStartDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}-${selectedEndDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}" }
         }
     }
 
@@ -124,7 +157,10 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
             PeriodType.MONTH -> { selectedStartDate.minusMonths(1) }
             PeriodType.YEAR -> { selectedStartDate.minusYears(1) }
             PeriodType.ALL -> {selectedStartDate}
+            PeriodType.CUSTOM -> { selectedStartDate.minusDays(selectedStartDate.getListOfDaysTillDate(selectedEndDate).count().toLong()-1) }
+        }, when(periodType) {
             PeriodType.CUSTOM -> { selectedStartDate }
+            else -> { null }
         })
     }
 
@@ -134,7 +170,10 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
             PeriodType.MONTH -> { selectedStartDate.plusMonths(1) }
             PeriodType.YEAR -> { selectedStartDate.plusYears(1) }
             PeriodType.ALL -> { selectedStartDate }
-            PeriodType.CUSTOM -> { selectedStartDate }
+            PeriodType.CUSTOM -> { selectedEndDate }
+        }, when(periodType) {
+            PeriodType.CUSTOM -> { selectedEndDate.plusDays(selectedStartDate.getListOfDaysTillDate(selectedEndDate).count().toLong()-1) }
+            else -> { null }
         })
     }
 }
