@@ -84,6 +84,7 @@ class AnalyticsNetWorthHistoryFragment : Fragment(R.layout.fragment_analytics_ne
     private fun calculateFinalDateNetWorth(endDate: LocalDate): Double {
         val localDBProvider = LocalDatabaseProvider(requireActivity())
         val currentSum = Asset.getSumOfAssets(AustromApplication.activeAssets.values.toList())
+        if (endDate>=LocalDate.now()) return currentSum
         val sumOfTransactionsSince = Transaction.getSumOfTransactions(localDBProvider.getTransactionBetweenDates(endDate, LocalDate.now()))
         //finalSumMoneyFormat.setValue(currentSum-sumOfTransactionsSince)
         return currentSum-sumOfTransactionsSince
