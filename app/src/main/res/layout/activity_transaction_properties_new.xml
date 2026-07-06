@@ -29,16 +29,6 @@
         app:srcCompat="@drawable/ic_navigation_more_temp"
         tools:ignore="HardcodedText" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/trdet_editFragment_frc"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -116,5 +106,15 @@
             </LinearLayout>
         </ScrollView>
     </FrameLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/trdet_editFragment_frc"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

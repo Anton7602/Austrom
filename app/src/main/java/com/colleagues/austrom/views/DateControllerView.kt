@@ -115,7 +115,7 @@ class DateControllerView(context: Context, attrs: AttributeSet) : FrameLayout(co
             PeriodType.WEEK -> { selectedStartDate.getLastDayOfWeek() }
             PeriodType.MONTH -> { selectedStartDate.getLastDayOfMonth() }
             PeriodType.YEAR -> { selectedStartDate.getLastDayOfYear() }
-            PeriodType.ALL -> { minMaxDatesPair.second }
+            PeriodType.ALL -> { minMaxDatesPair.second}
             PeriodType.CUSTOM -> { newEndDate!! }
         }
         setUpDateVisibleName()

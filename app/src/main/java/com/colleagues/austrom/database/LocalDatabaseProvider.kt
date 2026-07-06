@@ -266,7 +266,7 @@ class LocalDatabaseProvider(private var context: Context) {
             if (earliestTransaction!=null) minTransactionDate = earliestTransaction.transactionDate
             if (latestTransaction!=null && latestTransaction.transactionDate>maxTransactionDate) maxTransactionDate = latestTransaction.transactionDate
         }
-        return Pair(minTransactionDate, maxTransactionDate)
+        return Pair(minTransactionDate, maxTransactionDate.plusDays(1))
     }
 
     fun getTransactionWithTransactionDetailsByTransactionFilter(transactionFilter: TransactionFilter): LiveData<Map<Transaction, MutableList<TransactionDetail>>> {
