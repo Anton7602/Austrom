@@ -64,7 +64,7 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
         this.startDate = startDate
         this.endDate = endDate
         this.endNetWorth = endNetWorth
-        netWorthMap = calculateNetWorthPerDay(startDate.getListOfDaysTillDate(endDate))
+        netWorthMap = calculateNetWorthPerDay(startDate.minusDays(1).getListOfDaysTillDate(endDate.plusDays(1)))
         minNetWorth = netWorthMap.values.minOrNull() ?: 0.0
         maxNetWorth = netWorthMap.values.maxOrNull() ?: 0.0
         barGroupType = weightedBarGroupType
@@ -158,8 +158,9 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
                             canvas.drawLine(currentX+barWidth/2,0f, currentX+barWidth/2, mapValueToY(minNetWorth, minNetWorth, maxNetWorth, graphHeight), axisPaint)
                         }
                     }
-                    val startNetWorth = netWorthMap[day] ?: 0.0
-                    val endNetWorth = netWorthMap[day.plusDays(1)] ?: startNetWorth
+                    val endNetWorth = netWorthMap[day] ?: 0.0
+                    val startNetWorth = netWorthMap[day.minusDays(1)] ?: endNetWorth
+
 
 
                     val barPaint = if (endNetWorth >= startNetWorth) barPaintPositive else barPaintNegative
@@ -218,8 +219,8 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
                             canvas.drawLine(currentX+barWidth/2,0f, currentX+barWidth/2, mapValueToY(minNetWorth, minNetWorth, maxNetWorth, graphHeight), axisPaint)
                         }
                     }
-                    val startNetWorth = netWorthMap[day] ?: 0.0
-                    val endNetWorth = netWorthMap[day.plusDays(1)] ?: startNetWorth
+                    val endNetWorth = netWorthMap[day] ?: 0.0
+                    val startNetWorth = netWorthMap[day.minusDays(1)] ?: endNetWorth
 
 
                     val barPaint = if (endNetWorth >= startNetWorth) barPaintPositive else barPaintNegative
@@ -269,8 +270,8 @@ class WeightedBarChartDiagramView@JvmOverloads constructor(context: Context, att
 
         for (day in days.reversed()) {
             val dailyChange = Transaction.getSumOfTransactions(transactions.filter { it.transactionDate == day })
-            currentNetWorth -= dailyChange
             netWorthMap[day] = currentNetWorth
+            currentNetWorth -= dailyChange
         }
         return netWorthMap
     }
